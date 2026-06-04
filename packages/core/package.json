@@ -1,0 +1,38 @@
+{
+  "name": "[repo]",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/[actor]/[repo]#readme",
+  "bugs": {
+    "url": "https://github.com/[actor]/[repo]/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/[actor]/[repo].git"
+  },
+  "license": "MIT",
+  "author": "[username]",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest",
+    "test:ci": "vitest --run",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=v24.0.0"
+  }
+}
