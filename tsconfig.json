@@ -6,6 +6,9 @@
     "lib": [
       "ESNext"
     ],
+    "types": [
+      "Node"
+    ],
     "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "strict": true,
