@@ -7,7 +7,7 @@
       "ESNext"
     ],
     "types": [
-      "Node"
+      "node"
     ],
     "moduleResolution": "Bundler",
     "esModuleInterop": true,

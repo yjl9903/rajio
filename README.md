@@ -1,4 +1,4 @@
-# Rajio (ラジオ)
+# Rajio ラジオ
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yjl9903/rajio)
 [![version](https://img.shields.io/npm/v/rajio?label=Rajio)](https://www.npmjs.com/package/rajio)
