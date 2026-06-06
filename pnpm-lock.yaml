@@ -51,8 +51,8 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       openai:
-        specifier: 6.41.0
-        version: 6.41.0(zod@4.4.3)
+        specifier: 6.42.0
+        version: 6.42.0(zod@4.4.3)
       smol-toml:
         specifier: 1.6.1
         version: 1.6.1
@@ -846,8 +846,8 @@ packages:
   obug@2.1.1:
     resolution: {integrity: sha512-uTqF9MuPraAQ+IsnPf366RG4cP9RtUi7MLO1N3KEc+wb0a6yKpeL0lmk2IB1jY5KHPAlTc6T/JRdC/YqxHNwkQ==}
 
-  openai@6.41.0:
-    resolution: {integrity: sha512-IGWPopZq6Rjoynjfb3NSLf/z2MTw7UiOsm9TAjPGAjUESH7Uq41Trg4QWehBEn58p74i+m7uoRPV2vXcpPXhyA==}
+  openai@6.42.0:
+    resolution: {integrity: sha512-1WFEt/uXMXOLhYRNkgJWo08Y2YNvNwpVU72K7ibrWgWpNOXd4VojXLbe6SQ4bLiUQ3Y8jz4IiyVkylJCL1DtZg==}
     peerDependencies:
       ws: ^8.18.0
       zod: ^3.25 || ^4.0
@@ -1766,7 +1766,7 @@ snapshots:
 
   obug@2.1.1: {}
 
-  openai@6.41.0(zod@4.4.3):
+  openai@6.42.0(zod@4.4.3):
     optionalDependencies:
       zod: 4.4.3
 
