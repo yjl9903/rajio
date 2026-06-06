@@ -66,10 +66,8 @@ export async function runAudioStage(input: {
   const chunks = await createAudioChunksIfNeeded(runtime, audioPath, chunksDir);
 
   const mediaHash = await sha256File(session.mediaPath);
-  session.state.input.media_sha256 = mediaHash;
-  session.setStage('audio', {
-    ...session.stage('audio'),
-    status: 'done',
+  session.setMediaHash(mediaHash);
+  session.updateStage('audio', {
     metadata: toSessionRelative(session.dir, metadataPath),
     audio: toSessionRelative(session.dir, audioPath),
     chunks_dir: 'audio/chunks',
@@ -84,8 +82,7 @@ export async function runAudioStage(input: {
     chunk_max_seconds: MAX_OPENAI_TRANSCRIPTION_SECONDS,
     chunk_target_seconds: DEFAULT_CHUNK_SECONDS,
     chunk_boundary: chunks.length > 1 ? 'near_silence_or_time' : 'none',
-    media_sha256: mediaHash,
-    completed_at: new Date().toISOString()
+    media_sha256: mediaHash
   });
 }
 

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, readdir, readFile, rm, stat } from 'node:fs/promises';
+import { readdir, readFile, rm, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 import { parse, stringify } from 'smol-toml';
@@ -14,7 +14,7 @@ import {
 } from '../utils/fs.js';
 import type {
   DescriptionInfo,
-  ManualStageName,
+  SessionAudioChunk,
   SessionState,
   StageName,
   StageState
@@ -50,55 +50,46 @@ export class Session {
   ];
 
   readonly dir: string;
-  readonly target: string;
   readonly description: DescriptionInfo;
   readonly mediaPath: string;
-  readonly mediaOverride?: string;
   state: SessionState;
 
   private constructor(input: {
     dir: string;
-    target: string;
     description: DescriptionInfo;
     mediaPath: string;
-    mediaOverride?: string;
     state: SessionState;
   }) {
     this.dir = input.dir;
-    this.target = input.target;
     this.description = input.description;
     this.mediaPath = input.mediaPath;
-    this.mediaOverride = input.mediaOverride;
     this.state = input.state;
   }
 
   static async loadOrCreate(target: string, mediaOverride?: string): Promise<Session> {
-    const resolved = await resolveSessionTarget(target, mediaOverride);
-    const sessionPath = path.join(resolved.dir, SESSION_FILE);
-    const exists = await pathExists(sessionPath);
-    const state = exists
-      ? normalizeSession(parseSession(await readFile(sessionPath, 'utf8')))
-      : createSessionState(resolved, new Date());
-    const session = new Session({
-      ...resolved,
-      state
-    });
-    if (!exists) {
-      await session.save();
-    }
-    return session;
+    return Session.loadResolved(await resolveSessionTarget(target, mediaOverride), true);
   }
 
   static async load(target: string, mediaOverride?: string): Promise<Session> {
-    const resolved = await resolveExistingSessionTarget(target, mediaOverride);
+    return Session.loadResolved(await resolveExistingSessionTarget(target, mediaOverride), false);
+  }
+
+  private static async loadResolved(
+    resolved: ResolvedSessionTarget,
+    saveIfCreated: boolean
+  ): Promise<Session> {
     const sessionPath = path.join(resolved.dir, SESSION_FILE);
-    const state = (await pathExists(sessionPath))
-      ? normalizeSession(parseSession(await readFile(sessionPath, 'utf8')))
-      : createSessionState(resolved, new Date());
-    return new Session({
+    const exists = await pathExists(sessionPath);
+    const session = new Session({
       ...resolved,
-      state
+      state: exists
+        ? normalizeSession(parseSession(await readFile(sessionPath, 'utf8')))
+        : createSessionState(resolved, new Date())
     });
+    if (!exists && saveIfCreated) {
+      await session.save();
+    }
+    return session;
   }
 
   async clean(): Promise<string[]> {
@@ -128,37 +119,33 @@ export class Session {
     this.state.current_stage = stage;
   }
 
-  async reloadDescription(): Promise<DescriptionInfo> {
-    if (this.state.input.description) {
-      return readDescription(this.resolve(this.state.input.description));
-    }
-    return this.description;
-  }
-
   resolve(value: string): string {
     return fromSessionRelative(this.dir, value);
-  }
-
-  relative(value: string): string {
-    return toSessionRelative(this.dir, value);
   }
 
   artifact(...parts: string[]): string {
     return path.join(this.dir, ...parts);
   }
 
-  async ensureDir(...parts: string[]): Promise<string> {
-    const dir = this.artifact(...parts);
-    await mkdir(dir, { recursive: true });
-    return dir;
-  }
-
   stage(stage: StageName): StageState {
     return this.state.stages[stage];
   }
 
-  setStage(stage: StageName, state: StageState): void {
-    this.state.stages[stage] = state;
+  updateStage(stage: StageName, patch: Partial<StageState>): StageState {
+    const next = {
+      ...this.state.stages[stage],
+      ...patch
+    };
+    this.state.stages[stage] = next;
+    return next;
+  }
+
+  audioChunks(): SessionAudioChunk[] {
+    return normalizeSessionAudioChunks(this.stage('audio').chunks);
+  }
+
+  setMediaHash(hash: string): void {
+    this.state.input.media_sha256 = hash;
   }
 
   async save(): Promise<void> {
@@ -210,35 +197,61 @@ export class Session {
     this.state.current_stage = 'audio';
   }
 
-  async assertCommittedClean(stage: ManualStageName): Promise<StageState> {
-    await this.refreshDirtyState();
-    const state = this.state.stages[stage];
-    if (state.status !== 'committed') {
-      throw new Error(
-        `${stage} must be committed before continuing; current status is ${state.status}.`
-      );
-    }
-    return state;
-  }
-
   markRunning(stage: StageName): void {
-    this.state.stages[stage] = {
-      ...this.state.stages[stage],
+    this.updateStage(stage, {
       status: 'running',
       started_at: new Date().toISOString(),
       error: undefined
-    };
+    });
     this.state.current_stage = stage;
   }
 
+  markDone(stage: StageName): void {
+    this.updateStage(stage, {
+      status: 'done',
+      completed_at: new Date().toISOString(),
+      error: undefined
+    });
+  }
+
   markFailed(stage: StageName, error: unknown): void {
-    this.state.stages[stage] = {
-      ...this.state.stages[stage],
+    this.updateStage(stage, {
       status: 'failed',
       error: error instanceof Error ? error.message : String(error)
-    };
+    });
     this.state.current_stage = stage;
   }
+}
+
+function normalizeSessionAudioChunks(value: unknown): SessionAudioChunk[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  const chunks: SessionAudioChunk[] = [];
+  for (const item of value) {
+    const chunk = item as Partial<SessionAudioChunk>;
+    const start = Number(chunk.start);
+    const end = Number(chunk.end);
+    if (
+      typeof chunk.audio !== 'string' ||
+      !Number.isFinite(start) ||
+      !Number.isFinite(end) ||
+      !Number.isFinite(chunk.size ?? NaN) ||
+      typeof chunk.sha256 !== 'string' ||
+      end < start
+    ) {
+      return [];
+    }
+    chunks.push({
+      audio: chunk.audio,
+      start,
+      end,
+      size: chunk.size as number,
+      sha256: chunk.sha256
+    });
+  }
+  return chunks;
 }
 
 async function resolveExistingSessionTarget(
@@ -251,15 +264,13 @@ async function resolveExistingSessionTarget(
   const sessionPath = path.join(dir, SESSION_FILE);
 
   if (await pathExists(sessionPath)) {
-    return resolveDirectoryTarget(dir, target, mediaOverride);
+    return resolveDirectoryTarget(dir, mediaOverride);
   }
 
   return {
-    target,
     dir,
     description: await readDescription(undefined),
-    mediaPath: mediaOverride ? path.resolve(dir, mediaOverride) : '',
-    mediaOverride
+    mediaPath: mediaOverride ? path.resolve(dir, mediaOverride) : ''
   };
 }
 
@@ -274,11 +285,9 @@ function createInitialStages(): Record<StageName, StageState> {
 }
 
 interface ResolvedSessionTarget {
-  target: string;
   dir: string;
   description: DescriptionInfo;
   mediaPath: string;
-  mediaOverride?: string;
 }
 
 async function resolveSessionTarget(
@@ -289,26 +298,26 @@ async function resolveSessionTarget(
   const targetStat = await stat(absoluteTarget);
 
   if (targetStat.isDirectory()) {
-    return resolveDirectoryTarget(absoluteTarget, target, mediaOverride);
+    return resolveDirectoryTarget(absoluteTarget, mediaOverride);
   }
 
   if (path.basename(absoluteTarget) === SESSION_FILE) {
-    return resolveDirectoryTarget(path.dirname(absoluteTarget), target, mediaOverride);
+    return resolveDirectoryTarget(path.dirname(absoluteTarget), mediaOverride);
   }
 
   if (isMarkdownPath(absoluteTarget)) {
     const description = await readDescription(absoluteTarget);
     const dir = path.dirname(absoluteTarget);
     const mediaPath = resolveMediaPath(dir, description, mediaOverride);
-    return { target, dir, description, mediaPath, mediaOverride };
+    return { dir, description, mediaPath };
   }
 
   if (isMediaPath(absoluteTarget)) {
     const dir = path.dirname(absoluteTarget);
-    const descriptionPath = await findSingleDescription(dir, false);
+    const descriptionPath = await findSingleDescription(dir);
     const description = await readDescription(descriptionPath);
     const mediaPath = mediaOverride ? path.resolve(dir, mediaOverride) : absoluteTarget;
-    return { target, dir, description, mediaPath, mediaOverride };
+    return { dir, description, mediaPath };
   }
 
   throw new Error(`Unsupported target type: ${target}`);
@@ -316,7 +325,6 @@ async function resolveSessionTarget(
 
 async function resolveDirectoryTarget(
   dir: string,
-  target: string,
   mediaOverride: string | undefined
 ): Promise<ResolvedSessionTarget> {
   const sessionPath = path.join(dir, SESSION_FILE);
@@ -326,7 +334,7 @@ async function resolveDirectoryTarget(
   const descriptionPath =
     typeof session?.input?.description === 'string'
       ? fromSessionRelative(dir, session.input.description)
-      : await findSingleDescription(dir, !session);
+      : await findSingleDescription(dir);
   const description = await readDescription(descriptionPath);
   const mediaPathFromSession =
     typeof session?.input?.media === 'string'
@@ -336,8 +344,8 @@ async function resolveDirectoryTarget(
     ? path.resolve(dir, mediaOverride)
     : mediaPathFromSession
       ? mediaPathFromSession
-      : resolveMediaPath(dir, description, undefined, await findSingleMedia(dir, !descriptionPath));
-  return { target, dir, description, mediaPath, mediaOverride };
+      : resolveMediaPath(dir, description, undefined, await findSingleMedia(dir));
+  return { dir, description, mediaPath };
 }
 
 function resolveMediaPath(
@@ -361,7 +369,7 @@ function resolveMediaPath(
   );
 }
 
-async function findSingleDescription(dir: string, required: boolean): Promise<string | undefined> {
+async function findSingleDescription(dir: string): Promise<string | undefined> {
   const entries = await readdir(dir, { withFileTypes: true });
   const markdowns = entries
     .filter((entry) => entry.isFile() && isMarkdownPath(entry.name))
@@ -373,13 +381,10 @@ async function findSingleDescription(dir: string, required: boolean): Promise<st
   if (markdowns.length > 1) {
     throw new Error(`Multiple description markdown files found in ${dir}`);
   }
-  if (required) {
-    return undefined;
-  }
   return undefined;
 }
 
-async function findSingleMedia(dir: string, required: boolean): Promise<string | undefined> {
+async function findSingleMedia(dir: string): Promise<string | undefined> {
   const entries = await readdir(dir, { withFileTypes: true });
   const mediaFiles = entries
     .filter((entry) => entry.isFile() && isMediaPath(entry.name))
@@ -390,9 +395,6 @@ async function findSingleMedia(dir: string, required: boolean): Promise<string |
   }
   if (mediaFiles.length > 1) {
     throw new Error(`Multiple media files found in ${dir}`);
-  }
-  if (required) {
-    throw new Error(`No media file found in ${dir}`);
   }
   return undefined;
 }
@@ -405,7 +407,7 @@ function isMediaPath(filePath: string): boolean {
   return MEDIA_EXTENSIONS.has(path.extname(filePath).toLowerCase());
 }
 
-function createSessionState(target: ResolvedSessionTarget, now: Date): SessionState {
+function createSessionState(resolved: ResolvedSessionTarget, now: Date): SessionState {
   const createdAt = now.toISOString();
   const state: SessionState = {
     schema_version: 1,
@@ -417,10 +419,10 @@ function createSessionState(target: ResolvedSessionTarget, now: Date): SessionSt
     stages: createInitialStages()
   };
 
-  if (target.description.path) {
-    state.input.description = toSessionRelative(target.dir, target.description.path);
+  if (resolved.description.path) {
+    state.input.description = toSessionRelative(resolved.dir, resolved.description.path);
   }
-  state.input.media = toSessionRelative(target.dir, target.mediaPath);
+  state.input.media = toSessionRelative(resolved.dir, resolved.mediaPath);
 
   return state;
 }

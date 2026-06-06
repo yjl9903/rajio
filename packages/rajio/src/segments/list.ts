@@ -1,6 +1,14 @@
 import type { Segment } from '../types.js';
 
-export type SegmentIssueFilter = 'invalid-time' | 'overlap' | 'long' | 'fragment' | 'empty-zh';
+export const SEGMENT_ISSUE_FILTERS = [
+  'invalid-time',
+  'overlap',
+  'long',
+  'fragment',
+  'empty-zh'
+] as const;
+
+export type SegmentIssueFilter = (typeof SEGMENT_ISSUE_FILTERS)[number];
 
 export interface SegmentListOptions {
   ids?: string[];

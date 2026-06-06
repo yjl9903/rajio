@@ -43,22 +43,14 @@ export async function runRajio(
   await session.save();
 
   const currentStage = session.currentStage;
-  if (options.agent === 'codex' && isManualStage(currentStage)) {
-    const stage = currentStage;
-    await runAgentAndCommit({ session, runtime, stage, verbose: options.verbose });
-    session.currentStage = nextStage(stage);
-    await session.save();
-    await continueAfterAction(session, runtime, options, deps);
-    return;
-  }
-
-  if (options.commit && isManualStage(currentStage)) {
-    const stage = currentStage;
-    await commitManualStage({ session, stage, verbose: options.verbose });
-    session.currentStage = nextStage(stage);
-    await session.save();
-    await continueAfterAction(session, runtime, options, deps);
-    return;
+  if (isManualStage(currentStage)) {
+    if (options.agent === 'codex') {
+      await runAgentAndCommit({ session, runtime, stage: currentStage, verbose: options.verbose });
+      await advancePastStage(session, currentStage);
+    } else if (options.commit) {
+      await commitManualStage({ session, stage: currentStage, verbose: options.verbose });
+      await advancePastStage(session, currentStage);
+    }
   }
 
   await continueAfterAction(session, runtime, options, deps);
@@ -145,8 +137,7 @@ async function handleManualStage(
     } else {
       await runAgentAndCommit({ session, runtime, stage, verbose: options.verbose });
     }
-    session.currentStage = nextStage(stage);
-    await session.save();
+    await advancePastStage(session, stage);
     return;
   }
 
@@ -163,8 +154,7 @@ async function runAutomaticStage(
   deps: WorkflowDeps
 ): Promise<void> {
   if (session.stage(stage).status === 'done' && !force) {
-    session.currentStage = nextStage(stage);
-    await session.save();
+    await advancePastStage(session, stage);
     return;
   }
 
@@ -191,15 +181,18 @@ async function runAutomaticStage(
       throw new Error(`Cannot automatically run manual stage ${stage}.`);
     }
 
-    session.stage(stage).completed_at = new Date().toISOString();
-    session.stage(stage).status = 'done';
-    session.currentStage = nextStage(stage);
-    await session.save();
+    session.markDone(stage);
+    await advancePastStage(session, stage);
   } catch (error) {
     session.markFailed(stage, error);
     await session.save();
     throw error;
   }
+}
+
+async function advancePastStage(session: Session, stage: StageName): Promise<void> {
+  session.currentStage = nextStage(stage);
+  await session.save();
 }
 
 export function exportOutputPaths(session: Session): { label: string; path: string }[] {

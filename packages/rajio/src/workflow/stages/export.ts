@@ -31,12 +31,9 @@ export async function runExportStage(session: Session): Promise<void> {
   await writeFileAtomic(zhSrt, renderSrt(segments, 'zh'));
   await writeFileAtomic(bilingualAss, renderAss(segments, title));
 
-  session.setStage('export', {
-    ...session.stage('export'),
-    status: 'done',
+  session.updateStage('export', {
     ja_srt: toSessionRelative(session.dir, jaSrt),
     zh_srt: toSessionRelative(session.dir, zhSrt),
-    bilingual_ass: toSessionRelative(session.dir, bilingualAss),
-    completed_at: new Date().toISOString()
+    bilingual_ass: toSessionRelative(session.dir, bilingualAss)
   });
 }

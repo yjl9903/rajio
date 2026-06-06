@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
-import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises';
+import { mkdir, rename, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export async function pathExists(filePath: string): Promise<boolean> {
@@ -13,10 +13,6 @@ export async function pathExists(filePath: string): Promise<boolean> {
     }
     throw error;
   }
-}
-
-export async function readJson<T>(filePath: string): Promise<T> {
-  return JSON.parse(await readFile(filePath, 'utf8')) as T;
 }
 
 export async function writeJson(filePath: string, value: unknown): Promise<void> {

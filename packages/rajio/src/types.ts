@@ -12,14 +12,17 @@ export const MANUAL_STAGES = ['transcript_work', 'translation_work'] as const;
 
 export type ManualStageName = (typeof MANUAL_STAGES)[number];
 
-export type StageStatus =
-  | 'pending'
-  | 'running'
-  | 'done'
-  | 'waiting'
-  | 'committed'
-  | 'dirty'
-  | 'failed';
+export const STAGE_STATUSES = [
+  'pending',
+  'running',
+  'done',
+  'waiting',
+  'committed',
+  'dirty',
+  'failed'
+] as const;
+
+export type StageStatus = (typeof STAGE_STATUSES)[number];
 
 export interface StageState {
   status: StageStatus;

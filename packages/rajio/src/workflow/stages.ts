@@ -1,18 +1,12 @@
 import type { ManualStageName, StageName } from '../types.js';
+import { STAGES } from '../types.js';
 
 export function isManualStage(stage: StageName): stage is ManualStageName {
   return stage === 'transcript_work' || stage === 'translation_work';
 }
 
 export function nextStage(stage: StageName): StageName {
-  const order: StageName[] = [
-    'audio',
-    'transcript_raw',
-    'transcript_work',
-    'translation_work',
-    'export'
-  ];
-  return order[Math.min(order.indexOf(stage) + 1, order.length - 1)];
+  return STAGES[Math.min(STAGES.indexOf(stage) + 1, STAGES.length - 1)]!;
 }
 
 export function manualSegmentsPath(stage: ManualStageName): string {

@@ -88,16 +88,13 @@ export async function runTranscriptRawStage(input: {
   });
   parseSegments(segments);
   await writeFileAtomic(segmentsPath, stringify(segments));
-  session.setStage('transcript_raw', {
-    ...session.stage('transcript_raw'),
-    status: 'done',
+  session.updateStage('transcript_raw', {
     input_audio: toSessionRelative(session.dir, audioPath),
     chunks_dir: toSessionRelative(session.dir, chunkResultsDir),
     chunk_count: chunks.length,
     chunk_concurrency: TRANSCRIPTION_CHUNK_CONCURRENCY,
     segments: toSessionRelative(session.dir, segmentsPath),
-    segments_sha256: await sha256File(segmentsPath),
-    completed_at: new Date().toISOString()
+    segments_sha256: await sha256File(segmentsPath)
   });
 }
 
@@ -105,7 +102,7 @@ async function collectAudioInputChunks(
   session: Session,
   audioPath: string
 ): Promise<AudioInputChunk[]> {
-  const sessionChunks = normalizeSessionAudioChunks(session.stage('audio').chunks);
+  const sessionChunks = session.audioChunks();
   const expectedCount = session.stage('audio').chunk_count;
   if (sessionChunks.length === 0) {
     throw new Error(
@@ -127,36 +124,6 @@ async function collectAudioInputChunks(
       audioPath: audioChunkPath,
       start: metadata.start,
       end: metadata.end
-    });
-  }
-  return chunks;
-}
-
-function normalizeSessionAudioChunks(value: unknown): SessionAudioChunk[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  const chunks: SessionAudioChunk[] = [];
-  for (const item of value) {
-    const chunk = item as Partial<SessionAudioChunk>;
-    const start = Number(chunk.start);
-    const end = Number(chunk.end);
-    if (
-      typeof chunk.audio !== 'string' ||
-      !Number.isFinite(start) ||
-      !Number.isFinite(end) ||
-      !Number.isFinite(chunk.size ?? NaN) ||
-      typeof chunk.sha256 !== 'string' ||
-      end < start
-    ) {
-      return [];
-    }
-    chunks.push({
-      audio: chunk.audio,
-      start,
-      end,
-      size: chunk.size as number,
-      sha256: chunk.sha256
     });
   }
   return chunks;

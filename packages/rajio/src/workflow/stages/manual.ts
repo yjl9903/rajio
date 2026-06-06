@@ -2,6 +2,7 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
 import { runCodexAgent } from '../agent.js';
+import { manualSegmentsPath } from '../stages.js';
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../../utils/fs.js';
 import { printCheckIssues, type CheckIssue } from '../../session/check.js';
 import {
@@ -32,11 +33,7 @@ export async function setupManualStage(input: {
     throw new Error('transcript_work must be committed before translation_work.');
   }
   const sourcePath = fromSessionRelative(session.dir, sourceStage.segments);
-  const workPath = session.artifact(
-    stage === 'transcript_work' ? 'transcript' : 'translation',
-    'work',
-    'segments.toml'
-  );
+  const workPath = session.resolve(manualSegmentsPath(stage));
 
   if ((await pathExists(workPath)) && !force && session.stage(stage).status !== 'pending') {
     return;
@@ -55,8 +52,7 @@ export async function setupManualStage(input: {
       requireZh: false
     });
   }
-  session.setStage(stage, {
-    ...session.stage(stage),
+  session.updateStage(stage, {
     status: 'waiting',
     source_segments: toSessionRelative(session.dir, sourcePath),
     segments: toSessionRelative(session.dir, workPath),
@@ -100,8 +96,7 @@ export async function commitManualStage(input: {
     throw new Error(errors.map((issue) => issue.message).join('\n'));
   }
 
-  session.setStage(stage, {
-    ...state,
+  session.updateStage(stage, {
     status: 'committed',
     segments_sha256: await sha256File(segmentsPath),
     committed_at: new Date().toISOString(),

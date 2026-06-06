@@ -13,11 +13,12 @@ import {
   splitSegment,
   type SegmentEditStage
 } from './edit.js';
-import { listSegments } from './list.js';
+import { SEGMENT_ISSUE_FILTERS, listSegments } from './list.js';
 import type { SegmentIssueFilter } from './list.js';
 import { prepareSegmentOutput, printSegments } from './output.js';
 
 type RajioApp = ReturnType<typeof breadc>;
+const segmentIssuesHelp = SEGMENT_ISSUE_FILTERS.join(',');
 
 export function registerSegmentCommands(app: RajioApp): void {
   app
@@ -38,13 +39,9 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--end <seconds>', 'list segments whose start time is before this time', {
       cast: castNumber
     })
-    .option(
-      '--issues <issues>',
-      'filter by issue types: invalid-time,overlap,long,fragment,empty-zh',
-      {
-        cast: castIssues
-      }
-    )
+    .option('--issues <issues>', `filter by issue types: ${segmentIssuesHelp}`, {
+      cast: castIssues
+    })
     .option('--json', 'print JSON output')
     .action(async (options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
@@ -132,7 +129,7 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
-    .option('--at <seconds>', 'split time in seconds', { cast: castRequiredNumber })
+    .option('--at <seconds>', 'split time in seconds', { cast: castNumber })
     .option('--id1 <id>', 'first segment id')
     .option('--id2 <id>', 'second segment id')
     .option('--ja1 <text>', 'first Japanese subtitle text')
@@ -273,23 +270,13 @@ function castIssues(value: string | undefined): SegmentIssueFilter[] | undefined
     .split(',')
     .map((issue) => issue.trim())
     .filter(Boolean);
-  const allowed = new Set(['invalid-time', 'overlap', 'long', 'fragment', 'empty-zh']);
+  const allowed = new Set<string>(SEGMENT_ISSUE_FILTERS);
   for (const issue of issues) {
     if (!allowed.has(issue)) {
-      throw new Error(
-        '--issues must be a comma-separated list of invalid-time, overlap, long, fragment, empty-zh.'
-      );
+      throw new Error(`--issues must be a comma-separated list of ${segmentIssuesHelp}.`);
     }
   }
   return issues as SegmentIssueFilter[];
-}
-
-function castRequiredNumber(value: string | undefined): number {
-  const number = castNumber(value);
-  if (number === undefined) {
-    throw new Error('number is required.');
-  }
-  return number;
 }
 
 function requireOption(value: string | undefined, name: string): string {

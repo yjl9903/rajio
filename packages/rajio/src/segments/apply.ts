@@ -2,7 +2,14 @@ import { parse } from 'smol-toml';
 import { z } from 'zod';
 
 import type { Segment, SegmentsFile } from '../types.js';
-import { deleteSegment, editSegment } from './edit.js';
+import {
+  cloneSegment,
+  deleteSegment,
+  editSegment,
+  findSegment,
+  findSegmentIndex,
+  mergeSpeakerLabels
+} from './edit.js';
 
 const SPLIT_TIME_EPSILON = 1e-3;
 
@@ -161,7 +168,7 @@ function applyMerge(
     id: merge.id,
     start: first.start,
     end: last.end,
-    speaker: merge.speaker ?? mergeSpeakers(sources),
+    speaker: merge.speaker ?? mergeSpeakerLabels(...sources.map((segment) => segment.speaker)),
     ja: merge.ja
   };
   if (merge.zh !== undefined) {
@@ -229,43 +236,10 @@ function assertUniqueIds(ids: string[], message: string): void {
   }
 }
 
-function findSegmentIndex(file: SegmentsFile, id: string): number {
-  const index = file.segments.findIndex((segment) => segment.id === id);
-  if (index === -1) {
-    throw new Error(`segment not found: ${id}`);
-  }
-  return index;
-}
-
-function findSegment(file: SegmentsFile, id: string): Segment {
-  return file.segments[findSegmentIndex(file, id)]!;
-}
-
 function cloneSegmentsFile(file: SegmentsFile): SegmentsFile {
   return {
     ...file,
     source: { ...file.source },
     segments: file.segments.map(cloneSegment)
   };
-}
-
-function cloneSegment(segment: Segment): Segment {
-  const next = { ...segment };
-  if (segment.flags) {
-    next.flags = [...segment.flags];
-  }
-  return next;
-}
-
-function mergeSpeakers(segments: Segment[]): string {
-  return Array.from(new Set(segments.flatMap((segment) => splitSpeakers(segment.speaker)))).join(
-    ','
-  );
-}
-
-function splitSpeakers(value: string): string[] {
-  return value
-    .split(',')
-    .map((part) => part.trim())
-    .filter(Boolean);
 }

@@ -6,25 +6,11 @@ import type { ConsolaInstance } from 'consola';
 import { fromSessionRelative, pathExists, sha256File } from '../utils/fs.js';
 import type { Session } from './index.js';
 import { readSegmentsFile, validateSegments } from '../segments/index.js';
-import {
-  STAGES,
-  type Segment,
-  type SessionAudioChunk,
-  type StageName,
-  type StageStatus
-} from '../types.js';
+import { STAGES, STAGE_STATUSES, type Segment, type StageName, type StageState } from '../types.js';
 import { taggedLogger } from '../utils/logger.js';
 
-const STAGE_STATUSES = new Set<StageStatus>([
-  'pending',
-  'running',
-  'done',
-  'waiting',
-  'committed',
-  'dirty',
-  'failed'
-]);
 const checkLogger = taggedLogger('check');
+const VALID_STAGE_STATUSES = new Set(STAGE_STATUSES);
 
 export interface CheckIssue {
   file: string;
@@ -209,7 +195,7 @@ async function checkSession(
       });
       continue;
     }
-    if (!STAGE_STATUSES.has(stageState.status)) {
+    if (!VALID_STAGE_STATUSES.has(stageState.status)) {
       issues.push({
         file: session.path,
         stage,
@@ -247,7 +233,7 @@ async function checkSession(
         });
         continue;
       }
-      const chunks = normalizeSessionAudioChunks(stageState.chunks);
+      const chunks = session.audioChunks();
       const expectedCount = Number(stageState.chunk_count ?? chunks.length);
       if (expectedCount > 0 && expectedCount !== chunks.length) {
         issues.push({
@@ -304,43 +290,13 @@ async function checkSession(
   }
 }
 
-function shouldValidateAudioChunks(stageState: Record<string, unknown>): boolean {
+function shouldValidateAudioChunks(stageState: StageState): boolean {
   return (
     Array.isArray(stageState.chunks) ||
     typeof stageState.audio === 'string' ||
     typeof stageState.chunks_dir === 'string' ||
     typeof stageState.chunk_count === 'number'
   );
-}
-
-function normalizeSessionAudioChunks(value: unknown): SessionAudioChunk[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  const chunks: SessionAudioChunk[] = [];
-  for (const item of value) {
-    const chunk = item as Partial<SessionAudioChunk>;
-    const start = Number(chunk.start);
-    const end = Number(chunk.end);
-    if (
-      typeof chunk.audio !== 'string' ||
-      !Number.isFinite(start) ||
-      !Number.isFinite(end) ||
-      !Number.isFinite(chunk.size ?? NaN) ||
-      typeof chunk.sha256 !== 'string' ||
-      end < start
-    ) {
-      return [];
-    }
-    chunks.push({
-      audio: chunk.audio,
-      start,
-      end,
-      size: chunk.size as number,
-      sha256: chunk.sha256
-    });
-  }
-  return chunks;
 }
 
 async function checkSegments(

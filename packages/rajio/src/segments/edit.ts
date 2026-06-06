@@ -164,7 +164,7 @@ export function mergeSegments(
     id: input.id,
     start: first.start,
     end: second.end,
-    speaker: input.speaker ?? mergeSpeakers(first.speaker, second.speaker),
+    speaker: input.speaker ?? mergeSpeakerLabels(first.speaker, second.speaker),
     ja: input.ja
   };
   if (input.zh !== undefined) {
@@ -199,11 +199,11 @@ function resolveManualStage(
   throw new Error('current stage is not manual; pass --stage transcript or --stage translation.');
 }
 
-function findSegment(file: SegmentsFile, id: string): Segment {
+export function findSegment(file: SegmentsFile, id: string): Segment {
   return file.segments[findSegmentIndex(file, id)]!;
 }
 
-function findSegmentIndex(file: SegmentsFile, id: string): number {
+export function findSegmentIndex(file: SegmentsFile, id: string): number {
   const index = file.segments.findIndex((segment) => segment.id === id);
   if (index === -1) {
     throw new Error(`segment not found: ${id}`);
@@ -222,11 +222,19 @@ function assertAvailableId(file: SegmentsFile, id: string, ...allowedExistingIds
   }
 }
 
-function mergeSpeakers(first: string, second: string): string {
-  return Array.from(new Set([...splitSpeakers(first), ...splitSpeakers(second)])).join(',');
+export function cloneSegment(segment: Segment): Segment {
+  const next = { ...segment };
+  if (segment.flags) {
+    next.flags = [...segment.flags];
+  }
+  return next;
 }
 
-function splitSpeakers(value: string): string[] {
+export function mergeSpeakerLabels(...values: string[]): string {
+  return Array.from(new Set(values.flatMap(splitSpeakerLabels))).join(',');
+}
+
+function splitSpeakerLabels(value: string): string[] {
   return value
     .split(',')
     .map((part) => part.trim())

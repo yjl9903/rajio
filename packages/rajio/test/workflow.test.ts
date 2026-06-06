@@ -330,7 +330,7 @@ describe('session workflow', () => {
   it('logs export output paths once when export completes', async () => {
     const dir = await preparedCompleteSession();
     const session = await Session.loadOrCreate(dir);
-    session.setStage('export', { status: 'pending' });
+    session.state.stages.export = { status: 'pending' };
     await session.save();
     const logger = { success: vi.fn(), info: vi.fn() };
 
