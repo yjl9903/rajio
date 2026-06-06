@@ -2,7 +2,13 @@
   "name": "rajio",
   "version": "0.0.0",
   "description": "",
-  "keywords": [],
+  "keywords": [
+    "rajio",
+    "transcription",
+    "translation",
+    "japanese",
+    "agent"
+  ],
   "homepage": "https://github.com/yjl9903/rajio#readme",
   "bugs": {
     "url": "https://github.com/yjl9903/rajio/issues"
@@ -37,7 +43,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "breadc": "1.0.0-beta.15",
+    "@openai/codex-sdk": "0.137.0",
+    "breadc": "1.0.0-beta.16",
+    "consola": "3.4.2",
     "dotenv": "17.4.2",
     "execa": "9.6.1",
     "gray-matter": "4.0.3",

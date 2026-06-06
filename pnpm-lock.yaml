@@ -38,9 +38,15 @@ importers:
 
   packages/rajio:
     dependencies:
+      '@openai/codex-sdk':
+        specifier: 0.137.0
+        version: 0.137.0
       breadc:
-        specifier: 1.0.0-beta.15
-        version: 1.0.0-beta.15
+        specifier: 1.0.0-beta.16
+        version: 1.0.0-beta.16
+      consola:
+        specifier: 3.4.2
+        version: 3.4.2
       dotenv:
         specifier: 17.4.2
         version: 17.4.2
@@ -88,17 +94,17 @@ packages:
     resolution: {integrity: sha512-JeSVu/m8x/zpp4CLjYHVNXuhEyOkhPXuxM8YOXjh6L4LlvQNKuUNOTo5KdBuKAcTDHw8DquToTaEkhsBqPXOaA==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@breadc/color@1.0.0-beta.15':
-    resolution: {integrity: sha512-+MsvbAa/FItcwQNwnI8btpsOkhl5C1ls51doerSVS3bXgBovQ/0n0hIW6U1RkPbqQQIajHpFMXrjA5A/qwBrJg==}
+  '@breadc/color@1.0.0-beta.16':
+    resolution: {integrity: sha512-XgneHnNbxruF6DT6MqzE5VyE6qiWfliGkUgJupjPBwP1sjclzdEHvudjpxSV48h7sFMWQacf8M3UqtFZ7+4aYQ==}
 
-  '@breadc/core@1.0.0-beta.15':
-    resolution: {integrity: sha512-nLVdjVVZrhqJ0JDNn9uMsQFVcseBknTdmyXj4UOi7EnleN0YT1p3ofs1sjYx7HB5Kd35l0XtX2CAQ1Qom31ssQ==}
+  '@breadc/core@1.0.0-beta.16':
+    resolution: {integrity: sha512-a+kdVzSvCdy3lQiqreC+apxEeGKKp42ymVnYCoTYm8h7DK0TNTUfUu1jxKUGqGb5VoRtfosxrhNaKjQ9+9oETQ==}
 
-  '@breadc/death@1.0.0-beta.15':
-    resolution: {integrity: sha512-cerDS3oXK18CtUusg2Jy2hxdYTdz5sk4bGIVZW9nLLPiT7l+ehxMnEjxuYv9GnvBv8olG0NSgbchxlhAPWNZRQ==}
+  '@breadc/death@1.0.0-beta.16':
+    resolution: {integrity: sha512-5NXDjYi03fSqdPD1XtHIgUXAgd6D6a+KfJ9MdhMfbbICG5rXSAr+Pa54fpCurAwDoPOdGJAjcfhLcr17uT0oog==}
 
-  '@breadc/tui@1.0.0-beta.15':
-    resolution: {integrity: sha512-WL7jP+BCecQsLQ4iwv2Y0GswcGuRAwY82axo7+DvuksZqG79gWSTuBHRKOAbnFjLf3KOyR1c4wIJS/5QP1GhbA==}
+  '@breadc/tui@1.0.0-beta.16':
+    resolution: {integrity: sha512-YYTbonrN6WoRw8YIeBfC21QLsuei6SEF46rsN6p/V1NBwWjqLeIrS3fmr6AiahgPyChJTl4K4RnmtXtEnfJDVg==}
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -283,6 +289,51 @@ packages:
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
+
+  '@openai/codex-sdk@0.137.0':
+    resolution: {integrity: sha512-KYNY7shsKYOLRNV+kjOoaBaLVHy+FUolHPFraOU4JGeyNR1pORxINTAlwHSxDcuXTibj/3OC6jMGDl7X0q4MUw==}
+    engines: {node: '>=18'}
+
+  '@openai/codex@0.137.0':
+    resolution: {integrity: sha512-1jUsCnzDBwv7Z4VFZajIlsz41fC18qg6d5qK4PEZhiUk0zJHS90/uGBA70aQPUJLTUZShvyKVAANjw6J/D9eYQ==}
+    engines: {node: '>=16'}
+    hasBin: true
+
+  '@openai/codex@0.137.0-darwin-arm64':
+    resolution: {integrity: sha512-YjKmre7DlKslQVhSfocHscgxntZKaZc1LQySKh7q+hNL8jdK+c8nSWSePi583yKFNIxZ8Z/zCkewtjFNvOpQiQ==}
+    engines: {node: '>=16'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@openai/codex@0.137.0-darwin-x64':
+    resolution: {integrity: sha512-zjzrFV80LZby9et44dan82e3cwUd46U7u1LSVXTIz5AUcY4y1KZpAeN6cSLVKMZuOHXTDpi15MUQdRwzdeqIOg==}
+    engines: {node: '>=16'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@openai/codex@0.137.0-linux-arm64':
+    resolution: {integrity: sha512-R3ZZymQQA1qpp6OpowN49XJ4scHwSckq7CjVvgmLv3bIs3X+F0XXK3xPFkC9vs2mX3wPekPi3ONpxx+yPAsJ6Q==}
+    engines: {node: '>=16'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@openai/codex@0.137.0-linux-x64':
+    resolution: {integrity: sha512-n+26MUj8rekbEDUeYTGoD6HXuGS0MmLHn2LOn0i5qTNYIJvXV82B7cCLSTzVKF/RJxRMRl22se9Q0Z035JIVng==}
+    engines: {node: '>=16'}
+    cpu: [x64]
+    os: [linux]
+
+  '@openai/codex@0.137.0-win32-arm64':
+    resolution: {integrity: sha512-Cofktt213TycdQ/v+nAUuwXUBzjMWfA/ZkXyqefyXxDgw0TMtaiM3cgDna3I8YdXnR0PM9AMbx4t7VloJ3ZZYQ==}
+    engines: {node: '>=16'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@openai/codex@0.137.0-win32-x64':
+    resolution: {integrity: sha512-g9qZ9ERrm5OWXMWJOgojYv1kOc5jajTKq37PBMSe56aJfAr9Jk/qBvIOy7LKq3rABdXuz8k+W65PIt2E1hXilw==}
+    engines: {node: '>=16'}
+    cpu: [x64]
+    os: [win32]
 
   '@oxc-project/types@0.132.0':
     resolution: {integrity: sha512-FESMOxil5Se014ui/Eq8fT5uHJo6nIRwH0PfJrZJXs6Gek3ZVFOrpUv3YIZT20m+extU98Hg1Ym72U58rlsxUQ==}
@@ -598,8 +649,8 @@ packages:
   birpc@4.0.0:
     resolution: {integrity: sha512-LShSxJP0KTmd101b6DRyGBj57LZxSDYWKitQNW/mi8GRMvZb078Uf9+pveax1DrVL89vm7mWe+TovdI/UDOuPw==}
 
-  breadc@1.0.0-beta.15:
-    resolution: {integrity: sha512-q2Odd3daDlwDENFv0s1oeVMIrsdXJuMItwo4ejKhL59sCYQmPeI/s+76URas9I6mZQxUbR4S99LyKolcgh3m7w==}
+  breadc@1.0.0-beta.16:
+    resolution: {integrity: sha512-/0TelK4mt/rPPElFevn3X2v97kwKXICGNroYI3iHO7s9xV70At/GJFkQN6W4kVAfqvxONzJ3+LHPb5RBmTtGaQ==}
 
   bumpp@11.1.0:
     resolution: {integrity: sha512-jdwOGMyX8JIqpQ0N2RMRR87DHZaoJnUtui5lU9LqFfFK5JC0H8qY9uWqXoa+dEWt/K7rOmmsoyiZB8RBM7RPBQ==}
@@ -613,6 +664,10 @@ packages:
   chai@6.2.2:
     resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
     engines: {node: '>=18'}
+
+  consola@3.4.2:
+    resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
+    engines: {node: ^14.18.0 || >=16.10.0}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -1204,17 +1259,17 @@ snapshots:
       '@babel/helper-string-parser': 8.0.0-rc.5
       '@babel/helper-validator-identifier': 8.0.0-rc.5
 
-  '@breadc/color@1.0.0-beta.15': {}
+  '@breadc/color@1.0.0-beta.16': {}
 
-  '@breadc/core@1.0.0-beta.15':
+  '@breadc/core@1.0.0-beta.16':
     dependencies:
-      '@breadc/color': 1.0.0-beta.15
+      '@breadc/color': 1.0.0-beta.16
 
-  '@breadc/death@1.0.0-beta.15': {}
+  '@breadc/death@1.0.0-beta.16': {}
 
-  '@breadc/tui@1.0.0-beta.15':
+  '@breadc/tui@1.0.0-beta.16':
     dependencies:
-      '@breadc/color': 1.0.0-beta.15
+      '@breadc/color': 1.0.0-beta.16
       get-east-asian-width: 1.6.0
       std-env: 4.1.0
       strip-ansi: 7.2.0
@@ -1332,6 +1387,37 @@ snapshots:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
       '@tybys/wasm-util': 0.10.2
+    optional: true
+
+  '@openai/codex-sdk@0.137.0':
+    dependencies:
+      '@openai/codex': 0.137.0
+
+  '@openai/codex@0.137.0':
+    optionalDependencies:
+      '@openai/codex-darwin-arm64': '@openai/codex@0.137.0-darwin-arm64'
+      '@openai/codex-darwin-x64': '@openai/codex@0.137.0-darwin-x64'
+      '@openai/codex-linux-arm64': '@openai/codex@0.137.0-linux-arm64'
+      '@openai/codex-linux-x64': '@openai/codex@0.137.0-linux-x64'
+      '@openai/codex-win32-arm64': '@openai/codex@0.137.0-win32-arm64'
+      '@openai/codex-win32-x64': '@openai/codex@0.137.0-win32-x64'
+
+  '@openai/codex@0.137.0-darwin-arm64':
+    optional: true
+
+  '@openai/codex@0.137.0-darwin-x64':
+    optional: true
+
+  '@openai/codex@0.137.0-linux-arm64':
+    optional: true
+
+  '@openai/codex@0.137.0-linux-x64':
+    optional: true
+
+  '@openai/codex@0.137.0-win32-arm64':
+    optional: true
+
+  '@openai/codex@0.137.0-win32-x64':
     optional: true
 
   '@oxc-project/types@0.132.0': {}
@@ -1547,12 +1633,12 @@ snapshots:
 
   birpc@4.0.0: {}
 
-  breadc@1.0.0-beta.15:
+  breadc@1.0.0-beta.16:
     dependencies:
-      '@breadc/color': 1.0.0-beta.15
-      '@breadc/core': 1.0.0-beta.15
-      '@breadc/death': 1.0.0-beta.15
-      '@breadc/tui': 1.0.0-beta.15
+      '@breadc/color': 1.0.0-beta.16
+      '@breadc/core': 1.0.0-beta.16
+      '@breadc/death': 1.0.0-beta.16
+      '@breadc/tui': 1.0.0-beta.16
 
   bumpp@11.1.0:
     dependencies:
@@ -1569,6 +1655,8 @@ snapshots:
   cac@7.0.0: {}
 
   chai@6.2.2: {}
+
+  consola@3.4.2: {}
 
   convert-source-map@2.0.0: {}
 

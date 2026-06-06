@@ -1,3 +1,1 @@
-export function hello() {
-  return 'world';
-}
+export { Session } from './session/index.js';
