@@ -1,0 +1,88 @@
+schema_version = 1
+session_id = "20260606T161730-7af7c63a"
+created_at = "2026-06-06T16:17:30.294Z"
+updated_at = "2026-06-06T17:27:58.060Z"
+current_stage = "export"
+
+[input]
+description = "description.md"
+media = "video.mp4"
+media_sha256 = "9e5b8c99459473f198b8d284f4539cf1325d6ce34c27b3f3909517a343da2fab"
+
+[stages.audio]
+status = "done"
+started_at = "2026-06-06T16:17:30.297Z"
+metadata = "audio/metadata.json"
+audio = "audio/extracted.m4a"
+chunks_dir = "audio/chunks"
+chunk_count = 4
+chunk_max_seconds = 1350
+chunk_target_seconds = 600
+chunk_boundary = "near_silence_or_time"
+media_sha256 = "9e5b8c99459473f198b8d284f4539cf1325d6ce34c27b3f3909517a343da2fab"
+completed_at = "2026-06-06T16:17:58.806Z"
+
+[[stages.audio.chunks]]
+audio = "audio/chunks/chunk-000.m4a"
+start = 0
+end = 600
+size = 5314889
+sha256 = "27e60f9dd538477e0fc22cb468f42e3a489a780b7886bff28f9305ca9355a899"
+
+[[stages.audio.chunks]]
+audio = "audio/chunks/chunk-001.m4a"
+start = 600
+end = 1214.248333
+size = 5466927
+sha256 = "ab4864b4dde147959a8e7a117b684cb7be8546dc1f678b96f38d4a4fd43e4009"
+
+[[stages.audio.chunks]]
+audio = "audio/chunks/chunk-002.m4a"
+start = 1214.248333
+end = 1826.325552
+size = 5457981
+sha256 = "757398d1367131cee1989dc47a0ca8c70cd3034192eaff30994af1f8ce069a33"
+
+[[stages.audio.chunks]]
+audio = "audio/chunks/chunk-003.m4a"
+start = 1826.325552
+end = 2397.397
+size = 5084735
+sha256 = "ce1bedc9eb945460a3eb411eee405390e11d6dfaee16398345ba62d0000b86cb"
+
+[stages.transcript_raw]
+status = "done"
+started_at = "2026-06-06T16:17:58.809Z"
+input_audio = "audio/extracted.m4a"
+chunks_dir = "transcript/raw/chunks"
+chunk_count = 4
+chunk_concurrency = 5
+segments = "transcript/raw/segments.toml"
+segments_sha256 = "5457037228f2187e6c646573292b55f811d66908487e6e616d240bea027fe37d"
+completed_at = "2026-06-06T16:21:22.161Z"
+
+[stages.transcript_work]
+status = "committed"
+source_segments = "transcript/raw/segments.toml"
+segments = "transcript/work/segments.toml"
+started_at = "2026-06-06T16:21:22.178Z"
+segments_sha256 = "c8206b8bf22f10ec629da99117d1d825aba58c757ac22853728211d153194dc8"
+committed_at = "2026-06-06T16:28:57.330Z"
+completed_at = "2026-06-06T16:28:57.330Z"
+
+[stages.translation_work]
+status = "committed"
+source_segments = "transcript/work/segments.toml"
+segments = "translation/work/segments.toml"
+started_at = "2026-06-06T16:28:57.340Z"
+segments_sha256 = "54c7fa530790f49d52c852831d8119a6faa327401d57cf3f70cb727d5c4019ca"
+committed_at = "2026-06-06T17:27:52.164Z"
+completed_at = "2026-06-06T17:27:52.164Z"
+
+[stages.export]
+status = "done"
+started_at = "2026-06-06T17:27:58.038Z"
+ja_srt = "output/【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回.ja.srt"
+zh_srt = "output/【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回.zh.srt"
+bilingual_ass = "output/【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回.ja-zh.ass"
+completed_at = "2026-06-06T17:27:58.060Z"
