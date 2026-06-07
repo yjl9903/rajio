@@ -54,10 +54,9 @@ export async function runTranscriptRawStage(input: {
   session: Session;
   runtime: RuntimeConfig;
   deps: StageRunnerDeps;
-  force: boolean;
   resetCheckpoints?: boolean;
 }): Promise<void> {
-  const { session, runtime, deps, force, resetCheckpoints = false } = input;
+  const { session, runtime, deps, resetCheckpoints = false } = input;
   const audio = session.stage('audio').audio;
   if (typeof audio !== 'string') {
     throw new Error('audio stage must produce an audio path before transcription.');
@@ -78,12 +77,10 @@ export async function runTranscriptRawStage(input: {
     runtime,
     chunkResultsDir,
     audioInputs,
-    transcribe,
-    force
+    transcribe
   });
   const segments = mergeTranscriptChunks({
     chunks,
-    mediaPath: session.mediaPath,
     generatedAt: new Date().toISOString()
   });
   parseSegments(segments);
@@ -169,7 +166,6 @@ async function transcribeChunks(input: {
   chunkResultsDir: string;
   audioInputs: AudioInputChunk[];
   transcribe: NonNullable<StageRunnerDeps['transcribe']>;
-  force: boolean;
 }): Promise<TranscriptChunkResult[]> {
   const queue = newQueue(TRANSCRIPTION_CHUNK_CONCURRENCY);
   const tasks = input.audioInputs.map((chunk) =>
@@ -204,11 +200,10 @@ async function transcribeChunk(input: {
   chunk: AudioInputChunk;
   totalChunks: number;
   transcribe: NonNullable<StageRunnerDeps['transcribe']>;
-  force: boolean;
 }): Promise<TranscriptChunkResult> {
   const chunkPath = chunkResultPath(input.chunkResultsDir, input.chunk.index);
   const errorPath = chunkErrorPath(input.chunkResultsDir, input.chunk.index);
-  if (!input.force && (await pathExists(chunkPath))) {
+  if (await pathExists(chunkPath)) {
     const chunkFile = await readRawTranscriptionChunkFile(chunkPath);
     transcriptionLogger.info(
       `chunk ${input.chunk.index + 1} resume ${formatTimeRange(

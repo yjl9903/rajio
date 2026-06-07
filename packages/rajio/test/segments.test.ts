@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { stringWidth } from 'breadc';
@@ -30,7 +30,8 @@ import {
   preparedCompleteSession,
   preparedSession,
   sampleTranscript,
-  sampleTranslation
+  sampleTranslation,
+  tempDir
 } from './helpers.js';
 
 describe('segments validation and subtitle rendering', () => {
@@ -235,9 +236,41 @@ describe('segments validation and subtitle rendering', () => {
     expect(renderAss(file, 'Title')).toContain('Dialogue: 0,0:00:00.00,0:00:01.20');
   });
 
+  it('drops legacy source media when rewriting segments files', async () => {
+    const dir = await tempDir();
+    const filePath = path.join(dir, 'segments.toml');
+    await writeFile(
+      filePath,
+      [
+        'version = 1',
+        '',
+        '[source]',
+        'kind = "transcript"',
+        'media = "/absolute/video.mp4"',
+        'generated_at = "2026-06-06T00:00:00.000Z"',
+        '',
+        '[[segments]]',
+        'id = "1"',
+        'start = 0',
+        'end = 1',
+        'speaker = "A"',
+        'ja = "こんにちは"'
+      ].join('\n')
+    );
+
+    const file = await readSegmentsFile(filePath);
+    expect(file.source).toEqual({
+      kind: 'transcript',
+      generated_at: '2026-06-06T00:00:00.000Z'
+    });
+
+    await writeSegmentsFile(filePath, file);
+
+    expect(await readFile(filePath, 'utf8')).not.toContain('media =');
+  });
+
   it('filters empty transcript segments when merging raw chunks', () => {
     const file = mergeTranscriptChunks({
-      mediaPath: 'video.mp4',
       generatedAt: '2026-06-06T00:00:00.000Z',
       chunks: [
         {
@@ -265,6 +298,10 @@ describe('segments validation and subtitle rendering', () => {
         ja: 'こんにちは'
       }
     ]);
+    expect(file.source).toEqual({
+      kind: 'transcript',
+      generated_at: '2026-06-06T00:00:00.000Z'
+    });
   });
 
   it('pre-cuts long transcript segments for subtitle work', () => {

@@ -34,14 +34,12 @@ export async function transcribeWithOpenAI(input: TranscribeInput): Promise<unkn
 
 export function mergeTranscriptChunks(input: {
   chunks: TranscriptChunkResult[];
-  mediaPath: string;
   generatedAt: string;
 }): SegmentsFile {
   return {
     version: 1,
     source: {
       kind: 'transcript',
-      media: input.mediaPath,
       generated_at: input.generatedAt
     },
     segments: input.chunks.flatMap((chunk) =>

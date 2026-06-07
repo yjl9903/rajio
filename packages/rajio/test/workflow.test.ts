@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Session } from '../src/index.js';
 import { readSegmentsFile, writeSegmentsFile } from '../src/segments/index.js';
 import { checkRajio } from '../src/session/check.js';
+import { sha256File } from '../src/utils/fs.js';
 import { logExportOutputs, runRajio } from '../src/workflow/index.js';
 import {
   baseOptions,
@@ -262,7 +263,7 @@ describe('session workflow', () => {
     await mkdir(path.dirname(filePath), { recursive: true });
     await writeSegmentsFile(filePath, {
       ...sampleTranscript(),
-      source: { kind: 'translation', media: 'video.mp4', generated_at: '2026-06-06T00:00:00.000Z' }
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' }
     });
 
     const session = await Session.loadOrCreate(dir);
@@ -357,5 +358,169 @@ describe('session workflow', () => {
     expect(session.stage('transcript_raw').status).toBe('pending');
     expect(session.stage('translation_work').status).toBe('pending');
     expect(session.stage('export').status).toBe('pending');
+  });
+
+  it('resets to raw transcription and regenerates all chunk checkpoints', async () => {
+    const dir = await preparedCompleteSession();
+    await mkdir(path.join(dir, 'audio/chunks'), { recursive: true });
+    await mkdir(path.join(dir, 'transcript/raw/chunks'), { recursive: true });
+    await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
+    await writeFile(path.join(dir, 'audio/chunks/chunk-000.m4a'), 'audio 0');
+    await writeFile(path.join(dir, 'audio/chunks/chunk-001.m4a'), 'audio 1');
+    await writeFile(
+      path.join(dir, 'transcript/raw/chunks/chunk-000.toml'),
+      [
+        'version = 1',
+        'status = "done"',
+        'chunk_index = 0',
+        'audio = "audio/chunks/chunk-000.m4a"',
+        'start = 0',
+        'end = 1',
+        'model = "old"',
+        'started_at = "2026-06-05T00:00:00.000Z"',
+        'completed_at = "2026-06-05T00:00:00.000Z"',
+        '',
+        '[[response.segments]]',
+        'id = "old"',
+        'start = 0',
+        'end = 0.5',
+        'speaker = "A"',
+        'text = "old checkpoint"'
+      ].join('\n')
+    );
+
+    const firstHash = await sha256File(path.join(dir, 'audio/chunks/chunk-000.m4a'));
+    const secondHash = await sha256File(path.join(dir, 'audio/chunks/chunk-001.m4a'));
+    const session = await Session.loadOrCreate(dir);
+    session.state.stages.audio = {
+      status: 'done',
+      audio: 'audio/extracted.m4a',
+      chunks_dir: 'audio/chunks',
+      chunk_count: 2,
+      chunks: [
+        {
+          audio: 'audio/chunks/chunk-000.m4a',
+          start: 0,
+          end: 1,
+          size: 7,
+          sha256: firstHash
+        },
+        {
+          audio: 'audio/chunks/chunk-001.m4a',
+          start: 1,
+          end: 2,
+          size: 7,
+          sha256: secondHash
+        }
+      ]
+    };
+    await session.save();
+
+    const calls: string[] = [];
+    await runRajio(
+      session,
+      { ...baseOptions, reset: 'transcript_raw' },
+      {
+        transcribe: async ({ audioPath }) => {
+          calls.push(path.basename(audioPath));
+          return {
+            segments: [
+              {
+                id: path.basename(audioPath, '.m4a'),
+                start: 0,
+                end: 0.5,
+                speaker: 'A',
+                text: path.basename(audioPath)
+              }
+            ]
+          };
+        }
+      }
+    );
+
+    expect(calls).toEqual(['chunk-000.m4a', 'chunk-001.m4a']);
+    expect(
+      await readFile(path.join(dir, 'transcript/raw/chunks/chunk-000.toml'), 'utf8')
+    ).toContain('chunk-000.m4a');
+    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).not.toContain(
+      'old checkpoint'
+    );
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.currentStage).toBe('transcript_work');
+    expect(reloaded.stage('audio').status).toBe('done');
+    expect(reloaded.stage('transcript_raw').status).toBe('done');
+    expect(reloaded.stage('transcript_work').status).toBe('waiting');
+    expect(reloaded.stage('translation_work').status).toBe('pending');
+    expect(reloaded.stage('export').status).toBe('pending');
+  });
+
+  it('resets transcript work and regenerates the manual work file', async () => {
+    const dir = await preparedCompleteSession();
+    await writeFile(path.join(dir, 'transcript/work/segments.toml'), 'old work');
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, { ...baseOptions, reset: 'transcript_work' });
+
+    const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(work.segments[0]?.ja).toBe('こんにちは');
+    expect(reloaded.currentStage).toBe('transcript_work');
+    expect(reloaded.stage('transcript_raw').status).toBe('done');
+    expect(reloaded.stage('transcript_work').status).toBe('waiting');
+    expect(reloaded.stage('translation_work').status).toBe('pending');
+    expect(reloaded.stage('export').status).toBe('pending');
+  });
+
+  it('resets translation work and regenerates the translation draft', async () => {
+    const dir = await preparedCompleteSession();
+    await writeFile(path.join(dir, 'translation/work/segments.toml'), 'old translation');
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, { ...baseOptions, reset: 'translation_work' });
+
+    const work = await readSegmentsFile(path.join(dir, 'translation/work/segments.toml'));
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(work.source.kind).toBe('translation');
+    expect(work.segments[0]?.zh).toBeUndefined();
+    expect(reloaded.currentStage).toBe('translation_work');
+    expect(reloaded.stage('transcript_work').status).toBe('committed');
+    expect(reloaded.stage('translation_work').status).toBe('waiting');
+    expect(reloaded.stage('export').status).toBe('pending');
+  });
+
+  it('resets export but retargets dirty translation work before exporting', async () => {
+    const dir = await preparedCompleteSession();
+    const translationPath = path.join(dir, 'translation/work/segments.toml');
+    const translation = await readSegmentsFile(translationPath);
+    await writeSegmentsFile(translationPath, {
+      ...translation,
+      segments: translation.segments.map((segment) => ({ ...segment, zh: `${segment.zh}！` }))
+    });
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, { ...baseOptions, reset: 'export' });
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.currentStage).toBe('translation_work');
+    expect(reloaded.stage('translation_work').status).toBe('dirty');
+    expect(reloaded.stage('export').status).toBe('pending');
+  });
+
+  it('saves media invalidation and rejects reset to a later stage', async () => {
+    const dir = await preparedCompleteSession();
+    await writeFile(path.join(dir, 'video.mp4'), 'replacement media');
+
+    const session = await Session.loadOrCreate(dir);
+    await expect(runRajio(session, { ...baseOptions, reset: 'transcript_raw' })).rejects.toThrow(
+      'Media changed; run from audio before resetting to a later stage.'
+    );
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.currentStage).toBe('audio');
+    expect(reloaded.stage('audio').status).toBe('pending');
+    expect(reloaded.stage('transcript_raw').status).toBe('pending');
+    expect(reloaded.stage('transcript_work').status).toBe('pending');
+    expect(reloaded.stage('translation_work').status).toBe('pending');
+    expect(reloaded.stage('export').status).toBe('pending');
   });
 });

@@ -80,8 +80,7 @@ describe('transcript raw stage', () => {
     await runTranscriptRawStage({
       session,
       runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
-      deps: { transcribe },
-      force: false
+      deps: { transcribe }
     });
 
     expect(maxActive).toBeGreaterThan(1);
@@ -93,13 +92,15 @@ describe('transcript raw stage', () => {
     expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).toContain(
       'ja = "chunk-005.m4a"'
     );
+    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).not.toContain(
+      'media ='
+    );
 
     calls.length = 0;
     await runTranscriptRawStage({
       session,
       runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
-      deps: { transcribe },
-      force: false
+      deps: { transcribe }
     });
     expect(calls).toHaveLength(0);
   });
@@ -152,8 +153,7 @@ describe('transcript raw stage', () => {
             }
           ]
         })
-      },
-      force: false
+      }
     });
 
     const segments = await readSegmentsFile(path.join(dir, 'transcript/raw/segments.toml'));
@@ -183,8 +183,7 @@ describe('transcript raw stage', () => {
           transcribe: async () => {
             throw new Error('should not transcribe');
           }
-        },
-        force: false
+        }
       })
     ).rejects.toThrow('audio stage does not include chunk metadata');
   });
@@ -257,7 +256,6 @@ describe('transcript raw stage', () => {
           };
         }
       },
-      force: false,
       resetCheckpoints: true
     });
 
@@ -304,8 +302,7 @@ describe('transcript raw stage', () => {
           transcribe: async () => {
             throw new Error('temporary ASR failure');
           }
-        },
-        force: false
+        }
       })
     ).rejects.toThrow('temporary ASR failure');
 

@@ -37,7 +37,6 @@ export const segmentsFileSchema = z.object({
   version: z.literal(1),
   source: z.object({
     kind: z.union([z.literal('transcript'), z.literal('translation')]),
-    media: z.string().optional(),
     generated_at: z.string()
   }),
   segments: z.array(segmentSchema)

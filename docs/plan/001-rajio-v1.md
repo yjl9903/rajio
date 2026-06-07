@@ -10,7 +10,8 @@ directory. Execution state lives in
 translation work can be committed to the repository. Final output is `SRT + ASS`.
 
 Core rule: descriptive metadata belongs in `description.md`; execution state belongs in
-`session.toml`. Do not duplicate the same source of truth across both files.
+`session.toml`. The selected media path is recorded in `session.toml` as stable session
+input, while title, URL, publish date, and human/agent context remain in `description.md`.
 
 ## CLI
 
@@ -34,8 +35,11 @@ rajio check [target]
 ```
 
 `check` validates `session.toml` and every `segments.toml` under `transcript/` and
-`translation/`. It is intended for humans and Codex agents to verify basic file shape,
-timeline validity, and session references before committing a manual stage.
+`translation/`. It is intended for humans and Codex agents to verify file shape, session
+references, and editable work before committing a manual stage. Raw ASR output under
+`transcript/raw/segments.toml` is checked for parse/schema validity but not strict subtitle
+quality or timeline cleanup, because those issues are expected to be fixed in
+`transcript/work/segments.toml`.
 
 `<target>` supports:
 
@@ -46,7 +50,9 @@ timeline validity, and session references before committing a manual stage.
 
 Options:
 
-- `--media <path>`: override the media path from markdown/session for this invocation.
+- `--media <path>`: override the media path for this invocation. For a new session, the
+  selected media path is saved in `session.toml`; for an existing session, the saved media
+  path is reused unless `--media` is supplied.
 - `--continue=until-manual|step`: controls automatic progression; default is
   `until-manual`.
 - `--commit`: commit the current manual stage.
@@ -56,8 +62,8 @@ Options:
   With `--agent=false`, transcript proofread and polish can be skipped, but translation
   still stops at `translation_work` because Chinese text must be produced by a human or
   Codex agent.
-- `--force`: allow rerunning a completed automatic stage or overwriting an uncommitted
-  work file.
+- `--reset <stage>`: regenerate from a stage. Valid stages are `audio`,
+  `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
 
 `rajio check` defaults to concise output and summarizes repeated soft subtitle length
 warnings by file and language. Use `rajio check --verbose [target]` to print every warning.
@@ -103,14 +109,14 @@ glossaries, names, fixed translations, reference paths, proofread/polish require
 and notes.
 The CLI does not create dedicated fields for that body content.
 
-`description.md` is the only source of truth for:
+`description.md` is the source of truth for title, original URL, publish date, and
+human/agent context. Its `media` frontmatter is used when selecting the media path for a new
+session.
 
-- Default media path.
-- Title, original URL, and publish date.
-- Human/agent context.
-
-`--media` is only an invocation override. To persistently change the media path, edit
-`description.md`.
+`session.toml` records the selected media path in `[input].media` so directory targets keep
+using the same media even if other media files are later added to the session directory. To
+persistently change an existing session's media, run with `--media <path>` and regenerate from
+`audio` as needed.
 
 ## Session Layout
 
@@ -146,7 +152,8 @@ session/
 - `transcript/raw` is automatic output and should not be edited manually.
 - `transcript/raw/chunks/*.toml` stores raw per-chunk ASR responses and chunk metadata.
   These files are resumable checkpoints: a retry skips existing successful chunk files
-  unless `--force` is used.
+  after a failed transcription. Use `--reset transcript_raw` to start a full new
+  transcription round.
 - `transcript/raw/chunks/*.error.log` stores the timestamp and error text for failed chunk
   requests. Failed chunks do not produce checkpoint TOML and are retried on the next run.
 - `work` is editable by humans or Codex agent and can be committed with the session.
@@ -178,6 +185,7 @@ current_stage = "transcript_work"
 
 [input]
 description = "description.md"
+media = "video.mp4"
 media_sha256 = "..."
 ```
 
@@ -185,10 +193,13 @@ Notes:
 
 - `description` only records the markdown path for context restoration. It does not copy
   frontmatter fields.
+- `media` records the selected media path relative to the session directory. Directory
+  targets restore this path before falling back to description frontmatter or single-media
+  discovery.
 - `media_sha256` records the actual processed media hash for replacement detection.
-  The media path is resolved from `description.md` or the current `--media` override.
-- If a session has no description markdown, `description` is omitted. The media target is
-  used for initialization but not stored as long-lived descriptive metadata.
+  The hash is compared against the restored media path, or the current `--media` override
+  when supplied.
+- If a session has no description markdown, `description` is omitted.
 
 Fixed stages:
 
@@ -295,10 +306,12 @@ Rules:
 `segments.toml` is the only subtitle source:
 
 - Top level: `version`, `source`, `segments`.
+- Source: `kind`, `generated_at`. Media paths are session input and stay in `session.toml`, not
+  `segments.toml`.
 - Segment: `id`, `start`, `end`, `speaker`, `ja`, `zh?`, `notes?`, `flags?`.
 - Time unit is seconds.
 
-Blocking validation:
+Blocking validation for editable/manual subtitle files:
 
 - Invalid TOML shape or segment schema.
 - Invalid time values or adjacent overlaps.
@@ -318,6 +331,9 @@ Warning validation:
 - Japanese or Chinese subtitle line ends with sentence punctuation.
 - Segment duration is too long.
 - Segment may mix speakers or have unnatural splitting.
+
+Raw transcript files are parsed and schema-checked, but strict timing, text, line-length, and
+translation completeness rules are deferred to editable work files.
 
 ## Implementation Notes
 
@@ -339,8 +355,8 @@ Warning validation:
     normalization because both are coupled to the transcription API surface.
   - Codex agent invocation remains shared outside individual steps and is called from
     the manual stage implementation.
-- Subtitle segment parsing, writing, validation, and translation cloning live in the shared
-  top-level `src/segments.ts` module.
+- Subtitle segment parsing, writing, validation, translation cloning, and segment editing
+  helpers live under `src/segments/`.
 - `src/index.ts` is only a reserved package entry and currently exports `Session`.
 - Generic helpers live under `src/utils/`, currently filesystem/path helpers and
   environment-derived runtime configuration.
@@ -356,7 +372,7 @@ Warning validation:
 
 ## Implementation Steps
 
-1. Create this `docs/rajio-v1-plan.md` document.
+1. Create this `docs/plan/001-rajio-v1.md` document.
 2. Implement `Session`, description, env, path/hash, session TOML, and segments modules.
 3. Implement the `breadc` default command and option flow.
 4. Implement `audio`, `transcript_raw`, `transcript_work`, `translation_work`, and
@@ -369,7 +385,7 @@ Warning validation:
 ## Tests
 
 - Target parsing: markdown, directory, media file, ambiguous multiple markdown/media files.
-- CLI option combinations: `--continue`, `--commit`, `--agent`, `--full`, `--force`.
+- CLI option combinations: `--continue`, `--commit`, `--agent`, `--full`, `--reset`.
 - Environment variable reading and priority.
 - `session.toml` creation, restore, stage advancement, dirty hash detection.
 - `segments.toml` schema and timeline validation.

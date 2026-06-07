@@ -6,6 +6,7 @@ import { registerSegmentCommands } from './segments/commands.js';
 import { checkRajio, filterCheckIssues, printCheckIssues } from './session/check.js';
 import { Session } from './session/index.js';
 import type { CliOptions } from './types.js';
+import { STAGES } from './types.js';
 import { taggedLogger, wrapConsoleLogger } from './utils/logger.js';
 import { runRajio } from './workflow/index.js';
 
@@ -31,6 +32,21 @@ app
   })
   .option('--commit', 'commit current manual stage')
   .option('--verbose', 'print every warning instead of summarizing repetitive warnings')
+  .option(
+    '--reset <stage>',
+    'regenerate from stage: audio, transcript_raw, transcript_work, translation_work, or export',
+    {
+      cast: (value) => {
+        if (value === undefined) {
+          return undefined;
+        }
+        if (STAGES.includes(value as (typeof STAGES)[number])) {
+          return value as (typeof STAGES)[number];
+        }
+        throw new Error(`--reset must be one of: ${STAGES.join(', ')}.`);
+      }
+    }
+  )
   .option('--agent <agent>', 'batch automation only, run agent for manual stage: codex or false', {
     cast: (value) => {
       if (value === undefined) {
@@ -46,7 +62,6 @@ app
     }
   })
   .option('--full', 'run all remaining stages automatically')
-  .option('--force', 'rerun or overwrite current stage artifacts')
   .action(async (target, options) => {
     if (!target) {
       throw new Error('target is required.');
@@ -58,7 +73,7 @@ app
       commit: options.commit,
       agent: options.agent,
       full: options.full,
-      force: options.force,
+      reset: options.reset,
       verbose: Boolean(options.verbose)
     };
     const session = await Session.loadOrCreate(target, cliOptions.media);

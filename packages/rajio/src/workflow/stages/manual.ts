@@ -19,9 +19,8 @@ import { taggedLogger } from '../../utils/logger.js';
 export async function setupManualStage(input: {
   session: Session;
   stage: ManualStageName;
-  force: boolean;
 }): Promise<void> {
-  const { session, stage, force } = input;
+  const { session, stage } = input;
   const sourceStage =
     stage === 'transcript_work'
       ? session.stage('transcript_raw')
@@ -35,7 +34,7 @@ export async function setupManualStage(input: {
   const sourcePath = fromSessionRelative(session.dir, sourceStage.segments);
   const workPath = session.resolve(manualSegmentsPath(stage));
 
-  if ((await pathExists(workPath)) && !force && session.stage(stage).status !== 'pending') {
+  if ((await pathExists(workPath)) && session.stage(stage).status !== 'pending') {
     return;
   }
 
@@ -112,7 +111,7 @@ export async function runAgentAndCommit(input: {
 }): Promise<void> {
   const { session, runtime, stage, verbose } = input;
   if (session.stage(stage).status === 'pending') {
-    await setupManualStage({ session, stage, force: false });
+    await setupManualStage({ session, stage });
   }
   const state = session.stage(stage);
   if (typeof state.segments !== 'string') {

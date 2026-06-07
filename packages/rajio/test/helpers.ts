@@ -16,7 +16,6 @@ export const baseOptions: CliOptions = {
   commit: false,
   agent: undefined,
   full: false,
-  force: false,
   verbose: false
 };
 
@@ -131,7 +130,7 @@ export function baseSession(currentStage: SessionState['current_stage']): Sessio
 export function sampleTranscript(): SegmentsFile {
   return {
     version: 1,
-    source: { kind: 'transcript', media: 'video.mp4', generated_at: '2026-06-06T00:00:00.000Z' },
+    source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
     segments: [
       { id: '1', start: 0, end: 1.2, speaker: 'A', ja: 'こんにちは' },
       { id: '2', start: 1.2, end: 2.4, speaker: 'B', ja: 'さようなら' }
@@ -142,7 +141,7 @@ export function sampleTranscript(): SegmentsFile {
 export function sampleTranslation(): SegmentsFile {
   return {
     ...sampleTranscript(),
-    source: { kind: 'translation', media: 'video.mp4', generated_at: '2026-06-06T00:00:00.000Z' },
+    source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
     segments: sampleTranscript().segments.map((segment) => ({
       ...segment,
       zh: segment.id === '1' ? '你好' : '再见'

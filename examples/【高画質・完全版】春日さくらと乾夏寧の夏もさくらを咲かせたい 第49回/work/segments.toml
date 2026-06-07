@@ -2,7 +2,6 @@ version = 1
 
 [source]
 kind = "translation"
-media = "video.mp4"
 generated_at = "2026-06-06T16:28:57.335Z"
 
 [[segments]]

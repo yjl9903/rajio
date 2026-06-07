@@ -63,9 +63,8 @@ The package exposes a local CLI for your agent to call:
 
 ```bash
 npm i -g rajio
-rajio doctor /path/to/session
-rajio /path/to/session
-rajio check /path/to/session
+
+rajio --help
 ```
 
 ## License

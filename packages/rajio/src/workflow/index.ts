@@ -8,7 +8,7 @@ import type {
   StageName,
   StageRunnerDeps
 } from '../types.js';
-import { MANUAL_STAGES } from '../types.js';
+import { MANUAL_STAGES, STAGES } from '../types.js';
 import { isManualStage, manualSegmentsPath, nextStage } from './stages.js';
 import { runAudioStage } from './stages/audio.js';
 import { runExportStage } from './stages/export.js';
@@ -37,7 +37,14 @@ export async function runRajio(
   deps: WorkflowDeps = {}
 ): Promise<void> {
   const runtime = await readRuntimeConfig({ cwd: process.cwd(), sessionDir: session.dir });
-  await session.refreshMediaState();
+  const mediaInvalidated = await session.refreshMediaState();
+  if (mediaInvalidated && options.reset && options.reset !== 'audio') {
+    await session.save();
+    throw new Error('Media changed; run from audio before resetting to a later stage.');
+  }
+  if (options.reset) {
+    resetSessionToStage(session, options.reset);
+  }
   await session.refreshDirtyState();
   retargetDirtyManualStage(session);
   await session.save();
@@ -72,7 +79,7 @@ async function continueAfterAction(
     }
     const stage = session.currentStage;
 
-    if (stage === 'export' && session.stage('export').status === 'done' && !options.force) {
+    if (stage === 'export' && session.stage('export').status === 'done') {
       workflowLogger.success('session is already complete.');
       logExportOutputs(session, deps.outputLogger);
       return;
@@ -87,7 +94,7 @@ async function continueAfterAction(
       continue;
     }
 
-    await runAutomaticStage(session, runtime, stage, options.force, deps);
+    await runAutomaticStage(session, runtime, stage, deps);
     steps += 1;
 
     if (stage === 'export') {
@@ -99,7 +106,7 @@ async function continueAfterAction(
       options.continue === 'until-manual' &&
       isManualStage(session.currentStage)
     ) {
-      await setupManualStage({ session, stage: session.currentStage, force: options.force });
+      await setupManualStage({ session, stage: session.currentStage });
       taggedLogger(session.currentStage).info(`waiting for manual stage ${session.currentStage}.`);
       return;
     }
@@ -122,7 +129,7 @@ async function handleManualStage(
   options: CliOptions
 ): Promise<void> {
   if (session.stage(stage).status === 'pending') {
-    await setupManualStage({ session, stage, force: options.force });
+    await setupManualStage({ session, stage });
   }
 
   if (options.full) {
@@ -150,10 +157,9 @@ async function runAutomaticStage(
   session: Session,
   runtime: RuntimeConfig,
   stage: StageName,
-  force: boolean,
   deps: WorkflowDeps
 ): Promise<void> {
-  if (session.stage(stage).status === 'done' && !force) {
+  if (session.stage(stage).status === 'done') {
     await advancePastStage(session, stage);
     return;
   }
@@ -171,7 +177,6 @@ async function runAutomaticStage(
         session,
         runtime,
         deps,
-        force,
         resetCheckpoints: resetTranscriptCheckpoints
       });
     } else if (stage === 'export') {
@@ -193,6 +198,14 @@ async function runAutomaticStage(
 async function advancePastStage(session: Session, stage: StageName): Promise<void> {
   session.currentStage = nextStage(stage);
   await session.save();
+}
+
+export function resetSessionToStage(session: Session, stage: StageName): void {
+  const start = STAGES.indexOf(stage);
+  for (const downstreamStage of STAGES.slice(start)) {
+    session.state.stages[downstreamStage] = { status: 'pending' };
+  }
+  session.currentStage = stage;
 }
 
 export function exportOutputPaths(session: Session): { label: string; path: string }[] {

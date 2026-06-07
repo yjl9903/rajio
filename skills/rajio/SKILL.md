@@ -184,7 +184,9 @@ Useful options:
 - `--continue=step`: run one automatic stage.
 - `--commit`: commit the current manual stage after validating its work file.
 - `--media <path>`: invocation-only media override.
-- `--force`: rerun or overwrite current-stage artifacts.
+- `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
+  `translation_work`, or `export`. Use it when the user asks to retry audio extraction,
+  rerun transcription generation, regenerate editable work files, or rerun export.
 - `--agent=codex`: batch-only automation escape hatch. Do not use for ordinary manual
   single-video stages.
 
@@ -434,6 +436,11 @@ Before reporting completion:
   `--commit` only after it passes manual review and validation.
 - If transcription fails, inspect `transcript/raw/chunks/*.error.log`, check credentials,
   provider access, media path, ffmpeg, and ffprobe, then retry. Completed chunk checkpoints
-  are reused unless `--force` is used.
+  are reused on retry; use `--reset transcript_raw` to start a full new transcription round.
+- If the user asks to retry an earlier workflow step, run the default command with
+  `--reset`: `--reset audio` retries audio extraction and chunking, `--reset transcript_raw`
+  reruns transcription generation, `--reset transcript_work` regenerates the transcript
+  work file, `--reset translation_work` regenerates the translation draft, and
+  `--reset export` reruns subtitle export.
 - If translation reveals a transcript problem, fix and recommit `transcript_work`, then
   regenerate or reconcile `translation/work/segments.toml`.

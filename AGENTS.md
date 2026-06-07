@@ -1,50 +1,62 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+## Project Map
 
-This is a pnpm/Turbo TypeScript workspace. The main package lives in `packages/rajio`.
-Source files are under `packages/rajio/src`, grouped by feature: `session/` for session
-state and validation, `workflow/` for processing stages, `utils/` for shared helpers, and
-`cli.ts` for the command-line entrypoint. Tests are in `packages/rajio/test`. Build output goes
-to `packages/rajio/dist` and should not be edited directly. Repository-level docs and plans live
-in `docs/`, helper shell scripts in `scripts/`, and the installable agent skill in `skills/rajio/`.
+This is a pnpm/Turbo TypeScript workspace. The main package is `packages/rajio`.
 
-## Build, Test, and Development Commands
+- `packages/rajio/src`: source code
+  - `cli.ts`: CLI entrypoint
+  - `session/`: session state and validation
+  - `workflow/`: processing stages
+  - `utils/`: shared helpers
+- `packages/rajio/test`: Vitest tests
+- `packages/rajio/dist`: generated build output; do not edit
+- `docs/`: repository docs
+- `docs/plan/`: implementation plans and design notes
+- `scripts/`: helper scripts
+- `skills/rajio/`: installable agent skill
 
-- `pnpm install`: install workspace dependencies. Use Node `>=24`; CI currently runs Node `26.3.0`.
-- `pnpm build`: run Turbo builds; `packages/rajio` is bundled by `tsdown`.
-- `pnpm test:ci`: run typecheck-dependent CI tests with Vitest in non-watch mode.
+## Planning
+
+Before planned implementation work, check `docs/plan/` and related docs for existing decisions.
+Save new agreed plans under `docs/plan/` with numbered kebab-case names, for example
+`001-rajio-v1.md`. If behavior changes during implementation, update the plan instead of leaving it
+stale.
+
+## Commands
+
+- `pnpm install`: install dependencies. Use Node `>=24`; CI uses Node `26.3.0`.
+- `pnpm build`: run Turbo builds.
+- `pnpm test:ci`: run CI tests.
 - `pnpm typecheck`: run `tsc --noEmit` through Turbo.
-- `pnpm format`: format TypeScript and JavaScript files with Prettier.
-- `pnpm rajio <args>`: run the local CLI from `packages/rajio/src/cli.ts` via `tsx`.
+- `pnpm format`: format with Prettier.
+- `pnpm rajio <args>`: run the local CLI through `tsx`.
 
-For package-scoped work, commands such as `pnpm --filter rajio test` and
-`pnpm --filter rajio build` are appropriate.
+For package-scoped work, prefer `pnpm --filter rajio test` and `pnpm --filter rajio build`.
 
-## Coding Style & Naming Conventions
+## Code Style
 
 Use strict TypeScript and ESM imports. Keep source files as `.ts`; use `.js` extensions in local
-relative imports where required by the existing TypeScript bundler setup. Prettier is authoritative:
-semicolons, single quotes, 100-character print width, and no trailing commas. Prefer descriptive
-camelCase for functions and variables, PascalCase for classes and types, and kebab-case for CLI or
-filesystem-facing names.
+relative imports where the existing setup requires them. Prettier is authoritative: semicolons,
+single quotes, 100-character print width, and no trailing commas.
 
-## Testing Guidelines
+Use descriptive `camelCase` for values and functions, `PascalCase` for classes and types, and
+`kebab-case` for CLI or filesystem-facing names.
 
-Vitest is the test framework. Add focused tests under `packages/rajio/test`, using `describe` blocks
-that match the behavior being exercised, for example `describe('session workflow', ...)`. Prefer
-temporary directories and explicit fixtures over relying on local machine state. Run `pnpm test:ci`
-before opening a PR; use `pnpm --filter rajio test` while iterating.
+## Tests
 
-## Commit & Pull Request Guidelines
+Use Vitest. Add focused tests under `packages/rajio/test`, with `describe` names matching the
+behavior under test. Prefer temporary directories and explicit fixtures over local machine state.
+Run `pnpm test:ci` before a PR; use `pnpm --filter rajio test` while iterating.
 
-Recent history uses conventional-style prefixes such as `feat:` and `chore:`. Keep commit subjects
-short, imperative, and scoped to one change. Pull requests should include a brief summary, the
-commands run for verification, and notes about CLI behavior, generated files, or workflow/session
-format changes. Link relevant issues when available.
+## Git And PRs
 
-## Security & Configuration Tips
+Use short conventional-style commit subjects such as `feat:` or `chore:`. Keep each commit scoped to
+one change. PRs should include a summary, verification commands, and notes for CLI behavior,
+generated files, or workflow/session format changes.
 
-Do not commit secrets, media files, or generated session outputs. Runtime configuration is read from
-`.env` files and environment variables such as `OPENAI_API_KEY`, `OPENAI_BASE_URL`,
-`RAJIO_FFMPEG_BIN`, and `RAJIO_FFPROBE_BIN`; keep local overrides out of version control.
+## Security
+
+Do not commit secrets, media files, generated session outputs, or local `.env` overrides. Runtime
+configuration may come from `.env`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `RAJIO_FFMPEG_BIN`, and
+`RAJIO_FFPROBE_BIN`.

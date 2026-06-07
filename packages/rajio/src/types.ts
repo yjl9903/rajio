@@ -79,7 +79,7 @@ export interface CliOptions {
   commit: boolean;
   agent: 'codex' | false | undefined;
   full: boolean;
-  force: boolean;
+  reset?: StageName;
   verbose: boolean;
 }
 
@@ -98,7 +98,6 @@ export interface SegmentsFile {
   version: 1;
   source: {
     kind: 'transcript' | 'translation';
-    media?: string;
     generated_at: string;
   };
   segments: Segment[];

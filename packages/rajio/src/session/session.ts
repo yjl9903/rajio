@@ -174,7 +174,7 @@ export class Session {
     }
   }
 
-  async refreshMediaState(): Promise<void> {
+  async refreshMediaState(): Promise<boolean> {
     const expectedHash =
       typeof this.state.input.media_sha256 === 'string'
         ? this.state.input.media_sha256
@@ -182,12 +182,12 @@ export class Session {
           ? this.stage('audio').media_sha256
           : undefined;
     if (!expectedHash) {
-      return;
+      return false;
     }
 
     const currentHash = await sha256File(this.mediaPath);
     if (currentHash === expectedHash) {
-      return;
+      return false;
     }
 
     this.state.input.media_sha256 = undefined;
@@ -195,6 +195,7 @@ export class Session {
       this.state.stages[stage] = { status: 'pending' };
     }
     this.state.current_stage = 'audio';
+    return true;
   }
 
   markRunning(stage: StageName): void {
