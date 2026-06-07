@@ -195,7 +195,7 @@ describe('segments validation and subtitle rendering', () => {
     );
   });
 
-  it('formats structured JSON check output and filters issues', () => {
+  it('formats summary JSON check output by default and filters issues', () => {
     const issues = [
       {
         file: 'transcript/work/segments.toml',
@@ -221,11 +221,54 @@ describe('segments validation and subtitle rendering', () => {
     const json = JSON.parse(formatCheckJson(issues)) as {
       ok: boolean;
       counts: { errors: number; warnings: number };
-      issues: Array<{ level: string; code: string }>;
+      summary: Array<{ level: string; code: string }>;
+      issues?: Array<{ level: string; code: string }>;
     };
     expect(json.ok).toBe(false);
     expect(json.counts).toEqual({ errors: 1, warnings: 1 });
-    expect(json.issues.map((issue) => issue.code)).toEqual(['empty_zh', 'ja_terminal_punctuation']);
+    expect(json.summary.map((summary) => summary.code)).toEqual([
+      'empty_zh',
+      'ja_terminal_punctuation'
+    ]);
+    expect(json).not.toHaveProperty('issues');
+  });
+
+  it('formats full check issues only for verbose JSON output', () => {
+    const issues = [
+      {
+        file: 'transcript/work/segments.toml',
+        stage: 'transcript_work' as const,
+        level: 'warning' as const,
+        code: 'ja_terminal_punctuation',
+        message: 'Segment 1 Japanese line 1 ends with punctuation.',
+        segmentId: '1'
+      },
+      {
+        file: 'translation/work/segments.toml',
+        stage: 'translation_work' as const,
+        level: 'error' as const,
+        code: 'empty_zh',
+        message: 'Segment 1 has empty Chinese text.',
+        segmentId: '1'
+      }
+    ];
+    const compactWriter = { write: vi.fn() };
+    const verboseWriter = { write: vi.fn() };
+
+    printCheckIssues(issues, { verbose: false, json: true, writer: compactWriter });
+    printCheckIssues(issues, { verbose: true, json: true, writer: verboseWriter });
+
+    const compactJson = JSON.parse(compactWriter.write.mock.calls[0][0] as string) as {
+      issues?: Array<{ level: string; code: string }>;
+    };
+    const verboseJson = JSON.parse(verboseWriter.write.mock.calls[0][0] as string) as {
+      issues: Array<{ level: string; code: string }>;
+    };
+    expect(compactJson).not.toHaveProperty('issues');
+    expect(verboseJson.issues.map((issue) => issue.code)).toEqual([
+      'empty_zh',
+      'ja_terminal_punctuation'
+    ]);
   });
 
   it('renders SRT and ASS subtitles', () => {

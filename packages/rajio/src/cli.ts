@@ -108,8 +108,8 @@ registerClipCommands(app);
 
 app
   .command('check [target]', 'Validate session.toml and segments.toml files')
-  .option('--verbose', 'print every warning instead of summarizing repetitive warnings')
-  .option('--json', 'print structured JSON for agents and UI integrations')
+  .option('--verbose', 'print every issue; with --json, include full issue details')
+  .option('--json', 'print structured summary JSON; use --verbose --json for full issues')
   .option('--level <level>', 'filter issues by level: all, error, or warning', {
     cast: (value) => {
       if (value === undefined) {

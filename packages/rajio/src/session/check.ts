@@ -85,7 +85,7 @@ export function printCheckIssues(
   }
 ): void {
   if (options.json) {
-    printCheckJson(issues, options.writer ?? process.stdout);
+    printCheckJson(issues, { verbose: options.verbose }, options.writer ?? process.stdout);
     return;
   }
 
@@ -122,22 +122,43 @@ export function filterCheckIssues(
   });
 }
 
-export function formatCheckJson(issues: CheckIssue[]): string {
+export function formatCheckJson(
+  issues: CheckIssue[],
+  options: { verbose?: boolean } = {}
+): string {
+  const output: {
+    ok: boolean;
+    counts: ReturnType<typeof countIssues>;
+    summary: CheckIssueSummary[];
+    issues?: Array<{
+      file: string;
+      stage?: StageName;
+      level: CheckIssue['level'];
+      code?: string;
+      message: string;
+      segmentId?: string;
+      segment?: CheckIssueSegmentContext;
+    }>;
+  } = {
+    ok: !issues.some((issue) => issue.level === 'error'),
+    counts: countIssues(issues),
+    summary: summarizeCheckIssues(issues)
+  };
+
+  if (options.verbose) {
+    output.issues = sortCheckIssues(issues).map((issue) => ({
+      file: issue.file,
+      stage: issue.stage,
+      level: issue.level,
+      code: issue.code,
+      message: issue.message,
+      segmentId: issue.segmentId,
+      segment: issue.segment
+    }));
+  }
+
   return JSON.stringify(
-    {
-      ok: !issues.some((issue) => issue.level === 'error'),
-      counts: countIssues(issues),
-      summary: summarizeCheckIssues(issues),
-      issues: sortCheckIssues(issues).map((issue) => ({
-        file: issue.file,
-        stage: issue.stage,
-        level: issue.level,
-        code: issue.code,
-        message: issue.message,
-        segmentId: issue.segmentId,
-        segment: issue.segment
-      }))
-    },
+    output,
     null,
     2
   );
@@ -446,8 +467,12 @@ function formatIssueContext(issue: CheckIssue): string {
   return example ? ` (${example})` : '';
 }
 
-function printCheckJson(issues: CheckIssue[], writer: { write(chunk: string): unknown }): void {
-  writer.write(`${formatCheckJson(issues)}\n`);
+function printCheckJson(
+  issues: CheckIssue[],
+  options: { verbose?: boolean },
+  writer: { write(chunk: string): unknown }
+): void {
+  writer.write(`${formatCheckJson(issues, options)}\n`);
 }
 
 function countIssues(issues: CheckIssue[]): { errors: number; warnings: number } {

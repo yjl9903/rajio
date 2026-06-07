@@ -65,8 +65,12 @@ Options:
 - `--reset <stage>`: regenerate from a stage. Valid stages are `audio`,
   `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
 
-`rajio check` defaults to concise output and summarizes repeated soft subtitle length
-warnings by file and language. Use `rajio check --verbose [target]` to print every warning.
+`rajio check` defaults to concise human output and summarizes repeated issues by file,
+stage, severity, and code. Use `rajio check --verbose [target]` to print every issue.
+Use `rajio check --json [target]` for bounded structured output with `ok`, `counts`, and
+`summary` only; full issue details are emitted only with
+`rajio check --verbose --json [target]`. `--level` and `--stage` apply consistently to
+human and JSON output before summaries, details, and exit codes are computed.
 
 ASR chunking target:
 

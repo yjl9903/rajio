@@ -14,19 +14,20 @@ operate a rajio subtitle session.
 
 ## Non-Negotiable Rules
 
+- The highest priority is accurate, natural, comfortable subtitles. Do not mechanically
+  satisfy formatting heuristics when doing so would make the transcript or translation less
+  correct, less readable, or less pleasant to watch.
 - Make the privacy boundary explicit before transcription: rajio uploads audio to the
   configured OpenAI-compatible transcription provider. Start transcription only after the
   user authorizes that upload.
-- `transcript_work` and `translation_work` are manual stages. For an ordinary single-video
-  session, perform proofread, polish, translation, validation, and commit work in the
-  current agent session, but split long videos into explicit manual batches instead of
-  trying to process hundreds of segments in one pass.
-- Do not use `--agent=codex` for ordinary single-video transcript polish or translation.
-  Use it only when the user explicitly asks for batch or fully automatic multi-session
-  automation.
+- `transcript_work` and `translation_work` are manual stages. Always process these stages
+  through sub-agent batches. The main agent orchestrates, merges, validates, and commits;
+  it must not try to proofread or translate the full stage by itself.
+- Do not use CLI `--agent=codex` as a substitute for sub-agent batch work unless the user
+  explicitly asks for the CLI automation path.
 - During `translation_work`, do not call the OpenAI-compatible provider configured in
-  `.env` to translate. Translate in the current agent session so context, glossary, and
-  style decisions remain continuous.
+  `.env` to translate. Translation is done by sub-agents using the batch context provided
+  by the main agent.
 - Never edit `transcript/raw/segments.toml` or `transcript/raw/chunks/*.toml`. Raw
   transcript files are references. Edit only `transcript/work/segments.toml`,
   `translation/work/segments.toml`, and `description.md`.
@@ -42,6 +43,23 @@ operate a rajio subtitle session.
 - Use `rajio clips` commands for difficult source-video ranges that need independent
   retranscription for comparison. Clip outputs are sidecar review artifacts only; do not
   treat them as automatic replacements for `transcript/work/segments.toml`.
+
+## Sub-Agent Batch Contract
+
+- Use sub-agents for every `transcript_work` proofread batch and every `translation_work`
+  translation batch. If sub-agent tooling is unavailable, stop and report that manual
+  stages cannot be completed under this skill.
+- Respect the environment's sub-agent spawn limit. By default, run at most 6 sub-agents at
+  the same time; if the current environment allows fewer, use the actual lower limit.
+- The main agent owns `description.md`, glossary decisions, batch boundaries, conflict
+  resolution, `rajio check`, stage commits, exports, and final reporting.
+- Each sub-agent receives one explicit segment range plus nearby context, the current
+  `description.md`, glossary, style requirements, and unresolved uncertainty.
+- Sub-agents return structured edits or a session-local patch file only. They must not
+  edit raw transcript files, commit stages, export subtitles, or change global glossary
+  policy without reporting the proposed change.
+- The main agent applies patches, runs validation, reconciles terminology across batches,
+  updates `description.md`, and performs the final consistency pass before committing.
 
 ## Required Input
 
@@ -96,8 +114,8 @@ Default command workflow controls:
 - `--commit`: commit the current manual stage after validating its work file.
 - `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
   `translation_work`, or `export`.
-- `--agent=codex`: batch-only automation escape hatch. Do not use for ordinary manual
-  single-video stages.
+- `--agent=codex`: CLI automation escape hatch. Do not use it as the default manual-stage
+  workflow; use sub-agent batches instead.
 
 Audio chunk options:
 
@@ -228,6 +246,9 @@ human-readable table.
 stage. Each group includes a few examples with segment id, time range, duration, text
 length, adjacent segment ids, and a short text summary. Use these modes deliberately:
 
+Warnings are non-blocking QA hints. Review them, but do not try to clear warnings when
+keeping them makes the subtitles more accurate, natural, or comfortable to watch.
+
 - `rajio check /path/to/session --level error`: show only blocking errors.
 - `rajio check /path/to/session --stage transcript`: focus on transcript raw/work issues.
 - `rajio check /path/to/session --stage translation`: focus on translation work issues.
@@ -285,7 +306,7 @@ Before automatic stages, run:
 rajio doctor /path/to/session
 ```
 
-Do not start transcription until `doctor` passes or the environment issue is resolved.
+`rajio doctor` validates runtime configuration and provider access using the target directory for `.env` loading. Do not start transcription until `rajio doctor` passes or the environment issue is resolved.
 
 ### 1. Run To Transcript Work
 
@@ -307,13 +328,15 @@ timing, and chunk boundaries during transcript proofread.
 
 ### 2. Proofread And Polish Japanese
 
-Edit `transcript/work/segments.toml` with the structured segment tools when possible.
-Do not translate in this stage.
+Delegate proofread batches to sub-agents. Apply their returned structured edits to
+`transcript/work/segments.toml` with the segment tools when possible. Do not translate in
+this stage.
 
 Use the segment commands documented in the CLI section with `--stage transcript`.
 
-For complex, noisy, overlapped, or suspicious ASR ranges, use `rajio clips transcribe` to
-retranscribe the original media time range as sidecar evidence. Then use
+For complex, noisy, overlapped, or suspicious ASR ranges, the main agent or a sub-agent may
+use `rajio clips transcribe` to retranscribe the original media time range as sidecar
+evidence. Then use
 `rajio clips list --json` and `rajio clips show <id> --json` to compare the alternate
 transcript against `transcript/work/segments.toml`. Clip output is reference material; do
 not treat it as an automatic replacement.
@@ -372,12 +395,13 @@ Expected result: rajio commits `transcript_work`, creates
 
 ### 3. Translate And Polish Chinese
 
-Edit `translation/work/segments.toml` with the structured segment tools when possible,
-and fill or refine `zh` for every segment.
+Delegate translation batches to sub-agents. Apply their returned structured edits to
+`translation/work/segments.toml` with the segment tools when possible, and fill or refine
+`zh` for every segment.
 
-For long videos, translate and polish in explicit batches instead of attempting the whole
-file in one pass. A practical batch is usually 50-100 segments or 5-10 minutes of media,
-adjusted by density. Use the segment editing commands documented in the CLI section with
+Translate and polish in explicit sub-agent batches instead of attempting the whole file in
+one pass. A practical batch is usually 50-100 segments or 5-10 minutes of media, adjusted
+by density. Use the segment editing commands documented in the CLI section with
 `--stage translation`; in translation work, patch or command updates may set `zh`, `zh1`,
 and `zh2` where the command supports those fields.
 
