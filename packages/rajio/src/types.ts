@@ -73,6 +73,31 @@ export interface RuntimeConfig {
   ffprobeBin: string;
 }
 
+export interface AudioChunkOptions {
+  targetSeconds?: number;
+  boundarySearchSeconds?: number;
+  silenceNoiseDb?: number;
+  silenceDurationSeconds?: number;
+}
+
+export interface ResolvedAudioChunkOptions {
+  targetSeconds: number;
+  boundarySearchSeconds: number;
+  silenceNoiseDb: number;
+  silenceDurationSeconds: number;
+}
+
+export interface AudioChunkingMetadata {
+  strategy: 'silence_or_time';
+  requested_target_seconds: number;
+  effective_target_seconds: number;
+  boundary_search_seconds: number;
+  silence_noise_db: number;
+  silence_duration_seconds: number;
+  max_seconds: number;
+  max_bytes: number;
+}
+
 export interface CliOptions {
   media?: string;
   continue: 'until-manual' | 'step';
@@ -81,6 +106,7 @@ export interface CliOptions {
   full: boolean;
   reset?: StageName;
   verbose: boolean;
+  chunking?: AudioChunkOptions;
 }
 
 export interface Segment {

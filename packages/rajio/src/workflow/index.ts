@@ -94,7 +94,7 @@ async function continueAfterAction(
       continue;
     }
 
-    await runAutomaticStage(session, runtime, stage, deps);
+    await runAutomaticStage(session, runtime, stage, options, deps);
     steps += 1;
 
     if (stage === 'export') {
@@ -157,6 +157,7 @@ async function runAutomaticStage(
   session: Session,
   runtime: RuntimeConfig,
   stage: StageName,
+  options: CliOptions,
   deps: WorkflowDeps
 ): Promise<void> {
   if (session.stage(stage).status === 'done') {
@@ -171,7 +172,7 @@ async function runAutomaticStage(
     await session.save();
 
     if (stage === 'audio') {
-      await runAudioStage({ session, runtime });
+      await runAudioStage({ session, runtime, chunking: options.chunking });
     } else if (stage === 'transcript_raw') {
       await runTranscriptRawStage({
         session,

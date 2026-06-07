@@ -21,6 +21,7 @@ import type { RuntimeConfig, SessionAudioChunk, StageRunnerDeps } from '../../ty
 import type { Session } from '../../session/index.js';
 import { taggedLogger } from '../../utils/logger.js';
 import type { TranscriptChunkResult } from '../transcription.js';
+import { MAX_OPENAI_TRANSCRIPTION_SECONDS } from './audio.js';
 
 const TRANSCRIPTION_CHUNK_CONCURRENCY = 5;
 export const TRANSCRIPTION_HEARTBEAT_INTERVAL_MS = 30_000;
@@ -100,15 +101,9 @@ async function collectAudioInputChunks(
   audioPath: string
 ): Promise<AudioInputChunk[]> {
   const sessionChunks = session.audioChunks();
-  const expectedCount = session.stage('audio').chunk_count;
   if (sessionChunks.length === 0) {
     throw new Error(
       'audio stage does not include chunk metadata. Run the audio stage to regenerate chunks.'
-    );
-  }
-  if (typeof expectedCount === 'number' && expectedCount !== sessionChunks.length) {
-    throw new Error(
-      `audio chunk count mismatch: expected ${expectedCount}, got ${sessionChunks.length}.`
     );
   }
 
@@ -152,6 +147,12 @@ async function validateAndNormalizeAudioChunk(
   const hash = await sha256File(audioChunkPath);
   if (hash !== chunk.sha256) {
     throw new Error(`audio chunk hash mismatch for ${chunk.audio}.`);
+  }
+  if (chunk.end <= chunk.start) {
+    throw new Error(`audio chunk time range is invalid for ${chunk.audio}.`);
+  }
+  if (chunk.end - chunk.start > MAX_OPENAI_TRANSCRIPTION_SECONDS) {
+    throw new Error(`audio chunk duration exceeds transcription limit for ${chunk.audio}.`);
   }
 
   return {

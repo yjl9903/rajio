@@ -39,6 +39,9 @@ operate a rajio subtitle session.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
   empty filler segments. Always pass `--session /path/to/session` in agent work.
+- Use `rajio clips` commands for difficult source-video ranges that need independent
+  retranscription for comparison. Clip outputs are sidecar review artifacts only; do not
+  treat them as automatic replacements for `transcript/work/segments.toml`.
 
 ## Required Input
 
@@ -50,9 +53,12 @@ operate a rajio subtitle session.
 If optional metadata is missing, proceed with filename-based defaults, record the
 uncertainty in `description.md`, and revisit it when transcript context reveals more.
 
-## CLI
+## CLI Quick Reference
 
-First check whether `rajio` is available:
+For complete command syntax, examples, output formats, segment patch shape, clip artifact
+details, and environment variables, read `CLI.md`.
+
+Check whether `rajio` is available:
 
 ```bash
 command -v rajio
@@ -60,11 +66,14 @@ command -v rajio
 
 If it is not installed, run commands through `npx rajio ...`.
 
+### Command Overview
+
 Use the installed CLI:
 
 ```bash
 rajio <target> [options]
 rajio segments <command> --session <target> --stage transcript
+rajio clips <command> --session <target>
 rajio check <target>
 rajio check <target> --level error
 rajio check <target> --stage transcript
@@ -72,7 +81,47 @@ rajio check <target> --stage translation --json
 rajio doctor <target>
 ```
 
-Segment editing commands:
+### Default Command
+
+The default command drives the whole session workflow.
+
+Default command media option:
+
+- `--media <path>`: invocation-only media override.
+
+Default command workflow controls:
+
+- `--continue=until-manual`: run automatic stages until the next manual stage.
+- `--continue=step`: run one automatic stage.
+- `--commit`: commit the current manual stage after validating its work file.
+- `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
+  `translation_work`, or `export`.
+- `--agent=codex`: batch-only automation escape hatch. Do not use for ordinary manual
+  single-video stages.
+
+Audio chunk options:
+
+- `--chunk-target <seconds>`: local audio chunk target. Default `600`, minimum `60`.
+- `--chunk-boundary-search <seconds>`: silence search window around the target cut point.
+  Default `90`, range `0..300`.
+- `--chunk-silence-noise <db>`: ffmpeg `silencedetect` threshold. Default `-35`.
+- `--chunk-silence-duration <seconds>`: minimum silence duration. Default `0.4`.
+
+These chunk options apply when audio chunks are generated, including first run and
+`--reset audio`. They are recorded under `stages.audio.chunking` in `session.toml`.
+`--reset transcript_raw` reuses existing `stages.audio.chunks[]` and does not apply new
+chunk options.
+
+Default command logging:
+
+- `--verbose`: print detailed warnings where the command supports verbose output.
+
+### Segments
+
+`rajio segments` commands print affected segment rows. Agents should default to `--json`
+for parseable JSON; otherwise output is a human-readable table.
+
+Segment command examples:
 
 ```bash
 rajio segments list --session /path/to/session --stage transcript
@@ -115,33 +164,10 @@ session from cwd. This avoids editing the wrong session after directory changes.
   total, listed, translated, and untranslated counts.
 
 `segments apply [file]` applies a TOML patch as the batch form of `edit`, `split`,
-`merge`, and `delete`. Pass a file path to read from disk, or omit `[file]` to read the
-patch from stdin. Use `--dry-run` to validate without writing `segments.toml`.
-The mutating `edit`, `apply`, `split`, `merge`, and `delete` commands all support
-`--dry-run`; dry-run commands still print the affected segment rows.
-These commands do not run full subtitle validation; run `rajio check` separately when you
-need validation feedback.
-
-When omitting `[file]`, provide stdin in the same shell command, for example with
-`<<'EOF' ... EOF`. In non-interactive shells, a bare `segments apply` may read empty
-stdin and fail. For larger or riskier batches, prefer writing a temporary patch file,
-running `rajio segments apply patch.toml --session ... --stage ... --dry-run`, then
-applying the same file without `--dry-run`.
-
-All `rajio segments` commands print the affected segment rows. Non-JSON output is a
-human-readable table; agents should use `--json` for parsing so stdout stays valid JSON
-and `start`/`end` remain numeric seconds.
-
-`rajio check` defaults to concise human output grouped by severity, issue code, file, and
-stage. Each group includes a few examples with segment id, time range, duration, text
-length, adjacent segment ids, and a short text summary. Use these modes deliberately:
-
-- `rajio check /path/to/session --level error`: show only blocking errors.
-- `rajio check /path/to/session --stage transcript`: focus on transcript raw/work issues.
-- `rajio check /path/to/session --stage translation`: focus on translation work issues.
-- `rajio check /path/to/session --verbose`: print every issue when you need the full list.
-- `rajio check /path/to/session --json`: output structured `ok`, `counts`, `summary`, and
-  `issues` for agents, scripts, or UI. Prefer `--json` over parsing human output.
+`merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in
+the same shell command, such as `<<'EOF' ... EOF`. For larger or riskier batches, prefer
+a patch file under a session-local `patches/` directory: run it once with `--dry-run`,
+then apply the same file without `--dry-run`.
 
 ```toml
 [[edits]]
@@ -178,28 +204,36 @@ zh = "合并后的中文字幕"
 id = "14"
 ```
 
-Useful options:
+### Clips
 
-- `--continue=until-manual`: run automatic stages until the next manual stage.
-- `--continue=step`: run one automatic stage.
-- `--commit`: commit the current manual stage after validating its work file.
-- `--media <path>`: invocation-only media override.
-- `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
-  `translation_work`, or `export`. Use it when the user asks to retry audio extraction,
-  rerun transcription generation, regenerate editable work files, or rerun export.
-- `--agent=codex`: batch-only automation escape hatch. Do not use for ordinary manual
-  single-video stages.
+Clip command examples:
 
-Environment read by rajio:
+```bash
+rajio clips transcribe --session /path/to/session --start 120 --end 180 --label noisy-overlap
+rajio clips list --session /path/to/session
+rajio clips list --session /path/to/session --json
+rajio clips show clip-120000-180000 --session /path/to/session
+rajio clips show clip-120000-180000 --session /path/to/session --json
+```
 
-- `OPENAI_API_KEY`
-- `OPENAI_BASE_URL`
-- `RAJIO_FFMPEG_BIN`
-- `RAJIO_FFPROBE_BIN`
+Use clips when an initial transcription has a complex, noisy, overlapped, or error-prone
+time range that should be independently recognized for comparison. `clips list` prints
+only clip rows; `clips show` prints only that clip's `segments.toml`. Agents should
+default to `--json` for `clips list` and `clips show`; otherwise output is a
+human-readable table.
 
-rajio loads `.env` from the command working directory, then from the session directory.
-Session `.env` takes priority over cwd `.env`, which takes priority over the process
-environment.
+### Check
+
+`rajio check` defaults to concise human output grouped by severity, issue code, file, and
+stage. Each group includes a few examples with segment id, time range, duration, text
+length, adjacent segment ids, and a short text summary. Use these modes deliberately:
+
+- `rajio check /path/to/session --level error`: show only blocking errors.
+- `rajio check /path/to/session --stage transcript`: focus on transcript raw/work issues.
+- `rajio check /path/to/session --stage translation`: focus on translation work issues.
+- `rajio check /path/to/session --verbose`: print every issue when you need the full list.
+- `rajio check /path/to/session --json`: output structured `ok`, `counts`, `summary`, and
+  `issues` for agents, scripts, or UI. Prefer `--json` over parsing human output.
 
 ## Workflow
 
@@ -278,6 +312,12 @@ Do not translate in this stage.
 
 Use the segment commands documented in the CLI section with `--stage transcript`.
 
+For complex, noisy, overlapped, or suspicious ASR ranges, use `rajio clips transcribe` to
+retranscribe the original media time range as sidecar evidence. Then use
+`rajio clips list --json` and `rajio clips show <id> --json` to compare the alternate
+transcript against `transcript/work/segments.toml`. Clip output is reference material; do
+not treat it as an automatic replacement.
+
 Validate often with `rajio check` as documented in the CLI section. This only checks data
 shape, timing, required fields, and subtitle limits; before committing, still polish the
 content semantically against the acceptance criteria below.
@@ -349,6 +389,11 @@ been cross-checked, and `rajio check /path/to/session` passes.
 If translation reveals a transcript typo, wrong name, wrong fixed phrase, missing context,
 or bad segment structure, fix `transcript/work/segments.toml` first, update
 `description.md`, recommit the transcript, then reconcile the translation.
+
+If a translation problem points back to an uncertain or messy source-audio range, use
+`rajio clips transcribe` for that original media time range and inspect it with
+`rajio clips show <id> --json`. Use the sidecar transcript as a second reference before
+editing the committed transcript and reconciling the translation.
 
 Validate often with `rajio check` as documented in the CLI section. This only checks data
 shape, timing, required fields, and subtitle limits; before committing, still polish the

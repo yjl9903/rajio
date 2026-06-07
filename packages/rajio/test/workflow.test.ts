@@ -438,7 +438,7 @@ describe('session workflow', () => {
       }
     );
 
-    expect(calls).toEqual(['chunk-000.m4a', 'chunk-001.m4a']);
+    expect(calls.toSorted()).toEqual(['chunk-000.m4a', 'chunk-001.m4a']);
     expect(
       await readFile(path.join(dir, 'transcript/raw/chunks/chunk-000.toml'), 'utf8')
     ).toContain('chunk-000.m4a');

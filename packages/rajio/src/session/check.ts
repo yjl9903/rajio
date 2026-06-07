@@ -234,16 +234,6 @@ async function checkSession(
         continue;
       }
       const chunks = session.audioChunks();
-      const expectedCount = Number(stageState.chunk_count ?? chunks.length);
-      if (expectedCount > 0 && expectedCount !== chunks.length) {
-        issues.push({
-          file: session.path,
-          stage,
-          level: 'error',
-          code: 'audio_chunk_count_mismatch',
-          message: `audio chunk count mismatch: expected ${expectedCount}, got ${chunks.length}.`
-        });
-      }
       if (chunks.length === 0) {
         issues.push({
           file: session.path,
@@ -294,8 +284,7 @@ function shouldValidateAudioChunks(stageState: StageState): boolean {
   return (
     Array.isArray(stageState.chunks) ||
     typeof stageState.audio === 'string' ||
-    typeof stageState.chunks_dir === 'string' ||
-    typeof stageState.chunk_count === 'number'
+    typeof stageState.chunks_dir === 'string'
   );
 }
 

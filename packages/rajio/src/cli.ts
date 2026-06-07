@@ -1,14 +1,17 @@
 import { breadc } from 'breadc';
 
 import { version, description } from '../package.json' with { type: 'json' };
+import { registerClipCommands } from './clips/commands.js';
 import { printDoctorChecks, runDoctor } from './doctor.js';
 import { registerSegmentCommands } from './segments/commands.js';
 import { checkRajio, filterCheckIssues, printCheckIssues } from './session/check.js';
 import { Session } from './session/index.js';
 import type { CliOptions } from './types.js';
 import { STAGES } from './types.js';
+import { castNumber } from './utils/cast.js';
 import { taggedLogger, wrapConsoleLogger } from './utils/logger.js';
 import { runRajio } from './workflow/index.js';
+import { resolveAudioChunkOptions } from './workflow/stages/audio.js';
 
 wrapConsoleLogger();
 
@@ -62,11 +65,30 @@ app
     }
   })
   .option('--full', 'run all remaining stages automatically')
+  .option('--chunk-target <seconds>', 'target local audio chunk length in seconds', {
+    cast: castNumber
+  })
+  .option('--chunk-boundary-search <seconds>', 'seconds around target to search for silence', {
+    cast: castNumber
+  })
+  .option('--chunk-silence-noise <db>', 'ffmpeg silencedetect noise threshold in dB', {
+    cast: castNumber
+  })
+  .option('--chunk-silence-duration <seconds>', 'ffmpeg silencedetect minimum silence duration', {
+    cast: castNumber
+  })
   .action(async (target, options) => {
     if (!target) {
       throw new Error('target is required.');
     }
 
+    const chunking = {
+      targetSeconds: options.chunkTarget,
+      boundarySearchSeconds: options.chunkBoundarySearch,
+      silenceNoiseDb: options.chunkSilenceNoise,
+      silenceDurationSeconds: options.chunkSilenceDuration
+    };
+    resolveAudioChunkOptions(chunking);
     const cliOptions: CliOptions = {
       media: options.media,
       continue: options.continue,
@@ -74,13 +96,15 @@ app
       agent: options.agent,
       full: options.full,
       reset: options.reset,
-      verbose: Boolean(options.verbose)
+      verbose: Boolean(options.verbose),
+      chunking
     };
     const session = await Session.loadOrCreate(target, cliOptions.media);
     await runRajio(session, cliOptions);
   });
 
 registerSegmentCommands(app);
+registerClipCommands(app);
 
 app
   .command('check [target]', 'Validate session.toml and segments.toml files')
