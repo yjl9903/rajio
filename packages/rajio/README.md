@@ -46,7 +46,7 @@ Translated video: [BV1S6EH6FEZN](https://www.bilibili.com/video/BV1S6EH6FEZN).
 Copy this to your agent:
 
 ```text
-Download and use the rajio skill from https://github.com/yjl9903/rajio/blob/main/skills/rajio/SKILL.md
+Download and use the rajio skill from https://github.com/yjl9903/rajio/blob/main/skills/rajio/
 ```
 
 Then give your agent a local media file and any notes you have.
