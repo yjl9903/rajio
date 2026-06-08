@@ -4,1803 +4,2884 @@ chunk_index = 0
 audio = "audio/chunks/chunk-000.m4a"
 start = 0
 end = 600
-model = "gpt-4o-transcribe-diarize"
-started_at = "2026-06-06T16:17:58.860Z"
-completed_at = "2026-06-06T16:21:15.290Z"
+model = "whisper-1"
+started_at = "2026-06-08T18:14:46.161Z"
+completed_at = "2026-06-08T18:15:31.708Z"
 
 [response]
-text = "コスモ桜と、 いいねいがつめろ、 夏も桜を咲かせたい! みなさん!咲いてますか? こんばんは!コスモ桜です! こんばんは!いいね!\nねえ夏音 ですこの番組は 季節を名前に持つ私たち二人が夏 にそういう爽やかな風と春のような 柔らかい空気を少しでもお届けできた らいいなという番組です ということで早速ですが皆さん 何かお気づきですかお気づきです か分かるよね分 かりやすいよね\nて確か っ そうだよね! そう! 髪が なんか髪がなんかなんか なんかサラサラじゃない? なんかサラサラかも ちょっと どうしてどうして? なんかいつもと違くない? なんかいつもと違う!もう言っちゃったけどね ! サラサラだよね? そうなの!髪質改善 をしました お店美容院でなんか やってもらったらサラサラになったのに なんか写真でも伝わってきた けど生だとより\nそろそろ 嬉しい すごい マジで朝起きてもこれだからめっちゃ嬉 しいんだ あそこがいいとこだよね 楽うん わかるいいな 梅雨の時期だからこれから そうどんぴちゃじゃんと思っていたして なかったけど うん うならないといいな え大丈夫だよ私最近もううちら すごいよ見せらんない多分 うめっちゃ 全部こうなっちゃうの やったことある? あるよ1年に1回ぐらい梅雨 前にやってるから それ大丈夫なんだじゃあ\n声になってる よえ?え?もっと 言う?んじゃない? いやまだまだまだ まだ? これから当てるこれから当てる はいということであとね納豆 納豆食べてんのみんな ちょっとなんかさ 燃えそう回す回せ ば回すほどなんか納豆 の栄養がなんちゃらかんちゃら なんか 変 なん かな?え?変かな? ならしいよ別にえ? 何なんですか? じゃあまずまず\nいいよね まずくなっちゃ でも うね ガンナそれがすっきり美味しいからあと食べて る人もいるんだもんね そういうこと? なんかでもね私あの話 うん をして家に帰って納豆が あったからめっちゃやってみたんです 40回くらい混ぜてみた どう? まあ まあまあそうだね でも健康になった気がした ほんと? 食べれたんだ 食べれた 食べれたえらいえらいね 納豆の\nうん あのあれも最後に染みた 調味料を えっでまたちょっと混ぜてみたい なそう どうだった 最初に入れた方が良かった いいじゃんうまい ですね 美味しいけどでも健康にはいいんだ もんね あれそうなの いや 本当に わかんないでもなんか難しいですね ね健康にいいのかプラシーボ て でいいんじゃないでも すっげーかかった そっか いい気がする でも私は混ぜないですよちょっと あの納豆に\nについて いただいているから早く 納豆について納豆について 納豆ねもほっぺまんさんからいただきました ありがとうございます ありがとなぁ かすがさんイヌイさん咲いてますか うん なぁ ぱぁ第48回 の配信で納豆を何回かき混ぜれば 議論の波紋を広げていましたね自 分も10回くらいです混 ぜる前にから 塩やっぱり 入 そう れて だな うん混ぜた後から納豆 のタレまたは醤油を入れますね ただ\nこの有名 なルサンジンを最低 でも400回かき混ぜるとおいしくなる といったとされています ええええええ 試しにやったら確かにおいしいのですよ 400回やったの? え? すごい おいしいの?なんで混ぜれば 混ぜるほどおいしいの? でもなんかなんかさわかんないけどお菓子作り とかでもさバーって混ぜてバーって 膨らんで減ったりするじゃんあの 確かに確かに なんかかー\nうわーってもこも こもこーってなって落ち着いたりするから 確かに 400回混ぜたら逆にもこもこじゃ ない可能性! え、合わなくなる? 逆に! 本当に? 逆に! いつやってみようかな? 今度やるか! やるか?やる?持ってくる? 持ってくる? 持ってくる? 実証する? スタジオ納豆の匂いにして帰ろう? 100回200回300回400回でさ 4つくらい検証したいスタジオ いいじゃんやろうよ! え、美味しかったら美味しかったら混ぜる 配になるかもしんないしね 確かにね! そう、やったことないだけ 毎回400回混ぜる!\nこの前のき ついなんか痛そう 確かにねきついかもえー面白 いね納豆って 奥が深いですね ねなんか他あるなんか そういうやつ え? なんかそのラーメ ンの海苔いち食べるみたいな 迷うよね私も食べ 方があってラーメンの 海苔をちょっとスープに 浸して\nむちゃむちゃ じゃないちょっと刺して お米と一緒に食べるのが好きなの家 系とかのお米つけれるとか 美味しそううまい うわでも私ラーメン屋さん でさラーメンと一緒に白米まだ頼んだ ことなくてうん 本当に美味しいよ美味しいね絶対 それは 私は大体パリパリの ままで食べたいなっていう気持ち で今日食べようって思うんだけど気づ いたら沈んでて一番下になって\nでもさなんか 玉なんか特にこれは 女子だけの話かもしれないですけどお 腹がいっぱいになっちゃう問題卵 マジでそうだ! とチャーシューを早めに クリアしないと後 がきつい入んない の最後に ね、ほんとタマゴも入んない ね!毎回私たち毎回も言ってさ、 チャーシュー残しちゃってさ、最後まで そうこうやって言いながら食べて たから\nこうチャッシュ食べ ちゃえばなんか麺 はそう 意外とつるっと入ったりするんだよね そうなんですよまだ まあラーメン でラーメンなら野菜は結構もうペロリなのかな 関係ないのかどうですか関係 ないんだ 遅そう関係なさそう 女子はね そっかね最初にね食べとか ないと でもねほんと最初に食べたら全然余裕だった そうだよねやっぱ卵 結構胃の容量持ってかれそうで頭 してしちゃうんだよな そうだね\n結構くるよね 結構くる はい 美味しいです けど面白いこの話結構やりたいね ね私さみんなの卵か けご飯のこだわり知りたい私 結構アレンジレシピ派でさ いろいろ そうなんだ なんかいろんなのが好きなんだけど 聞きたいみんなぜひ送ってください お願いします はいということで今日も ハッシュタグ夏サクサクで盛り上げていただけると 嬉しいですそれでは最後までよろしく お願いします お願いします\nここが桜です みんなでね 私はですね先日 マボシメチーズのライブ ストレートリッチアをやりました お疲れ様 東京公演で現時点で まだ大阪公演終わってないんですけど大阪 公演もそろそろやると 放送の時には終わってるっていう そうねなっちゅんはね東京\nなんだけど 嬉しい すごかった 曲数が マジで増えすぎなのと 多かったね 衣装が私新衣装生 で見るの初めてだったからめ ちゃくちゃ可愛いね そうだそうだはい夏作年も ゆいさんからいただきましたありがとうございます 昨晩の夏は咲いてますか 前橋ウィッキーズライブ\nストレートリ ーチチア東京公 演現地で参加させていただきました ありがとうございます 今回のライブ前のインタビューで サクポンは私たちの成長を見せなければ いけないライブとおっしゃっていましたが それは実感できるとても素晴らしい ライブでしたユイナを楽しく可愛 く表現するサクポンのパフォーマンス はみんなの心のお花を咲かせたと思います 今回ステージに立ったサクポ ンとドリーミードリーミーフラワーの一人のお 客さんとして参加したナチの今回 のライブの感想をお聞きしたいです\nうわー いやいやいや どうでしたか? うわー本当に感動した マジ? なんか今回ソロ曲もあったじゃん全員 あー うん もうさあの前に もう一個のソロ曲は生で聞いたことあるんだ けど初めて聞くソロ曲だった からめちゃくちゃ感動した可愛 かった すごいでもそうなんか あのなんだろ 歌詞がすごい頑張 るって感じのやつ\n便座入りでステ ージ立ってるのを見るとなんか めちゃくちゃ懐かみになった マジ? 懐 感動 か した?したなんか全員でのパフォーマンス もマジでなんか本当に アイドルってぐらい なんか踊り揃ってて 嬉しい めちゃくちゃかっこよかったし 嬉しい なんか生歌とは思えなかった みんなマジか? 上手すぎてマジですごかった でもなんか自分もやって て\nまあ日 々見てるからあんま気づか ない うん けどこの前のライブは すごいみんなの成長を感じた自 分も含めかもしれないけどなんか なんだろ 安定してきたなって歌とか 嬉 マジでねあとMC がめちゃくちゃうまかった MCとかつな ぎというか場の煽りとか 全部が\nちょっとある ない のえ? 今回 うわ、すごいよね はMCの数を減らしたんですよ 曲数を増やした分MC 減らして だからその体力も課題だったの 続けてうん やるみたいなけどMC減らした分 結構今までは 分差してたんだけどMCって自分になんか 結構固まってたから頑 張らない"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "コスモ桜と、"
-speaker = "A"
-start = 1.5540000000000003
-end = 2.8040000000000003
-id = "seg_0"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いいねいがつめろ、"
-speaker = "A"
-start = 3.0040000000000004
-end = 4.154
-id = "seg_1"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "夏も桜を咲かせたい!"
-speaker = "A"
-start = 4.304
-end = 6.204
-id = "seg_2"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "みなさん!咲いてますか?"
-speaker = "A"
-start = 18.854
-end = 21.154
-id = "seg_3"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "こんばんは!コスモ桜です!"
-speaker = "A"
-start = 23.404
-end = 25.304
-id = "seg_4"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "こんばんは!いいね!"
-speaker = "B"
-start = 25.453999999999997
-end = 26.603999999999996
-id = "seg_5"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ねえ夏音ですこの番組は季節を名前に持つ私たち二人が夏にそういう爽やかな風と春のような柔らかい空気を少しでもお届けできたらいいなという番組です"
-speaker = "A"
-start = 26.676
-end = 36.976
-id = "seg_6"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ということで早速ですが皆さん何かお気づきですかお気づきですか分かるよね分かりやすいよね"
-speaker = "A"
-start = 37.726
-end = 45.476
-id = "seg_7"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "て確か"
-speaker = "A"
-start = 47.572
-end = 47.722
-id = "seg_8"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "っ"
-speaker = "C"
-start = 47.722
-end = 47.872
-id = "seg_9"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そうだよね!"
-speaker = "A"
-start = 47.872
-end = 48.572
-id = "seg_10"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そう!"
-speaker = "A"
-start = 48.672000000000004
-end = 48.922000000000004
-id = "seg_11"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "髪が"
-speaker = "C"
-start = 49.172000000000004
-end = 49.922000000000004
-id = "seg_12"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんか髪がなんかなんかなんかサラサラじゃない?"
-speaker = "C"
-start = 50.222
-end = 53.872
-id = "seg_13"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんかサラサラかも"
-speaker = "A"
-start = 53.872
-end = 55.072
-id = "seg_14"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ちょっと"
-speaker = "C"
-start = 55.072
-end = 55.372
-id = "seg_15"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "どうしてどうして?"
-speaker = "A"
-start = 55.372
-end = 56.422000000000004
-id = "seg_16"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんかいつもと違くない?"
-speaker = "C"
-start = 56.422000000000004
-end = 57.622
-id = "seg_17"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんかいつもと違う!もう言っちゃったけどね!"
-speaker = "A"
-start = 57.622
-end = 59.922000000000004
-id = "seg_18"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "サラサラだよね?"
-speaker = "A"
-start = 61.47200000000001
-end = 62.47200000000001
-id = "seg_19"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そうなの!髪質改善をしました"
-speaker = "C"
-start = 62.47200000000001
-end = 65.672
-id = "seg_20"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "お店美容院でなんかやってもらったらサラサラになったのに"
-speaker = "C"
-start = 68.22200000000001
-end = 72.772
-id = "seg_21"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんか写真でも伝わってきたけど生だとより"
-speaker = "A"
-start = 72.772
-end = 76.72200000000001
-id = "seg_22"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そろそろ嬉しい"
-speaker = "C"
-start = 77.492
-end = 78.64200000000001
-id = "seg_23"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "すごい"
-speaker = "A"
-start = 78.64200000000001
-end = 78.792
-id = "seg_24"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "マジで朝起きてもこれだからめっちゃ嬉しいんだ"
-speaker = "C"
-start = 78.792
-end = 81.492
-id = "seg_25"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "あそこがいいとこだよね"
-speaker = "A"
-start = 81.492
-end = 82.742
-id = "seg_26"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "楽うん"
-speaker = "C"
-start = 82.742
-end = 82.94200000000001
-id = "seg_27"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "わかるいいな梅雨の時期だからこれから"
-speaker = "A"
-start = 82.94200000000001
-end = 87.042
-id = "seg_28"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そうどんぴちゃじゃんと思っていたしてなかったけど"
-speaker = "C"
-start = 87.042
-end = 89.94200000000001
-id = "seg_29"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うん"
-speaker = "A"
-start = 89.94200000000001
-end = 89.992
-id = "seg_30"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うならないといいな"
-speaker = "C"
-start = 89.992
-end = 91.492
-id = "seg_31"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "え大丈夫だよ私最近もううちらすごいよ見せらんない多分"
-speaker = "A"
-start = 91.492
-end = 95.89200000000001
-id = "seg_32"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うめっちゃ"
-speaker = "C"
-start = 95.89200000000001
-end = 96.542
-id = "seg_33"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "全部こうなっちゃうの"
-speaker = "A"
-start = 96.542
-end = 97.742
-id = "seg_34"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "やったことある?"
-speaker = "C"
-start = 97.742
-end = 98.34200000000001
-id = "seg_35"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "あるよ1年に1回ぐらい梅雨前にやってるから"
-speaker = "A"
-start = 98.34200000000001
-end = 101.542
-id = "seg_36"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "それ大丈夫なんだじゃあ"
-speaker = "C"
-start = 101.542
-end = 102.792
-id = "seg_37"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "声になってるよえ?え?もっと言う?んじゃない?"
-speaker = "A"
-start = 104.212
-end = 107.162
-id = "seg_38"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いやまだまだまだ"
-speaker = "C"
-start = 107.36200000000001
-end = 108.962
-id = "seg_39"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "まだ?"
-speaker = "A"
-start = 108.962
-end = 109.36200000000001
-id = "seg_40"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "これから当てるこれから当てるはいということであとね納豆納豆食べてんのみんなちょっとなんかさ燃えそう回す回せば回すほどなんか納豆の栄養がなんちゃらかんちゃら"
-speaker = "C"
-start = 109.36200000000001
-end = 124.36200000000001
-id = "seg_41"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんか"
-speaker = "A"
-start = 124.36200000000001
-end = 124.462
-id = "seg_42"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "変"
-speaker = "C"
-start = 124.462
-end = 124.56200000000001
-id = "seg_43"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なん"
-speaker = "A"
-start = 124.56200000000001
-end = 124.662
-id = "seg_44"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "かな?え?変かな?"
-speaker = "C"
-start = 124.662
-end = 126.01200000000001
-id = "seg_45"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = ""
-speaker = "A"
-start = 126.01200000000001
-end = 126.06200000000001
-id = "seg_46"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ならしいよ別にえ?"
-speaker = "C"
-start = 126.06200000000001
-end = 127.76200000000001
-id = "seg_47"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "何なんですか?じゃあまずまず"
-speaker = "A"
-start = 127.76200000000001
-end = 130.812
-id = "seg_48"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いいよね"
-speaker = "A"
-start = 131.22
-end = 131.37
-id = "seg_49"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "まずくなっちゃ"
-speaker = "C"
-start = 131.37
-end = 132.57
-id = "seg_50"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でも"
-speaker = "A"
-start = 132.57
-end = 132.62
-id = "seg_51"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うね"
-speaker = "C"
-start = 132.62
-end = 132.92
-id = "seg_52"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ガンナそれがすっきり美味しいからあと食べてる人もいるんだもんね"
-speaker = "A"
-start = 132.92
-end = 136.27
-id = "seg_53"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そういうこと?"
-speaker = "C"
-start = 136.27
-end = 136.77
-id = "seg_54"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんかでもね私あの話"
-speaker = "A"
-start = 136.87
-end = 138.67
-id = "seg_55"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うん"
-speaker = "C"
-start = 138.67
-end = 138.82
-id = "seg_56"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "をして家に帰って納豆があったからめっちゃやってみたんです"
-speaker = "A"
-start = 138.82
-end = 143.27
-id = "seg_57"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "40回くらい混ぜてみた"
-speaker = "A"
-start = 144.02
-end = 145.37
-id = "seg_58"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "どう?"
-speaker = "C"
-start = 145.37
-end = 145.42
-id = "seg_59"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "まあ"
-speaker = "A"
-start = 145.42
-end = 146.27
-id = "seg_60"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "まあまあそうだね"
-speaker = "C"
-start = 149.32
-end = 150.17000000000002
-id = "seg_61"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でも健康になった気がした"
-speaker = "A"
-start = 150.17000000000002
-end = 152.07
-id = "seg_62"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ほんと?"
-speaker = "C"
-start = 152.07
-end = 152.47
-id = "seg_63"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "食べれたんだ"
-speaker = "C"
-start = 152.57
-end = 153.37
-id = "seg_64"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "食べれた"
-speaker = "A"
-start = 153.37
-end = 153.97
-id = "seg_65"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "食べれたえらいえらいね"
-speaker = "C"
-start = 153.97
-end = 155.17000000000002
-id = "seg_66"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "納豆の"
-speaker = "C"
-start = 156.37
-end = 156.92000000000002
-id = "seg_67"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うん"
-speaker = "A"
-start = 157.524
-end = 157.524
-id = "seg_68"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "あのあれも最後に染みた調味料を"
-speaker = "C"
-start = 157.524
-end = 159.424
-id = "seg_69"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "えっでまたちょっと混ぜてみたい"
-speaker = "A"
-start = 160.024
-end = 161.824
-id = "seg_70"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なそう"
-speaker = "C"
-start = 161.824
-end = 162.274
-id = "seg_71"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "どうだった"
-speaker = "A"
-start = 162.724
-end = 163.474
-id = "seg_72"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "最初に入れた方が良かった"
-speaker = "C"
-start = 163.624
-end = 165.224
-id = "seg_73"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いいじゃんうまい"
-speaker = "A"
-start = 166.074
-end = 166.724
-id = "seg_74"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ですね"
-speaker = "C"
-start = 166.724
-end = 166.924
-id = "seg_75"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "美味しいけどでも健康にはいいんだもんねあれそうなの"
-speaker = "A"
-start = 166.924
-end = 170.424
-id = "seg_76"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いや"
-speaker = "C"
-start = 170.424
-end = 170.524
-id = "seg_77"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "本当に"
-speaker = "A"
-start = 170.524
-end = 170.874
-id = "seg_78"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "わかんないでもなんか難しいですね"
-speaker = "C"
-start = 170.874
-end = 172.874
-id = "seg_79"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ね健康にいいのかプラシーボ"
-speaker = "A"
-start = 172.874
-end = 174.924
-id = "seg_80"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "て"
-speaker = "C"
-start = 174.924
-end = 174.974
-id = "seg_81"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でいいんじゃないでも"
-speaker = "A"
-start = 174.974
-end = 175.574
-id = "seg_82"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "すっげーかかった"
-speaker = "C"
-start = 176.524
-end = 177.274
-id = "seg_83"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そっか"
-speaker = "A"
-start = 177.274
-end = 178.174
-id = "seg_84"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いい気がする"
-speaker = "C"
-start = 178.174
-end = 178.774
-id = "seg_85"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でも私は混ぜないですよちょっとあの納豆に"
-speaker = "A"
-start = 178.774
-end = 182.274
-id = "seg_86"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "についていただいているから早く"
-speaker = "A"
-start = 182.388
-end = 184.588
-id = "seg_87"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "納豆について納豆について納豆ねもほっぺまんさんからいただきましたありがとうございます"
-speaker = "A"
-start = 185.088
-end = 190.338
-id = "seg_88"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ありがとなぁ"
-speaker = "C"
-start = 190.338
-end = 191.238
-id = "seg_89"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "かすがさんイヌイさん咲いてますか"
-speaker = "A"
-start = 191.238
-end = 192.888
-id = "seg_90"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うん"
-speaker = "A"
-start = 193.288
-end = 193.33800000000002
-id = "seg_91"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なぁ"
-speaker = "C"
-start = 193.33800000000002
-end = 193.638
-id = "seg_92"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ぱぁ第48回の配信で納豆を何回かき混ぜれば議論の波紋を広げていましたね自分も10回くらいです混ぜる前にから"
-speaker = "A"
-start = 193.638
-end = 204.138
-id = "seg_93"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "塩やっぱり"
-speaker = "C"
-start = 204.138
-end = 204.388
-id = "seg_94"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "入"
-speaker = "A"
-start = 204.388
-end = 204.43800000000002
-id = "seg_95"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そう"
-speaker = "C"
-start = 204.43800000000002
-end = 204.488
-id = "seg_96"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "れて"
-speaker = "A"
-start = 204.488
-end = 204.538
-id = "seg_97"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "だな"
-speaker = "C"
-start = 204.538
-end = 204.788
-id = "seg_98"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うん混ぜた後から納豆のタレまたは醤油を入れますねただ"
-speaker = "A"
-start = 204.788
-end = 209.888
-id = "seg_99"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "この有名なルサンジンを最低でも400回かき混ぜるとおいしくなるといったとされています"
-speaker = "C"
-start = 210.74
-end = 216.34
-id = "seg_100"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ええええええ"
-speaker = "A"
-start = 216.34
-end = 216.84
-id = "seg_101"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "試しにやったら確かにおいしいのですよ"
-speaker = "C"
-start = 216.84
-end = 219.09
-id = "seg_102"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "400回やったの?"
-speaker = "A"
-start = 219.09
-end = 220.69
-id = "seg_103"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "え?"
-speaker = "A"
-start = 221.09
-end = 221.34
-id = "seg_104"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "すごい"
-speaker = "A"
-start = 221.44
-end = 221.79000000000002
-id = "seg_105"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "おいしいの?なんで混ぜれば混ぜるほどおいしいの?"
-speaker = "C"
-start = 221.79000000000002
-end = 225.24
-id = "seg_106"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でもなんかなんかさわかんないけどお菓子作りとかでもさバーって混ぜてバーって膨らんで減ったりするじゃんあの"
-speaker = "A"
-start = 225.29000000000002
-end = 232.04000000000002
-id = "seg_107"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "確かに確かに"
-speaker = "C"
-start = 232.04000000000002
-end = 232.94
-id = "seg_108"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんかかー"
-speaker = "A"
-start = 233.39000000000001
-end = 234.59
-id = "seg_109"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うわーってもこもこもこーってなって落ち着いたりするから"
-speaker = "C"
-start = 234.772
-end = 236.97199999999998
-id = "seg_110"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "確かに"
-speaker = "A"
-start = 236.97199999999998
-end = 237.272
-id = "seg_111"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "400回混ぜたら逆にもこもこじゃない可能性!"
-speaker = "C"
-start = 237.272
-end = 240.172
-id = "seg_112"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "え、合わなくなる?"
-speaker = "A"
-start = 240.822
-end = 242.22199999999998
-id = "seg_113"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "逆に!"
-speaker = "C"
-start = 242.22199999999998
-end = 242.822
-id = "seg_114"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "本当に?"
-speaker = "A"
-start = 242.822
-end = 243.072
-id = "seg_115"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "逆に!"
-speaker = "C"
-start = 243.072
-end = 244.072
-id = "seg_116"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いつやってみようかな?"
-speaker = "A"
-start = 244.072
-end = 245.572
-id = "seg_117"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "今度やるか!"
-speaker = "C"
-start = 245.97199999999998
-end = 246.922
-id = "seg_118"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "やるか?やる?持ってくる?持ってくる?"
-speaker = "A"
-start = 246.922
-end = 249.422
-id = "seg_119"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "持ってくる?"
-speaker = "C"
-start = 249.422
-end = 249.87199999999999
-id = "seg_120"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "実証する?"
-speaker = "A"
-start = 250.422
-end = 251.22199999999998
-id = "seg_121"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "スタジオ納豆の匂いにして帰ろう?"
-speaker = "C"
-start = 251.22199999999998
-end = 253.12199999999999
-id = "seg_122"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "100回200回300回400回でさ4つくらい検証したいスタジオ"
-speaker = "A"
-start = 253.12199999999999
-end = 257.222
-id = "seg_123"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "いいじゃんやろうよ!"
-speaker = "C"
-start = 257.222
-end = 258.072
-id = "seg_124"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "え、美味しかったら美味しかったら混ぜる配になるかもしんないしね"
-speaker = "A"
-start = 258.272
-end = 261.722
-id = "seg_125"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "確かにね!"
-speaker = "C"
-start = 261.722
-end = 262.222
-id = "seg_126"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そう、やったことないだけ"
-speaker = "A"
-start = 262.372
-end = 263.322
-id = "seg_127"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "毎回400回混ぜる!"
-speaker = "C"
-start = 263.322
-end = 264.372
-id = "seg_128"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "この前のきついなんか痛そう"
-speaker = "A"
-start = 264.468
-end = 265.31800000000004
-id = "seg_129"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "確かにねきついかもえー面白いね納豆って"
-speaker = "C"
-start = 265.31800000000004
-end = 269.01800000000003
-id = "seg_130"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "奥が深いですね"
-speaker = "A"
-start = 269.01800000000003
-end = 270.468
-id = "seg_131"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ねなんか他あるなんかそういうやつ"
-speaker = "C"
-start = 270.468
-end = 273.718
-id = "seg_132"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "え?"
-speaker = "A"
-start = 275.468
-end = 276.01800000000003
-id = "seg_133"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "なんかそのラーメンの海苔いち食べるみたいな"
-speaker = "A"
-start = 276.51800000000003
-end = 280.51800000000003
-id = "seg_134"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "迷うよね私も食べ方があってラーメンの海苔をちょっとスープに浸して"
-speaker = "C"
-start = 280.51800000000003
-end = 287.51800000000003
-id = "seg_135"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "むちゃむちゃじゃないちょっと刺してお米と一緒に食べるのが好きなの家系とかのお米つけれるとか"
-speaker = "C"
-start = 287.988
-end = 294.738
-id = "seg_136"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "美味しそううまい"
-speaker = "A"
-start = 294.738
-end = 296.188
-id = "seg_137"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "うわでも私ラーメン屋さんでさラーメンと一緒に白米まだ頼んだことなくてうん"
-speaker = "A"
-start = 296.288
-end = 301.488
-id = "seg_138"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "本当に美味しいよ美味しいね絶対それは"
-speaker = "C"
-start = 301.488
-end = 304.388
-id = "seg_139"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "私は大体パリパリのままで食べたいなっていう気持ちで今日食べようって思うんだけど気づいたら沈んでて一番下になって"
-speaker = "A"
-start = 304.388
-end = 314.138
-id = "seg_140"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でもさなんか玉なんか特にこれは女子だけの話かもしれないですけどお腹がいっぱいになっちゃう問題卵"
-speaker = "C"
-start = 315.22
-end = 321.22
-id = "seg_141"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "マジでそうだ!"
-speaker = "A"
-start = 321.22
-end = 322.17
-id = "seg_142"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "とチャーシューを早めにクリアしないと後がきつい入んないの最後にね、ほんとタマゴも入んない"
-speaker = "C"
-start = 322.17
-end = 331.47
-id = "seg_143"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "ね!毎回私たち毎回も言ってさ、"
-speaker = "A"
-start = 331.47
-end = 333.57000000000005
-id = "seg_144"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "チャーシュー残しちゃってさ、最後まで"
-speaker = "A"
-start = 333.62
-end = 335.47
-id = "seg_145"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そうこうやって言いながら食べてたから"
-speaker = "C"
-start = 335.67
-end = 338.52000000000004
-id = "seg_146"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "こうチャッシュ食べちゃえばなんか麺"
-speaker = "A"
-start = 341.396
-end = 343.24600000000004
-id = "seg_147"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "はそう"
-speaker = "C"
-start = 343.24600000000004
-end = 343.296
-id = "seg_148"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "意外とつるっと入ったりするんだよね"
-speaker = "A"
-start = 343.296
-end = 344.646
-id = "seg_149"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そうなんですよまだ"
-speaker = "C"
-start = 344.646
-end = 345.946
-id = "seg_150"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "まあラーメン"
-speaker = "A"
-start = 345.946
-end = 346.346
-id = "seg_151"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でラーメンなら野菜は結構もうペロリなのかな"
-speaker = "C"
-start = 346.346
-end = 348.596
-id = "seg_152"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "関係ないのかどうですか関係ないんだ"
-speaker = "A"
-start = 348.596
-end = 352.346
-id = "seg_153"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "遅そう関係なさそう"
-speaker = "C"
-start = 352.346
-end = 354.596
-id = "seg_154"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "女子はね"
-speaker = "A"
-start = 354.596
-end = 355.596
-id = "seg_155"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "そっかね最初にね食べとかないと"
-speaker = "C"
-start = 355.596
-end = 358.396
-id = "seg_156"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "でもねほんと最初に食べたら全然余裕だったそうだよねやっぱ卵結構胃の容量持ってかれそうで頭してしちゃうんだよな"
-speaker = "A"
-start = 358.396
-end = 365.896
-id = "seg_157"
-
+task = "transcribe"
+language = "japanese"
+duration = 600
+text = "かすがさくらといねいなつねの 夏もさくらを咲かせたい みなさん咲いてますか うんぱ こんばんはかすがさくらです こんばんはいねいなつねです この番組は季節を名前に持つ私たち 二人が夏にそよぐさわやかな風 と春のような柔らかい空気を少し でもお届けできたらいいなという 番組です はいということでさっそくですが みなさん何かお気づきですか お気づきですか まぁわかるよね わかりやすいよね 前xにも投稿されてたしね しましたしね そう 実は なんか髪がなんかなんかなんか なんかさらさらじゃない なんかさらさらかも なんかちょっと どうしてどうして なんかいつもと違くない なんかいつもと違う もう言っちゃったけどね さらさらだよね そうなの そう 髪質改善をしました すごい お店美容院でなんかやってもらったら さらさらになったのに なんか写真でも伝わってきたけど 生だとよりさらさら嬉しい マジで朝起きてもこれだからめっちゃ 嬉しいんだ そこがいいとこだよね わかる いいの 梅雨の時期だからこれから そうドンピシャじゃんと思って 意図してなかったけど うねらないといいの 大丈夫だよ 私最近もう内側すごいよ 見せらんない多分 うねっちゃう 全部こうなっちゃうの やったことある あるよ 1年に1回くらい梅雨前に当てるから 梅雨大丈夫なんだ じゃあ うん梅雨前に当てるよ えもう梅雨 じゃない いやまだ まだ これから当てる これから当てる はいということであと納豆 納豆食べてんのみんな どうなの なんかさ 梅雨さ回す 回せば回すほどなんか 納豆の栄養がなんちゃうか そうね なんか変化ないらしいよ別に え なんなんですか なんかじゃあまずなくていいよね まずくなっちゃうね でもわかんない それが好きで美味しいから 納豆食べてる人もいるんだもんね そういうこと あのねばねば 私あの話として家に帰って納豆 があったからめっちゃやってみたん ですよ え嘘嘘 40回くらい混ぜてみたんですよ うんそう でも健康になった気がした 本当 食べれたんだ 食べてた 食べたえらいね 納豆であれを最後にしてみた調味料 でまたちょっと混ぜてみたいな そう どうだった 最初に入れたほうが 美味しいけどでも健康にはいいん だもんね そうなの いやわかんないでもなんか難しい ですね 健康にいいのかプラシーボーでいいん じゃないでも プラシーボーか そっか いい気がする でも私は混ぜないですよ ちょっとあの納豆についていただ いてるから 納豆について 納豆について 夏作ネームほっぺまさんから頂き ました ありがとうございます ありがとうございます かすがさんいぬいさんされてます か 第48回の配信で納豆を何回かき混ぜる かが議論の波紋を広げていました ね 自分も10回くらいです混ぜる前に 辛子を入れて混ぜた後から納豆 のタレまたは醤油を入れますね ただかの有名なロサンジュンは 最低でも400回かき混ぜると美味しく なると言ったとされています試し んやったら 確かに美味しいのですよ 400回やったの美味しいの なんで混ぜれば混ぜるほど美味しい の でもなんかさ分かんないけどお菓子 作りとかでもさバーって混ぜて バーって膨らんで減ったりする じゃん泡 確かに確かに なんかガーってモコモコってなって 落ち着いたりするから400回混ぜ たら逆にモコモコじゃない可能性 泡なくなる 逆に 本当に 逆に えちょっとやってみよっかな 今度やるか やるか えやるここで持ってくるの 持ってくる実証する スタジオ納豆の匂いにして帰ろう 100回200回300回400回でさ4つぐらい 研修をしてさ いいじゃんやろうよ 美味しかったらもしかしたら混ぜる 派になるかもしんないしね 確かにね そうやったことないんだけ 毎回400回混ぜるのきついな結構 確かにねきついかも 面白いね納豆って 奥が深いですね なんか他あるそういうやつ えなんかラーメンの海苔いつ食べる みたいな 迷うよね 私は食べ方があってラーメンの 海苔をちょっとスープに浸して べちょべちょじゃないちょっと浸 してお米と一緒に食べるのが好き なの家系とかのお米つけれるとか 美味しそう 美味い でも私ラーメン屋さんでさラーメン と一緒に白麺まだ頼んだことなくて ほんとに美味しい 美味しいね絶対それは 私は大体パリパリのままで食べ たいなっていう気持ちで 比較的そっちかも そう食べようって思うんだけど 気づいたら沈んでて一番最後 わーでもわかるよ でもさなんかたまなんか特にこれは 女子だけの話かもしんないですけど お腹がいっぱいになっちゃう問題 マジでそうだな チャーシューを早めにクリアしない と マジでそうだ 後がきつい そうチャーシュー入んないの最後に 入んないほんと卵も入んない 学んだよね私たち何回も言ってさ チャーシュー残しちゃってさ最後まで うーって言いながら食べちゃった から そうでも先に卵とチャーシュー 食べちゃえばなんか麺は意外と つるって入ったりするんだよね そうなんですよ これはね 男性は結構もうペロリなるかな 関係ないのかどうですか 関係ないよ どうですか 関係なさそう 関係なさそう 女子だね そうか 最初にね食べとかないと でもねほんと最初に食べたら全然 余裕だったの そうだよね やっぱ 卵結構胃の容量持ってかれそう で後押ししちゃうんだよな そうだね 結構くるよね 結構くる美味しいですけど 面白いこの話結構やりたいね ね ね 私さみんなの卵かけご飯のこだわり 知りたい 知りたい 私結構アレンジレシピ派でさいろいろ あそうなんだ うんなんかいろんなのが好きなんだけど 好き期待ね みんなぜひ送ってください お願いします はいということで今日もハッシュタグ 夏サクサクで盛り上げていただける と嬉しいです 嬉しいです それでは最後まで よろしくお願いします 夏も桜を咲かせたい 改めましてこんばんはかすがさくら です 犬稲妻なつめです 私はですね 先日 うん 東京都のライブストレートリッチ チアをやりました わっ やりました やりたかった お疲れ様 そう東京公演で うん 現時点でまだね大阪公演は終わ ってないんですけど そうね 大阪公演も 終わってる そろそろやると うん 放送の時には終わってるっていう そうね みんな中はね うん 東京公演見に来てくれたんだよね そう 夜の分にね行かせていただいたん だけど 嬉しい 本当にすごかった マジ え マジで増えすぎなのと 分かったね そう衣装が私新衣装生で見るの 初めてだったから うん めちゃくちゃ可愛いね そうなのよ ね 私 お便りも あそうだそうだ お便りも はい夏作のエンムゆいさんから いただきました ありがとうございます ありがとうございます さくぽんの宇宙咲いてますか うん ぱん まやわしビッチーズライブストレート リーチチア東京公演現地で参加 させていただきました ありがとうございます 今回のライブ前のインタビュー でさくぽんは私たちの成長を見せ なければいけないライブとおっしゃ っていましたがそれは実感できる とても素晴らしいライブでした ゆいなを楽しく可愛く表現する さくぽんのパフォーマンスはみんな の心のお花を咲かせたと思います 今回ステージに立ったさくぽんと ドリーミードリーミーフラワー の一人のお客さんとして参加した 夏の今回のライブの感想をお聞き したいです もう いやいやいや 感動でしたか もう本当に感動した マジ なんか今回ソロ曲もあったじゃん 全員 あった もうさあの前にもう一個のソロ 曲は生で聞いたことあるんだけど 初めて聞くソロ曲だったからめちゃ くちゃ感動した可愛かった 嬉しい すごいよ そうなんかあのなんだろう歌詞 がすごい頑張るって感じのやつ じゃん そうなんかすごい頑張ってって なんかめちゃくちゃ可愛かった し ありがとう なんかお客さんもすごい多い中 でささくらが一人でステージ立ってる のを見るとなんかめちゃくちゃ 泣きそうになった マジ 感動した 確かに なんか全員でのパフォーマンス もマジでなんか本当にアイドル ってぐらいなんか踊り揃ってて めちゃくちゃかっこよかった 嬉しい なんか生歌かは思えなかったみんな マジか 上手すぎて やった マジですごかった いやでもなんか自分もやってて 日々見てるからあんま気づかない けどこの前のライブはすごいみんな の成長を感じた自分も含めかもしれない けどなんかなんだろう安定して きたなって歌とか マジでねあとmcがめちゃくちゃ 上手かった 嬉しい mcとかつなぎというか場のあおり とか全部があれ何台本ちょっと あるない すごいよね 今回はmcの数を減らしたんですよ 曲数を増やした分mc減らして だからその体力も課題だったの 続けてやるみたいなけどmc減らした 分結構今まではね分散してたん だけど自分に結構固まってたから"
+
+[[response.segments]]
+id = 0
+seek = 0
+start = 0
+end = 19.399999618530273
+text = "かすがさくらといねいなつねの 夏もさくらを咲かせたい"
+tokens = [ 50364, 3703, 2659, 5142, 6722, 6134, 5154, 3193, 1764, 5555, 1764, 3203, 9335, 5555, 2972, 220, 42708, 4801, 6722, 6134, 5154, 5998, 8975, 110, 3703, 13702, 20699, 51334 ]
+temperature = 0
+avg_logprob = -0.3141143023967743
+compression_ratio = 1.7105263471603394
+no_speech_prob = 0.4223434031009674
+
+[[response.segments]]
+id = 1
+seek = 0
+start = 19.399999618530273
+end = 24.079999923706055
+text = "みなさん咲いてますか うんぱ"
+tokens = [ 51334, 11362, 3203, 15567, 8975, 110, 18549, 5368, 3703, 42504, 3225, 487, 109, 51568 ]
+temperature = 0
+avg_logprob = -0.3141143023967743
+compression_ratio = 1.7105263471603394
+no_speech_prob = 0.4223434031009674
+
+[[response.segments]]
+id = 2
+seek = 0
+start = 24.079999923706055
+end = 27.760000228881836
+text = "こんばんはかすがさくらです こんばんはいねいなつねです"
+tokens = [ 51568, 31172, 13349, 3225, 3065, 3703, 2659, 5142, 6722, 6134, 5154, 4767, 14384, 3225, 13349, 3225, 3065, 1764, 5555, 1764, 3203, 9335, 5555, 4767, 51752 ]
+temperature = 0
+avg_logprob = -0.3141143023967743
+compression_ratio = 1.7105263471603394
+no_speech_prob = 0.4223434031009674
+
+[[response.segments]]
+id = 3
+seek = 2776
+start = 27.760000228881836
+end = 32.2400016784668
+text = "この番組は季節を名前に持つ私たち 二人が夏にそよぐさわやかな風"
+tokens = [ 50364, 13303, 33118, 30052, 3065, 8052, 96, 27694, 5998, 15940, 8945, 4108, 17694, 9335, 20083, 3368, 6574, 220, 11217, 4035, 5142, 42708, 4108, 5040, 5591, 35849, 6722, 9206, 7355, 24939, 22713, 50588 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 4
+seek = 2776
+start = 32.2400016784668
+end = 36.31999969482422
+text = "と春のような柔らかい空気を少し でもお届けできたらいいなという"
+tokens = [ 50588, 3193, 46953, 2972, 17010, 3203, 17238, 242, 5154, 3703, 1764, 23322, 25870, 5998, 15686, 2849, 220, 17783, 6117, 9636, 232, 7625, 43200, 3368, 5154, 13806, 3203, 15300, 50792 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 5
+seek = 2776
+start = 36.31999969482422
+end = 39.91999816894531
+text = "番組です はいということでさっそくですが"
+tokens = [ 50792, 33118, 30052, 4767, 48159, 39341, 6722, 2970, 5040, 6134, 4767, 5142, 50972 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 6
+seek = 2776
+start = 39.91999816894531
+end = 43.31999969482422
+text = "みなさん何かお気づきですか お気づきですか"
+tokens = [ 50972, 11362, 3203, 15567, 11906, 3703, 6117, 25870, 487, 98, 7016, 30913, 25223, 25870, 487, 98, 7016, 30913, 51142 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 7
+seek = 2776
+start = 43.31999969482422
+end = 46.119998931884766
+text = "まぁわかるよね わかりやすいよね"
+tokens = [ 51142, 37566, 44054, 4895, 30346, 220, 44054, 5095, 7355, 2659, 1764, 30346, 51282 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
 [[response.segments]]
-type = "transcript.text.segment"
+id = 8
+seek = 2776
+start = 46.119998931884766
+end = 48.7599983215332
+text = "前xにも投稿されてたしね しましたしね"
+tokens = [ 51282, 8945, 87, 4108, 4801, 37094, 10415, 123, 6722, 26638, 3368, 2849, 5555, 26974, 12072, 2849, 5555, 51414 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 9
+seek = 2776
+start = 48.7599983215332
+end = 49.7599983215332
+text = "そう 実は"
+tokens = [ 51414, 9955, 220, 33197, 3065, 51464 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 10
+seek = 2776
+start = 49.7599983215332
+end = 54.119998931884766
+text = "なんか髪がなんかなんかなんか なんかさらさらじゃない"
+tokens = [ 51464, 27646, 9084, 103, 5142, 27646, 27646, 27646, 16647, 3225, 3703, 6722, 5154, 6722, 5154, 40323, 51682 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 11
+seek = 2776
+start = 54.119998931884766
+end = 55.84000015258789
+text = "なんかさらさらかも なんかちょっと"
+tokens = [ 51682, 27646, 6722, 5154, 6722, 5154, 3703, 4801, 16647, 3225, 3703, 21888, 51768 ]
+temperature = 0
+avg_logprob = -0.27008721232414246
+compression_ratio = 1.8487972021102905
+no_speech_prob = 0.08267512172460556
+
+[[response.segments]]
+id = 12
+seek = 5584
+start = 55.84000015258789
+end = 57.84000015258789
+text = "どうしてどうして なんかいつもと違くない"
+tokens = [ 50364, 18395, 8822, 18395, 8822, 16647, 3225, 3703, 40162, 4801, 3193, 31846, 6134, 9311, 50464 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 13
+seek = 5584
+start = 57.84000015258789
+end = 59.91999816894531
+text = "なんかいつもと違う もう言っちゃったけどね"
+tokens = [ 50464, 27646, 40162, 4801, 3193, 49806, 220, 16324, 12009, 41380, 10102, 21891, 5555, 50568 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 14
+seek = 5584
+start = 59.91999816894531
+end = 63.400001525878906
+text = "さらさらだよね そうなの"
+tokens = [ 50568, 6722, 5154, 6722, 5154, 5362, 30346, 36165, 3203, 2972, 50742 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 15
+seek = 5584
+start = 63.400001525878906
+end = 65.91999816894531
+text = "そう 髪質改善をしました"
+tokens = [ 50742, 9955, 220, 9084, 103, 43450, 34490, 5234, 226, 5998, 44499, 50868 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 16
+seek = 5584
+start = 65.91999816894531
+end = 71.4800033569336
+text = "すごい お店美容院でなんかやってもらったら"
+tokens = [ 50868, 34161, 25223, 22469, 9175, 25750, 38358, 2474, 27646, 31497, 4801, 5154, 10102, 5154, 51146 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 17
+seek = 5584
+start = 71.4800033569336
+end = 76
+text = "さらさらになったのに なんか写真でも伝わってきたけど"
+tokens = [ 51146, 6722, 5154, 6722, 5154, 22615, 10102, 2972, 4108, 16647, 3225, 3703, 5676, 247, 6303, 17783, 7384, 251, 9206, 6102, 49809, 21891, 51372 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 18
+seek = 5584
+start = 76
+end = 81.12000274658203
+text = "生だとよりさらさら嬉しい マジで朝起きてもこれだからめっちゃ"
+tokens = [ 51372, 8244, 5362, 3193, 5591, 5095, 6722, 5154, 6722, 5154, 161, 105, 231, 17121, 220, 13258, 14655, 2474, 46610, 9147, 7016, 2996, 4801, 9329, 33183, 11429, 41380, 51628 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 19
+seek = 5584
+start = 81.12000274658203
+end = 83.31999969482422
+text = "嬉しいんだ そこがいいとこだよね"
+tokens = [ 51628, 161, 105, 231, 17121, 26983, 18421, 3503, 5142, 13806, 3193, 3503, 5362, 30346, 51738 ]
+temperature = 0
+avg_logprob = -0.2675989866256714
+compression_ratio = 1.8467742204666138
+no_speech_prob = 0.3664156496524811
+
+[[response.segments]]
+id = 20
+seek = 8332
+start = 83.80000305175781
+end = 85.87999725341797
+text = "わかる いいの"
+tokens = [ 50388, 44054, 4895, 220, 13806, 2972, 50492 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 21
+seek = 8332
+start = 85.87999725341797
+end = 89.19999694824219
+text = "梅雨の時期だからこれから そうドンピシャじゃんと思って"
+tokens = [ 50492, 19017, 227, 35339, 2972, 6611, 16786, 33183, 9329, 11046, 36165, 11195, 14121, 242, 11054, 17233, 15339, 3225, 22372, 6102, 50658 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 22
+seek = 8332
+start = 89.19999694824219
+end = 91.76000213623047
+text = "意図してなかったけど うねらないといいの"
+tokens = [ 50658, 9042, 3919, 111, 8822, 3203, 25785, 21891, 220, 2646, 5555, 5154, 9311, 3193, 13806, 2972, 50786 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 23
+seek = 8332
+start = 91.76000213623047
+end = 95.23999786376953
+text = "大丈夫だよ 私最近もう内側すごいよ"
+tokens = [ 50786, 44537, 5362, 5591, 220, 20083, 46777, 16324, 34742, 7437, 112, 34161, 5591, 50960 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 24
+seek = 8332
+start = 95.23999786376953
+end = 97.04000091552734
+text = "見せらんない多分 うねっちゃう"
+tokens = [ 50960, 10470, 13702, 5154, 3225, 9311, 6392, 6627, 42504, 5555, 41380, 2646, 51050 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 25
+seek = 8332
+start = 97.04000091552734
+end = 99.04000091552734
+text = "全部こうなっちゃうの やったことある"
+tokens = [ 51050, 38714, 22159, 3203, 41380, 2646, 2972, 220, 7355, 10102, 13235, 24719, 51150 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 26
+seek = 8332
+start = 99.04000091552734
+end = 101.95999908447266
+text = "あるよ 1年に1回くらい梅雨前に当てるから"
+tokens = [ 51150, 24719, 5591, 502, 5157, 4108, 16, 8350, 6134, 38052, 19017, 227, 35339, 8945, 4108, 16233, 2996, 4895, 11046, 51296 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 27
+seek = 8332
+start = 101.95999908447266
+end = 103.5999984741211
+text = "梅雨大丈夫なんだ じゃあ"
+tokens = [ 51296, 19017, 227, 35339, 44537, 33383, 2605, 246, 9051, 3590, 51378 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 28
+seek = 8332
+start = 103.5999984741211
+end = 107.04000091552734
+text = "うん梅雨前に当てるよ えもう梅雨"
+tokens = [ 51378, 17760, 19017, 227, 35339, 8945, 4108, 16233, 2996, 4895, 5591, 2605, 230, 16324, 19017, 227, 35339, 51550 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 29
+seek = 8332
+start = 107.04000091552734
+end = 108.68000030517578
+text = "じゃない いやまだ"
+tokens = [ 51550, 40323, 220, 18524, 47185, 51632 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 30
+seek = 8332
+start = 108.68000030517578
+end = 111.27999877929688
+text = "まだ これから当てる"
+tokens = [ 51632, 47185, 33732, 11046, 16233, 2996, 4895, 51762 ]
+temperature = 0
+avg_logprob = -0.30451327562332153
+compression_ratio = 1.7689530849456787
+no_speech_prob = 0.6438553929328918
+
+[[response.segments]]
+id = 31
+seek = 11128
+start = 111.27999877929688
+end = 114.68000030517578
+text = "これから当てる はいということであと納豆"
+tokens = [ 50364, 9329, 11046, 16233, 2996, 4895, 48159, 39341, 37015, 7732, 235, 45169, 50534 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 32
+seek = 11128
+start = 114.68000030517578
+end = 118.16000366210938
+text = "納豆食べてんのみんな どうなの"
+tokens = [ 50534, 7732, 235, 45169, 50067, 2996, 3225, 2972, 11362, 16548, 34994, 2646, 3203, 2972, 50708 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 33
+seek = 11128
+start = 118.16000366210938
+end = 120.68000030517578
+text = "なんかさ 梅雨さ回す"
+tokens = [ 50708, 27646, 6722, 220, 19017, 227, 35339, 6722, 8350, 2659, 50834 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 34
+seek = 11128
+start = 120.68000030517578
+end = 124.4000015258789
+text = "回せば回すほどなんか 納豆の栄養がなんちゃうか"
+tokens = [ 50834, 8350, 13702, 13349, 8350, 2659, 29050, 27646, 220, 7732, 235, 45169, 2972, 8987, 226, 22217, 232, 5142, 11847, 18930, 2646, 3703, 51020 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 35
+seek = 11128
+start = 124.4000015258789
+end = 127.5199966430664
+text = "そうね なんか変化ないらしいよ別に"
+tokens = [ 51020, 9955, 5555, 16647, 3225, 3703, 40931, 23756, 9311, 5154, 17121, 5591, 16158, 4108, 51176 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 36
+seek = 11128
+start = 127.5199966430664
+end = 129.1199951171875
+text = "え なんなんですか"
+tokens = [ 51176, 6474, 16647, 3225, 11847, 30913, 51256 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 37
+seek = 11128
+start = 129.1199951171875
+end = 131.63999938964844
+text = "なんかじゃあまずなくていいよね"
+tokens = [ 51256, 27646, 31284, 34690, 40252, 2996, 13806, 30346, 51382 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 38
+seek = 11128
+start = 131.63999938964844
+end = 133.67999267578125
+text = "まずくなっちゃうね でもわかんない"
+tokens = [ 51382, 34690, 6134, 3203, 41380, 2646, 5555, 220, 17783, 44054, 3225, 9311, 51484 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 39
+seek = 11128
+start = 133.67999267578125
+end = 136.44000244140625
+text = "それが好きで美味しいから 納豆食べてる人もいるんだもんね"
+tokens = [ 51484, 13873, 5142, 2131, 7016, 2474, 45511, 17121, 11046, 220, 7732, 235, 45169, 50067, 2996, 4895, 4035, 4801, 22979, 26983, 4801, 3225, 5555, 51622 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 40
+seek = 11128
+start = 136.44000244140625
+end = 137.9199981689453
+text = "そういうこと あのねばねば"
+tokens = [ 51622, 9955, 39773, 220, 159, 223, 224, 159, 223, 106, 159, 223, 255, 159, 223, 108, 159, 223, 255, 159, 223, 108, 51696 ]
+temperature = 0
+avg_logprob = -0.3611917197704315
+compression_ratio = 1.8576923608779907
+no_speech_prob = 0.21463896334171295
+
+[[response.segments]]
+id = 41
+seek = 13792
+start = 137.9199981689453
+end = 143.44000244140625
+text = "私あの話として家に帰って納豆 があったからめっちゃやってみたん"
+tokens = [ 50364, 20083, 24910, 11103, 3193, 8822, 5155, 4108, 4845, 108, 6102, 7732, 235, 45169, 29697, 3590, 10102, 11046, 11429, 41380, 31497, 11362, 3368, 3225, 50640 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 42
+seek = 13792
+start = 143.44000244140625
+end = 144.44000244140625
+text = "ですよ え嘘嘘"
+tokens = [ 50640, 4767, 5591, 2605, 230, 10756, 246, 10756, 246, 50690 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 43
+seek = 13792
+start = 144.44000244140625
+end = 150.32000732421875
+text = "40回くらい混ぜてみたんですよ うんそう"
+tokens = [ 50690, 5254, 8350, 6134, 38052, 48640, 20258, 2996, 11362, 3368, 3225, 4767, 5591, 42504, 3225, 9955, 50984 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 44
+seek = 13792
+start = 150.32000732421875
+end = 153.0399932861328
+text = "でも健康になった気がした 本当"
+tokens = [ 50984, 17783, 44201, 6346, 115, 22615, 10102, 25870, 5142, 8533, 220, 37505, 51120 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 45
+seek = 13792
+start = 153.0399932861328
+end = 154.44000244140625
+text = "食べれたんだ 食べてた"
+tokens = [ 51120, 50067, 35478, 26983, 220, 50067, 2996, 3368, 51190 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 46
+seek = 13792
+start = 154.44000244140625
+end = 159.36000061035156
+text = "食べたえらいね 納豆であれを最後にしてみた調味料"
+tokens = [ 51190, 50067, 3368, 6474, 38052, 5555, 220, 7732, 235, 45169, 2474, 30659, 5998, 20578, 4108, 8822, 11362, 3368, 32943, 17268, 33404, 51436 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 47
+seek = 13792
+start = 159.36000061035156
+end = 163.16000366210938
+text = "でまたちょっと混ぜてみたいな そう"
+tokens = [ 51436, 2474, 24712, 21888, 48640, 20258, 2996, 41258, 3203, 36165, 51626 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 48
+seek = 13792
+start = 163.16000366210938
+end = 165.1999969482422
+text = "どうだった 最初に入れたほうが"
+tokens = [ 51626, 18395, 5362, 10102, 220, 8661, 28727, 4108, 14028, 35478, 15190, 2646, 5142, 51728 ]
+temperature = 0
+avg_logprob = -0.4097157418727875
+compression_ratio = 1.659751057624817
+no_speech_prob = 0.14028935134410858
+
+[[response.segments]]
+id = 49
+seek = 16520
+start = 165.1999969482422
+end = 170.16000366210938
+text = "美味しいけどでも健康にはいいん だもんね"
+tokens = [ 50364, 45511, 17121, 21891, 17783, 44201, 6346, 115, 4108, 11050, 1764, 3225, 37656, 4801, 3225, 5555, 50612 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 50
+seek = 16520
+start = 170.16000366210938
+end = 172.75999450683594
+text = "そうなの いやわかんないでもなんか難しい"
+tokens = [ 50612, 9955, 3203, 2972, 220, 18524, 44054, 3225, 9311, 17783, 27646, 21192, 17121, 50742 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 51
+seek = 16520
+start = 172.75999450683594
+end = 175.36000061035156
+text = "ですね 健康にいいのかプラシーボーでいいん"
+tokens = [ 50742, 14277, 220, 44201, 6346, 115, 4108, 13806, 2972, 3703, 20953, 11353, 11054, 15266, 250, 3384, 2474, 13806, 3225, 50872 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 52
+seek = 16520
+start = 175.36000061035156
+end = 177.47999572753906
+text = "じゃないでも プラシーボーか"
+tokens = [ 50872, 40323, 17783, 15096, 245, 11353, 11054, 15266, 250, 3384, 3703, 50978 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 53
+seek = 16520
+start = 177.47999572753906
+end = 179.0399932861328
+text = "そっか いい気がする"
+tokens = [ 50978, 5040, 2970, 3703, 220, 13806, 25870, 5142, 22570, 51056 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 54
+seek = 16520
+start = 179.0399932861328
+end = 183.44000244140625
+text = "でも私は混ぜないですよ ちょっとあの納豆についていただ"
+tokens = [ 51056, 17783, 20083, 3065, 48640, 20258, 9311, 4767, 5591, 44692, 8744, 13137, 24910, 7732, 235, 45169, 4108, 9335, 18549, 32418, 51276 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 55
+seek = 16520
+start = 183.44000244140625
+end = 186.27999877929688
+text = "いてるから 納豆について"
+tokens = [ 51276, 18549, 4895, 11046, 220, 7732, 235, 45169, 4108, 9335, 18549, 51418 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 56
+seek = 16520
+start = 186.27999877929688
+end = 189.47999572753906
+text = "納豆について 夏作ネームほっぺまさんから頂き"
+tokens = [ 51418, 7732, 235, 45169, 4108, 9335, 18549, 220, 42708, 11914, 1047, 235, 44265, 15190, 32918, 118, 2889, 15567, 11046, 8313, 224, 7016, 51578 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 57
+seek = 16520
+start = 189.47999572753906
+end = 190.83999633789062
+text = "ました ありがとうございます"
+tokens = [ 51578, 12072, 49444, 19187, 43808, 51646 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 58
+seek = 16520
+start = 190.83999633789062
+end = 192.8800048828125
+text = "ありがとうございます かすがさんいぬいさんされてます"
+tokens = [ 51646, 40035, 25295, 2659, 5142, 15567, 1764, 487, 105, 1764, 15567, 6722, 26638, 5368, 51748 ]
+temperature = 0
+avg_logprob = -0.36362424492836
+compression_ratio = 2
+no_speech_prob = 0.31056952476501465
+
+[[response.segments]]
+id = 59
+seek = 19288
+start = 192.8800048828125
+end = 198.27999877929688
+text = "か 第48回の配信で納豆を何回かき混ぜる"
+tokens = [ 50364, 3703, 220, 7536, 13318, 8350, 2972, 38846, 17665, 2474, 7732, 235, 45169, 5998, 11906, 8350, 3703, 7016, 48640, 20258, 4895, 50634 ]
+temperature = 0
+avg_logprob = -0.2039364129304886
+compression_ratio = 1.5090252161026
+no_speech_prob = 0.7629407048225403
+
+[[response.segments]]
+id = 60
+seek = 19288
+start = 198.27999877929688
+end = 201.47999572753906
+text = "かが議論の波紋を広げていました ね"
+tokens = [ 50634, 3703, 5142, 24686, 29340, 2972, 30806, 7732, 233, 5998, 6346, 225, 26012, 2996, 25910, 35757, 50794 ]
+temperature = 0
+avg_logprob = -0.2039364129304886
+compression_ratio = 1.5090252161026
+no_speech_prob = 0.7629407048225403
+
+[[response.segments]]
+id = 61
+seek = 19288
+start = 201.47999572753906
+end = 207.47999572753906
+text = "自分も10回くらいです混ぜる前に 辛子を入れて混ぜた後から納豆"
+tokens = [ 50794, 9722, 6627, 4801, 3279, 8350, 6134, 38052, 4767, 48640, 20258, 4895, 8945, 4108, 220, 36432, 7626, 5998, 14028, 26638, 48640, 20258, 3368, 5661, 11046, 7732, 235, 45169, 51094 ]
+temperature = 0
+avg_logprob = -0.2039364129304886
+compression_ratio = 1.5090252161026
+no_speech_prob = 0.7629407048225403
+
+[[response.segments]]
+id = 62
+seek = 19288
+start = 207.47999572753906
+end = 212.67999267578125
+text = "のタレまたは醤油を入れますね ただかの有名なロサンジュンは"
+tokens = [ 51094, 2972, 12144, 16680, 24712, 3065, 21038, 97, 14420, 5998, 14028, 4132, 5368, 5555, 25581, 5362, 3703, 2972, 2412, 15940, 3203, 17164, 23607, 4824, 14655, 26167, 4824, 3065, 51354 ]
+temperature = 0
+avg_logprob = -0.2039364129304886
+compression_ratio = 1.5090252161026
+no_speech_prob = 0.7629407048225403
+
+[[response.segments]]
+id = 63
+seek = 19288
+start = 212.67999267578125
+end = 217.39999389648438
+text = "最低でも400回かき混ぜると美味しく なると言ったとされています試し"
+tokens = [ 51354, 8661, 41377, 17783, 13741, 8350, 3703, 7016, 48640, 20258, 4895, 3193, 45511, 26568, 16647, 4895, 3193, 12009, 10102, 3193, 6722, 26638, 11267, 22099, 2849, 51590 ]
+temperature = 0
+avg_logprob = -0.2039364129304886
+compression_ratio = 1.5090252161026
+no_speech_prob = 0.7629407048225403
+
+[[response.segments]]
+id = 64
+seek = 19288
+start = 217.39999389648438
+end = 219.32000732421875
+text = "んやったら 確かに美味しいのですよ"
+tokens = [ 51590, 3225, 7355, 10102, 5154, 220, 24293, 3703, 4108, 45511, 17121, 2972, 4767, 5591, 51686 ]
+temperature = 0
+avg_logprob = -0.2039364129304886
+compression_ratio = 1.5090252161026
+no_speech_prob = 0.7629407048225403
+
+[[response.segments]]
+id = 65
+seek = 21932
+start = 219.32000732421875
+end = 225.16000366210938
+text = "400回やったの美味しいの なんで混ぜれば混ぜるほど美味しい"
+tokens = [ 50364, 13741, 8350, 7355, 10102, 2972, 45511, 17121, 2972, 16647, 35356, 48640, 20258, 4132, 13349, 48640, 20258, 4895, 29050, 45511, 17121, 50656 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 66
+seek = 21932
+start = 225.16000366210938
+end = 227.63999938964844
+text = "の でもなんかさ分かんないけどお菓子"
+tokens = [ 50656, 2972, 220, 17783, 27646, 6722, 6627, 3703, 3225, 9311, 21891, 6117, 16616, 241, 7626, 50780 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 67
+seek = 21932
+start = 227.63999938964844
+end = 231.63999938964844
+text = "作りとかでもさバーって混ぜて バーって膨らんで減ったりする"
+tokens = [ 50780, 11914, 5095, 30607, 17783, 6722, 18593, 3384, 6102, 48640, 20258, 2996, 15096, 238, 3384, 6102, 39708, 101, 5154, 35356, 9592, 249, 10102, 5095, 22570, 50980 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 68
+seek = 21932
+start = 231.63999938964844
+end = 234
+text = "じゃん泡 確かに確かに"
+tokens = [ 50980, 15339, 3225, 6847, 94, 220, 24293, 3703, 4108, 24293, 3703, 4108, 51098 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 69
+seek = 21932
+start = 234
+end = 238.32000732421875
+text = "なんかガーってモコモコってなって 落ち着いたりするから400回混ぜ"
+tokens = [ 51098, 27646, 33574, 3384, 6102, 29183, 18066, 29183, 18066, 6102, 3203, 6102, 220, 30848, 6574, 20708, 17679, 5095, 22570, 11046, 13741, 8350, 48640, 20258, 51314 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 70
+seek = 21932
+start = 238.32000732421875
+end = 242.60000610351562
+text = "たら逆にモコモコじゃない可能性 泡なくなる"
+tokens = [ 51314, 3368, 5154, 2215, 228, 4108, 29183, 18066, 29183, 18066, 40323, 16657, 21686, 220, 6847, 94, 40252, 29218, 51528 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 71
+seek = 21932
+start = 242.60000610351562
+end = 243.60000610351562
+text = "逆に 本当に"
+tokens = [ 51528, 2215, 228, 4108, 220, 37505, 4108, 51578 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 72
+seek = 21932
+start = 243.60000610351562
+end = 246.52000427246094
+text = "逆に えちょっとやってみよっかな"
+tokens = [ 51578, 2215, 228, 4108, 2605, 230, 21888, 31497, 11362, 5591, 2970, 24939, 51724 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 73
+seek = 21932
+start = 246.52000427246094
+end = 247.52000427246094
+text = "今度やるか やるか"
+tokens = [ 51724, 6480, 13127, 7355, 4895, 3703, 43938, 4895, 3703, 51774 ]
+temperature = 0
+avg_logprob = -0.30122876167297363
+compression_ratio = 1.8044281005859375
+no_speech_prob = 0.3378729522228241
+
+[[response.segments]]
+id = 74
+seek = 24752
+start = 247.72000122070312
+end = 251.72000122070312
+text = "えやるここで持ってくるの 持ってくる実証する"
+tokens = [ 50374, 6474, 7355, 4895, 23509, 2474, 17694, 6102, 6134, 4895, 2972, 220, 17694, 6102, 6134, 4895, 33197, 5396, 120, 22570, 50574 ]
+temperature = 0
+avg_logprob = -0.30609601736068726
+compression_ratio = 1.6753730773925781
+no_speech_prob = 0.3628743588924408
+
+[[response.segments]]
+id = 75
+seek = 24752
+start = 251.72000122070312
+end = 256.7200012207031
+text = "スタジオ納豆の匂いにして帰ろう 100回200回300回400回でさ4つぐらい"
+tokens = [ 50574, 9550, 12144, 14655, 18743, 7732, 235, 45169, 2972, 9937, 224, 1764, 4108, 8822, 4845, 108, 39679, 2319, 8350, 7629, 8350, 12566, 8350, 13741, 8350, 2474, 6722, 19, 9335, 35849, 38052, 50824 ]
+temperature = 0
+avg_logprob = -0.30609601736068726
+compression_ratio = 1.6753730773925781
+no_speech_prob = 0.3628743588924408
+
+[[response.segments]]
+id = 76
+seek = 24752
+start = 256.7200012207031
+end = 258.7200012207031
+text = "研修をしてさ いいじゃんやろうよ"
+tokens = [ 50824, 23230, 242, 7792, 106, 5998, 8822, 6722, 220, 13806, 15339, 3225, 7355, 39679, 5591, 50924 ]
+temperature = 0
+avg_logprob = -0.30609601736068726
+compression_ratio = 1.6753730773925781
+no_speech_prob = 0.3628743588924408
+
+[[response.segments]]
+id = 77
+seek = 24752
+start = 258.7200012207031
+end = 262.1199951171875
+text = "美味しかったらもしかしたら混ぜる 派になるかもしんないしね"
+tokens = [ 50924, 45511, 2849, 25785, 5154, 4801, 32156, 8533, 5154, 48640, 20258, 4895, 220, 12136, 122, 22615, 4895, 3703, 49412, 3225, 9311, 2849, 5555, 51094 ]
+temperature = 0
+avg_logprob = -0.30609601736068726
+compression_ratio = 1.6753730773925781
+no_speech_prob = 0.3628743588924408
+
+[[response.segments]]
+id = 78
+seek = 24752
+start = 262.1199951171875
+end = 263.7200012207031
+text = "確かにね そうやったことないんだけ"
+tokens = [ 51094, 24293, 3703, 4108, 5555, 36165, 7355, 10102, 13235, 9311, 26983, 7625, 51174 ]
+temperature = 0
+avg_logprob = -0.30609601736068726
+compression_ratio = 1.6753730773925781
+no_speech_prob = 0.3628743588924408
+
+[[response.segments]]
+id = 79
+seek = 24752
+start = 263.7200012207031
+end = 267.7200012207031
+text = "毎回400回混ぜるのきついな結構 確かにねきついかも"
+tokens = [ 51174, 7256, 236, 8350, 13741, 8350, 48640, 20258, 4895, 2972, 7016, 9335, 1764, 3203, 17144, 43362, 220, 24293, 3703, 4108, 5555, 7016, 9335, 1764, 3703, 4801, 51374 ]
+temperature = 0
+avg_logprob = -0.30609601736068726
+compression_ratio = 1.6753730773925781
+no_speech_prob = 0.3628743588924408
+
+[[response.segments]]
+id = 80
+seek = 24752
+start = 267.7200012207031
+end = 270.7200012207031
+text = "面白いね納豆って 奥が深いですね"
+tokens = [ 51374, 8833, 13558, 1764, 5555, 7732, 235, 45169, 6102, 220, 1881, 98, 5142, 24043, 1764, 14277, 51524 ]
+temperature = 0
+avg_logprob = -0.30609601736068726
+compression_ratio = 1.6753730773925781
+no_speech_prob = 0.3628743588924408
+
+[[response.segments]]
+id = 81
+seek = 27072
+start = 270.9200134277344
+end = 273.9200134277344
+text = "なんか他あるそういうやつ"
+tokens = [ 50374, 27646, 5000, 24719, 9955, 9444, 7355, 9335, 50524 ]
+temperature = 0
+avg_logprob = -0.18991200625896454
+compression_ratio = 1.619718313217163
+no_speech_prob = 0.7458900213241577
+
+[[response.segments]]
+id = 82
+seek = 27072
+start = 273.9200134277344
+end = 280.9200134277344
+text = "えなんかラーメンの海苔いつ食べる みたいな"
+tokens = [ 50524, 6474, 27646, 11353, 15266, 94, 4824, 2972, 20078, 13736, 242, 40162, 50067, 4895, 2605, 123, 20699, 3203, 50874 ]
+temperature = 0
+avg_logprob = -0.18991200625896454
+compression_ratio = 1.619718313217163
+no_speech_prob = 0.7458900213241577
+
+[[response.segments]]
+id = 83
+seek = 27072
+start = 280.9200134277344
+end = 281.9200134277344
+text = "迷うよね"
+tokens = [ 50874, 3316, 115, 2646, 30346, 50924 ]
+temperature = 0
+avg_logprob = -0.18991200625896454
+compression_ratio = 1.619718313217163
+no_speech_prob = 0.7458900213241577
+
+[[response.segments]]
+id = 84
+seek = 27072
+start = 281.9200134277344
+end = 287.9200134277344
+text = "私は食べ方があってラーメンの 海苔をちょっとスープに浸して"
+tokens = [ 50924, 20083, 3065, 50067, 9249, 5142, 3590, 6102, 11353, 15266, 94, 4824, 2972, 220, 20078, 13736, 242, 5998, 21888, 9550, 15266, 245, 4108, 11038, 116, 8822, 51224 ]
+temperature = 0
+avg_logprob = -0.18991200625896454
+compression_ratio = 1.619718313217163
+no_speech_prob = 0.7458900213241577
+
+[[response.segments]]
+id = 85
+seek = 27072
+start = 287.9200134277344
+end = 291.9200134277344
+text = "べちょべちょじゃないちょっと浸 してお米と一緒に食べるのが好き"
+tokens = [ 51224, 28043, 17411, 28043, 17411, 40323, 21888, 11038, 116, 26974, 2996, 6117, 27742, 3193, 2257, 12608, 240, 4108, 50067, 4895, 2972, 5142, 2131, 7016, 51424 ]
+temperature = 0
+avg_logprob = -0.18991200625896454
+compression_ratio = 1.619718313217163
+no_speech_prob = 0.7458900213241577
+
+[[response.segments]]
+id = 86
+seek = 27072
+start = 291.9200134277344
+end = 294.9200134277344
+text = "なの家系とかのお米つけれるとか"
+tokens = [ 51424, 3203, 2972, 5155, 25368, 30607, 2972, 6117, 27742, 9335, 7625, 35367, 30607, 51574 ]
+temperature = 0
+avg_logprob = -0.18991200625896454
+compression_ratio = 1.619718313217163
+no_speech_prob = 0.7458900213241577
+
+[[response.segments]]
+id = 87
+seek = 27072
+start = 294.9200134277344
+end = 295.9200134277344
+text = "美味しそう"
+tokens = [ 51574, 45511, 2849, 9955, 51624 ]
+temperature = 0
+avg_logprob = -0.18991200625896454
+compression_ratio = 1.619718313217163
+no_speech_prob = 0.7458900213241577
+
+[[response.segments]]
+id = 88
+seek = 29592
+start = 296.1199951171875
+end = 297.1199951171875
+text = "美味い"
+tokens = [ 50374, 45511, 1764, 50424 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 89
+seek = 29592
+start = 297.1199951171875
+end = 302.1199951171875
+text = "でも私ラーメン屋さんでさラーメン と一緒に白麺まだ頼んだことなくて"
+tokens = [ 50424, 17783, 20083, 11353, 15266, 94, 4824, 9636, 233, 15567, 2474, 6722, 11353, 15266, 94, 4824, 16746, 2257, 12608, 240, 4108, 13558, 3994, 118, 47185, 8313, 120, 26983, 13235, 40252, 2996, 50674 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 90
+seek = 29592
+start = 302.1199951171875
+end = 303.1199951171875
+text = "ほんとに美味しい"
+tokens = [ 50674, 15190, 49329, 4108, 45511, 17121, 50724 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 91
+seek = 29592
+start = 303.1199951171875
+end = 305.1199951171875
+text = "美味しいね絶対それは"
+tokens = [ 50724, 45511, 17121, 5555, 6948, 114, 35252, 48846, 50824 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 92
+seek = 29592
+start = 305.1199951171875
+end = 309.1199951171875
+text = "私は大体パリパリのままで食べ たいなっていう気持ちで"
+tokens = [ 50824, 20083, 3065, 3582, 29485, 23268, 12376, 23268, 12376, 2972, 2889, 28176, 50067, 25581, 1764, 3203, 46896, 25870, 17694, 6574, 2474, 51024 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 93
+seek = 29592
+start = 309.1199951171875
+end = 310.1199951171875
+text = "比較的そっちかも"
+tokens = [ 51024, 25174, 1546, 5040, 39046, 3703, 4801, 51074 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 94
+seek = 29592
+start = 310.1199951171875
+end = 314.1199951171875
+text = "そう食べようって思うんだけど 気づいたら沈んでて一番最後"
+tokens = [ 51074, 9955, 50067, 17010, 6102, 8870, 17760, 5362, 21891, 220, 25870, 487, 98, 17679, 5154, 3308, 230, 35356, 2996, 2257, 33118, 20578, 51274 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 95
+seek = 29592
+start = 314.1199951171875
+end = 315.1199951171875
+text = "わーでもわかるよ"
+tokens = [ 51274, 9206, 3384, 17783, 44054, 4895, 5591, 51324 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 96
+seek = 29592
+start = 315.1199951171875
+end = 320.1199951171875
+text = "でもさなんかたまなんか特にこれは 女子だけの話かもしんないですけど"
+tokens = [ 51324, 17783, 6722, 27646, 3368, 2889, 27646, 17682, 4108, 25212, 220, 17015, 7626, 36215, 2972, 11103, 3703, 49412, 3225, 9311, 4767, 21891, 51574 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 97
+seek = 29592
+start = 320.1199951171875
+end = 322.1199951171875
+text = "お腹がいっぱいになっちゃう問題"
+tokens = [ 51574, 6117, 21184, 117, 5142, 1764, 37696, 1764, 22615, 41380, 2646, 17197, 51674 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 98
+seek = 29592
+start = 322.1199951171875
+end = 323.1199951171875
+text = "マジでそうだな"
+tokens = [ 51674, 13258, 14655, 2474, 39471, 3203, 51724 ]
+temperature = 0
+avg_logprob = -0.19632723927497864
+compression_ratio = 1.6955127716064453
+no_speech_prob = 0.6544238924980164
+
+[[response.segments]]
+id = 99
+seek = 32312
+start = 323.32000732421875
+end = 326.32000732421875
+text = "チャーシューを早めにクリアしない と"
+tokens = [ 50374, 31771, 3384, 11054, 26167, 3384, 5998, 21176, 11429, 4108, 10825, 12376, 12817, 2849, 9311, 16746, 50524 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 100
+seek = 32312
+start = 326.32000732421875
+end = 327.32000732421875
+text = "マジでそうだ"
+tokens = [ 50524, 13258, 14655, 2474, 39471, 50574 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 101
+seek = 32312
+start = 327.32000732421875
+end = 328.32000732421875
+text = "後がきつい"
+tokens = [ 50574, 5661, 5142, 7016, 9335, 1764, 50624 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 102
+seek = 32312
+start = 328.32000732421875
+end = 330.32000732421875
+text = "そうチャーシュー入んないの最後に"
+tokens = [ 50624, 9955, 31771, 3384, 11054, 26167, 3384, 14028, 3225, 9311, 2972, 20578, 4108, 50724 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 103
+seek = 32312
+start = 330.32000732421875
+end = 332.32000732421875
+text = "入んないほんと卵も入んない"
+tokens = [ 50724, 14028, 3225, 9311, 15190, 49329, 5322, 113, 4801, 14028, 3225, 9311, 50824 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 104
+seek = 32312
+start = 332.32000732421875
+end = 337.32000732421875
+text = "学んだよね私たち何回も言ってさ チャーシュー残しちゃってさ最後まで"
+tokens = [ 50824, 29618, 26983, 30346, 20083, 3368, 6574, 11906, 8350, 4801, 12009, 6102, 6722, 15096, 223, 17233, 3384, 11054, 26167, 3384, 15976, 233, 2849, 18930, 6102, 6722, 20578, 28176, 51074 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 105
+seek = 32312
+start = 337.32000732421875
+end = 339.32000732421875
+text = "うーって言いながら食べちゃった から"
+tokens = [ 51074, 2646, 3384, 6102, 12009, 1764, 3203, 5142, 5154, 50067, 18930, 10102, 25295, 5154, 51174 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 106
+seek = 32312
+start = 339.32000732421875
+end = 343.32000732421875
+text = "そうでも先に卵とチャーシュー 食べちゃえばなんか麺は意外と"
+tokens = [ 51174, 9955, 17783, 10108, 4108, 5322, 113, 3193, 31771, 3384, 11054, 26167, 3384, 220, 50067, 18930, 37810, 27646, 3994, 118, 3065, 9042, 12022, 3193, 51374 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 107
+seek = 32312
+start = 343.32000732421875
+end = 345.32000732421875
+text = "つるって入ったりするんだよね"
+tokens = [ 51374, 9335, 4895, 6102, 14028, 10102, 5095, 22570, 26983, 30346, 51474 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 108
+seek = 32312
+start = 345.32000732421875
+end = 346.32000732421875
+text = "そうなんですよ"
+tokens = [ 51474, 9955, 42255, 5591, 51524 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 109
+seek = 32312
+start = 346.32000732421875
+end = 347.32000732421875
+text = "これはね"
+tokens = [ 51524, 25212, 5555, 51574 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 110
+seek = 32312
+start = 347.32000732421875
+end = 349.32000732421875
+text = "男性は結構もうペロリなるかな"
+tokens = [ 51574, 25243, 21686, 3065, 17144, 43362, 16324, 1047, 248, 17164, 12376, 29218, 24939, 51674 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 111
+seek = 32312
+start = 349.32000732421875
+end = 350.32000732421875
+text = "関係ないのかどうですか"
+tokens = [ 51674, 5196, 95, 20372, 9311, 2972, 3703, 18395, 30913, 51724 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 112
+seek = 32312
+start = 350.32000732421875
+end = 351.32000732421875
+text = "関係ないよ"
+tokens = [ 51724, 5196, 95, 20372, 9311, 5591, 51774 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 113
+seek = 32312
+start = 351.32000732421875
+end = 352.32000732421875
+text = "どうですか"
+tokens = [ 51774, 18395, 30913, 51824 ]
+temperature = 0
+avg_logprob = -0.1993149071931839
+compression_ratio = 1.9730639457702637
+no_speech_prob = 0.7487098574638367
+
+[[response.segments]]
+id = 114
+seek = 35232
+start = 352.5199890136719
+end = 353.5199890136719
+text = "関係なさそう"
+tokens = [ 50374, 5196, 95, 20372, 3203, 6722, 9955, 50424 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 115
+seek = 35232
+start = 353.5199890136719
+end = 354.5199890136719
+text = "関係なさそう"
+tokens = [ 50424, 5196, 95, 20372, 3203, 6722, 9955, 50474 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 116
+seek = 35232
+start = 354.5199890136719
+end = 355.5199890136719
+text = "女子だね"
+tokens = [ 50474, 17015, 7626, 5362, 5555, 50524 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 117
+seek = 35232
+start = 355.5199890136719
+end = 356.5199890136719
+text = "そうか"
+tokens = [ 50524, 9955, 3703, 50574 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 118
+seek = 35232
+start = 356.5199890136719
+end = 358.5199890136719
+text = "最初にね食べとかないと"
+tokens = [ 50574, 8661, 28727, 4108, 5555, 50067, 3193, 3703, 9311, 3193, 50674 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 119
+seek = 35232
+start = 358.5199890136719
+end = 360.5199890136719
+text = "でもねほんと最初に食べたら全然 余裕だったの"
+tokens = [ 50674, 17783, 5555, 15190, 49329, 8661, 28727, 4108, 50067, 3368, 5154, 11319, 5823, 220, 1593, 247, 8083, 243, 5362, 10102, 2972, 50774 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 120
+seek = 35232
+start = 360.5199890136719
+end = 361.5199890136719
+text = "そうだよね"
+tokens = [ 50774, 39471, 30346, 50824 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 121
+seek = 35232
+start = 361.5199890136719
+end = 362.5199890136719
+text = "やっぱ"
+tokens = [ 50824, 7355, 37696, 50874 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 122
+seek = 35232
+start = 362.5199890136719
+end = 365.5199890136719
+text = "卵結構胃の容量持ってかれそう で後押ししちゃうんだよな"
+tokens = [ 50874, 5322, 113, 17144, 43362, 19095, 225, 2972, 25750, 26748, 17694, 6102, 3703, 4132, 9955, 21376, 5661, 7235, 120, 2849, 2849, 18930, 17760, 5362, 5591, 3203, 51024 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
+
+[[response.segments]]
+id = 123
+seek = 35232
+start = 365.5199890136719
+end = 366.5199890136719
 text = "そうだね"
-speaker = "C"
-start = 365.896
-end = 366.396
-id = "seg_158"
+tokens = [ 51024, 39471, 5555, 51074 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
+id = 124
+seek = 35232
+start = 366.5199890136719
+end = 367.5199890136719
 text = "結構くるよね"
-speaker = "C"
-start = 367.316
-end = 368.01599999999996
-id = "seg_159"
+tokens = [ 51074, 17144, 43362, 6134, 4895, 30346, 51124 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = " 結構くる"
-speaker = "A"
-start = 368.01599999999996
-end = 368.916
-id = "seg_160"
+id = 125
+seek = 35232
+start = 367.5199890136719
+end = 369.5199890136719
+text = "結構くる美味しいですけど"
+tokens = [ 51124, 17144, 43362, 6134, 4895, 45511, 17121, 4767, 21891, 51224 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "はい"
-speaker = "C"
-start = 368.916
-end = 368.96599999999995
-id = "seg_161"
+id = 126
+seek = 35232
+start = 369.5199890136719
+end = 371.5199890136719
+text = "面白いこの話結構やりたいね"
+tokens = [ 51224, 8833, 13558, 1764, 13303, 11103, 17144, 43362, 7355, 5095, 20699, 5555, 51324 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "美味しいです"
-speaker = "A"
-start = 368.96599999999995
-end = 369.666
-id = "seg_162"
+id = 127
+seek = 35232
+start = 371.5199890136719
+end = 372.5199890136719
+text = "ね"
+tokens = [ 51324, 5555, 51374 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "けど面白いこの話結構やりたいね"
-speaker = "C"
-start = 369.666
-end = 371.96599999999995
-id = "seg_163"
+id = 128
+seek = 35232
+start = 372.5199890136719
+end = 373.5199890136719
+text = "ね"
+tokens = [ 51374, 5555, 51424 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "ね私さみんなの卵かけご飯のこだわり知りたい私結構アレンジレシピ派でさ"
-speaker = "A"
-start = 371.96599999999995
-end = 378.51599999999996
-id = "seg_164"
+id = 129
+seek = 35232
+start = 373.5199890136719
+end = 375.5199890136719
+text = "私さみんなの卵かけご飯のこだわり 知りたい"
+tokens = [ 51424, 20083, 6722, 11362, 16548, 2972, 5322, 113, 3703, 7625, 9991, 45229, 2972, 3503, 5362, 9206, 5095, 220, 6498, 5095, 20699, 51524 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "いろいろ"
-speaker = "A"
-start = 378.616
-end = 379.066
-id = "seg_165"
+id = 130
+seek = 35232
+start = 375.5199890136719
+end = 376.5199890136719
+text = "知りたい"
+tokens = [ 51524, 6498, 5095, 20699, 51574 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "そうなんだ"
-speaker = "C"
-start = 379.066
-end = 379.76599999999996
-id = "seg_166"
+id = 131
+seek = 35232
+start = 376.5199890136719
+end = 378.5199890136719
+text = "私結構アレンジレシピ派でさいろいろ"
+tokens = [ 51574, 20083, 17144, 43362, 12817, 16680, 4824, 14655, 16680, 11054, 35268, 12136, 122, 2474, 6722, 1764, 12488, 1764, 12488, 51674 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "なんかいろんなのが好きなんだけど"
-speaker = "A"
-start = 379.916
-end = 381.816
-id = "seg_167"
+id = 132
+seek = 35232
+start = 378.5199890136719
+end = 379.5199890136719
+text = "あそうなんだ"
+tokens = [ 51674, 3590, 9955, 33383, 51724 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "聞きたいみんなぜひ送ってください"
-speaker = "C"
-start = 381.816
-end = 383.866
-id = "seg_168"
+id = 133
+seek = 35232
+start = 379.5199890136719
+end = 381.5199890136719
+text = "うんなんかいろんなのが好きなんだけど"
+tokens = [ 51724, 17760, 27646, 1764, 12488, 16548, 2972, 5142, 2131, 7016, 33383, 21891, 51824 ]
+temperature = 0
+avg_logprob = -0.14002257585525513
+compression_ratio = 1.843137264251709
+no_speech_prob = 0.29410818219184875
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "お願いしますはいということで今日もハッシュタグ夏サクサクで盛り上げていただけると嬉しいですそれでは最後までよろしくお願いします"
-speaker = "A"
-start = 384.066
-end = 391.51599999999996
-id = "seg_169"
+id = 134
+seek = 38152
+start = 381.7200012207031
+end = 382.7200012207031
+text = "好き期待ね"
+tokens = [ 50374, 2131, 7016, 16786, 18390, 5555, 50424 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
 
 [[response.segments]]
-type = "transcript.text.segment"
+id = 135
+seek = 38152
+start = 382.7200012207031
+end = 383.7200012207031
+text = "みんなぜひ送ってください"
+tokens = [ 50424, 11362, 16548, 20258, 26950, 29309, 6102, 25079, 50474 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 136
+seek = 38152
+start = 383.7200012207031
+end = 384.7200012207031
 text = "お願いします"
-speaker = "C"
-start = 391.51599999999996
-end = 392.116
-id = "seg_170"
+tokens = [ 50474, 32420, 50524 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "ここが桜です"
-speaker = "A"
-start = 401.94
-end = 402.69
-id = "seg_171"
+id = 137
+seek = 38152
+start = 384.7200012207031
+end = 388.7200012207031
+text = "はいということで今日もハッシュタグ 夏サクサクで盛り上げていただける"
+tokens = [ 50524, 11050, 39341, 26259, 4801, 15927, 8276, 11054, 26167, 12144, 23839, 220, 42708, 23607, 10825, 23607, 10825, 2474, 5419, 249, 5095, 5708, 26012, 2996, 32418, 39278, 50724 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = " みんなでね"
-speaker = "C"
-start = 402.69
-end = 403.74
-id = "seg_172"
+id = 138
+seek = 38152
+start = 388.7200012207031
+end = 389.7200012207031
+text = "と嬉しいです"
+tokens = [ 50724, 3193, 161, 105, 231, 17121, 4767, 50774 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "私はですね先日マボシメチーズのライブストレートリッチアをやりました"
-speaker = "A"
-start = 404.34
-end = 411.69
-id = "seg_173"
+id = 139
+seek = 38152
+start = 389.7200012207031
+end = 390.7200012207031
+text = "嬉しいです"
+tokens = [ 50774, 161, 105, 231, 17121, 4767, 50824 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
 
 [[response.segments]]
-type = "transcript.text.segment"
+id = 140
+seek = 38152
+start = 390.7200012207031
+end = 391.7200012207031
+text = "それでは最後まで"
+tokens = [ 50824, 41589, 20578, 28176, 50874 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 141
+seek = 38152
+start = 391.7200012207031
+end = 392.7200012207031
+text = "よろしくお願いします"
+tokens = [ 50874, 37457, 32420, 50924 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 142
+seek = 38152
+start = 395.7200012207031
+end = 398.7200012207031
+text = "夏も桜を咲かせたい"
+tokens = [ 51074, 42708, 4801, 162, 1955, 5998, 8975, 110, 3703, 13702, 20699, 51224 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 143
+seek = 38152
+start = 400.7200012207031
+end = 402.7200012207031
+text = "改めましてこんばんはかすがさくら です"
+tokens = [ 51324, 34490, 11429, 2889, 8822, 31172, 13349, 3225, 3065, 3703, 2659, 5142, 6722, 6134, 5154, 220, 159, 223, 100, 159, 223, 247, 51424 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 144
+seek = 38152
+start = 402.7200012207031
+end = 404.7200012207031
+text = "犬稲妻なつめです"
+tokens = [ 51424, 35276, 105, 10415, 110, 5648, 119, 3203, 9335, 11429, 4767, 51524 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 145
+seek = 38152
+start = 404.7200012207031
+end = 406.7200012207031
+text = "私はですね"
+tokens = [ 51524, 20083, 3065, 14277, 51624 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 146
+seek = 38152
+start = 406.7200012207031
+end = 407.7200012207031
+text = "先日"
+tokens = [ 51624, 10108, 6890, 51674 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 147
+seek = 38152
+start = 407.7200012207031
+end = 408.7200012207031
+text = "うん"
+tokens = [ 51674, 17760, 51724 ]
+temperature = 0
+avg_logprob = -0.27345171570777893
+compression_ratio = 1.6344537734985352
+no_speech_prob = 0.19675925374031067
+
+[[response.segments]]
+id = 148
+seek = 40872
+start = 408.9200134277344
+end = 411.9200134277344
+text = "東京都のライブストレートリッチ チアをやりました"
+tokens = [ 50374, 18413, 31375, 7182, 2972, 40230, 28889, 40498, 16680, 38551, 12376, 8276, 17794, 15096, 223, 12817, 5998, 7355, 36941, 50524 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 149
+seek = 40872
+start = 411.9200134277344
+end = 412.9200134277344
+text = "わっ"
+tokens = [ 50524, 9206, 2970, 50574 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 150
+seek = 40872
+start = 412.9200134277344
+end = 413.9200134277344
+text = "やりました"
+tokens = [ 50574, 7355, 36941, 50624 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 151
+seek = 40872
+start = 413.9200134277344
+end = 414.9200134277344
+text = "やりたかった"
+tokens = [ 50624, 7355, 5095, 3368, 25785, 50674 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 152
+seek = 40872
+start = 414.9200134277344
+end = 415.9200134277344
 text = "お疲れ様"
-speaker = "C"
-start = 415.14
-end = 415.99
-id = "seg_174"
+tokens = [ 50674, 6117, 18140, 110, 4132, 49261, 50724 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "東京公演で現時点でまだ大阪公演終わってないんですけど大阪公演もそろそろやると放送の時には終わってるっていう"
-speaker = "A"
-start = 416.09
-end = 425.14
-id = "seg_175"
+id = 153
+seek = 40872
+start = 415.9200134277344
+end = 416.9200134277344
+text = "そう東京公演で"
+tokens = [ 50724, 9955, 18413, 31375, 13545, 31382, 2474, 50774 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "そうねなっちゅんはね東京"
-speaker = "C"
-start = 425.14
-end = 427.24
-id = "seg_176"
+id = 154
+seek = 40872
+start = 416.9200134277344
+end = 417.9200134277344
+text = "うん"
+tokens = [ 50774, 17760, 50824 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "なんだけど"
-speaker = "A"
-start = 431.476
-end = 431.776
-id = "seg_177"
+id = 155
+seek = 40872
+start = 417.9200134277344
+end = 420.9200134277344
+text = "現時点でまだね大阪公演は終わ ってないんですけど"
+tokens = [ 50824, 9581, 6611, 12579, 2474, 47185, 5555, 3582, 10034, 103, 13545, 31382, 3065, 29371, 9206, 2605, 96, 2996, 9311, 27113, 21891, 50974 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
+id = 156
+seek = 40872
+start = 420.9200134277344
+end = 421.9200134277344
+text = "そうね"
+tokens = [ 50974, 9955, 5555, 51024 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 157
+seek = 40872
+start = 421.9200134277344
+end = 422.9200134277344
+text = "大阪公演も"
+tokens = [ 51024, 3582, 10034, 103, 13545, 31382, 4801, 51074 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 158
+seek = 40872
+start = 422.9200134277344
+end = 423.9200134277344
+text = "終わってる"
+tokens = [ 51074, 29371, 9206, 45350, 51124 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 159
+seek = 40872
+start = 423.9200134277344
+end = 424.9200134277344
+text = "そろそろやると"
+tokens = [ 51124, 5040, 12488, 5040, 12488, 7355, 4895, 3193, 51174 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 160
+seek = 40872
+start = 424.9200134277344
+end = 425.9200134277344
+text = "うん"
+tokens = [ 51174, 17760, 51224 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 161
+seek = 40872
+start = 425.9200134277344
+end = 426.9200134277344
+text = "放送の時には終わってるっていう"
+tokens = [ 51224, 12744, 29309, 2972, 6611, 34779, 29371, 9206, 45350, 46896, 51274 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 162
+seek = 40872
+start = 426.9200134277344
+end = 427.9200134277344
+text = "そうね"
+tokens = [ 51274, 9955, 5555, 51324 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 163
+seek = 40872
+start = 427.9200134277344
+end = 428.9200134277344
+text = "みんな中はね"
+tokens = [ 51324, 11362, 16548, 5975, 3065, 5555, 51374 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 164
+seek = 40872
+start = 428.9200134277344
+end = 429.9200134277344
+text = "うん"
+tokens = [ 51374, 17760, 51424 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 165
+seek = 40872
+start = 429.9200134277344
+end = 430.9200134277344
+text = "東京公演見に来てくれたんだよね"
+tokens = [ 51424, 18413, 31375, 13545, 31382, 10470, 4108, 6912, 2996, 6134, 35478, 26983, 30346, 51474 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 166
+seek = 40872
+start = 430.9200134277344
+end = 431.9200134277344
+text = "そう"
+tokens = [ 51474, 9955, 51524 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 167
+seek = 40872
+start = 431.9200134277344
+end = 432.9200134277344
+text = "夜の分にね行かせていただいたん だけど"
+tokens = [ 51524, 30124, 2972, 6627, 4108, 5555, 8082, 3703, 47745, 32418, 17679, 3225, 37656, 21891, 51574 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
+
+[[response.segments]]
+id = 168
+seek = 40872
+start = 432.9200134277344
+end = 433.9200134277344
 text = "嬉しい"
-speaker = "C"
-start = 431.776
-end = 432.326
-id = "seg_178"
+tokens = [ 51574, 161, 105, 231, 17121, 51624 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "すごかった曲数がマジで増えすぎなのと"
-speaker = "A"
-start = 432.326
-end = 438.776
-id = "seg_179"
+id = 169
+seek = 40872
+start = 433.9200134277344
+end = 434.9200134277344
+text = "本当にすごかった"
+tokens = [ 51624, 37505, 4108, 28077, 25785, 51674 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "多かったね"
-speaker = "C"
-start = 438.776
-end = 439.476
-id = "seg_180"
+id = 170
+seek = 40872
+start = 434.9200134277344
+end = 435.9200134277344
+text = "マジ"
+tokens = [ 51674, 13258, 14655, 51724 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "衣装が私新衣装生で見るの初めてだったからめちゃくちゃ可愛いね"
-speaker = "A"
-start = 439.576
-end = 445.276
-id = "seg_181"
+id = 171
+seek = 40872
+start = 435.9200134277344
+end = 436.9200134277344
+text = "え"
+tokens = [ 51724, 6474, 51774 ]
+temperature = 0
+avg_logprob = -0.2257939726114273
+compression_ratio = 1.7708333730697632
+no_speech_prob = 0.36644917726516724
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "そうだそうだはい夏作年もゆいさんからいただきましたありがとうございます"
-speaker = "A"
-start = 447.826
-end = 451.826
-id = "seg_182"
+id = 172
+seek = 43692
+start = 437.1199951171875
+end = 439.1199951171875
+text = "マジで増えすぎなのと"
+tokens = [ 50374, 13258, 14655, 2474, 24228, 245, 6474, 2659, 44601, 3203, 2972, 3193, 50474 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "昨晩の夏は咲いてますか"
-speaker = "A"
-start = 452.476
-end = 454.276
-id = "seg_183"
+id = 173
+seek = 43692
+start = 439.1199951171875
+end = 440.1199951171875
+text = "分かったね"
+tokens = [ 50474, 6627, 25785, 5555, 50524 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "前橋ウィッキーズライブ"
-speaker = "A"
-start = 456.026
-end = 457.776
-id = "seg_184"
+id = 174
+seek = 43692
+start = 440.1199951171875
+end = 444.1199951171875
+text = "そう衣装が私新衣装生で見るの 初めてだったから"
+tokens = [ 50524, 9955, 9890, 96, 8083, 227, 5142, 20083, 12560, 9890, 96, 8083, 227, 8244, 2474, 10470, 4895, 2972, 220, 28727, 38975, 5362, 10102, 11046, 50724 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "ストレートリーチチア東京公演現地で参加させていただきました"
-speaker = "A"
-start = 458.932
-end = 462.53200000000004
-id = "seg_185"
+id = 175
+seek = 43692
+start = 444.1199951171875
+end = 445.1199951171875
+text = "うん"
+tokens = [ 50724, 17760, 50774 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = " ありがとうございます"
-speaker = "C"
-start = 462.53200000000004
-end = 463.03200000000004
-id = "seg_186"
+id = 176
+seek = 43692
+start = 445.1199951171875
+end = 446.1199951171875
+text = "めちゃくちゃ可愛いね"
+tokens = [ 50774, 11429, 18930, 6134, 18930, 34193, 1764, 5555, 50824 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "今回のライブ前のインタビューでサクポンは私たちの成長を見せなければいけないライブとおっしゃっていましたがそれは実感できるとても素晴らしいライブでしたユイナを楽しく可愛く表現するサクポンのパフォーマンスはみんなの心のお花を咲かせたと思います今回ステージに立ったサクポンとドリーミードリーミーフラワーの一人のお客さんとして参加したナチの今回のライブの感想をお聞きしたいです"
-speaker = "A"
-start = 463.482
-end = 487.982
-id = "seg_187"
+id = 177
+seek = 43692
+start = 446.1199951171875
+end = 447.1199951171875
+text = "そうなのよ"
+tokens = [ 50824, 9955, 3203, 2972, 5591, 50874 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "うわー"
-speaker = "C"
-start = 487.988
-end = 488.688
-id = "seg_188"
+id = 178
+seek = 43692
+start = 447.1199951171875
+end = 448.1199951171875
+text = "ね"
+tokens = [ 50874, 5555, 50924 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
 
 [[response.segments]]
-type = "transcript.text.segment"
+id = 179
+seek = 43692
+start = 448.1199951171875
+end = 449.1199951171875
+text = "私"
+tokens = [ 50924, 20083, 50974 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 180
+seek = 43692
+start = 449.1199951171875
+end = 450.1199951171875
+text = "お便りも"
+tokens = [ 50974, 6117, 27364, 5095, 4801, 51024 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 181
+seek = 43692
+start = 450.1199951171875
+end = 451.1199951171875
+text = "あそうだそうだ"
+tokens = [ 51024, 3590, 39471, 39471, 51074 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 182
+seek = 43692
+start = 451.1199951171875
+end = 452.1199951171875
+text = "お便りも"
+tokens = [ 51074, 6117, 27364, 5095, 4801, 51124 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 183
+seek = 43692
+start = 452.1199951171875
+end = 453.1199951171875
+text = "はい夏作のエンムゆいさんから いただきました"
+tokens = [ 51124, 11050, 42708, 11914, 2972, 26215, 14121, 254, 34072, 1764, 15567, 11046, 220, 32418, 7016, 12072, 51174 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 184
+seek = 43692
+start = 453.1199951171875
+end = 454.1199951171875
+text = "ありがとうございます"
+tokens = [ 51174, 40035, 51224 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 185
+seek = 43692
+start = 454.1199951171875
+end = 455.1199951171875
+text = "ありがとうございます"
+tokens = [ 51224, 40035, 51274 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 186
+seek = 43692
+start = 455.1199951171875
+end = 456.1199951171875
+text = "さくぽんの宇宙咲いてますか"
+tokens = [ 51274, 6722, 6134, 487, 121, 3225, 2972, 2415, 229, 2415, 247, 8975, 110, 18549, 5368, 3703, 51324 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 187
+seek = 43692
+start = 456.1199951171875
+end = 457.1199951171875
+text = "うん"
+tokens = [ 51324, 17760, 51374 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 188
+seek = 43692
+start = 457.1199951171875
+end = 458.1199951171875
+text = "ぱん"
+tokens = [ 51374, 487, 109, 3225, 51424 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 189
+seek = 43692
+start = 458.1199951171875
+end = 461.5199890136719
+text = "まやわしビッチーズライブストレート リーチチア東京公演現地で参加"
+tokens = [ 51424, 2889, 7355, 9206, 2849, 39454, 8276, 17794, 3384, 29061, 40230, 28889, 40498, 16680, 38551, 220, 12376, 15266, 223, 17794, 12817, 18413, 31375, 13545, 31382, 9581, 10928, 2474, 2129, 224, 9990, 51594 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 190
+seek = 43692
+start = 461.5199890136719
+end = 462.5199890136719
+text = "させていただきました"
+tokens = [ 51594, 6722, 47745, 32418, 7016, 12072, 51644 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 191
+seek = 43692
+start = 462.5199890136719
+end = 463.5199890136719
+text = "ありがとうございます"
+tokens = [ 51644, 40035, 51694 ]
+temperature = 0
+avg_logprob = -0.24825362861156464
+compression_ratio = 1.8724137544631958
+no_speech_prob = 0.2813016474246979
+
+[[response.segments]]
+id = 192
+seek = 46352
+start = 464.1199951171875
+end = 467.67999267578125
+text = "今回のライブ前のインタビュー でさくぽんは私たちの成長を見せ"
+tokens = [ 50394, 30551, 2972, 40230, 28889, 8945, 2972, 8040, 34337, 39454, 26167, 3384, 21376, 6722, 6134, 487, 121, 3225, 3065, 20083, 3368, 6574, 2972, 11336, 15353, 5998, 10470, 13702, 50572 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 193
+seek = 46352
+start = 467.67999267578125
+end = 471.6400146484375
+text = "なければいけないライブとおっしゃ っていましたがそれは実感できる"
+tokens = [ 50572, 3203, 39256, 42176, 7625, 9311, 40230, 28889, 3193, 49693, 49948, 2605, 96, 2996, 25910, 5142, 48846, 33197, 9709, 43200, 4895, 50770 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 194
+seek = 46352
+start = 471.6400146484375
+end = 475.79998779296875
+text = "とても素晴らしいライブでした ゆいなを楽しく可愛く表現する"
+tokens = [ 50770, 3193, 2996, 4801, 37204, 5094, 112, 5154, 17121, 40230, 28889, 40882, 220, 34072, 1764, 3203, 5998, 35479, 26568, 34193, 6134, 17571, 9581, 22570, 50978 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 195
+seek = 46352
+start = 475.79998779296875
+end = 480.0400085449219
+text = "さくぽんのパフォーマンスはみんな の心のお花を咲かせたと思います"
+tokens = [ 50978, 6722, 6134, 487, 121, 3225, 2972, 23268, 17320, 824, 102, 3384, 13258, 4824, 9550, 3065, 11362, 16548, 21171, 7945, 2972, 6117, 20127, 5998, 8975, 110, 3703, 13702, 3368, 29707, 51190 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 196
+seek = 46352
+start = 480.0400085449219
+end = 483.20001220703125
+text = "今回ステージに立ったさくぽんと ドリーミードリーミーフラワー"
+tokens = [ 51190, 30551, 9550, 22985, 44143, 4108, 24409, 10102, 6722, 6134, 487, 121, 49329, 220, 11195, 12376, 15266, 253, 44165, 12376, 15266, 253, 15266, 243, 11353, 39613, 3384, 51348 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 197
+seek = 46352
+start = 483.20001220703125
+end = 487.239990234375
+text = "の一人のお客さんとして参加した 夏の今回のライブの感想をお聞き"
+tokens = [ 51348, 2972, 2257, 4035, 2972, 6117, 32316, 15567, 3193, 8822, 2129, 224, 9990, 8533, 220, 42708, 2972, 30551, 2972, 40230, 28889, 2972, 9709, 7093, 5998, 6117, 25468, 7016, 51550 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 198
+seek = 46352
+start = 487.239990234375
+end = 488.239990234375
+text = "したいです"
+tokens = [ 51550, 8533, 1764, 4767, 51600 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 199
+seek = 46352
+start = 488.239990234375
+end = 489.239990234375
+text = "もう"
+tokens = [ 51600, 16324, 51650 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
+
+[[response.segments]]
+id = 200
+seek = 46352
+start = 489.239990234375
+end = 490.239990234375
 text = "いやいやいや"
-speaker = "A"
-start = 488.688
-end = 489.588
-id = "seg_189"
+tokens = [ 51650, 18524, 18524, 18524, 51700 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "どうでしたか?"
-speaker = "C"
-start = 489.588
-end = 490.838
-id = "seg_190"
+id = 201
+seek = 46352
+start = 490.239990234375
+end = 491.239990234375
+text = "感動でしたか"
+tokens = [ 51700, 9709, 12572, 40882, 3703, 51750 ]
+temperature = 0
+avg_logprob = -0.14453695714473724
+compression_ratio = 1.7767857313156128
+no_speech_prob = 0.41824105381965637
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "うわー本当に感動した"
-speaker = "A"
-start = 490.838
-end = 493.038
-id = "seg_191"
+id = 202
+seek = 49124
+start = 491.3999938964844
+end = 493.3999938964844
+text = "もう本当に感動した"
+tokens = [ 50372, 16324, 37505, 4108, 9709, 12572, 8533, 50472 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "マジ?"
-speaker = "C"
-start = 493.038
-end = 493.638
-id = "seg_192"
+id = 203
+seek = 49124
+start = 493.3999938964844
+end = 494.3999938964844
+text = "マジ"
+tokens = [ 50472, 13258, 14655, 50522 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "なんか今回ソロ曲もあったじゃん全員"
-speaker = "A"
-start = 493.638
-end = 495.838
-id = "seg_193"
+id = 204
+seek = 49124
+start = 494.3999938964844
+end = 495.3999938964844
+text = "なんか今回ソロ曲もあったじゃん 全員"
+tokens = [ 50522, 27646, 30551, 42668, 17164, 30753, 4801, 3590, 10102, 15339, 3225, 220, 11319, 20992, 50572 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "あー"
-speaker = "A"
-start = 495.938
-end = 495.988
-id = "seg_194"
+id = 205
+seek = 49124
+start = 495.3999938964844
+end = 496.3999938964844
+text = "あった"
+tokens = [ 50572, 3590, 10102, 50622 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "うん"
-speaker = "C"
-start = 495.988
-end = 496.238
-id = "seg_195"
+id = 206
+seek = 49124
+start = 496.3999938964844
+end = 501.6400146484375
+text = "もうさあの前にもう一個のソロ 曲は生で聞いたことあるんだけど"
+tokens = [ 50622, 16324, 6722, 24910, 8945, 4108, 16324, 8990, 2972, 42668, 17164, 220, 30753, 3065, 8244, 2474, 25468, 17679, 13235, 24719, 26983, 21891, 50884 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "もうさあの前にもう一個のソロ曲は生で聞いたことあるんだけど初めて聞くソロ曲だったからめちゃくちゃ感動した可愛かった"
-speaker = "A"
-start = 496.238
-end = 505.688
-id = "seg_196"
+id = 207
+seek = 49124
+start = 501.6400146484375
+end = 505.760009765625
+text = "初めて聞くソロ曲だったからめちゃ くちゃ感動した可愛かった"
+tokens = [ 50884, 28727, 38975, 25468, 6134, 42668, 17164, 30753, 5362, 10102, 11046, 11429, 18930, 2605, 237, 18930, 9709, 12572, 8533, 34193, 25785, 51090 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "すごいでもそうなんかあのなんだろ歌詞がすごい頑張るって感じのやつ"
-speaker = "A"
-start = 506.488
-end = 514.488
-id = "seg_197"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "便座入りでステージ立ってるのを見るとなんかめちゃくちゃ懐かみになった"
-speaker = "C"
-start = 526.58
-end = 530.0300000000001
-id = "seg_198"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "マジ?"
-speaker = "D"
-start = 530.0300000000001
-end = 530.73
-id = "seg_199"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "懐"
-speaker = "D"
-start = 531.08
-end = 531.2800000000001
-id = "seg_200"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "感動"
-speaker = "C"
-start = 531.2800000000001
-end = 531.6800000000001
-id = "seg_201"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "か"
-speaker = "D"
-start = 531.6800000000001
-end = 531.88
-id = "seg_202"
-
-[[response.segments]]
-type = "transcript.text.segment"
-text = "した?したなんか全員でのパフォーマンスもマジでなんか本当にアイドルってぐらいなんか踊り揃ってて"
-speaker = "C"
-start = 531.88
-end = 539.9300000000001
-id = "seg_203"
-
-[[response.segments]]
-type = "transcript.text.segment"
+id = 208
+seek = 49124
+start = 505.760009765625
+end = 506.760009765625
 text = "嬉しい"
-speaker = "D"
-start = 539.9300000000001
-end = 540.6800000000001
-id = "seg_204"
+tokens = [ 51090, 161, 105, 231, 17121, 51140 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "めちゃくちゃかっこよかったし"
-speaker = "C"
-start = 540.6800000000001
-end = 542.33
-id = "seg_205"
+id = 209
+seek = 49124
+start = 506.760009765625
+end = 507.760009765625
+text = "すごいよ"
+tokens = [ 51140, 34161, 5591, 51190 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
 
 [[response.segments]]
-type = "transcript.text.segment"
+id = 210
+seek = 49124
+start = 507.760009765625
+end = 514.5999755859375
+text = "そうなんかあのなんだろう歌詞 がすごい頑張るって感じのやつ"
+tokens = [ 51190, 9955, 27646, 24910, 33383, 39679, 29582, 6716, 252, 29697, 34161, 8313, 239, 18889, 4895, 6102, 25359, 2972, 7355, 9335, 51532 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
+
+[[response.segments]]
+id = 211
+seek = 49124
+start = 514.5999755859375
+end = 515.5999755859375
+text = "じゃん"
+tokens = [ 51532, 15339, 3225, 51582 ]
+temperature = 0
+avg_logprob = -0.2631939649581909
+compression_ratio = 1.653679609298706
+no_speech_prob = 0.530828595161438
+
+[[response.segments]]
+id = 212
+seek = 51560
+start = 515.5999755859375
+end = 523.3200073242188
+text = "そうなんかすごい頑張ってって なんかめちゃくちゃ可愛かった"
+tokens = [ 50364, 9955, 27646, 34161, 8313, 239, 18889, 6102, 6102, 16647, 3225, 3703, 11429, 18930, 6134, 18930, 34193, 25785, 50750 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 213
+seek = 51560
+start = 523.3200073242188
+end = 524.3200073242188
+text = "し"
+tokens = [ 50750, 2849, 50800 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 214
+seek = 51560
+start = 524.3200073242188
+end = 525.3200073242188
+text = "ありがとう"
+tokens = [ 50800, 21339, 50850 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 215
+seek = 51560
+start = 525.3200073242188
+end = 527.9600219726562
+text = "なんかお客さんもすごい多い中 でささくらが一人でステージ立ってる"
+tokens = [ 50850, 27646, 6117, 32316, 15567, 4801, 34161, 6392, 1764, 5975, 21376, 6722, 6722, 6134, 5154, 5142, 2257, 4035, 2474, 9550, 22985, 44143, 24409, 45350, 50982 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 216
+seek = 51560
+start = 527.9600219726562
+end = 530.3200073242188
+text = "のを見るとなんかめちゃくちゃ 泣きそうになった"
+tokens = [ 50982, 2972, 5998, 10470, 4895, 3193, 27646, 11429, 18930, 6134, 18930, 220, 6847, 96, 7016, 9955, 22615, 10102, 51100 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 217
+seek = 51560
+start = 530.3200073242188
+end = 531.3200073242188
+text = "マジ"
+tokens = [ 51100, 13258, 14655, 51150 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 218
+seek = 51560
+start = 531.3200073242188
+end = 532.3200073242188
+text = "感動した"
+tokens = [ 51150, 9709, 12572, 8533, 51200 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 219
+seek = 51560
+start = 532.3200073242188
+end = 533.3200073242188
+text = "確かに"
+tokens = [ 51200, 24293, 3703, 4108, 51250 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 220
+seek = 51560
+start = 533.3200073242188
+end = 538.1199951171875
+text = "なんか全員でのパフォーマンス もマジでなんか本当にアイドル"
+tokens = [ 51250, 27646, 11319, 20992, 2474, 2972, 23268, 17320, 824, 102, 3384, 13258, 4824, 9550, 32505, 13258, 14655, 2474, 27646, 37505, 4108, 12817, 8040, 11195, 9405, 51490 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 221
+seek = 51560
+start = 538.1199951171875
+end = 542.52001953125
+text = "ってぐらいなんか踊り揃ってて めちゃくちゃかっこよかった"
+tokens = [ 51490, 6102, 35849, 38052, 27646, 41166, 232, 5095, 11673, 225, 6102, 2996, 220, 11429, 18930, 6134, 18930, 3703, 2970, 3503, 5591, 25785, 51710 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
+
+[[response.segments]]
+id = 222
+seek = 51560
+start = 542.52001953125
+end = 543.52001953125
 text = "嬉しい"
-speaker = "D"
-start = 542.33
-end = 542.83
-id = "seg_206"
+tokens = [ 51710, 161, 105, 231, 17121, 51760 ]
+temperature = 0
+avg_logprob = -0.2575158178806305
+compression_ratio = 1.7961539030075073
+no_speech_prob = 0.7116841077804565
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "なんか生歌とは思えなかったみんなマジか?"
-speaker = "C"
-start = 542.83
-end = 546.23
-id = "seg_207"
+id = 223
+seek = 54352
+start = 543.8400268554688
+end = 546.0399780273438
+text = "なんか生歌かは思えなかったみんな"
+tokens = [ 50380, 27646, 8244, 29582, 3703, 3065, 8870, 6474, 3203, 25785, 11362, 16548, 50490 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "上手すぎてマジですごかったでもなんか自分もやってて"
-speaker = "C"
-start = 546.38
-end = 551.33
-id = "seg_208"
+id = 224
+seek = 54352
+start = 546.0399780273438
+end = 547.0399780273438
+text = "マジか"
+tokens = [ 50490, 13258, 14655, 3703, 50540 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "まあ日々見てるからあんま気づかない"
-speaker = "C"
-start = 552.66
-end = 554.61
-id = "seg_209"
+id = 225
+seek = 54352
+start = 547.0399780273438
+end = 548.0399780273438
+text = "上手すぎて"
+tokens = [ 50540, 5708, 11389, 2659, 44601, 2996, 50590 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "うん"
-speaker = "A"
-start = 554.61
-end = 554.7099999999999
-id = "seg_210"
+id = 226
+seek = 54352
+start = 548.0399780273438
+end = 549.0399780273438
+text = "やった"
+tokens = [ 50590, 7355, 10102, 50640 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "けどこの前のライブはすごいみんなの成長を感じた自分も含めかもしれないけどなんかなんだろ安定してきたなって歌とか嬉"
-speaker = "C"
-start = 554.7099999999999
-end = 566.16
-id = "seg_211"
+id = 227
+seek = 54352
+start = 549.0399780273438
+end = 550.0399780273438
+text = "マジですごかった"
+tokens = [ 50640, 13258, 14655, 4767, 9991, 25785, 50690 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "マジでねあとMCがめちゃくちゃうまかった"
-speaker = "A"
-start = 566.16
-end = 569.76
-id = "seg_212"
+id = 228
+seek = 54352
+start = 550.0399780273438
+end = 554.760009765625
+text = "いやでもなんか自分もやってて 日々見てるからあんま気づかない"
+tokens = [ 50690, 18524, 17783, 27646, 9722, 6627, 4801, 31497, 2996, 220, 6890, 45032, 33363, 4895, 11046, 3590, 3225, 2889, 25870, 487, 98, 3703, 9311, 50926 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "MCとかつなぎというか場の煽りとか全部が"
-speaker = "A"
-start = 570.4599999999999
-end = 576.81
-id = "seg_213"
+id = 229
+seek = 54352
+start = 554.760009765625
+end = 561.0800170898438
+text = "けどこの前のライブはすごいみんな の成長を感じた自分も含めかもしれない"
+tokens = [ 50926, 21891, 13303, 8945, 2972, 40230, 28889, 3065, 34161, 11362, 16548, 21171, 11336, 15353, 5998, 25359, 3368, 9722, 6627, 4801, 2392, 104, 11429, 3703, 49412, 48535, 51242 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "ちょっとある"
-speaker = "C"
-start = 579.188
-end = 579.588
-id = "seg_214"
+id = 230
+seek = 54352
+start = 561.0800170898438
+end = 566.52001953125
+text = "けどなんかなんだろう安定して きたなって歌とか"
+tokens = [ 51242, 21891, 27646, 33383, 39679, 16206, 12088, 8822, 2605, 235, 3368, 3203, 6102, 29582, 30607, 51514 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "ない"
-speaker = "A"
-start = 579.588
-end = 579.638
-id = "seg_215"
+id = 231
+seek = 54352
+start = 566.52001953125
+end = 570.0399780273438
+text = "マジでねあとmcがめちゃくちゃ 上手かった"
+tokens = [ 51514, 13258, 14655, 2474, 5555, 37015, 76, 66, 5142, 11429, 18930, 6134, 18930, 220, 5708, 11389, 25785, 51690 ]
+temperature = 0
+avg_logprob = -0.23002102971076965
+compression_ratio = 1.7073171138763428
+no_speech_prob = 0.6145721077919006
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "のえ?"
-speaker = "C"
-start = 579.638
-end = 580.038
-id = "seg_216"
+id = 232
+seek = 57004
+start = 571.0399780273438
+end = 572.0399780273438
+text = "嬉しい"
+tokens = [ 50414, 161, 105, 231, 17121, 50464 ]
+temperature = 0
+avg_logprob = -0.25826629996299744
+compression_ratio = 1.5673469305038452
+no_speech_prob = 0.051806140691041946
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "今回"
-speaker = "A"
-start = 580.038
-end = 580.188
-id = "seg_217"
+id = 233
+seek = 57004
+start = 572.0399780273438
+end = 579.52001953125
+text = "mcとかつなぎというか場のあおり とか全部があれ何台本ちょっと"
+tokens = [ 50464, 76, 66, 30607, 9335, 3203, 44601, 15300, 3703, 21446, 2972, 3590, 6117, 5095, 16746, 3703, 38714, 5142, 30659, 11906, 15433, 8802, 21888, 50838 ]
+temperature = 0
+avg_logprob = -0.25826629996299744
+compression_ratio = 1.5673469305038452
+no_speech_prob = 0.051806140691041946
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "うわ、すごいよね"
-speaker = "C"
-start = 580.188
-end = 581.388
-id = "seg_218"
+id = 234
+seek = 57004
+start = 579.52001953125
+end = 580.52001953125
+text = "あるない"
+tokens = [ 50838, 24719, 9311, 50888 ]
+temperature = 0
+avg_logprob = -0.25826629996299744
+compression_ratio = 1.5673469305038452
+no_speech_prob = 0.051806140691041946
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "はMCの数を減らしたんですよ曲数を増やした分MC減らして"
-speaker = "A"
-start = 581.388
-end = 587.438
-id = "seg_219"
+id = 235
+seek = 57004
+start = 580.52001953125
+end = 581.52001953125
+text = "すごいよね"
+tokens = [ 50888, 34161, 30346, 50938 ]
+temperature = 0
+avg_logprob = -0.25826629996299744
+compression_ratio = 1.5673469305038452
+no_speech_prob = 0.051806140691041946
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "だからその体力も課題だったの"
-speaker = "A"
-start = 587.838
-end = 589.888
-id = "seg_220"
+id = 236
+seek = 57004
+start = 581.52001953125
+end = 588.280029296875
+text = "今回はmcの数を減らしたんですよ 曲数を増やした分mc減らして"
+tokens = [ 50938, 30551, 3065, 76, 66, 2972, 33188, 5998, 9592, 249, 5154, 8533, 27113, 5591, 220, 30753, 33188, 5998, 24228, 245, 7355, 8533, 6627, 76, 66, 9592, 249, 5154, 8822, 51276 ]
+temperature = 0
+avg_logprob = -0.25826629996299744
+compression_ratio = 1.5673469305038452
+no_speech_prob = 0.051806140691041946
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "続けてうん"
-speaker = "C"
-start = 589.888
-end = 590.338
-id = "seg_221"
+id = 237
+seek = 57004
+start = 588.280029296875
+end = 592.7999877929688
+text = "だからその体力も課題だったの 続けてやるみたいなけどmc減らした"
+tokens = [ 51276, 33183, 20564, 29485, 13486, 4801, 3549, 110, 14475, 5362, 10102, 2972, 220, 44985, 39736, 7355, 4895, 41258, 3203, 21891, 76, 66, 9592, 249, 5154, 8533, 51502 ]
+temperature = 0
+avg_logprob = -0.25826629996299744
+compression_ratio = 1.5673469305038452
+no_speech_prob = 0.051806140691041946
 
 [[response.segments]]
-type = "transcript.text.segment"
-text = "やるみたいなけどMC減らした分結構今までは分差してたんだけどMCって自分になんか結構固まってたから頑張らない"
-speaker = "A"
-start = 590.338
-end = 599.938
-id = "seg_222"
+id = 238
+seek = 57004
+start = 592.7999877929688
+end = 599.5999755859375
+text = "分結構今まではね分散してたん だけど自分に結構固まってたから"
+tokens = [ 51502, 6627, 17144, 43362, 6480, 2889, 16719, 5555, 6627, 7017, 96, 8822, 3368, 3225, 37656, 21891, 9722, 6627, 4108, 17144, 43362, 3919, 118, 2889, 6102, 3368, 11046, 51842 ]
+temperature = 0
+avg_logprob = -0.25826629996299744
+compression_ratio = 1.5673469305038452
+no_speech_prob = 0.051806140691041946
 
 [response.usage]
-type = "tokens"
-total_tokens = 26833
-input_tokens = 9064
-output_tokens = 17769
-
-[response.usage.input_token_details]
-text_tokens = 497
-audio_tokens = 8567
+type = "duration"
+seconds = 600

@@ -1,8 +1,8 @@
 ---
-media: "video.mp4"
+media: "./【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回.mp4"
 title: "【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回"
 url: "https://www.nicovideo.jp/watch/so46390977"
-published_at: "2026-06-03"
+published_at: "2026/6/3"
 ---
 
 ## Context
@@ -23,14 +23,17 @@ published_at: "2026-06-03"
 - 第49回 -> 第49回
 - 前橋ウィッチーズ -> 前桥魔女
 - ハッシュタグ夏さく咲く -> 话题标签「夏樱绽放」
-- ごーれぼ -> ごーれぼ
-- 新宿ロフトプラスワン -> 新宿 Loft Plus One
+- ゴー☆レボ / ごーれぼ -> Go☆Revo
+- 新宿村LIVE -> 新宿村 LIVE
 - 夏さくプレゼンツ 乾夏寧バースデーイベント2026 -> 夏樱绽放 presents 乾夏宁 Birthday Event 2026
-- 塚田優衣 -> 塚田优衣
+- 塚田悠衣 -> 塚田悠衣
 - 月城日花 -> 月城日花
 - 花谷麻妃 -> 花谷麻妃
 - 小森結梨 -> 小森结梨
 - 茶屋町推しフェスティバル2026 -> 茶屋町推し Festival 2026
+- 星陵会館 -> 星陵会馆
+- 高円寺Studio K -> 高圆寺 Studio K
+- オムニバス朗読「だい研6」 -> 综合朗读《だい研6》
 - セカンドショットチャンネル -> Second Shot Channel
 - natsusaku@secondshot.jp -> natsusaku@secondshot.jp
 - Common ASR confusion: 犬井/犬井夏音/乾夏音 -> 乾夏寧
@@ -60,13 +63,9 @@ published_at: "2026-06-03"
 - Listener/poster さん: omit the honorific in Chinese; use the name directly, not 桑.
 - Guest/person さん: generally omit 桑 as well; preserve ちゃん as 酱 only when the friendly
   conversational tone is important.
-
-## Unresolved Uncertainty
-
-- Some event/work names in the announcement block were corrected from context but not verified
-  against official pages during this run.
-- Speaker labels remain approximate because diarization labels A/B/C are inconsistent across
-  chunks.
+- Listener names that are nickname-like, e.g. ほっぺまー, ロシアンカボチャ, ひたくち,
+  ごじろ, and みっちー, should generally be preserved in the original form rather than
+  romanized.
 
 ## Style Requirements
 
@@ -74,3 +73,18 @@ published_at: "2026-06-03"
 - Preserve speaker tone, banter, jokes, and recurring phrases.
 - Keep names and title terminology consistent with the glossary unless the transcript proves a different official rendering.
 - Prefer concise subtitle phrasing over literal word-by-word translation.
+
+## QA Notes From This Session
+
+- `transcript_work` and `translation_work` were force-committed because the remaining blocking
+  errors were inherited Japanese subtitle QA heuristics: long Japanese lines and Japanese reading
+  speed. No empty text, schema, invalid timing, overlap, or untranslated Chinese errors remained.
+- The CLI-generated ASR segmentation created many 0 ms adjacent gaps. These were normalized to
+  90 ms gaps before committing; many soft `subtitle_gap_short` warnings remain.
+- Chinese hard errors were fixed before export. Remaining Chinese issues are soft warnings only.
+- Segment `2-47` remains transcript-uncertain: ASR has `作本なんじゅうさいてますか`; the attempted
+  correction `特報されてますか` was rejected as unreliable.
+- Some ASR/special terms remain uncertain and were preserved conservatively: `アサベル丼`,
+  `デートウォーズ`, `已己巳己 巳己`, and `Go☆Jas` / `ゴー☆ジャス`.
+- The ending sign-off is split by the source segmentation into separate subtitles:
+  `本期主持是春日樱和` / `乾夏宁`. It is readable but could be merged in a later timing pass.
