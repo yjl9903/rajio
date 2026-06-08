@@ -7,7 +7,6 @@ import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '
 import { printCheckIssues, type CheckIssue } from '../../session/check.js';
 import {
   cloneForTranslation,
-  precutTranscriptSegments,
   readSegmentsFile,
   validateSegments,
   writeSegmentsFile
@@ -41,7 +40,7 @@ export async function setupManualStage(input: {
   await mkdir(path.dirname(workPath), { recursive: true });
   if (stage === 'transcript_work') {
     const source = await readSegmentsFile(sourcePath);
-    await writeSegmentsFile(workPath, precutTranscriptSegments(source), {
+    await writeSegmentsFile(workPath, source, {
       requireZh: false,
       validate: false
     });

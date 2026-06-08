@@ -38,7 +38,7 @@ describe('session workflow', () => {
     );
   });
 
-  it('pre-cuts long raw transcript segments when setting up transcript work', async () => {
+  it('copies long raw transcript segments without pre-cutting transcript work', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
         status: 'done',
@@ -66,11 +66,15 @@ describe('session workflow', () => {
     await runRajio(session, baseOptions);
 
     const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
-    expect(work.segments.length).toBeGreaterThan(1);
-    expect(work.segments.every((segment) => segment.id.startsWith('long.'))).toBe(true);
-    expect(
-      work.segments.every((segment) => Array.from(segment.ja.replace(/\s/g, '')).length <= 20)
-    ).toBe(true);
+    expect(work.segments).toEqual([
+      {
+        id: 'long',
+        start: 0,
+        end: 12,
+        speaker: 'A',
+        ja: '今日は新しい企画について話していきたいと思いますので、まずは前回の内容を少し振り返りながら進めていきます'
+      }
+    ]);
   });
 
   it('sets up transcript work even when raw transcript needs manual fixes', async () => {

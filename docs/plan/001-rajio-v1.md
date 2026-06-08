@@ -268,12 +268,9 @@ Rules:
   committed and hash-valid.
 - Automatic stages write artifact paths and hashes, set status to `done`, and advance
   `current_stage`.
-- Manual stage setup copies source segments to work, sets status to `waiting`, and stops.
-  Transcript work setup may pre-cut clearly overlong raw transcript segments before
-  writing `transcript/work/segments.toml`. Pre-cutting only happens when a safe boundary
-  is found, in this priority order: Japanese punctuation, common semantic connectors,
-  whitespace, and line breaks. If no boundary is found, leave the segment unchanged for
-  the interactive agent to handle.
+- Manual stage setup copies source segments to work without automatic subtitle cutting, sets
+  status to `waiting`, and stops. Transcript work starts from the raw transcript so human or
+  agent edits can decide semantic split points, timing, and gaps together.
 - `--commit` validates work, writes `segments_sha256` and `committed_at`, sets status to
   `committed`, and advances.
 - `--agent=codex` runs Codex, writes JSONL output, then commits. On failure, the stage is
@@ -294,8 +291,8 @@ Rules:
    `transcript/raw/chunks/chunk-000.toml` style checkpoint files. After all chunks are
    available, read those raw responses, normalize and offset non-empty text segments during
    merge, write `transcript/raw/segments.toml`, and initialize
-   `transcript/work/segments.toml` with overlong raw segments pre-cut into smaller subtitle
-   candidates when safe boundaries exist.
+   `transcript/work/segments.toml` as a direct copy for manual proofread and subtitle timing
+   edits.
 4. Transcript proofread and polish: human or Codex edits
    `transcript/work/segments.toml`; `--commit` validates it and records hash.
 5. Translation: create `translation/work/segments.toml` from committed and clean

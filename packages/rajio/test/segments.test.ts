@@ -15,7 +15,6 @@ import {
   splitSegment
 } from '../src/segments/edit.js';
 import {
-  precutTranscriptSegments,
   readSegmentsFile,
   validateSegments,
   writeSegmentsFile
@@ -543,75 +542,6 @@ describe('segments validation and subtitle rendering', () => {
     });
   });
 
-  it('pre-cuts long transcript segments for subtitle work', () => {
-    const source: SegmentsFile = {
-      ...sampleTranscript(),
-      segments: [
-        {
-          id: 'long',
-          start: 0,
-          end: 12,
-          speaker: 'A',
-          ja: '今日は新しい企画について話していきたいと思いますので、まずは前回の内容を少し振り返りながら進めていきます'
-        }
-      ]
-    };
-
-    const result = precutTranscriptSegments(source);
-
-    expect(result.segments.length).toBeGreaterThan(1);
-    expect(
-      result.segments.every((segment) => Array.from(segment.ja.replace(/\s/g, '')).length <= 20)
-    ).toBe(true);
-    expect(result.segments[0]?.start).toBe(0);
-    expect(result.segments.at(-1)?.end).toBe(12);
-    expect(result.segments[1]?.start).toBe(result.segments[0]?.end);
-  });
-
-  it('falls back to hard-boundary pre-cutting when no safe boundary exists', () => {
-    const source: SegmentsFile = {
-      ...sampleTranscript(),
-      segments: [
-        {
-          id: 'long',
-          start: 0,
-          end: 12,
-          speaker: 'A',
-          ja: 'あ'.repeat(60)
-        }
-      ]
-    };
-
-    const result = precutTranscriptSegments(source);
-
-    expect(result.segments.map((segment) => segment.id)).toEqual(['long.1', 'long.2', 'long.3']);
-    expect(
-      result.segments.every((segment) => Array.from(segment.ja.replace(/\s/g, '')).length <= 20)
-    ).toBe(true);
-    expect(result.segments[0]?.start).toBe(0);
-    expect(result.segments.at(-1)?.end).toBe(12);
-  });
-
-  it('can pre-cut long transcript segments at line breaks', () => {
-    const source: SegmentsFile = {
-      ...sampleTranscript(),
-      segments: [
-        {
-          id: 'long',
-          start: 0,
-          end: 12,
-          speaker: 'A',
-          ja: `${'あ'.repeat(13)}\n${'い'.repeat(13)}`
-        }
-      ]
-    };
-
-    const result = precutTranscriptSegments(source);
-
-    expect(result.segments.map((segment) => segment.id)).toEqual(['long.1', 'long.2']);
-    expect(result.segments[0]?.ja).toBe('あ'.repeat(13));
-    expect(result.segments[1]?.ja).toBe('い'.repeat(13));
-  });
 });
 
 describe('segment edit tools', () => {

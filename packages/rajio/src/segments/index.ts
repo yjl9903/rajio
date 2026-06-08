@@ -5,12 +5,6 @@ import { parse, stringify } from 'smol-toml';
 import type { Segment, SegmentsFile, ValidationIssue } from '../types.js';
 import { writeFileAtomic } from '../utils/fs.js';
 
-const TRANSCRIPT_PRECUT = {
-  targetChars: 13,
-  hardChars: 20,
-  minChars: 6
-} as const;
-
 const TEXT_LIMITS = {
   ja: {
     label: 'Japanese',
@@ -207,13 +201,6 @@ export async function writeSegmentsFile(
   await writeFileAtomic(filePath, stringify(value));
 }
 
-export function precutTranscriptSegments(source: SegmentsFile): SegmentsFile {
-  return {
-    ...source,
-    segments: source.segments.flatMap((segment) => precutTranscriptSegment(segment))
-  };
-}
-
 export function cloneForTranslation(source: SegmentsFile, generatedAt: string): SegmentsFile {
   return {
     version: 1,
@@ -224,100 +211,6 @@ export function cloneForTranslation(source: SegmentsFile, generatedAt: string): 
     },
     segments: source.segments.map((segment) => ({ ...segment }))
   };
-}
-
-function precutTranscriptSegment(segment: Segment): Segment[] {
-  const parts = splitJapaneseText(segment.ja);
-  if (parts.length <= 1) {
-    return [segment];
-  }
-
-  const totalWeight = parts.reduce((sum, part) => sum + textWeight(part), 0);
-  const duration = segment.end - segment.start;
-  let cursor = segment.start;
-
-  return parts.map((part, index) => {
-    const start = cursor;
-    const end =
-      index === parts.length - 1
-        ? segment.end
-        : start + duration * (textWeight(part) / totalWeight);
-    cursor = end;
-    return {
-      ...segment,
-      id: `${segment.id}.${index + 1}`,
-      start,
-      end,
-      ja: part
-    };
-  });
-}
-
-function splitJapaneseText(text: string): string[] {
-  const compactLength = textWeight(text);
-  if (compactLength <= TRANSCRIPT_PRECUT.hardChars) {
-    return [text];
-  }
-
-  const parts: string[] = [];
-  let rest = text.trim();
-  while (textWeight(rest) > TRANSCRIPT_PRECUT.hardChars) {
-    const index = chooseSplitIndex(rest);
-    if (index === undefined) {
-      return [text];
-    }
-    parts.push(rest.slice(0, index).trim());
-    rest = rest.slice(index).trim();
-  }
-  if (rest) {
-    parts.push(rest);
-  }
-  return parts.filter(Boolean);
-}
-
-function chooseSplitIndex(text: string): number | undefined {
-  const hardIndex = charIndexToStringIndex(text, TRANSCRIPT_PRECUT.hardChars);
-  const targetIndex = Math.min(
-    charIndexToStringIndex(text, TRANSCRIPT_PRECUT.targetChars),
-    hardIndex
-  );
-  const minIndex = charIndexToStringIndex(text, TRANSCRIPT_PRECUT.minChars);
-  return findBestBoundary(text, minIndex, hardIndex, targetIndex);
-}
-
-function findBestBoundary(
-  text: string,
-  minIndex: number,
-  maxIndex: number,
-  targetIndex: number
-): number | undefined {
-  const boundaryPatterns = [
-    /[。．.!！?？;；:：、，,…]\s*/g,
-    /(けれども|けれど|けども|ですが|ですけど|なので|ので|から|なら|とか|って|たり)\s*/g,
-    /[ \t]+/g,
-    /\r?\n+/g
-  ];
-  let best: { index: number; distance: number } | undefined;
-  for (const pattern of boundaryPatterns) {
-    for (const match of text.matchAll(pattern)) {
-      const index = (match.index ?? 0) + match[0].length;
-      if (index < minIndex || index > maxIndex) {
-        continue;
-      }
-      const distance = Math.abs(index - targetIndex);
-      if (!best || distance < best.distance) {
-        best = { index, distance };
-      }
-    }
-    if (best) {
-      return best.index;
-    }
-  }
-  return maxIndex;
-}
-
-function charIndexToStringIndex(text: string, charIndex: number): number {
-  return Array.from(text).slice(0, charIndex).join('').length;
 }
 
 function textWeight(value: string): number {
