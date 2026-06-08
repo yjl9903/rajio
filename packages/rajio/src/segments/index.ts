@@ -5,6 +5,8 @@ import { parse, stringify } from 'smol-toml';
 import type { Segment, SegmentsFile, ValidationIssue } from '../types.js';
 import { writeFileAtomic } from '../utils/fs.js';
 
+const VALIDATION_SUMMARY_CODE_LIMIT = 5;
+
 const TEXT_LIMITS = {
   ja: {
     label: 'Japanese',
@@ -178,9 +180,30 @@ export function assertValidSegments(
   });
   const errors = issues.filter((issue) => issue.level === 'error');
   if (errors.length > 0) {
-    throw new Error(errors.map((issue) => issue.message).join('\n'));
+    throw new Error(formatValidationErrorSummary(errors));
   }
   return parseSegments(value);
+}
+
+export function formatValidationErrorSummary(
+  errors: ValidationIssue[],
+  label = 'segments'
+): string {
+  const issueLabel = errors.length === 1 ? 'error' : 'errors';
+  const codes = summarizeValidationCodes(errors);
+  const codeText = codes.length > 0 ? ` (${codes.join(', ')})` : '';
+  return `${label} has ${errors.length} blocking ${issueLabel}${codeText}.`;
+}
+
+function summarizeValidationCodes(issues: ValidationIssue[]): string[] {
+  const counts = new Map<string, number>();
+  for (const issue of issues) {
+    counts.set(issue.code, (counts.get(issue.code) ?? 0) + 1);
+  }
+  return Array.from(counts.entries())
+    .sort(([aCode, aCount], [bCode, bCount]) => bCount - aCount || aCode.localeCompare(bCode))
+    .slice(0, VALIDATION_SUMMARY_CODE_LIMIT)
+    .map(([code, count]) => `${code}: ${count}`);
 }
 
 export async function readSegmentsFile(filePath: string): Promise<SegmentsFile> {

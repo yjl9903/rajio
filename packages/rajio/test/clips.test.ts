@@ -128,7 +128,9 @@ describe('clips', () => {
         'clip-10000-20000,check,10,20,10,done,1'
       ].join('\n')
     );
-    expect(formatClipList(rows, 'json')).toContain('"status": "done"');
+    expect(formatClipList(rows, 'json')).toContain('"status":"done"');
+    expect(formatClipList(rows, 'json')).not.toContain('\n');
+    expect(formatClipList(rows, 'json', { pretty: true })).toContain('\n  "clips"');
   });
 
   it('marks clips with checkpoints but no segments as partial', async () => {

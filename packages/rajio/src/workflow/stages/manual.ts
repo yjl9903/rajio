@@ -7,6 +7,7 @@ import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '
 import { printCheckIssues, type CheckIssue } from '../../session/check.js';
 import {
   cloneForTranslation,
+  formatValidationErrorSummary,
   readSegmentsFile,
   validateSegments,
   writeSegmentsFile
@@ -91,7 +92,10 @@ export async function commitManualStage(input: {
     { verbose, logger: stageLogger }
   );
   if (errors.length > 0) {
-    throw new Error(errors.map((issue) => issue.message).join('\n'));
+    const file = toSessionRelative(session.dir, segmentsPath);
+    throw new Error(
+      `${formatValidationErrorSummary(errors, `${stage} ${file}`)} Run rajio check <session> --stage ${stage} --level error --verbose for details.`
+    );
   }
 
   session.updateStage(stage, {

@@ -82,13 +82,17 @@ export function printCheckIssues(
     logger?: ConsolaInstance;
     json?: boolean;
     sessionDir?: string;
-    writer?: { write(chunk: string): unknown };
+    writer?: { isTTY?: boolean; write(chunk: string): unknown };
   }
 ): void {
   if (options.json) {
     printCheckJson(
       issues,
-      { verbose: options.verbose, sessionDir: options.sessionDir },
+      {
+        verbose: options.verbose,
+        sessionDir: options.sessionDir,
+        pretty: Boolean((options.writer ?? process.stdout).isTTY)
+      },
       options.writer ?? process.stdout
     );
     return;
@@ -129,7 +133,7 @@ export function filterCheckIssues(
 
 export function formatCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean; sessionDir?: string } = {}
+  options: { verbose?: boolean; sessionDir?: string; pretty?: boolean } = {}
 ): string {
   const output: {
     ok: boolean;
@@ -162,7 +166,7 @@ export function formatCheckJson(
     }));
   }
 
-  return JSON.stringify(output);
+  return formatJson(output, options.pretty);
 }
 
 async function checkSession(
@@ -507,8 +511,8 @@ function formatIssueContext(issue: CheckIssue): string {
 
 function printCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean; sessionDir?: string },
-  writer: { write(chunk: string): unknown }
+  options: { verbose?: boolean; sessionDir?: string; pretty?: boolean },
+  writer: { isTTY?: boolean; write(chunk: string): unknown }
 ): void {
   writer.write(`${formatCheckJson(issues, options)}\n`);
 }
@@ -623,6 +627,10 @@ function formatNumber(value: number): string {
 
 function formatCheckJsonFile(file: string, sessionDir: string | undefined): string {
   return sessionDir ? toSessionRelative(sessionDir, file) : file;
+}
+
+function formatJson(value: unknown, pretty: boolean | undefined): string {
+  return pretty ? JSON.stringify(value, null, 2) : JSON.stringify(value);
 }
 
 async function findSegmentFiles(root: string): Promise<string[]> {

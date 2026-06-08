@@ -14,7 +14,12 @@ import {
   persistSegmentEdit,
   splitSegment
 } from '../src/segments/edit.js';
-import { readSegmentsFile, validateSegments, writeSegmentsFile } from '../src/segments/index.js';
+import {
+  formatValidationErrorSummary,
+  readSegmentsFile,
+  validateSegments,
+  writeSegmentsFile
+} from '../src/segments/index.js';
 import { listSegments } from '../src/segments/list.js';
 import { formatSegments } from '../src/segments/output.js';
 import { filterCheckIssues, formatCheckJson, printCheckIssues } from '../src/session/check.js';
@@ -496,6 +501,7 @@ describe('segments validation and subtitle rendering', () => {
 
     const sessionSummary = json.summary.find((summary) => summary.file === 'session.toml');
     expect(sessionSummary).not.toHaveProperty('examples');
+    expect(formatCheckJson(issues, { sessionDir, pretty: true })).toContain('\n  "ok"');
   });
 
   it('formats full check issues only for verbose JSON output', () => {
@@ -534,6 +540,25 @@ describe('segments validation and subtitle rendering', () => {
       'empty_zh',
       'ja_terminal_punctuation'
     ]);
+
+    const ttyWriter = { isTTY: true, write: vi.fn() };
+    printCheckIssues(issues, { verbose: false, json: true, writer: ttyWriter });
+    expect(ttyWriter.write.mock.calls[0][0]).toContain('\n  "ok"');
+  });
+
+  it('summarizes validation errors without printing every message', () => {
+    expect(
+      formatValidationErrorSummary(
+        [
+          { level: 'error', code: 'empty_ja', message: 'Segment 1 has empty Japanese text.' },
+          { level: 'error', code: 'empty_ja', message: 'Segment 2 has empty Japanese text.' },
+          { level: 'error', code: 'overlap', message: 'Segment 2 overlaps previous segment 1.' }
+        ],
+        'transcript_work transcript/work/segments.toml'
+      )
+    ).toBe(
+      'transcript_work transcript/work/segments.toml has 3 blocking errors (empty_ja: 2, overlap: 1).'
+    );
   });
 
   it('renders SRT and ASS subtitles', () => {
@@ -721,6 +746,8 @@ describe('segment edit tools', () => {
         }
       ]
     });
+    expect(formatSegments(segments, 'json')).not.toContain('\n');
+    expect(formatSegments(segments, 'json', { jsonPretty: true })).toContain('\n  "segments"');
     expect(
       JSON.parse(
         formatSegments(segments, 'json', {

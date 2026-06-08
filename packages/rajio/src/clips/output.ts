@@ -13,6 +13,7 @@ export interface ClipOutputWriter {
 export interface ClipOutput {
   format: ClipOutputFormat;
   writer: ClipOutputWriter;
+  jsonPretty: boolean;
 }
 
 const columns = ['id', 'label', 'start', 'end', 'duration', 'status', 'segments'] as const;
@@ -26,16 +27,20 @@ export function prepareClipOutput(options: {
   if (format !== 'human') {
     logger.level = Number.NEGATIVE_INFINITY;
   }
-  return { format, writer };
+  return { format, writer, jsonPretty: format === 'json' && Boolean(writer.isTTY) };
 }
 
 export function printClipList(rows: ClipListRow[], output: ClipOutput): void {
-  output.writer.write(`${formatClipList(rows, output.format)}\n`);
+  output.writer.write(`${formatClipList(rows, output.format, { pretty: output.jsonPretty })}\n`);
 }
 
-export function formatClipList(rows: ClipListRow[], format: ClipOutputFormat): string {
+export function formatClipList(
+  rows: ClipListRow[],
+  format: ClipOutputFormat,
+  options: { pretty?: boolean } = {}
+): string {
   if (format === 'json') {
-    return JSON.stringify({ clips: rows }, null, 2);
+    return formatJson({ clips: rows }, options.pretty);
   }
   if (format === 'csv') {
     return formatCsv(rows);
@@ -113,4 +118,8 @@ function padRight(value: string, width: number): string {
 
 function displayLength(value: string): number {
   return stringWidth(value);
+}
+
+function formatJson(value: unknown, pretty: boolean | undefined): string {
+  return pretty ? JSON.stringify(value, null, 2) : JSON.stringify(value);
 }

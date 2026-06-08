@@ -13,6 +13,7 @@ export interface SegmentOutputWriter {
 export interface SegmentOutput {
   format: SegmentOutputFormat;
   writer: SegmentOutputWriter;
+  jsonPretty: boolean;
 }
 
 export interface SegmentOutputOptions {
@@ -23,6 +24,7 @@ export interface SegmentOutputOptions {
 export interface SegmentPrintOptions {
   totalDuration?: number;
   stats?: SegmentOutputStats;
+  jsonPretty?: boolean;
 }
 
 export interface SegmentOutputStats {
@@ -40,7 +42,7 @@ export function prepareSegmentOutput(options: SegmentOutputOptions): SegmentOutp
   if (format !== 'human') {
     logger.level = Number.NEGATIVE_INFINITY;
   }
-  return { format, writer };
+  return { format, writer, jsonPretty: format === 'json' && Boolean(writer.isTTY) };
 }
 
 export function printSegments(
@@ -48,7 +50,12 @@ export function printSegments(
   output: SegmentOutput,
   options: SegmentPrintOptions = {}
 ): void {
-  output.writer.write(`${formatSegments(segments, output.format, options)}\n`);
+  output.writer.write(
+    `${formatSegments(segments, output.format, {
+      ...options,
+      jsonPretty: output.jsonPretty
+    })}\n`
+  );
 }
 
 export function formatSegments(
@@ -57,13 +64,12 @@ export function formatSegments(
   options: SegmentPrintOptions = {}
 ): string {
   if (format === 'json') {
-    return JSON.stringify(
+    return formatJson(
       {
         segments: segments.map(toSegmentRow),
         ...(options.stats ? { stats: options.stats } : {})
       },
-      null,
-      2
+      options.jsonPretty
     );
   }
   const usesHours = shouldUseHours(segments, options.totalDuration);
@@ -172,4 +178,8 @@ function padRight(value: string, width: number): string {
 
 function displayLength(value: string): number {
   return stringWidth(value);
+}
+
+function formatJson(value: unknown, pretty: boolean | undefined): string {
+  return pretty ? JSON.stringify(value, null, 2) : JSON.stringify(value);
 }
