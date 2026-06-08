@@ -1,4 +1,17 @@
-export function formatCliError(error: unknown): string {
+const topLevelCommandUsage = new Map([
+  ['check', 'rajio check <target>'],
+  ['doctor', 'rajio doctor <target>'],
+  ['clean', 'rajio clean <target>'],
+  ['segments', 'rajio segments <command> <target>'],
+  ['clips', 'rajio clips <command> <target>']
+]);
+
+export function formatCliError(error: unknown, argv: string[] = []): string {
+  const commandOrderHint = formatMisorderedCommandError(error, argv);
+  if (commandOrderHint) {
+    return commandOrderHint;
+  }
+
   if (isMissingTargetError(error)) {
     return [
       `target is required.`,
@@ -17,6 +30,21 @@ export function formatCliError(error: unknown): string {
     return formatTargetResolutionError(error.message);
   }
   return String(error);
+}
+
+function formatMisorderedCommandError(error: unknown, argv: string[]): string | undefined {
+  if (!isUnexpectedArgumentsError(error) || argv.length < 2) {
+    return undefined;
+  }
+  const misplacedCommand = argv.slice(1).find((arg) => topLevelCommandUsage.has(arg));
+  if (!misplacedCommand) {
+    return undefined;
+  }
+  return [
+    'command order looks wrong.',
+    `Use: ${topLevelCommandUsage.get(misplacedCommand)}`,
+    'Subcommands come before the target.'
+  ].join('\n');
 }
 
 function formatTargetResolutionError(message: string): string {
@@ -70,6 +98,10 @@ function isMissingTargetError(error: unknown): error is Error & {
   return (
     error.message === 'Missing required argument' && candidate.cause?.argument?.name === 'target'
   );
+}
+
+function isUnexpectedArgumentsError(error: unknown): boolean {
+  return error instanceof Error && error.message === 'Detect unexpected redundant arguments';
 }
 
 function isErrnoError(error: unknown): error is NodeJS.ErrnoException {

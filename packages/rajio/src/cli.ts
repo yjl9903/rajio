@@ -185,7 +185,9 @@ app.command('clean <target>', 'Clean generated session artifacts').action(async 
   process.stdout.write(`removed: ${removed.length > 0 ? removed.join(', ') : 'none'}\n`);
 });
 
-app.run(process.argv.slice(2)).catch((error) => {
-  cliLogger.error(formatCliError(error));
+const argv = process.argv.slice(2);
+
+app.run(argv).catch((error) => {
+  cliLogger.error(formatCliError(error, argv));
   process.exitCode = 1;
 });
