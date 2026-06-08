@@ -17,8 +17,8 @@ valid subtitle gap by treating split times as boundary midpoints.
   - generate first `end = at - gap / 2`
   - generate second `start = at + gap / 2`
   - reject `gap < 0.08`, invalid midpoint, or any child shorter than `0.5s`
-- Update `segments apply` split patches:
-  - add optional `gap = <seconds>` per `[[splits]]`, default `0.08`
+- Update `segments apply` split operations:
+  - add optional `gap = <seconds>` per `op = "split"` operation, default `0.08`
   - treat authored `start/end` values as virtual continuous timing
   - every internal boundary where `prev.end == next.start` becomes the midpoint of an inserted gap
   - preserve first segment `start` and last segment `end`
@@ -38,19 +38,20 @@ rajio segments split <target> <id> --at 12.5 --gap 0.08 --id1 1.1 --id2 1.2 --ja
 Patch TOML:
 
 ```toml
-[[splits]]
-id = "1"
+[[operations]]
+op = "split"
+source_id = "1"
 gap = 0.08
 
-[[splits.segments]]
-id = "1.1"
+[[operations.replacements]]
+segment_id = "1.1"
 start = 0
 end = 1.2
 speaker = "A"
 ja = "前半"
 
-[[splits.segments]]
-id = "1.2"
+[[operations.replacements]]
+segment_id = "1.2"
 start = 1.2
 end = 2.5
 speaker = "A"

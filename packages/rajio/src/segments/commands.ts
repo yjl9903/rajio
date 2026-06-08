@@ -125,11 +125,9 @@ export function registerSegmentCommands(app: RajioApp): void {
         printSegmentPatchStats(summarizeSegmentPatchResult(patch), output);
         return;
       }
-      printSegments(
-        [...result.edits, ...result.splits, ...result.merges, ...result.deletes],
-        output,
-        { totalDuration: getTotalDuration(context.file.segments) }
-      );
+      printSegments(result.affected, output, {
+        totalDuration: getTotalDuration(context.file.segments)
+      });
     });
 
   app

@@ -294,24 +294,24 @@ should be corrected or merged.
 rajio segments apply /path/to/session patch.toml --stage translation --dry-run --json
 rajio segments apply /path/to/session patch.toml --stage translation
 rajio segments apply /path/to/session --stage translation <<'EOF'
-[[edits]]
-id = "12"
+[[operations]]
+op = "edit"
+segment_id = "12"
 zh = "修正后的中文字幕"
 EOF
 ```
 
-`segments apply <target> [file]` applies a TOML patch as the batch form of edit, split, merge,
-and delete operations. Pass a patch file path, or omit `[file]` only when supplying
+`segments apply <target> [file]` applies an ordered TOML patch as the batch form of edit, split,
+merge, and delete operations. Pass a patch file path, or omit `[file]` only when supplying
 TOML on stdin in the same shell command. It prints operation counts by default; add
-`--verbose` to print affected segment rows.
+`--verbose` to print affected segment rows in operation order.
 
 Patch rules:
 
-- A patch must contain at least one of `[[edits]]`, `[[splits]]`, `[[merges]]`, or
-  `[[deletes]]`.
-- `[[edits]]` requires `id` plus at least one changed field: `start`, `end`, `speaker`,
+- A patch must contain at least one `[[operations]]`.
+- `op = "edit"` requires `segment_id` plus at least one changed field: `start`, `end`, `speaker`,
   `ja`, or `zh`.
-- `[[splits]]` replaces one source segment with two or more `[[splits.segments]]`.
+- `op = "split"` replaces `source_id` with two or more `[[operations.replacements]]`.
   `gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
   Replacement segments use virtual continuous timing: they must cover the original
   segment continuously with no gaps or overlaps, start at the original `start`, and end
@@ -321,47 +321,51 @@ Patch rules:
 - Every generated split segment must remain at least `0.5` seconds long after gap
   insertion.
 - If a split source has `zh`, every replacement segment must include `zh`.
-- `[[merges]]` accepts two or more adjacent source ids in `ids`; `id` and `ja` are
+- `op = "merge"` accepts two or more adjacent source ids in `source_ids`; `merged_id` and `ja` are
   required. If any source has `zh`, merged `zh` is required.
-- `[[deletes]]` requires only `id`.
-- Final segment ids must be unique.
+- `op = "delete"` requires only `segment_id`.
+- Current segment ids must be unique after every operation.
 
 Patch example:
 
 ```toml
-[[edits]]
-id = "12"
+[[operations]]
+op = "edit"
+segment_id = "12"
 zh = "修正后的中文字幕"
 
-[[splits]]
-id = "long"
+[[operations]]
+op = "split"
+source_id = "long"
 gap = 0.08
 
-[[splits.segments]]
-id = "long.1"
+[[operations.replacements]]
+segment_id = "long.1"
 start = 10.0
 end = 13.2
 speaker = "A"
 ja = "前半の日本語"
 zh = "前半中文字幕"
 
-[[splits.segments]]
-id = "long.2"
+[[operations.replacements]]
+segment_id = "long.2"
 start = 13.2
 end = 16.0
 speaker = "A"
 ja = "後半の日本語"
 zh = "后半中文字幕"
 
-[[merges]]
-ids = ["13.1", "13.2"]
-id = "13"
+[[operations]]
+op = "merge"
+source_ids = ["13.1", "13.2"]
+merged_id = "13"
 speaker = "A,B"
 ja = "結合した日本語"
 zh = "合并后的中文字幕"
 
-[[deletes]]
-id = "14"
+[[operations]]
+op = "delete"
+segment_id = "14"
 ```
 
 For large or risky batches, keep the patch under a session-local `patches/` directory,

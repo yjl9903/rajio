@@ -125,7 +125,10 @@ describe('cli explicit targets', () => {
   it('applies a patch with target before patch path', async () => {
     const dir = await preparedTranslationSession();
     const patchPath = path.join(dir, 'patch.toml');
-    await writeFile(patchPath, ['[[edits]]', 'id = "1"', 'zh = "您好"'].join('\n'));
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'zh = "您好"'].join('\n')
+    );
 
     const stdout = mockStdout();
     await createCommandApp().run([
@@ -150,7 +153,9 @@ describe('cli explicit targets', () => {
   it('reads a patch from stdin when no patch path is provided', async () => {
     const dir = await preparedTranslationSession();
     const restoreStdin = replaceStdin(
-      Readable.from([['[[edits]]', 'id = "1"', 'zh = "您好"'].join('\n')])
+      Readable.from([
+        ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'zh = "您好"'].join('\n')
+      ])
     );
     const stdout = mockStdout();
 

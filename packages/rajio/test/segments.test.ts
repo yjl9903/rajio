@@ -806,16 +806,98 @@ describe('segment edit tools', () => {
     expect(prefixWidths[0]).toBe(prefixWidths[1]);
   });
 
-  it('applies segment field patches atomically', () => {
+  it('applies ordered edit, split, merge, and delete operations atomically', () => {
+    const file: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [
+        { id: 'long', start: 0, end: 4, speaker: 'A', ja: '長い文です' },
+        { id: '2', start: 4, end: 5, speaker: 'B', ja: '次' },
+        { id: '3', start: 5, end: 6, speaker: 'C', ja: '続き' },
+        { id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除' }
+      ]
+    };
+    const patch = parseSegmentPatch(
+      [
+        '[[operations]]',
+        'op = "edit"',
+        'segment_id = "delete-me"',
+        'ja = "削除します"',
+        '',
+        '[[operations]]',
+        'op = "split"',
+        'source_id = "long"',
+        '',
+        '[[operations.replacements]]',
+        'segment_id = "long.1"',
+        'start = 0',
+        'end = 2',
+        'speaker = "A"',
+        'ja = "前半"',
+        '',
+        '[[operations.replacements]]',
+        'segment_id = "long.2"',
+        'start = 2',
+        'end = 4',
+        'speaker = "A"',
+        'ja = "後半"',
+        '',
+        '[[operations]]',
+        'op = "merge"',
+        'source_ids = ["2", "3"]',
+        'merged_id = "2-3"',
+        'speaker = "B,C"',
+        'ja = "次続き"',
+        '',
+        '[[operations]]',
+        'op = "delete"',
+        'segment_id = "delete-me"'
+      ].join('\n')
+    );
+
+    const result = applySegmentPatch(file, patch);
+
+    expect(result).toEqual({
+      edits: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' }],
+      splits: [
+        { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
+        { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' }
+      ],
+      merges: [{ id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }],
+      deletes: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' }],
+      affected: [
+        { id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' },
+        { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
+        { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' },
+        { id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' },
+        { id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' }
+      ]
+    });
+    expect(summarizeSegmentPatchResult(patch)).toEqual({
+      edits: 1,
+      splits: 1,
+      merges: 1,
+      deletes: 1,
+      total: 4
+    });
+    expect(file.segments).toEqual([
+      { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
+      { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' },
+      { id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }
+    ]);
+  });
+
+  it('applies ordered field edit operations', () => {
     const file = sampleTranslation();
     const patch = parseSegmentPatch(
       [
-        '[[edits]]',
-        'id = "1"',
+        '[[operations]]',
+        'op = "edit"',
+        'segment_id = "1"',
         'zh = "您好"',
         '',
-        '[[edits]]',
-        'id = "2"',
+        '[[operations]]',
+        'op = "edit"',
+        'segment_id = "2"',
         'start = 2.5',
         'end = 3.5',
         'speaker = "C"',
@@ -831,7 +913,11 @@ describe('segment edit tools', () => {
       ],
       splits: [],
       merges: [],
-      deletes: []
+      deletes: [],
+      affected: [
+        { id: '1', start: 0, end: 1.2, speaker: 'A', ja: 'こんにちは', zh: '您好' },
+        { id: '2', start: 2.5, end: 3.5, speaker: 'C', ja: 'またね', zh: '回头见' }
+      ]
     });
     expect(file.segments).toEqual([
       { id: '1', start: 0, end: 1.2, speaker: 'A', ja: 'こんにちは', zh: '您好' },
@@ -844,7 +930,7 @@ describe('segment edit tools', () => {
 
     expect(() =>
       applySegmentPatch(file, {
-        edits: [{ id: '1', zh: '第一行\n第二行\n第三行' }]
+        operations: [{ op: 'edit', segment_id: '1', zh: '第一行\n第二行\n第三行' }]
       })
     ).not.toThrow();
     expect(file.segments[0]?.zh).toBe('第一行\n第二行\n第三行');
@@ -903,12 +989,25 @@ describe('segment edit tools', () => {
 
     expect(() =>
       applySegmentPatch(file, {
-        splits: [
+        operations: [
           {
-            id: 'long',
-            segments: [
-              { id: 'long.1', start: 10.123956, end: 11.0004, speaker: 'A', ja: '前半' },
-              { id: 'long.2', start: 11.0009, end: 12.653821, speaker: 'A', ja: '後半' }
+            op: 'split',
+            source_id: 'long',
+            replacements: [
+              {
+                segment_id: 'long.1',
+                start: 10.123956,
+                end: 11.0004,
+                speaker: 'A',
+                ja: '前半'
+              },
+              {
+                segment_id: 'long.2',
+                start: 11.0009,
+                end: 12.653821,
+                speaker: 'A',
+                ja: '後半'
+              }
             ]
           }
         ]
@@ -924,12 +1023,13 @@ describe('segment edit tools', () => {
 
     expect(
       applySegmentPatch(file, {
-        splits: [
+        operations: [
           {
-            id: 'long',
-            segments: [
-              { id: 'long.1', start: 0, end: 1.2, speaker: 'A', ja: '前半' },
-              { id: 'long.2', start: 1.2, end: 2.5, speaker: 'A', ja: '後半' }
+            op: 'split',
+            source_id: 'long',
+            replacements: [
+              { segment_id: 'long.1', start: 0, end: 1.2, speaker: 'A', ja: '前半' },
+              { segment_id: 'long.2', start: 1.2, end: 2.5, speaker: 'A', ja: '後半' }
             ]
           }
         ]
@@ -950,13 +1050,14 @@ describe('segment edit tools', () => {
     };
 
     applySegmentPatch(file, {
-      splits: [
+      operations: [
         {
-          id: 'long',
-          segments: [
-            { id: 'long.1', start: 0, end: 1, speaker: 'A', ja: '一' },
-            { id: 'long.2', start: 1, end: 2, speaker: 'A', ja: '二' },
-            { id: 'long.3', start: 2, end: 3, speaker: 'A', ja: '三' }
+          op: 'split',
+          source_id: 'long',
+          replacements: [
+            { segment_id: 'long.1', start: 0, end: 1, speaker: 'A', ja: '一' },
+            { segment_id: 'long.2', start: 1, end: 2, speaker: 'A', ja: '二' },
+            { segment_id: 'long.3', start: 2, end: 3, speaker: 'A', ja: '三' }
           ]
         }
       ]
@@ -969,66 +1070,48 @@ describe('segment edit tools', () => {
     ]);
   });
 
-  it('applies split, merge, and delete patches atomically', () => {
+  it('can merge and then split using an intermediate segment id', () => {
     const file: SegmentsFile = {
       ...sampleTranscript(),
       segments: [
-        { id: 'long', start: 0, end: 4, speaker: 'A', ja: '長い文です' },
-        { id: '2', start: 4, end: 5, speaker: 'B', ja: '次' },
-        { id: '3', start: 5, end: 6, speaker: 'C', ja: '続き' },
-        { id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除' }
+        { id: '1', start: 0, end: 1, speaker: 'A', ja: '前の誤切り' },
+        { id: '2', start: 1, end: 2.4, speaker: 'B', ja: '後の誤切り' }
       ]
     };
     const patch = parseSegmentPatch(
       [
-        '[[splits]]',
-        'id = "long"',
+        '[[operations]]',
+        'op = "merge"',
+        'source_ids = ["1", "2"]',
+        'merged_id = "1-2"',
+        'ja = "前の誤切り後の誤切り"',
         '',
-        '[[splits.segments]]',
-        'id = "long.1"',
+        '[[operations]]',
+        'op = "split"',
+        'source_id = "1-2"',
+        '',
+        '[[operations.replacements]]',
+        'segment_id = "1a"',
         'start = 0',
-        'end = 2',
+        'end = 1.2',
         'speaker = "A"',
-        'ja = "前半"',
+        'ja = "正しい前半"',
         '',
-        '[[splits.segments]]',
-        'id = "long.2"',
-        'start = 2',
-        'end = 4',
-        'speaker = "A"',
-        'ja = "後半"',
-        '',
-        '[[merges]]',
-        'ids = ["2", "3"]',
-        'id = "2-3"',
-        'speaker = "B,C"',
-        'ja = "次続き"',
-        '',
-        '[[deletes]]',
-        'id = "delete-me"'
+        '[[operations.replacements]]',
+        'segment_id = "2a"',
+        'start = 1.2',
+        'end = 2.4',
+        'speaker = "B"',
+        'ja = "正しい後半"'
       ].join('\n')
     );
 
-    expect(applySegmentPatch(file, patch)).toEqual({
-      edits: [],
-      splits: [
-        { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
-        { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' }
-      ],
-      merges: [{ id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }],
-      deletes: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除' }]
-    });
-    expect(summarizeSegmentPatchResult(patch)).toEqual({
-      edits: 0,
-      splits: 1,
-      merges: 1,
-      deletes: 1,
-      total: 3
-    });
+    const result = applySegmentPatch(file, patch);
+
+    expect(result.affected.map((segment) => segment.id)).toEqual(['1-2', '1a', '2a']);
     expect(file.segments).toEqual([
-      { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
-      { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' },
-      { id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }
+      { id: '1a', start: 0, end: 1.16, speaker: 'A', ja: '正しい前半' },
+      { id: '2a', start: 1.24, end: 2.4, speaker: 'B', ja: '正しい後半' }
     ]);
   });
 
@@ -1037,16 +1120,14 @@ describe('segment edit tools', () => {
 
     expect(() => parseSegmentPatch('')).toThrow();
     expect(() =>
-      parseSegmentPatch(
-        ['[[splits]]', 'id = "1"', '', '[[splits.segments]]', 'id = "1.1"'].join('\n')
-      )
+      parseSegmentPatch(['[[items]]', 'segment_id = "1"', 'zh = "您好"'].join('\n'))
     ).toThrow();
 
     expect(() =>
       applySegmentPatch(file, {
-        edits: [
-          { id: '1', zh: '您好' },
-          { id: 'missing', zh: '缺失' }
+        operations: [
+          { op: 'edit', segment_id: '1', zh: '您好' },
+          { op: 'delete', segment_id: 'missing' }
         ]
       })
     ).toThrow('segment not found');
@@ -1054,19 +1135,18 @@ describe('segment edit tools', () => {
 
     expect(() =>
       applySegmentPatch(file, {
-        edits: [
-          { id: '1', zh: '您好' },
-          { id: '1', zh: '你好' }
+        operations: [
+          {
+            op: 'split',
+            source_id: '1',
+            replacements: [
+              { segment_id: '1.1', start: 0, end: 0.6, speaker: 'A', ja: 'こん', zh: '你' },
+              { segment_id: '2', start: 0.6, end: 1.2, speaker: 'A', ja: 'にちは', zh: '好' }
+            ]
+          }
         ]
       })
-    ).toThrow('duplicate edit id');
-
-    expect(() => applySegmentPatch(file, { deletes: [{ id: 'missing' }] })).toThrow(
-      'segment not found'
-    );
-    expect(() => applySegmentPatch(file, { deletes: [{ id: '1' }, { id: '1' }] })).toThrow(
-      'duplicate delete id'
-    );
+    ).toThrow('duplicate current segment id');
   });
 
   it('rejects invalid split and merge patches without changing the source file', () => {
@@ -1074,12 +1154,13 @@ describe('segment edit tools', () => {
 
     expect(() =>
       applySegmentPatch(file, {
-        splits: [
+        operations: [
           {
-            id: '1',
-            segments: [
-              { id: '1.1', start: 0, end: 0.5, speaker: 'A', ja: 'こん', zh: '你' },
-              { id: '1.2', start: 0.6, end: 1.2, speaker: 'A', ja: 'にちは', zh: '好' }
+            op: 'split',
+            source_id: '1',
+            replacements: [
+              { segment_id: '1.1', start: 0, end: 0.5, speaker: 'A', ja: 'こん', zh: '你' },
+              { segment_id: '1.2', start: 0.6, end: 1.2, speaker: 'A', ja: 'にちは', zh: '好' }
             ]
           }
         ]
@@ -1089,26 +1170,13 @@ describe('segment edit tools', () => {
 
     expect(() =>
       applySegmentPatch(file, {
-        splits: [
+        operations: [
           {
-            id: '1',
-            segments: [
-              { id: '1.1', start: 0, end: 0.6, speaker: 'A', ja: 'こん', zh: '你' },
-              { id: '2', start: 0.6, end: 1.2, speaker: 'A', ja: 'にちは', zh: '好' }
-            ]
-          }
-        ]
-      })
-    ).toThrow('duplicate final segment id');
-
-    expect(() =>
-      applySegmentPatch(file, {
-        splits: [
-          {
-            id: '1',
-            segments: [
-              { id: '1.1', start: 0, end: 0.6, speaker: 'A', ja: 'こん' },
-              { id: '1.2', start: 0.6, end: 1.2, speaker: 'A', ja: 'にちは', zh: '好' }
+            op: 'split',
+            source_id: '1',
+            replacements: [
+              { segment_id: '1.1', start: 0, end: 0.6, speaker: 'A', ja: 'こん' },
+              { segment_id: '1.2', start: 0.6, end: 1.2, speaker: 'A', ja: 'にちは', zh: '好' }
             ]
           }
         ]
@@ -1117,7 +1185,9 @@ describe('segment edit tools', () => {
 
     expect(() =>
       applySegmentPatch(file, {
-        merges: [{ ids: ['1', 'missing'], id: '1-3', ja: '結合', zh: '合并' }]
+        operations: [
+          { op: 'merge', source_ids: ['1', 'missing'], merged_id: '1-3', ja: '結合', zh: '合并' }
+        ]
       })
     ).toThrow('segment not found');
 
@@ -1131,13 +1201,17 @@ describe('segment edit tools', () => {
             sampleTranslation().segments[1]!
           ]
         },
-        { merges: [{ ids: ['1', '2'], id: '1-2', ja: '結合', zh: '合并' }] }
+        {
+          operations: [
+            { op: 'merge', source_ids: ['1', '2'], merged_id: '1-2', ja: '結合', zh: '合并' }
+          ]
+        }
       )
     ).toThrow('adjacent');
 
     expect(() =>
       applySegmentPatch(file, {
-        merges: [{ ids: ['1', '2'], id: '1-2', ja: '結合' }]
+        operations: [{ op: 'merge', source_ids: ['1', '2'], merged_id: '1-2', ja: '結合' }]
       })
     ).toThrow('requires zh');
   });

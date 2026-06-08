@@ -163,8 +163,9 @@ rajio segments edit /path/to/session 12 --stage transcript --start 10.2 --end 13
 rajio segments edit /path/to/session 12 --stage transcript --ja "修正した日本語" --dry-run --json
 rajio segments apply /path/to/session patch.toml --stage translation
 rajio segments apply /path/to/session --stage translation <<'EOF'
-[[edits]]
-id = "12"
+[[operations]]
+op = "edit"
+segment_id = "12"
 zh = "修正后的中文字幕"
 EOF
 rajio segments split /path/to/session 12 --stage transcript --at 11.8 --gap 0.08 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
@@ -188,47 +189,51 @@ Always pass `/path/to/session` as the first positional argument in agent work. R
   `--issues empty-zh --json` to list untranslated segments and read JSON `stats` for
   total, listed, translated, and untranslated counts.
 
-`segments apply <target> [file]` applies a TOML patch as the batch form of `edit`, `split`,
-`merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in
+`segments apply <target> [file]` applies an ordered TOML patch as the batch form of `edit`,
+`split`, `merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in
 the same shell command, such as `<<'EOF' ... EOF`. For larger or riskier batches, prefer
 a patch file under a session-local `patches/` directory: run it once with `--dry-run`,
 then apply the same file without `--dry-run`. It prints operation counts by default; use
-`--verbose` when you need affected segment rows.
+`--verbose` when you need affected segment rows in operation order.
 
 ```toml
-[[edits]]
-id = "12"
+[[operations]]
+op = "edit"
+segment_id = "12"
 zh = "修正后的中文字幕"
 
-[[splits]]
-id = "long"
+[[operations]]
+op = "split"
+source_id = "long"
 gap = 0.08
 
-[[splits.segments]]
-id = "long.1"
+[[operations.replacements]]
+segment_id = "long.1"
 start = 10.0
 end = 13.2
 speaker = "A"
 ja = "前半の日本語"
 zh = "前半中文字幕"
 
-[[splits.segments]]
-id = "long.2"
+[[operations.replacements]]
+segment_id = "long.2"
 start = 13.2
 end = 16.0
 speaker = "A"
 ja = "後半の日本語"
 zh = "后半中文字幕"
 
-[[merges]]
-ids = ["13.1", "13.2"]
-id = "13"
+[[operations]]
+op = "merge"
+source_ids = ["13.1", "13.2"]
+merged_id = "13"
 speaker = "A,B"
 ja = "結合した日本語"
 zh = "合并后的中文字幕"
 
-[[deletes]]
-id = "14"
+[[operations]]
+op = "delete"
+segment_id = "14"
 ```
 
 ### Clips

@@ -13,85 +13,94 @@ import {
 import { SEGMENT_TIME_EPSILON as SPLIT_TIME_EPSILON } from './limits.js';
 import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
-const editPatchSchema = z
+const editOperationSchema = z
   .object({
-    id: z.string().min(1),
-    start: z.number().finite().nonnegative().optional(),
-    end: z.number().finite().positive().optional(),
+    op: z.literal('edit'),
+    segment_id: z.string().min(1),
+    start: z.number().nonnegative().optional(),
+    end: z.number().positive().optional(),
     speaker: z.string().min(1).optional(),
     ja: z.string().optional(),
     zh: z.string().optional()
   })
-  .strict()
-  .refine(
-    (segment) =>
-      segment.start !== undefined ||
-      segment.end !== undefined ||
-      segment.speaker !== undefined ||
-      segment.ja !== undefined ||
-      segment.zh !== undefined,
-    { message: 'edit must update at least one field.' }
-  );
+  .strict();
 
-const splitSegmentSchema = z
+const splitReplacementSchema = z
   .object({
-    id: z.string().min(1),
-    start: z.number().finite().nonnegative(),
-    end: z.number().finite().positive(),
+    segment_id: z.string().min(1),
+    start: z.number().nonnegative(),
+    end: z.number().positive(),
     speaker: z.string().min(1),
     ja: z.string(),
     zh: z.string().optional()
   })
   .strict();
 
-const splitPatchSchema = z
+const splitOperationSchema = z
   .object({
-    id: z.string().min(1),
-    gap: z.number().finite().nonnegative().optional(),
-    segments: z.array(splitSegmentSchema).min(2)
+    op: z.literal('split'),
+    source_id: z.string().min(1),
+    gap: z.number().nonnegative().optional(),
+    replacements: z.array(splitReplacementSchema).min(2)
   })
   .strict();
 
-const mergePatchSchema = z
+const mergeOperationSchema = z
   .object({
-    ids: z.array(z.string().min(1)).min(2),
-    id: z.string().min(1),
+    op: z.literal('merge'),
+    source_ids: z.array(z.string().min(1)).min(2),
+    merged_id: z.string().min(1),
     speaker: z.string().min(1).optional(),
     ja: z.string(),
     zh: z.string().optional()
   })
   .strict();
 
-const deletePatchSchema = z
+const deleteOperationSchema = z
   .object({
-    id: z.string().min(1)
+    op: z.literal('delete'),
+    segment_id: z.string().min(1)
   })
   .strict();
 
+const segmentPatchOperationSchema = z
+  .discriminatedUnion('op', [
+    editOperationSchema,
+    splitOperationSchema,
+    mergeOperationSchema,
+    deleteOperationSchema
+  ])
+  .superRefine((operation, context) => {
+    if (
+      operation.op === 'edit' &&
+      operation.start === undefined &&
+      operation.end === undefined &&
+      operation.speaker === undefined &&
+      operation.ja === undefined &&
+      operation.zh === undefined
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'edit must update at least one field.'
+      });
+    }
+  });
+
 const segmentPatchSchema = z
   .object({
-    edits: z.array(editPatchSchema).optional(),
-    splits: z.array(splitPatchSchema).optional(),
-    merges: z.array(mergePatchSchema).optional(),
-    deletes: z.array(deletePatchSchema).optional()
+    operations: z.array(segmentPatchOperationSchema).min(1)
   })
-  .strict()
-  .refine(
-    (patch) =>
-      (patch.edits?.length ?? 0) > 0 ||
-      (patch.splits?.length ?? 0) > 0 ||
-      (patch.merges?.length ?? 0) > 0 ||
-      (patch.deletes?.length ?? 0) > 0,
-    { message: 'patch must contain at least one edit, split, merge, or delete.' }
-  );
+  .strict();
 
 export type SegmentPatch = z.infer<typeof segmentPatchSchema>;
+type SegmentPatchOperation = z.infer<typeof segmentPatchOperationSchema>;
 
 export interface SegmentPatchResult {
   edits: Segment[];
   splits: Segment[];
   merges: Segment[];
   deletes: Segment[];
+  affected: Segment[];
 }
 
 export interface SegmentPatchResultStats {
@@ -107,43 +116,29 @@ export function parseSegmentPatch(text: string): SegmentPatch {
 }
 
 export function applySegmentPatch(file: SegmentsFile, patch: SegmentPatch): SegmentPatchResult {
-  assertUniqueOperationTargets(patch);
   const next = cloneSegmentsFile(file);
-  const result: SegmentPatchResult = { edits: [], splits: [], merges: [], deletes: [] };
+  const result: SegmentPatchResult = {
+    edits: [],
+    splits: [],
+    merges: [],
+    deletes: [],
+    affected: []
+  };
 
-  for (const edit of patch.edits ?? []) {
-    editSegment(next, edit.id, {
-      start: edit.start,
-      end: edit.end,
-      speaker: edit.speaker,
-      ja: edit.ja,
-      zh: edit.zh
-    });
-    result.edits.push(cloneSegment(findSegment(next, edit.id)));
+  for (const operation of patch.operations) {
+    applyOperation(next, operation, result);
+    assertUniqueCurrentIds(next);
   }
 
-  for (const split of patch.splits ?? []) {
-    result.splits.push(...applySplit(next, split).map(cloneSegment));
-  }
-
-  for (const merge of patch.merges ?? []) {
-    result.merges.push(cloneSegment(applyMerge(next, merge)));
-  }
-
-  for (const deletion of patch.deletes ?? []) {
-    result.deletes.push(cloneSegment(deleteSegment(next, deletion.id)));
-  }
-
-  assertUniqueFinalIds(next);
   file.segments = next.segments;
   return result;
 }
 
 export function summarizeSegmentPatchResult(patch: SegmentPatch): SegmentPatchResultStats {
-  const edits = patch.edits?.length ?? 0;
-  const splits = patch.splits?.length ?? 0;
-  const merges = patch.merges?.length ?? 0;
-  const deletes = patch.deletes?.length ?? 0;
+  const edits = patch.operations.filter((operation) => operation.op === 'edit').length;
+  const splits = patch.operations.filter((operation) => operation.op === 'split').length;
+  const merges = patch.operations.filter((operation) => operation.op === 'merge').length;
+  const deletes = patch.operations.filter((operation) => operation.op === 'delete').length;
   return {
     edits,
     splits,
@@ -153,42 +148,90 @@ export function summarizeSegmentPatchResult(patch: SegmentPatch): SegmentPatchRe
   };
 }
 
+function applyOperation(
+  file: SegmentsFile,
+  operation: SegmentPatchOperation,
+  result: SegmentPatchResult
+): void {
+  if (operation.op === 'edit') {
+    editSegment(file, operation.segment_id, {
+      start: operation.start,
+      end: operation.end,
+      speaker: operation.speaker,
+      ja: operation.ja,
+      zh: operation.zh
+    });
+    const segment = cloneSegment(findSegment(file, operation.segment_id));
+    result.edits.push(segment);
+    result.affected.push(segment);
+    return;
+  }
+  if (operation.op === 'split') {
+    const segments = applySplit(file, operation).map(cloneSegment);
+    result.splits.push(...segments);
+    result.affected.push(...segments);
+    return;
+  }
+  if (operation.op === 'merge') {
+    const segment = cloneSegment(applyMerge(file, operation));
+    result.merges.push(segment);
+    result.affected.push(segment);
+    return;
+  }
+  const segment = cloneSegment(deleteSegment(file, operation.segment_id));
+  result.deletes.push(segment);
+  result.affected.push(segment);
+}
+
 function applySplit(
   file: SegmentsFile,
-  split: NonNullable<SegmentPatch['splits']>[number]
+  split: Extract<SegmentPatchOperation, { op: 'split' }>
 ): Segment[] {
-  const index = findSegmentIndex(file, split.id);
+  const index = findSegmentIndex(file, split.source_id);
   const source = file.segments[index]!;
-  validateSplitCoverage(source, split.segments);
-  if (source.zh !== undefined && split.segments.some((segment) => segment.zh === undefined)) {
-    throw new Error(`splitting translated segment ${split.id} requires zh on every new segment.`);
+  const replacements = split.replacements.map((segment) => ({
+    id: segment.segment_id,
+    start: segment.start,
+    end: segment.end,
+    speaker: segment.speaker,
+    ja: segment.ja,
+    ...(segment.zh !== undefined ? { zh: segment.zh } : {})
+  }));
+  validateSplitCoverage(source, replacements);
+  if (source.zh !== undefined && replacements.some((segment) => segment.zh === undefined)) {
+    throw new Error(
+      `splitting translated segment ${split.source_id} requires zh on every new segment.`
+    );
   }
-  const segments = insertSplitGaps(split.id, split.segments, normalizeSplitGap(split.gap));
+  const segments = insertSplitGaps(split.source_id, replacements, normalizeSplitGap(split.gap));
   file.segments.splice(index, 1, ...segments);
   return segments;
 }
 
 function applyMerge(
   file: SegmentsFile,
-  merge: NonNullable<SegmentPatch['merges']>[number]
+  merge: Extract<SegmentPatchOperation, { op: 'merge' }>
 ): Segment {
-  const indexes = merge.ids.map((id) => findSegmentIndex(file, id));
+  assertUniqueIds(merge.source_ids, 'duplicate merge source id');
+  const indexes = merge.source_ids.map((id) => findSegmentIndex(file, id));
   for (let index = 1; index < indexes.length; index += 1) {
     if (indexes[index] !== indexes[index - 1]! + 1) {
-      throw new Error(`merge ids must be adjacent in file order: ${merge.ids.join(', ')}`);
+      throw new Error(
+        `merge source_ids must be adjacent in file order: ${merge.source_ids.join(', ')}`
+      );
     }
   }
 
   const firstIndex = indexes[0]!;
   const sources = indexes.map((index) => file.segments[index]!);
   if (sources.some((segment) => segment.zh !== undefined) && merge.zh === undefined) {
-    throw new Error(`merging translated segments requires zh: ${merge.ids.join(', ')}`);
+    throw new Error(`merging translated segments requires zh: ${merge.source_ids.join(', ')}`);
   }
   const first = sources[0]!;
   const last = sources.at(-1)!;
   const merged: Segment = {
     ...first,
-    id: merge.id,
+    id: merge.merged_id,
     start: first.start,
     end: last.end,
     speaker: merge.speaker ?? mergeSpeakerLabels(...sources.map((segment) => segment.speaker)),
@@ -237,28 +280,10 @@ function timesEqual(left: number, right: number): boolean {
   return Math.abs(left - right) <= SPLIT_TIME_EPSILON;
 }
 
-function assertUniqueOperationTargets(patch: SegmentPatch): void {
-  assertUniqueIds(
-    (patch.edits ?? []).map((edit) => edit.id),
-    'duplicate edit id'
-  );
-  assertUniqueIds(
-    (patch.splits ?? []).map((split) => split.id),
-    'duplicate split id'
-  );
-  for (const merge of patch.merges ?? []) {
-    assertUniqueIds(merge.ids, 'duplicate merge source id');
-  }
-  assertUniqueIds(
-    (patch.deletes ?? []).map((deletion) => deletion.id),
-    'duplicate delete id'
-  );
-}
-
-function assertUniqueFinalIds(file: SegmentsFile): void {
+function assertUniqueCurrentIds(file: SegmentsFile): void {
   assertUniqueIds(
     file.segments.map((segment) => segment.id),
-    'duplicate final segment id'
+    'duplicate current segment id'
   );
 }
 

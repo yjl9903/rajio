@@ -60,8 +60,8 @@ const GAP_FLOAT_EPSILON = 1e-9;
 
 export const segmentSchema = z.object({
   id: z.string().min(1),
-  start: z.number().finite().nonnegative(),
-  end: z.number().finite().positive(),
+  start: z.number().nonnegative(),
+  end: z.number().positive(),
   speaker: z.string().min(1),
   ja: z.string(),
   zh: z.string().optional(),
