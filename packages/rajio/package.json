@@ -33,6 +33,8 @@
     "rajio": "cli.mjs"
   },
   "files": [
+    "src",
+    "test",
     "dist",
     "*.mjs"
   ],
