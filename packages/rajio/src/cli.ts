@@ -8,11 +8,13 @@ import { checkRajio, filterCheckIssues, printCheckIssues } from './session/check
 import { Session } from './session/index.js';
 import type { CliOptions } from './types.js';
 import { STAGES } from './types.js';
+import { installBrokenPipeHandler } from './utils/broken-pipe.js';
 import { castNumber } from './utils/cast.js';
 import { taggedLogger, wrapConsoleLogger } from './utils/logger.js';
 import { runRajio } from './workflow/index.js';
 import { resolveAudioChunkOptions } from './workflow/stages/audio.js';
 
+installBrokenPipeHandler();
 wrapConsoleLogger();
 
 const app = breadc('rajio', { version, description });
