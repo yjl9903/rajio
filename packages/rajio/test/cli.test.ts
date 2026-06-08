@@ -9,12 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { registerClipCommands } from '../src/clips/commands.js';
 import { registerSegmentCommands } from '../src/segments/commands.js';
 import { writeSegmentsFile } from '../src/segments/index.js';
-import {
-  preparedSession,
-  sampleTranscript,
-  sampleTranslation,
-  tempDir
-} from './helpers.js';
+import { preparedSession, sampleTranscript, sampleTranslation, tempDir } from './helpers.js';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const cliPath = path.join(repoRoot, 'packages/rajio/src/cli.ts');
