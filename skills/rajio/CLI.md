@@ -1,7 +1,7 @@
-# rajio CLI Reference
+# Rajio CLI Reference
 
 Use this file as the command reference for operating a `rajio` session. The workflow
-rules in `SKILL.md` still apply: manual proofreading and translation are agent work,
+rules in [SKILL.md](SKILL.md) still apply: manual proofreading and translation are agent work,
 raw transcript files are read-only references, and clip transcripts are review artifacts.
 
 ## Agent Defaults
@@ -49,7 +49,7 @@ session .env > cwd .env > process environment
 ```
 
 Transcription commands upload audio chunks to the configured OpenAI-compatible provider.
-Follow the privacy rule in `SKILL.md` before starting transcription.
+Follow the privacy rule in [SKILL.md](SKILL.md) before starting transcription.
 
 ## Targets
 

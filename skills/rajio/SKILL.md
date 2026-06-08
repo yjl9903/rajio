@@ -3,7 +3,7 @@ name: rajio
 description: Use only when explicitly asked to operate a rajio Japanese video transcription and Chinese subtitle session.
 ---
 
-# rajio
+# Rajio
 
 Use this skill to operate a `rajio` subtitle session for Japanese audio/video:
 prepare context, extract audio, transcribe Japanese, proofread the transcript, translate
@@ -50,20 +50,13 @@ operate a rajio subtitle session.
 
 ## Sub-Agent Batch Contract
 
-- Use sub-agents for every `transcript_work` proofread batch and every `translation_work`
-  translation batch. If sub-agent tooling is unavailable, stop and report that manual
-  stages cannot be completed under this skill.
-- Respect the environment's sub-agent spawn limit. By default, run at most 6 sub-agents at
-  the same time; if the current environment allows fewer, use the actual lower limit.
-- The main agent owns `description.md`, glossary decisions, batch boundaries, conflict
-  resolution, `rajio check`, stage commits, exports, and final reporting.
-- Each sub-agent receives one explicit segment range plus nearby context, the current
-  `description.md`, glossary, style requirements, and unresolved uncertainty.
-- Sub-agents return structured edits or a session-local patch file only. They must not
-  edit raw transcript files, commit stages, export subtitles, or change global glossary
-  policy without reporting the proposed change.
-- The main agent applies patches, runs validation, reconciles terminology across batches,
-  updates `description.md`, and performs the final consistency pass before committing.
+- Spawn sub-agents for every `transcript_work` proofread batch and every
+  `translation_work` translation batch. If sub-agent tooling is unavailable, stop and
+  report that manual stages cannot be completed under this skill.
+- Read [SUB_AGENTS.md](SUB_AGENTS.md) before spawning sub-agents. Keep this file focused
+  on workflow rules; use that document for batch-worker instructions and prompt patterns.
+- The main agent owns batch planning, patch application, glossary decisions, consistency
+  QA, `description.md`, `rajio check`, commits, exports, and final reporting.
 
 ## Required Input
 
@@ -78,7 +71,7 @@ uncertainty in `description.md`, and revisit it when transcript context reveals 
 ## CLI Quick Reference
 
 For complete command syntax, examples, output formats, segment patch shape, clip artifact
-details, and environment variables, read `CLI.md`.
+details, and environment variables, read [CLI.md](CLI.md).
 
 Check whether `rajio` is available:
 
@@ -361,9 +354,9 @@ intent, but use it sparingly.
 
 ### 2. Proofread And Polish Japanese
 
-Delegate proofread batches to sub-agents. Apply their returned structured edits to
-`transcript/work/segments.toml` with the segment tools when possible. Do not translate in
-this stage.
+Delegate proofread batches to sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Apply
+their returned structured edits to `transcript/work/segments.toml` with the segment tools
+when possible. Do not translate in this stage.
 
 Use the segment commands documented in the CLI section with `--stage transcript`.
 
@@ -435,9 +428,9 @@ Expected result: rajio commits `transcript_work`, creates
 
 ### 3. Translate And Polish Chinese
 
-Delegate translation batches to sub-agents. Apply their returned structured edits to
-`translation/work/segments.toml` with the segment tools when possible, and fill or refine
-`zh` for every segment.
+Delegate translation batches to sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Apply
+their returned structured edits to `translation/work/segments.toml` with the segment tools
+when possible, and fill or refine `zh` for every segment.
 
 Translate and polish in explicit sub-agent batches instead of attempting the whole file in
 one pass. A practical batch is usually 50-100 segments or 5-10 minutes of media, adjusted
