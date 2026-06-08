@@ -6,8 +6,10 @@ import { manualSegmentsPath } from '../stages.js';
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../../utils/fs.js';
 import { printCheckIssues, type CheckIssue } from '../../session/check.js';
 import {
+  blockingValidationErrors,
   cloneForTranslation,
   formatValidationErrorSummary,
+  isForceCommittableValidationIssue,
   readSegmentsFile,
   validateSegments,
   writeSegmentsFile
@@ -48,7 +50,8 @@ export async function setupManualStage(input: {
   } else {
     const source = await readSegmentsFile(sourcePath);
     await writeSegmentsFile(workPath, cloneForTranslation(source, new Date().toISOString()), {
-      requireZh: false
+      requireZh: false,
+      validate: false
     });
   }
   session.updateStage(stage, {
@@ -65,8 +68,9 @@ export async function commitManualStage(input: {
   session: Session;
   stage: ManualStageName;
   verbose: boolean;
+  forceCommit?: boolean;
 }): Promise<void> {
-  const { session, stage, verbose } = input;
+  const { session, stage, verbose, forceCommit = false } = input;
   const state = session.stage(stage);
   if (typeof state.segments !== 'string') {
     throw new Error(`${stage} does not have a work segments path.`);
@@ -75,17 +79,21 @@ export async function commitManualStage(input: {
   const requireZh = stage === 'translation_work';
   const segments = await readSegmentsFile(segmentsPath);
   const issues = validateSegments(segments, { requireZh });
-  const errors = issues.filter((issue) => issue.level === 'error');
+  const errors = blockingValidationErrors(issues, { forceCommit });
   const stageLogger = taggedLogger(stage);
   printCheckIssues(
     issues
-      .filter((issue) => issue.level === 'warning')
+      .filter(
+        (issue) =>
+          issue.level === 'warning' || (forceCommit && isForceCommittableValidationIssue(issue))
+      )
       .map(
         (issue): CheckIssue => ({
           file: segmentsPath,
-          level: issue.level,
+          level: 'warning',
           code: issue.code,
-          message: issue.message,
+          message:
+            issue.level === 'error' ? `force-committed exception: ${issue.message}` : issue.message,
           segmentId: issue.segmentId
         })
       ),
@@ -102,7 +110,8 @@ export async function commitManualStage(input: {
     status: 'committed',
     segments_sha256: await sha256File(segmentsPath),
     committed_at: new Date().toISOString(),
-    completed_at: new Date().toISOString()
+    completed_at: new Date().toISOString(),
+    force_committed: forceCommit ? true : undefined
   });
 }
 
@@ -111,8 +120,9 @@ export async function runAgentAndCommit(input: {
   runtime: RuntimeConfig;
   stage: ManualStageName;
   verbose: boolean;
+  forceCommit?: boolean;
 }): Promise<void> {
-  const { session, runtime, stage, verbose } = input;
+  const { session, runtime, stage, verbose, forceCommit = false } = input;
   if (session.stage(stage).status === 'pending') {
     await setupManualStage({ session, stage });
   }
@@ -128,7 +138,7 @@ export async function runAgentAndCommit(input: {
       description: session.description,
       runtime
     });
-    await commitManualStage({ session, stage, verbose });
+    await commitManualStage({ session, stage, verbose, forceCommit });
   } catch (error) {
     session.markFailed(stage, error);
     await session.save();

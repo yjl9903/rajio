@@ -18,6 +18,32 @@ import {
   sampleTranslation
 } from './helpers.js';
 
+function forceQaTranscript() {
+  return {
+    ...sampleTranscript(),
+    segments: [
+      {
+        id: 'title-call',
+        start: 0,
+        end: 5,
+        speaker: 'A',
+        ja: 'STRAIGHT! REACH!! CHEER!!!'
+      }
+    ]
+  };
+}
+
+function forceQaTranslation() {
+  return {
+    ...forceQaTranscript(),
+    source: { kind: 'translation' as const, generated_at: '2026-06-06T00:00:00.000Z' },
+    segments: forceQaTranscript().segments.map((segment) => ({
+      ...segment,
+      zh: 'STRAIGHT! REACH!! CHEER!!!'
+    }))
+  };
+}
+
 describe('session workflow', () => {
   it('sets up transcript work from raw and stops at manual stage', async () => {
     const dir = await preparedSession('transcript_work', {
@@ -153,6 +179,124 @@ describe('session workflow', () => {
     );
   });
 
+  it('rejects subtitle QA errors with regular commit', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      },
+      transcript_work: {
+        status: 'waiting',
+        segments: 'transcript/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'transcript/work/segments.toml'),
+      stringify(forceQaTranscript())
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await expect(runRajio(session, { ...baseOptions, commit: true })).rejects.toThrow(
+      'blocking error'
+    );
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.stage('transcript_work').status).toBe('waiting');
+  });
+
+  it('force commits allowlisted subtitle QA errors and records the exception marker', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      },
+      transcript_work: {
+        status: 'waiting',
+        segments: 'transcript/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'transcript/work/segments.toml'),
+      stringify(forceQaTranscript())
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, { ...baseOptions, forceCommit: true });
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.currentStage).toBe('translation_work');
+    expect(reloaded.stage('transcript_work')).toEqual(
+      expect.objectContaining({
+        status: 'committed',
+        force_committed: true
+      })
+    );
+    expect(await readFile(path.join(dir, 'session.toml'), 'utf8')).toContain(
+      'force_committed = true'
+    );
+  });
+
+  it('does not force commit data integrity errors', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      stringify({
+        ...sampleTranslation(),
+        segments: sampleTranslation().segments.map((segment) => ({
+          id: segment.id,
+          start: segment.start,
+          end: segment.end,
+          speaker: segment.speaker,
+          ja: segment.ja
+        }))
+      })
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await expect(runRajio(session, { ...baseOptions, forceCommit: true })).rejects.toThrow(
+      'empty_zh'
+    );
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.stage('translation_work').status).toBe('waiting');
+  });
+
+  it('clears a stale force commit marker after a regular clean commit', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml',
+        force_committed: true
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeSegmentsFile(path.join(dir, 'translation/work/segments.toml'), sampleTranslation(), {
+      requireZh: true
+    });
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, { ...baseOptions, commit: true });
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.stage('translation_work')).toEqual(
+      expect.objectContaining({
+        status: 'committed'
+      })
+    );
+    expect(reloaded.stage('translation_work')).not.toHaveProperty('force_committed');
+    expect(await readFile(path.join(dir, 'session.toml'), 'utf8')).not.toContain('force_committed');
+  });
+
   it('checks session and segment TOML files', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
@@ -188,6 +332,111 @@ describe('session workflow', () => {
         code: 'missing_audio_chunks',
         message: 'audio stage is missing detailed chunk metadata.'
       })
+    );
+  });
+
+  it('reports force committed subtitle QA errors as warnings while the hash matches', async () => {
+    const dir = await preparedSession('translation_work', {
+      transcript_work: {
+        status: 'committed',
+        segments: 'transcript/work/segments.toml',
+        segments_sha256: 'placeholder'
+      },
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    const filePath = path.join(dir, 'translation/work/segments.toml');
+    await writeFile(filePath, stringify(forceQaTranslation()));
+    const session = await Session.loadOrCreate(dir);
+    session.state.current_stage = 'export';
+    session.state.stages.translation_work = {
+      status: 'committed',
+      segments: 'translation/work/segments.toml',
+      segments_sha256: await sha256File(filePath),
+      force_committed: true
+    };
+    await session.save();
+
+    const result = await checkRajio(await Session.loadOrCreate(dir));
+
+    const issue = result.issues.find((item) => item.code === 'ja_line_hard_limit');
+    expect(result.ok).toBe(false);
+    expect(issue).toEqual(
+      expect.objectContaining({
+        level: 'warning',
+        message: expect.stringContaining('force-committed exception')
+      })
+    );
+    expect(
+      result.issues.some((item) => item.level === 'error' && item.code === 'ja_line_hard_limit')
+    ).toBe(false);
+  });
+
+  it('does not downgrade force committed errors after the work file changes', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'committed',
+        segments: 'translation/work/segments.toml',
+        segments_sha256: 'incorrect',
+        force_committed: true
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      stringify(forceQaTranslation())
+    );
+
+    const result = await checkRajio(await Session.loadOrCreate(dir));
+
+    expect(
+      result.issues.some((item) => item.level === 'error' && item.code === 'ja_line_hard_limit')
+    ).toBe(true);
+  });
+
+  it('exports force committed translation with allowlisted subtitle QA errors', async () => {
+    const dir = await preparedSession('translation_work', {
+      transcript_work: {
+        status: 'committed',
+        segments: 'transcript/work/segments.toml',
+        segments_sha256: 'placeholder'
+      },
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
+    await writeSegmentsFile(path.join(dir, 'transcript/work/segments.toml'), sampleTranscript());
+    const transcriptHash = await sha256File(path.join(dir, 'transcript/work/segments.toml'));
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      stringify(forceQaTranslation())
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    session.state.stages.transcript_work = {
+      status: 'committed',
+      segments: 'transcript/work/segments.toml',
+      segments_sha256: transcriptHash
+    };
+    await session.save();
+    await runRajio(session, { ...baseOptions, forceCommit: true });
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.stage('translation_work')).toEqual(
+      expect.objectContaining({
+        status: 'committed',
+        force_committed: true
+      })
+    );
+    expect(reloaded.stage('export').status).toBe('done');
+    expect(await readFile(path.join(dir, 'output/Example.ja.srt'), 'utf8')).toContain(
+      'STRAIGHT! REACH!! CHEER!!!'
     );
   });
 

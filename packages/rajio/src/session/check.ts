@@ -5,8 +5,19 @@ import type { ConsolaInstance } from 'consola';
 
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../utils/fs.js';
 import type { Session } from './index.js';
-import { readSegmentsFile, validateSegments } from '../segments/index.js';
-import { STAGES, STAGE_STATUSES, type Segment, type StageName, type StageState } from '../types.js';
+import {
+  isForceCommittableValidationIssue,
+  readSegmentsFile,
+  validateSegments
+} from '../segments/index.js';
+import {
+  MANUAL_STAGES,
+  STAGES,
+  STAGE_STATUSES,
+  type Segment,
+  type StageName,
+  type StageState
+} from '../types.js';
 import { taggedLogger } from '../utils/logger.js';
 
 const checkLogger = taggedLogger('check');
@@ -241,7 +252,14 @@ async function checkSession(
           message: `Referenced segments file does not exist: ${stageState.segments}.`
         });
       } else {
-        await checkSegments(segmentsPath, issues, {}, checkedSegments);
+        await checkSegments(
+          segmentsPath,
+          issues,
+          {
+            forceCommitted: await hasValidForceCommit(session, stage, stageState, segmentsPath)
+          },
+          checkedSegments
+        );
       }
     }
     if (
@@ -317,7 +335,7 @@ function shouldValidateAudioChunks(stageState: StageState): boolean {
 async function checkSegments(
   filePath: string,
   issues: CheckIssue[],
-  options: { requireZh?: boolean; strict?: boolean } = {},
+  options: { requireZh?: boolean; strict?: boolean; forceCommitted?: boolean } = {},
   checkedSegments?: Set<string>
 ): Promise<void> {
   const normalizedPath = path.resolve(filePath);
@@ -334,12 +352,16 @@ async function checkSegments(
       const segment = issue.segmentId
         ? buildSegmentContext(file.segments, issue.segmentId)
         : undefined;
+      const forceCommittedException =
+        options.forceCommitted && isForceCommittableValidationIssue(issue);
       issues.push({
         file: filePath,
         stage: inferStageFromPath(filePath),
-        level: issue.level,
+        level: forceCommittedException ? 'warning' : issue.level,
         code: issue.code,
-        message: issue.message,
+        message: forceCommittedException
+          ? `force-committed exception: ${issue.message}`
+          : issue.message,
         segmentId: issue.segmentId,
         segment
       });
@@ -353,6 +375,23 @@ async function checkSegments(
       message: formatError(error)
     });
   }
+}
+
+async function hasValidForceCommit(
+  session: Session,
+  stage: StageName,
+  state: StageState,
+  segmentsPath: string
+): Promise<boolean> {
+  if (
+    !MANUAL_STAGES.includes(stage as (typeof MANUAL_STAGES)[number]) ||
+    state.status !== 'committed' ||
+    state.force_committed !== true ||
+    typeof state.segments_sha256 !== 'string'
+  ) {
+    return false;
+  }
+  return (await sha256File(segmentsPath)) === state.segments_sha256;
 }
 
 function isRawTranscriptSegmentsPath(filePath: string): boolean {

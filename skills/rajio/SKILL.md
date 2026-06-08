@@ -37,6 +37,11 @@ operate a rajio subtitle session.
 - Use `rajio check` as documented in the CLI section. It is not a substitute for manual
   QA of typos, ASR errors, proper nouns, context, terminology, fixed phrases, and
   translation consistency.
+- Use `--force-commit` only as a manually confirmed escape hatch for subtitle QA
+  heuristic errors. Before using it, run `rajio check <target> --level error --verbose`
+  and inspect every remaining error. Do not force commit unfinished translation, empty
+  text, invalid timing, overlaps, duplicate IDs, bad schema, or any large unreviewed set
+  of errors.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
   empty filler segments. Always pass the session target as the first positional
@@ -113,6 +118,9 @@ Default command workflow controls:
 - `--continue=until-manual`: run automatic stages until the next manual stage.
 - `--continue=step`: run one automatic stage.
 - `--commit`: commit the current manual stage after validating its work file.
+- `--force-commit`: commit the current manual stage after manually confirming that all
+  remaining blocking errors are intentional subtitle QA exceptions. This records
+  `force_committed = true`; it does not allow data integrity errors.
 - `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
   `translation_work`, or `export`.
 - `--agent=codex`: CLI automation escape hatch. Do not use it as the default manual-stage
@@ -406,6 +414,21 @@ When clean:
 rajio /path/to/session --commit --continue=until-manual
 ```
 
+If the only remaining blocking errors are manually confirmed subtitle QA exceptions, such
+as an official event name like `STRAIGHT! REACH!! CHEER!!!`, first inspect the exact
+errors:
+
+```bash
+rajio check /path/to/session --stage transcript --level error --verbose
+```
+
+Use force commit only after confirming the text and timing are correct and preserving the
+exception makes the subtitle more accurate, natural, or comfortable:
+
+```bash
+rajio /path/to/session --force-commit --continue=until-manual
+```
+
 Expected result: rajio commits `transcript_work`, creates
 `translation/work/segments.toml`, and stops at `translation_work`.
 
@@ -478,6 +501,20 @@ When clean, commit and export:
 
 ```bash
 rajio /path/to/session --commit --continue=until-manual
+```
+
+If a confirmed proper noun, title call, or other intentional subtitle choice still
+produces only force-committable QA heuristic errors, inspect them first:
+
+```bash
+rajio check /path/to/session --stage translation --level error --verbose
+```
+
+Then force commit only when every remaining error has been manually reviewed and is not a
+data integrity problem:
+
+```bash
+rajio /path/to/session --force-commit --continue=until-manual
 ```
 
 Expected output:

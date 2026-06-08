@@ -102,6 +102,7 @@ export interface CliOptions {
   media?: string;
   continue: 'until-manual' | 'step';
   commit: boolean;
+  forceCommit: boolean;
   agent: 'codex' | false | undefined;
   full: boolean;
   reset?: StageName;

@@ -36,6 +36,10 @@ app
     }
   })
   .option('--commit', 'commit current manual stage')
+  .option(
+    '--force-commit',
+    'commit current manual stage while allowing confirmed subtitle QA exceptions'
+  )
   .option('--verbose', 'print every warning instead of summarizing repetitive warnings')
   .option(
     '--reset <stage>',
@@ -91,6 +95,7 @@ app
       media: options.media,
       continue: options.continue,
       commit: options.commit,
+      forceCommit: options.forceCommit,
       agent: options.agent,
       full: options.full,
       reset: options.reset,

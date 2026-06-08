@@ -56,6 +56,10 @@ Options:
 - `--continue=until-manual|step`: controls automatic progression; default is
   `until-manual`.
 - `--commit`: commit the current manual stage.
+- `--force-commit`: commit the current manual stage after manually confirming that all
+  remaining blocking errors are subtitle QA heuristic exceptions. This records
+  `force_committed = true` with the committed work hash and does not bypass data
+  integrity errors.
 - `--agent=codex|false`: currently only `codex` is supported. If `--commit` and
   `--agent=codex` are both present, run agent flow.
 - `--full`: run all remaining stages automatically. Manual stages use Codex by default.
@@ -273,6 +277,9 @@ Rules:
   agent edits can decide semantic split points, timing, and gaps together.
 - `--commit` validates work, writes `segments_sha256` and `committed_at`, sets status to
   `committed`, and advances.
+- `--force-commit` follows the same flow but allows manually confirmed subtitle QA
+  heuristic errors, records `force_committed = true`, and still blocks schema, empty text,
+  missing translation, invalid timing, overlap, and duplicate ID errors.
 - `--agent=codex` runs Codex, writes JSONL output, then commits. On failure, the stage is
   `failed` and does not advance.
 
@@ -298,7 +305,8 @@ Rules:
 5. Translation: create `translation/work/segments.toml` from committed and clean
    transcript work, then stop for human or Codex to fill `zh`.
 6. Translation commit: human or Codex edits `translation/work/segments.toml`; `--commit`
-   validates it, requires `zh`, and records hash.
+   validates it, requires `zh`, and records hash. `--force-commit` may be used only after
+   manual review confirms remaining errors are subtitle QA exceptions.
 7. Export: read committed and clean translation work and generate Japanese SRT, Chinese
    SRT, and bilingual ASS.
 
@@ -397,7 +405,8 @@ translation completeness rules are deferred to editable work files.
 ## Tests
 
 - Target parsing: markdown, directory, media file, ambiguous multiple markdown/media files.
-- CLI option combinations: `--continue`, `--commit`, `--agent`, `--full`, `--reset`.
+- CLI option combinations: `--continue`, `--commit`, `--force-commit`, `--agent`,
+  `--full`, `--reset`.
 - Environment variable reading and priority.
 - `session.toml` creation, restore, stage advancement, dirty hash detection.
 - `segments.toml` schema and timeline validation.

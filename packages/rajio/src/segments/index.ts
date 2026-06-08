@@ -6,6 +6,21 @@ import type { Segment, SegmentsFile, ValidationIssue } from '../types.js';
 import { writeFileAtomic } from '../utils/fs.js';
 
 const VALIDATION_SUMMARY_CODE_LIMIT = 5;
+const FORCE_COMMITTABLE_VALIDATION_CODES = new Set([
+  'ja_line_hard_limit',
+  'zh_line_hard_limit',
+  'ja_line_break_hard_limit',
+  'zh_line_break_hard_limit',
+  'duration_too_short',
+  'duration_too_long',
+  'ja_reading_speed_limit',
+  'zh_reading_speed_limit',
+  'subtitle_gap_too_short',
+  'ja_punctuation_only_line',
+  'zh_punctuation_only_line',
+  'ja_repeated_punctuation',
+  'zh_repeated_punctuation'
+]);
 
 const TEXT_LIMITS = {
   ja: {
@@ -183,6 +198,21 @@ export function assertValidSegments(
     throw new Error(formatValidationErrorSummary(errors));
   }
   return parseSegments(value);
+}
+
+export function isForceCommittableValidationIssue(issue: ValidationIssue): boolean {
+  return issue.level === 'error' && FORCE_COMMITTABLE_VALIDATION_CODES.has(issue.code);
+}
+
+export function blockingValidationErrors(
+  issues: ValidationIssue[],
+  options: { forceCommit?: boolean } = {}
+): ValidationIssue[] {
+  const errors = issues.filter((issue) => issue.level === 'error');
+  if (!options.forceCommit) {
+    return errors;
+  }
+  return errors.filter((issue) => !isForceCommittableValidationIssue(issue));
 }
 
 export function formatValidationErrorSummary(

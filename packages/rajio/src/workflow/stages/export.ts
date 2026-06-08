@@ -4,10 +4,16 @@ import path from 'node:path';
 import {
   fromSessionRelative,
   sanitizeFileStem,
+  sha256File,
   toSessionRelative,
   writeFileAtomic
 } from '../../utils/fs.js';
-import { assertValidSegments, readSegmentsFile } from '../../segments/index.js';
+import {
+  blockingValidationErrors,
+  formatValidationErrorSummary,
+  readSegmentsFile,
+  validateSegments
+} from '../../segments/index.js';
 import { renderAss, renderSrt } from '../subtitles.js';
 import type { Session } from '../../session/index.js';
 
@@ -17,7 +23,17 @@ export async function runExportStage(session: Session): Promise<void> {
     throw new Error('translation_work must be committed before export.');
   }
   const segmentsPath = fromSessionRelative(session.dir, translation.segments);
-  const segments = assertValidSegments(await readSegmentsFile(segmentsPath), { requireZh: true });
+  const segments = await readSegmentsFile(segmentsPath);
+  const forceCommit =
+    translation.force_committed === true &&
+    typeof translation.segments_sha256 === 'string' &&
+    (await sha256File(segmentsPath)) === translation.segments_sha256;
+  const errors = blockingValidationErrors(validateSegments(segments, { requireZh: true }), {
+    forceCommit
+  });
+  if (errors.length > 0) {
+    throw new Error(formatValidationErrorSummary(errors));
+  }
   const title = session.description.frontmatter.title || path.parse(session.mediaPath).name;
   const stem = sanitizeFileStem(title);
   const outputDir = session.artifact('output');

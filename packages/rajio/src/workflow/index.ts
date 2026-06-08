@@ -52,10 +52,21 @@ export async function runRajio(
   const currentStage = session.currentStage;
   if (isManualStage(currentStage)) {
     if (options.agent === 'codex') {
-      await runAgentAndCommit({ session, runtime, stage: currentStage, verbose: options.verbose });
+      await runAgentAndCommit({
+        session,
+        runtime,
+        stage: currentStage,
+        verbose: options.verbose,
+        forceCommit: options.forceCommit
+      });
       await advancePastStage(session, currentStage);
-    } else if (options.commit) {
-      await commitManualStage({ session, stage: currentStage, verbose: options.verbose });
+    } else if (options.commit || options.forceCommit) {
+      await commitManualStage({
+        session,
+        stage: currentStage,
+        verbose: options.verbose,
+        forceCommit: options.forceCommit
+      });
       await advancePastStage(session, currentStage);
     }
   }
@@ -140,9 +151,20 @@ async function handleManualStage(
       return;
     }
     if (options.agent === false) {
-      await commitManualStage({ session, stage, verbose: options.verbose });
+      await commitManualStage({
+        session,
+        stage,
+        verbose: options.verbose,
+        forceCommit: options.forceCommit
+      });
     } else {
-      await runAgentAndCommit({ session, runtime, stage, verbose: options.verbose });
+      await runAgentAndCommit({
+        session,
+        runtime,
+        stage,
+        verbose: options.verbose,
+        forceCommit: options.forceCommit
+      });
     }
     await advancePastStage(session, stage);
     return;

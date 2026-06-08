@@ -90,6 +90,7 @@ invalidates the workflow back to `audio`.
 rajio /path/to/session --continue=until-manual
 rajio /path/to/session --continue=step
 rajio /path/to/session --commit --continue=until-manual
+rajio /path/to/session --force-commit --continue=until-manual
 rajio /path/to/session --reset transcript_raw
 ```
 
@@ -100,6 +101,10 @@ Workflow controls:
   stage unless `--full` is also set.
 - `--commit`: validate and commit the current manual stage, recording the current
   work file hash in `session.toml`, then continue according to `--continue`.
+- `--force-commit`: commit the current manual stage after manually confirming that all
+  remaining blocking errors are intentional subtitle QA exceptions. It records
+  `force_committed = true` with the current work file hash. It does not bypass schema,
+  empty text, missing `zh`, invalid timing, overlap, or duplicate ID errors.
 - `--reset <stage>`: reset the selected stage and all downstream stages to
   `pending`, set `current_stage` to that stage, and continue. Valid stages are
   `audio`, `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
@@ -112,6 +117,18 @@ Workflow controls:
   the current manual stage and commits it. `false` disables Codex in `--full` mode.
 - `--verbose`: print every validation warning where the command supports verbose
   output instead of summarized warnings.
+
+Force commit is an exception path, not a normal QA shortcut. Before using it, run:
+
+```bash
+rajio check /path/to/session --level error --verbose
+```
+
+Inspect every remaining error manually. Use `--force-commit` only when keeping the
+exception makes the subtitle more accurate, natural, or comfortable, for example an
+official title or event name such as `STRAIGHT! REACH!! CHEER!!!`. Do not use it for
+unfinished translation, empty text, broken timing, overlaps, duplicate IDs, bad schema, or
+large unreviewed batches of errors.
 
 Reset boundaries:
 
