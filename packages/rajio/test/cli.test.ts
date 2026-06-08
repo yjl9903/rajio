@@ -64,6 +64,49 @@ describe('cli explicit targets', () => {
     expect(output.segments.map((segment) => segment.id)).toEqual(['2']);
   });
 
+  it('splits segments with a custom midpoint gap', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_work: {
+        status: 'waiting',
+        segments: 'transcript/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
+    await writeSegmentsFile(path.join(dir, 'transcript/work/segments.toml'), sampleTranscript());
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'split',
+      dir,
+      '1',
+      '--stage',
+      'transcript',
+      '--at',
+      '0.6',
+      '--gap',
+      '0.1',
+      '--id1',
+      '1.1',
+      '--id2',
+      '1.2',
+      '--ja1',
+      'こん',
+      '--ja2',
+      'にちは',
+      '--dry-run',
+      '--json'
+    ]);
+
+    const output = JSON.parse(stdout.text()) as {
+      segments: Array<{ id: string; start: number; end: number }>;
+    };
+    expect(output.segments).toEqual([
+      expect.objectContaining({ id: '1.1', start: 0, end: 0.55 }),
+      expect.objectContaining({ id: '1.2', start: 0.65, end: 1.2 })
+    ]);
+  });
+
   it('rejects extra segment list ids after --id', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_work: {

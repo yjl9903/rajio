@@ -137,7 +137,10 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
-    .option('--at <seconds>', 'split time in seconds', { cast: castNumber })
+    .option('--at <seconds>', 'split gap midpoint in seconds', { cast: castNumber })
+    .option('--gap <seconds>', 'gap to insert around the split midpoint in seconds', {
+      cast: castNumber
+    })
     .option('--id1 <id>', 'first segment id')
     .option('--id2 <id>', 'second segment id')
     .option('--ja1 <text>', 'first Japanese subtitle text')
@@ -164,7 +167,8 @@ export function registerSegmentCommands(app: RajioApp): void {
         speaker1: options.speaker1,
         speaker2: options.speaker2,
         zh1: options.zh1,
-        zh2: options.zh2
+        zh2: options.zh2,
+        gap: options.gap
       });
       await persistUnlessDryRun(context, Boolean(options.dryRun));
       printSegments(segments, output, { totalDuration: getTotalDuration(context.file.segments) });

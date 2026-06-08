@@ -10,8 +10,8 @@ import {
   findSegmentIndex,
   mergeSpeakerLabels
 } from './edit.js';
-
-const SPLIT_TIME_EPSILON = 1e-3;
+import { SEGMENT_TIME_EPSILON as SPLIT_TIME_EPSILON } from './limits.js';
+import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
 const editPatchSchema = z
   .object({
@@ -47,6 +47,7 @@ const splitSegmentSchema = z
 const splitPatchSchema = z
   .object({
     id: z.string().min(1),
+    gap: z.number().finite().nonnegative().optional(),
     segments: z.array(splitSegmentSchema).min(2)
   })
   .strict();
@@ -162,7 +163,7 @@ function applySplit(
   if (source.zh !== undefined && split.segments.some((segment) => segment.zh === undefined)) {
     throw new Error(`splitting translated segment ${split.id} requires zh on every new segment.`);
   }
-  const segments = split.segments.map(cloneSegment);
+  const segments = insertSplitGaps(split.id, split.segments, normalizeSplitGap(split.gap));
   file.segments.splice(index, 1, ...segments);
   return segments;
 }
@@ -217,6 +218,19 @@ function validateSplitCoverage(source: Segment, segments: Segment[]): void {
       throw new Error(`split ${source.id} must be continuous with no gaps or overlaps.`);
     }
   }
+}
+
+function insertSplitGaps(sourceId: string, segments: Segment[], gap: number): Segment[] {
+  const next = segments.map(cloneSegment);
+  for (let index = 1; index < next.length; index += 1) {
+    const previous = next[index - 1]!;
+    const segment = next[index]!;
+    const boundary = splitAroundMidpoint(segment.start, gap);
+    previous.end = boundary.end;
+    segment.start = boundary.start;
+  }
+  assertMinimumSplitDurations(sourceId, next);
+  return next;
 }
 
 function timesEqual(left: number, right: number): boolean {

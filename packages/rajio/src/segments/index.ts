@@ -4,6 +4,11 @@ import { parse, stringify } from 'smol-toml';
 
 import type { Segment, SegmentsFile, ValidationIssue } from '../types.js';
 import { writeFileAtomic } from '../utils/fs.js';
+import {
+  SEGMENT_DURATION_LIMITS as DURATION_LIMITS,
+  SEGMENT_TIME_EPSILON as TIME_EPSILON,
+  SUBTITLE_GAP_LIMITS as GAP_LIMITS
+} from './limits.js';
 
 const VALIDATION_SUMMARY_CODE_LIMIT = 5;
 const FORCE_COMMITTABLE_VALIDATION_CODES = new Set([
@@ -47,24 +52,11 @@ const TEXT_LIMITS = {
   }
 } as const;
 
-const DURATION_LIMITS = {
-  shortSoft: 0.8,
-  shortHard: 0.5,
-  longSoft: 7,
-  longHard: 10
-} as const;
-
-const GAP_LIMITS = {
-  soft: 0.25,
-  hard: 0.08
-} as const;
-
-const TIME_EPSILON = 1e-3;
-
 const REPEATED_EMPHATIC_PUNCTUATION = /[?!？！]{2,}/;
 const REPEATED_EMPHATIC_PUNCTUATION_HARD = /[?!？！]{3,}/;
 const PUNCTUATION_ONLY_LINE = /^[\s\p{P}\p{S}]+$/u;
 const TRAILING_CLOSERS = /[\s"'”’）)」』】》]+$/;
+const GAP_FLOAT_EPSILON = 1e-9;
 
 export const segmentSchema = z.object({
   id: z.string().min(1),
@@ -433,14 +425,14 @@ function validateReadingSpeed(
 
 function validateSubtitleGap(issues: ValidationIssue[], previous: Segment, segment: Segment): void {
   const gap = segment.start - previous.end;
-  if (gap < GAP_LIMITS.hard) {
+  if (gap < GAP_LIMITS.hard - GAP_FLOAT_EPSILON) {
     issues.push({
       level: 'error',
       code: 'subtitle_gap_too_short',
       segmentId: segment.id,
       message: `Segment ${segment.id} starts ${formatSeconds(gap)} seconds after previous segment ${previous.id}; hard minimum gap is ${formatSeconds(GAP_LIMITS.hard)} seconds.`
     });
-  } else if (gap < GAP_LIMITS.soft) {
+  } else if (gap < GAP_LIMITS.soft - GAP_FLOAT_EPSILON) {
     issues.push({
       level: 'warning',
       code: 'subtitle_gap_short',

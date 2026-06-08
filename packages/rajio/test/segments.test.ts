@@ -850,6 +850,51 @@ describe('segment edit tools', () => {
     expect(file.segments[0]?.zh).toBe('第一行\n第二行\n第三行');
   });
 
+  it('splits segments around a default midpoint gap', () => {
+    const file = sampleTranscript();
+
+    const segments = splitSegment(file, '1', {
+      at: 0.6,
+      id1: '1.1',
+      id2: '1.2',
+      ja1: 'こん',
+      ja2: 'にちは'
+    });
+
+    expect(segments).toEqual([
+      { id: '1.1', start: 0, end: 0.56, speaker: 'A', ja: 'こん' },
+      { id: '1.2', start: 0.64, end: 1.2, speaker: 'A', ja: 'にちは' }
+    ]);
+    expect(validateSegments(file).some((issue) => issue.code === 'subtitle_gap_too_short')).toBe(
+      false
+    );
+  });
+
+  it('rejects split gaps below the hard subtitle gap and too-short split results', () => {
+    const file = sampleTranscript();
+
+    expect(() =>
+      splitSegment(file, '1', {
+        at: 0.6,
+        gap: 0.079,
+        id1: '1.1',
+        id2: '1.2',
+        ja1: 'こん',
+        ja2: 'にちは'
+      })
+    ).toThrow('must be at least 0.08 seconds');
+
+    expect(() =>
+      splitSegment(file, '1', {
+        at: 0.5,
+        id1: '1.1',
+        id2: '1.2',
+        ja1: 'こん',
+        ja2: 'にちは'
+      })
+    ).toThrow('shorter than 0.5 seconds');
+  });
+
   it('allows small floating point drift in split patch coverage', () => {
     const file: SegmentsFile = {
       ...sampleTranscript(),
@@ -869,6 +914,59 @@ describe('segment edit tools', () => {
         ]
       })
     ).not.toThrow();
+  });
+
+  it('applies midpoint gaps to continuous split patch boundaries', () => {
+    const file: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [{ id: 'long', start: 0, end: 2.5, speaker: 'A', ja: '長い文です' }]
+    };
+
+    expect(
+      applySegmentPatch(file, {
+        splits: [
+          {
+            id: 'long',
+            segments: [
+              { id: 'long.1', start: 0, end: 1.2, speaker: 'A', ja: '前半' },
+              { id: 'long.2', start: 1.2, end: 2.5, speaker: 'A', ja: '後半' }
+            ]
+          }
+        ]
+      }).splits
+    ).toEqual([
+      { id: 'long.1', start: 0, end: 1.16, speaker: 'A', ja: '前半' },
+      { id: 'long.2', start: 1.24, end: 2.5, speaker: 'A', ja: '後半' }
+    ]);
+    expect(validateSegments(file).some((issue) => issue.code === 'subtitle_gap_too_short')).toBe(
+      false
+    );
+  });
+
+  it('applies midpoint gaps at every split patch boundary', () => {
+    const file: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [{ id: 'long', start: 0, end: 3, speaker: 'A', ja: '長い文です' }]
+    };
+
+    applySegmentPatch(file, {
+      splits: [
+        {
+          id: 'long',
+          segments: [
+            { id: 'long.1', start: 0, end: 1, speaker: 'A', ja: '一' },
+            { id: 'long.2', start: 1, end: 2, speaker: 'A', ja: '二' },
+            { id: 'long.3', start: 2, end: 3, speaker: 'A', ja: '三' }
+          ]
+        }
+      ]
+    });
+
+    expect(file.segments).toEqual([
+      { id: 'long.1', start: 0, end: 0.96, speaker: 'A', ja: '一' },
+      { id: 'long.2', start: 1.04, end: 1.96, speaker: 'A', ja: '二' },
+      { id: 'long.3', start: 2.04, end: 3, speaker: 'A', ja: '三' }
+    ]);
   });
 
   it('applies split, merge, and delete patches atomically', () => {
@@ -914,8 +1012,8 @@ describe('segment edit tools', () => {
     expect(applySegmentPatch(file, patch)).toEqual({
       edits: [],
       splits: [
-        { id: 'long.1', start: 0, end: 2, speaker: 'A', ja: '前半' },
-        { id: 'long.2', start: 2, end: 4, speaker: 'A', ja: '後半' }
+        { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
+        { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' }
       ],
       merges: [{ id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }],
       deletes: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除' }]
@@ -928,8 +1026,8 @@ describe('segment edit tools', () => {
       total: 3
     });
     expect(file.segments).toEqual([
-      { id: 'long.1', start: 0, end: 2, speaker: 'A', ja: '前半' },
-      { id: 'long.2', start: 2, end: 4, speaker: 'A', ja: '後半' },
+      { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
+      { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' },
       { id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }
     ]);
   });

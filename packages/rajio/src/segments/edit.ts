@@ -2,6 +2,7 @@ import type { Segment, SegmentsFile } from '../types.js';
 import { Session } from '../session/index.js';
 import type { ManualStageName } from '../types.js';
 import { readSegmentsFile, writeSegmentsFile } from './index.js';
+import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
 export type SegmentEditStage = 'transcript' | 'translation';
 
@@ -88,13 +89,13 @@ export function splitSegment(
     speaker2?: string;
     zh1?: string;
     zh2?: string;
+    gap?: number;
   }
 ): Segment[] {
   const index = findSegmentIndex(file, id);
   const source = file.segments[index]!;
-  if (input.at <= source.start || input.at >= source.end) {
-    throw new Error(`split time must be between segment ${id} start and end.`);
-  }
+  const gap = normalizeSplitGap(input.gap, '--gap');
+  const boundary = splitAroundMidpoint(input.at, gap);
   if (input.id1 === input.id2) {
     throw new Error('split ids must be different.');
   }
@@ -108,14 +109,14 @@ export function splitSegment(
     ...source,
     id: input.id1,
     start: source.start,
-    end: input.at,
+    end: boundary.end,
     speaker: input.speaker1 ?? source.speaker,
     ja: input.ja1
   };
   const second: Segment = {
     ...source,
     id: input.id2,
-    start: input.at,
+    start: boundary.start,
     end: source.end,
     speaker: input.speaker2 ?? source.speaker,
     ja: input.ja2
@@ -130,6 +131,7 @@ export function splitSegment(
   } else {
     delete second.zh;
   }
+  assertMinimumSplitDurations(id, [first, second]);
 
   file.segments.splice(index, 1, first, second);
   return [first, second];

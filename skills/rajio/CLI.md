@@ -238,17 +238,21 @@ field is required.
 
 ```bash
 rajio segments split /path/to/session 12 --stage transcript \
-  --at 11.8 --id1 12.1 --id2 12.2 \
+  --at 11.8 --gap 0.08 --id1 12.1 --id2 12.2 \
   --ja1 "前半の日本語" --ja2 "後半の日本語" \
   --speaker1 A --speaker2 B
 ```
 
-`segments split` replaces one segment with exactly two adjacent segments. Required
-options are `--at`, `--id1`, `--id2`, `--ja1`, and `--ja2`.
+`segments split` replaces one segment with exactly two segments separated by a subtitle
+gap. Required options are `--at`, `--id1`, `--id2`, `--ja1`, and `--ja2`.
 
 Rules:
 
-- `--at` must be strictly between the source segment's `start` and `end`.
+- `--at` is the midpoint of the inserted gap.
+- `--gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
+- The first segment ends at `--at - --gap / 2`; the second starts at
+  `--at + --gap / 2`.
+- Both generated segments must remain at least `0.5` seconds long.
 - `--id1` and `--id2` must be different and must not conflict with other segment ids.
 - `--speaker1` and `--speaker2` default to the original speaker when omitted.
 - If the source segment has `zh`, both `--zh1` and `--zh2` are required.
@@ -308,8 +312,14 @@ Patch rules:
 - `[[edits]]` requires `id` plus at least one changed field: `start`, `end`, `speaker`,
   `ja`, or `zh`.
 - `[[splits]]` replaces one source segment with two or more `[[splits.segments]]`.
-  Replacement segments must cover the original segment continuously with no gaps or
-  overlaps, start at the original `start`, and end at the original `end`.
+  `gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
+  Replacement segments use virtual continuous timing: they must cover the original
+  segment continuously with no gaps or overlaps, start at the original `start`, and end
+  at the original `end`. Each internal boundary is treated as the midpoint of the
+  inserted gap, so a boundary at `13.2` with `gap = 0.08` becomes previous
+  `end = 13.16` and next `start = 13.24`.
+- Every generated split segment must remain at least `0.5` seconds long after gap
+  insertion.
 - If a split source has `zh`, every replacement segment must include `zh`.
 - `[[merges]]` accepts two or more adjacent source ids in `ids`; `id` and `ja` are
   required. If any source has `zh`, merged `zh` is required.
@@ -325,6 +335,7 @@ zh = "修正后的中文字幕"
 
 [[splits]]
 id = "long"
+gap = 0.08
 
 [[splits.segments]]
 id = "long.1"
