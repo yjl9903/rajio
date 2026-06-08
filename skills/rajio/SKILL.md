@@ -37,11 +37,9 @@ operate a rajio subtitle session.
 - Use `rajio check` as documented in the CLI section. It is not a substitute for manual
   QA of typos, ASR errors, proper nouns, context, terminology, fixed phrases, and
   translation consistency.
-- Use `--force-commit` only as a manually confirmed escape hatch for subtitle QA
-  heuristic errors. Before using it, run `rajio check <target> --level error --verbose`
-  and inspect every remaining error. Do not force commit unfinished translation, empty
-  text, invalid timing, overlaps, duplicate IDs, bad schema, or any large unreviewed set
-  of errors.
+- Use `--force-commit` only after `rajio check <target> --level error --verbose` and
+  manual review confirm every remaining error is an intentional subtitle QA exception.
+  Never force commit data integrity errors, unfinished translation, or unreviewed batches.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
   empty filler segments. Always pass the session target as the first positional
@@ -118,9 +116,8 @@ Default command workflow controls:
 - `--continue=until-manual`: run automatic stages until the next manual stage.
 - `--continue=step`: run one automatic stage.
 - `--commit`: commit the current manual stage after validating its work file.
-- `--force-commit`: commit the current manual stage after manually confirming that all
-  remaining blocking errors are intentional subtitle QA exceptions. This records
-  `force_committed = true`; it does not allow data integrity errors.
+- `--force-commit`: manually confirmed subtitle QA exception commit; records
+  `force_committed = true` and still blocks data integrity errors.
 - `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
   `translation_work`, or `export`.
 - `--agent=codex`: CLI automation escape hatch. Do not use it as the default manual-stage
@@ -420,16 +417,14 @@ When clean:
 rajio /path/to/session --commit --continue=until-manual
 ```
 
-If the only remaining blocking errors are manually confirmed subtitle QA exceptions, such
-as an official event name like `STRAIGHT! REACH!! CHEER!!!`, first inspect the exact
-errors:
+If only intentional subtitle QA exceptions remain, inspect them first:
 
 ```bash
 rajio check /path/to/session --stage transcript --level error --verbose
 ```
 
-Use force commit only after confirming the text and timing are correct and preserving the
-exception makes the subtitle more accurate, natural, or comfortable:
+Then force commit only if preserving the exception improves accuracy, naturalness, or
+readability:
 
 ```bash
 rajio /path/to/session --force-commit --continue=until-manual
@@ -453,7 +448,9 @@ and `zh2` where the command supports those fields.
 During batch work, keep glossary updates and unresolved uncertainty in `description.md`,
 and search earlier completed batches when a new name, phrase, or style decision appears.
 Do not commit `translation_work` until every batch has been translated, terminology has
-been cross-checked, and `rajio check /path/to/session` passes.
+been cross-checked, and `rajio check /path/to/session` has no blocking errors. Inherited
+Japanese QA in `translation_work` is warning-only; review it, but do not force commit just
+for those warnings.
 
 If translation reveals a transcript typo, wrong name, wrong fixed phrase, missing context,
 or bad segment structure, fix `transcript/work/segments.toml` first, update
@@ -509,15 +506,13 @@ When clean, commit and export:
 rajio /path/to/session --commit --continue=until-manual
 ```
 
-If a confirmed proper noun, title call, or other intentional subtitle choice still
-produces only force-committable QA heuristic errors, inspect them first:
+If intentional Chinese QA exceptions remain, inspect them first:
 
 ```bash
 rajio check /path/to/session --stage translation --level error --verbose
 ```
 
-Then force commit only when every remaining error has been manually reviewed and is not a
-data integrity problem:
+Then force commit only after manual review confirms they are not data integrity problems.
 
 ```bash
 rajio /path/to/session --force-commit --continue=until-manual

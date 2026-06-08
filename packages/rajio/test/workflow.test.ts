@@ -44,6 +44,27 @@ function forceQaTranslation() {
   };
 }
 
+function inheritedJapaneseQaTranslation() {
+  return {
+    ...forceQaTranscript(),
+    source: { kind: 'translation' as const, generated_at: '2026-06-06T00:00:00.000Z' },
+    segments: forceQaTranscript().segments.map((segment) => ({
+      ...segment,
+      zh: '官方活动名'
+    }))
+  };
+}
+
+function chineseHardQaTranslation() {
+  return {
+    ...sampleTranslation(),
+    segments: sampleTranslation().segments.map((segment) => ({
+      ...segment,
+      zh: '你'.repeat(25)
+    }))
+  };
+}
+
 describe('session workflow', () => {
   it('sets up transcript work from raw and stops at manual stage', async () => {
     const dir = await preparedSession('transcript_work', {
@@ -417,6 +438,57 @@ describe('session workflow', () => {
     expect(await readFile(path.join(dir, 'session.toml'), 'utf8')).not.toContain('force_committed');
   });
 
+  it('commits and exports translation with inherited Japanese QA errors without force', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      stringify(inheritedJapaneseQaTranslation())
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, { ...baseOptions, commit: true });
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.stage('translation_work')).toEqual(
+      expect.objectContaining({
+        status: 'committed'
+      })
+    );
+    expect(reloaded.stage('translation_work')).not.toHaveProperty('force_committed');
+    expect(reloaded.stage('export').status).toBe('done');
+    expect(await readFile(path.join(dir, 'output/Example.ja.srt'), 'utf8')).toContain(
+      'STRAIGHT! REACH!! CHEER!!!'
+    );
+  });
+
+  it('rejects translation commit when Chinese QA has hard errors', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      stringify(chineseHardQaTranslation())
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await expect(runRajio(session, { ...baseOptions, commit: true })).rejects.toThrow(
+      'zh_line_hard_limit'
+    );
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.stage('translation_work').status).toBe('waiting');
+  });
+
   it('checks session and segment TOML files', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
@@ -508,7 +580,7 @@ describe('session workflow', () => {
     );
   });
 
-  it('reports force committed subtitle QA errors as warnings while the hash matches', async () => {
+  it('reports inherited Japanese QA errors as translation warnings', async () => {
     const dir = await preparedSession('translation_work', {
       transcript_work: {
         status: 'committed',
@@ -536,11 +608,10 @@ describe('session workflow', () => {
     const result = await checkRajio(await Session.loadOrCreate(dir));
 
     const issue = result.issues.find((item) => item.code === 'ja_line_hard_limit');
-    expect(result.ok).toBe(false);
     expect(issue).toEqual(
       expect.objectContaining({
         level: 'warning',
-        message: expect.stringContaining('force-committed exception')
+        message: expect.stringContaining('translation inherited Japanese QA')
       })
     );
     expect(
@@ -548,7 +619,27 @@ describe('session workflow', () => {
     ).toBe(false);
   });
 
-  it('does not downgrade force committed errors after the work file changes', async () => {
+  it('reports Chinese hard QA errors as translation errors', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      stringify(chineseHardQaTranslation())
+    );
+
+    const result = await checkRajio(await Session.loadOrCreate(dir));
+
+    expect(
+      result.issues.some((item) => item.level === 'error' && item.code === 'zh_line_hard_limit')
+    ).toBe(true);
+  });
+
+  it('keeps inherited Japanese QA as translation warnings after the work file changes', async () => {
     const dir = await preparedSession('translation_work', {
       translation_work: {
         status: 'committed',
@@ -565,9 +656,16 @@ describe('session workflow', () => {
 
     const result = await checkRajio(await Session.loadOrCreate(dir));
 
+    const issue = result.issues.find((item) => item.code === 'ja_line_hard_limit');
+    expect(issue).toEqual(
+      expect.objectContaining({
+        level: 'warning',
+        message: expect.stringContaining('translation inherited Japanese QA')
+      })
+    );
     expect(
       result.issues.some((item) => item.level === 'error' && item.code === 'ja_line_hard_limit')
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it('exports force committed translation with allowlisted subtitle QA errors', async () => {

@@ -128,7 +128,9 @@ Inspect every remaining error manually. Use `--force-commit` only when keeping t
 exception makes the subtitle more accurate, natural, or comfortable, for example an
 official title or event name such as `STRAIGHT! REACH!! CHEER!!!`. Do not use it for
 unfinished translation, empty text, broken timing, overlaps, duplicate IDs, bad schema, or
-large unreviewed batches of errors.
+large unreviewed batches of errors. In `translation_work`, inherited Japanese subtitle QA
+hard rules are warnings, so they do not require `--force-commit`; Chinese hard QA exceptions
+still do.
 
 Reset boundaries:
 
@@ -479,6 +481,8 @@ Output:
 - `--verbose` prints every issue.
 - `--json` prints summary JSON.
 - `--verbose --json` adds sorted full `issues`.
+- `translation_work` reports inherited Japanese subtitle QA hard rules as warnings. Chinese
+  subtitle QA hard rules and data integrity problems still report as errors.
 
 Exit behavior:
 

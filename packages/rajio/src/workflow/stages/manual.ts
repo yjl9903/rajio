@@ -8,8 +8,8 @@ import { printCheckIssues, type CheckIssue } from '../../session/check.js';
 import {
   blockingValidationErrors,
   cloneForTranslation,
+  formatValidationIssueForProfile,
   formatValidationErrorSummary,
-  isForceCommittableValidationIssue,
   normalizeTranscriptWorkGaps,
   readSegmentsFile,
   validateSegments,
@@ -78,23 +78,21 @@ export async function commitManualStage(input: {
   }
   const segmentsPath = fromSessionRelative(session.dir, state.segments);
   const requireZh = stage === 'translation_work';
+  const profile = stage === 'translation_work' ? 'translation_work' : 'default';
   const segments = await readSegmentsFile(segmentsPath);
   const issues = validateSegments(segments, { requireZh });
-  const errors = blockingValidationErrors(issues, { forceCommit });
+  const errors = blockingValidationErrors(issues, { forceCommit, profile });
   const stageLogger = taggedLogger(stage);
   printCheckIssues(
     issues
-      .filter(
-        (issue) =>
-          issue.level === 'warning' || (forceCommit && isForceCommittableValidationIssue(issue))
-      )
+      .map((issue) => formatValidationIssueForProfile(issue, { forceCommit, profile }))
+      .filter((issue) => issue.level === 'warning')
       .map(
         (issue): CheckIssue => ({
           file: segmentsPath,
           level: 'warning',
           code: issue.code,
-          message:
-            issue.level === 'error' ? `force-committed exception: ${issue.message}` : issue.message,
+          message: issue.message,
           segmentId: issue.segmentId
         })
       ),

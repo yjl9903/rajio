@@ -26,6 +26,15 @@ const FORCE_COMMITTABLE_VALIDATION_CODES = new Set([
   'ja_repeated_punctuation',
   'zh_repeated_punctuation'
 ]);
+const TRANSLATION_INHERITED_JAPANESE_QA_CODES = new Set([
+  'ja_line_hard_limit',
+  'ja_line_break_hard_limit',
+  'ja_reading_speed_limit',
+  'ja_punctuation_only_line',
+  'ja_repeated_punctuation'
+]);
+
+export type ValidationProfile = 'default' | 'translation_work';
 
 const TEXT_LIMITS = {
   ja: {
@@ -195,15 +204,47 @@ export function isForceCommittableValidationIssue(issue: ValidationIssue): boole
   return issue.level === 'error' && FORCE_COMMITTABLE_VALIDATION_CODES.has(issue.code);
 }
 
+export function isTranslationInheritedJapaneseQaIssue(issue: ValidationIssue): boolean {
+  return issue.level === 'error' && TRANSLATION_INHERITED_JAPANESE_QA_CODES.has(issue.code);
+}
+
 export function blockingValidationErrors(
   issues: ValidationIssue[],
-  options: { forceCommit?: boolean } = {}
+  options: { forceCommit?: boolean; profile?: ValidationProfile } = {}
 ): ValidationIssue[] {
   const errors = issues.filter((issue) => issue.level === 'error');
-  if (!options.forceCommit) {
-    return errors;
+  return errors.filter((issue) => isBlockingValidationIssue(issue, options));
+}
+
+export function formatValidationIssueForProfile(
+  issue: ValidationIssue,
+  options: { forceCommit?: boolean; profile?: ValidationProfile } = {}
+): ValidationIssue {
+  if (options.profile === 'translation_work' && isTranslationInheritedJapaneseQaIssue(issue)) {
+    return {
+      ...issue,
+      level: 'warning',
+      message: `translation inherited Japanese QA: ${issue.message}`
+    };
   }
-  return errors.filter((issue) => !isForceCommittableValidationIssue(issue));
+  if (options.forceCommit && isForceCommittableValidationIssue(issue)) {
+    return {
+      ...issue,
+      level: 'warning',
+      message: `force-committed exception: ${issue.message}`
+    };
+  }
+  return issue;
+}
+
+function isBlockingValidationIssue(
+  issue: ValidationIssue,
+  options: { forceCommit?: boolean; profile?: ValidationProfile }
+): boolean {
+  if (options.profile === 'translation_work' && isTranslationInheritedJapaneseQaIssue(issue)) {
+    return false;
+  }
+  return !(options.forceCommit && isForceCommittableValidationIssue(issue));
 }
 
 export function formatValidationErrorSummary(

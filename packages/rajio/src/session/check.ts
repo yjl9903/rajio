@@ -6,7 +6,7 @@ import type { ConsolaInstance } from 'consola';
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../utils/fs.js';
 import type { Session } from './index.js';
 import {
-  isForceCommittableValidationIssue,
+  formatValidationIssueForProfile,
   readSegmentsFile,
   validateSegments
 } from '../segments/index.js';
@@ -372,20 +372,22 @@ async function checkSegments(
     const file = await readSegmentsFile(filePath);
     const requireZh = options.requireZh ?? file.source.kind === 'translation';
     const strict = options.strict ?? !isRawTranscriptSegmentsPath(filePath);
+    const stage = inferStageFromPath(filePath);
+    const profile = stage === 'translation_work' ? 'translation_work' : 'default';
     for (const issue of validateSegments(file, { requireZh, strict })) {
       const segment = issue.segmentId
         ? buildSegmentContext(file.segments, issue.segmentId)
         : undefined;
-      const forceCommittedException =
-        options.forceCommitted && isForceCommittableValidationIssue(issue);
+      const formattedIssue = formatValidationIssueForProfile(issue, {
+        forceCommit: options.forceCommitted,
+        profile
+      });
       issues.push({
         file: filePath,
-        stage: inferStageFromPath(filePath),
-        level: forceCommittedException ? 'warning' : issue.level,
+        stage,
+        level: formattedIssue.level,
         code: issue.code,
-        message: forceCommittedException
-          ? `force-committed exception: ${issue.message}`
-          : issue.message,
+        message: formattedIssue.message,
         segmentId: issue.segmentId,
         segment
       });

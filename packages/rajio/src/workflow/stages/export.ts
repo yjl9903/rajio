@@ -29,7 +29,8 @@ export async function runExportStage(session: Session): Promise<void> {
     typeof translation.segments_sha256 === 'string' &&
     (await sha256File(segmentsPath)) === translation.segments_sha256;
   const errors = blockingValidationErrors(validateSegments(segments, { requireZh: true }), {
-    forceCommit
+    forceCommit,
+    profile: 'translation_work'
   });
   if (errors.length > 0) {
     throw new Error(formatValidationErrorSummary(errors));

@@ -312,7 +312,7 @@ Rules:
    transcript work, then stop for human or Codex to fill `zh`.
 6. Translation commit: human or Codex edits `translation/work/segments.toml`; `--commit`
    validates it, requires `zh`, and records hash. `--force-commit` may be used only after
-   manual review confirms remaining errors are subtitle QA exceptions.
+   manual review confirms remaining blocking errors are subtitle QA exceptions.
 7. Export: read committed and clean translation work and generate Japanese SRT, Chinese
    SRT, and bilingual ASS.
 
@@ -342,6 +342,10 @@ Blocking validation for editable/manual subtitle files:
 - Japanese or Chinese subtitle line contains only punctuation.
 - Japanese or Chinese subtitle text contains more than two repeated question/exclamation marks.
 - Upstream work is dirty.
+
+In `translation_work`, inherited Japanese subtitle QA hard rules are reported as warnings
+instead of blocking errors. Data integrity errors, missing `zh`, and Chinese subtitle QA hard
+rules remain blocking.
 
 Warning validation:
 
