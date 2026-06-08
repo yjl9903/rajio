@@ -47,6 +47,7 @@ export class Session {
     'transcript',
     'translation',
     'patches',
+    'clips',
     'output'
   ];
 

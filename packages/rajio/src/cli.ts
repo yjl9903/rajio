@@ -21,7 +21,6 @@ wrapConsoleLogger();
 const app = breadc('rajio', { version, description });
 const checkLogger = taggedLogger('check');
 const doctorLogger = taggedLogger('doctor');
-const cleanLogger = taggedLogger('clean');
 const cliLogger = taggedLogger('cli');
 
 app
@@ -182,11 +181,8 @@ app
 app.command('clean <target>', 'Clean generated session artifacts').action(async (target) => {
   const session = await Session.loadOrCreate(target);
   const removed = await session.clean();
-  if (removed.length === 0) {
-    cleanLogger.info(`nothing to clean in ${session.dir}.`);
-    return;
-  }
-  cleanLogger.success(`cleaned ${removed.join(', ')} from ${session.dir}.`);
+  process.stdout.write(`${session.dir}\n`);
+  process.stdout.write(`removed: ${removed.length > 0 ? removed.join(', ') : 'none'}\n`);
 });
 
 app.run(process.argv.slice(2)).catch((error) => {

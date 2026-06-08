@@ -65,10 +65,12 @@ describe('session target resolution', () => {
     await mkdir(path.join(dir, 'audio', 'chunks'), { recursive: true });
     await mkdir(path.join(dir, 'translation', 'work'), { recursive: true });
     await mkdir(path.join(dir, 'patches'), { recursive: true });
+    await mkdir(path.join(dir, 'clips', 'clip-000000-010000'), { recursive: true });
     await mkdir(path.join(dir, 'output'), { recursive: true });
     await writeFile(path.join(dir, 'audio', 'chunks', 'chunk-000.m4a'), 'audio');
     await writeFile(path.join(dir, 'translation', 'work', 'segments.toml'), 'segments');
     await writeFile(path.join(dir, 'patches', 'batch-001.toml'), 'patch');
+    await writeFile(path.join(dir, 'clips', 'clip-000000-010000', 'segments.toml'), 'clip');
     await writeFile(path.join(dir, 'output', 'example.zh.srt'), 'srt');
 
     const session = await Session.loadOrCreate(dir);
@@ -80,6 +82,7 @@ describe('session target resolution', () => {
       'transcript',
       'translation',
       'patches',
+      'clips',
       'output'
     ]);
     await expect(readFile(path.join(dir, 'session.toml'), 'utf8')).rejects.toThrow();
@@ -93,6 +96,9 @@ describe('session target resolution', () => {
       readFile(path.join(dir, 'translation', 'work', 'segments.toml'), 'utf8')
     ).rejects.toThrow();
     await expect(readFile(path.join(dir, 'patches', 'batch-001.toml'), 'utf8')).rejects.toThrow();
+    await expect(
+      readFile(path.join(dir, 'clips', 'clip-000000-010000', 'segments.toml'), 'utf8')
+    ).rejects.toThrow();
     await expect(readFile(path.join(dir, 'output', 'example.zh.srt'), 'utf8')).rejects.toThrow();
     await expect(readFile(path.join(dir, 'video.mp4'), 'utf8')).resolves.toBe('media');
     await expect(readFile(path.join(dir, 'description.md'), 'utf8')).resolves.toContain(
