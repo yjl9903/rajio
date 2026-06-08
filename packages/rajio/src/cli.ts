@@ -40,22 +40,6 @@ app
     '--force-commit',
     'commit current manual stage while allowing confirmed subtitle QA exceptions'
   )
-  .option('--verbose', 'print every warning instead of summarizing repetitive warnings')
-  .option(
-    '--reset <stage>',
-    'regenerate from stage: audio, transcript_raw, transcript_work, translation_work, or export',
-    {
-      cast: (value) => {
-        if (value === undefined) {
-          return undefined;
-        }
-        if (STAGES.includes(value as (typeof STAGES)[number])) {
-          return value as (typeof STAGES)[number];
-        }
-        throw new Error(`--reset must be one of: ${STAGES.join(', ')}.`);
-      }
-    }
-  )
   .option('--agent <agent>', 'batch automation only, run agent for manual stage: codex or false', {
     cast: (value) => {
       if (value === undefined) {
@@ -71,6 +55,22 @@ app
     }
   })
   .option('--full', 'run all remaining stages automatically')
+  .option(
+    '--reset <stage>',
+    'regenerate from stage: audio, transcript_raw, transcript_work, translation_work, or export',
+    {
+      cast: (value) => {
+        if (value === undefined) {
+          return undefined;
+        }
+        if (STAGES.includes(value as (typeof STAGES)[number])) {
+          return value as (typeof STAGES)[number];
+        }
+        throw new Error(`--reset must be one of: ${STAGES.join(', ')}.`);
+      }
+    }
+  )
+  .option('--verbose', 'print every warning instead of summarizing repetitive warnings')
   .option('--chunk-target <seconds>', 'target local audio chunk length in seconds', {
     cast: castNumber
   })
