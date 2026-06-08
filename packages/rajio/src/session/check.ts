@@ -22,6 +22,7 @@ import { taggedLogger } from '../utils/logger.js';
 
 const checkLogger = taggedLogger('check');
 const VALID_STAGE_STATUSES = new Set(STAGE_STATUSES);
+const AUTOMATIC_STAGES = new Set<StageName>(['audio', 'transcript_raw', 'export']);
 
 export interface CheckIssue {
   file: string;
@@ -322,6 +323,7 @@ async function checkSession(
       }
     }
   }
+  checkFailedCurrentAutomaticStage(session, issues);
 }
 
 function shouldValidateAudioChunks(stageState: StageState): boolean {
@@ -330,6 +332,28 @@ function shouldValidateAudioChunks(stageState: StageState): boolean {
     typeof stageState.audio === 'string' ||
     typeof stageState.chunks_dir === 'string'
   );
+}
+
+function checkFailedCurrentAutomaticStage(session: Session, issues: CheckIssue[]): void {
+  const stage = session.state.current_stage;
+  if (!AUTOMATIC_STAGES.has(stage)) {
+    return;
+  }
+
+  const stageState = session.state.stages[stage];
+  if (stageState?.status !== 'failed') {
+    return;
+  }
+
+  const reason =
+    typeof stageState.error === 'string' && stageState.error.trim() ? stageState.error : undefined;
+  issues.push({
+    file: session.path,
+    stage,
+    level: 'error',
+    code: 'failed_stage',
+    message: reason ? `${stage} failed: ${reason}` : `${stage} failed.`
+  });
 }
 
 async function checkSegments(

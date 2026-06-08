@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { Session } from '../src/index.js';
 import { readSegmentsFile, writeSegmentsFile } from '../src/segments/index.js';
-import { checkRajio } from '../src/session/check.js';
+import { checkRajio, formatCheckJson } from '../src/session/check.js';
 import { sha256File } from '../src/utils/fs.js';
 import { logExportOutputs, runRajio } from '../src/workflow/index.js';
 import {
@@ -309,6 +309,59 @@ describe('session workflow', () => {
     const session = await Session.loadOrCreate(dir);
     const result = await checkRajio(session);
     expect(result.ok).toBe(true);
+  });
+
+  it('reports failed current automatic stages as check errors', async () => {
+    const dir = await preparedSession('transcript_raw', {
+      transcript_raw: {
+        status: 'failed',
+        error: 'transcription provider timed out'
+      }
+    });
+
+    const session = await Session.loadOrCreate(dir);
+    const result = await checkRajio(session);
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual(
+      expect.objectContaining({
+        file: path.join(dir, 'session.toml'),
+        stage: 'transcript_raw',
+        level: 'error',
+        code: 'failed_stage',
+        message: 'transcript_raw failed: transcription provider timed out'
+      })
+    );
+
+    const json = JSON.parse(formatCheckJson(result.issues, { sessionDir: dir })) as {
+      ok: boolean;
+      counts: { error: number; warning: number };
+      summary: Array<{ file: string; level: string; code: string; count: number }>;
+    };
+    expect(json.ok).toBe(false);
+    expect(json.counts).toEqual({ error: 1, warning: 0 });
+    expect(json.summary).toContainEqual(
+      expect.objectContaining({
+        file: 'session.toml',
+        level: 'error',
+        code: 'failed_stage',
+        count: 1
+      })
+    );
+  });
+
+  it('does not report failed_stage for failed current manual stages', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_work: {
+        status: 'failed',
+        error: 'Segment 1 has invalid timing.'
+      }
+    });
+
+    const session = await Session.loadOrCreate(dir);
+    const result = await checkRajio(session);
+
+    expect(result.issues.some((issue) => issue.code === 'failed_stage')).toBe(false);
   });
 
   it('reports missing audio chunk metadata for completed audio stages', async () => {
