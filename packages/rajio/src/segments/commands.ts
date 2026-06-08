@@ -69,36 +69,6 @@ export function registerSegmentCommands(app: RajioApp): void {
     });
 
   app
-    .command('segments edit <target> <id>', 'Edit fields on one segment')
-    .option('--stage <stage>', 'manual stage: transcript or translation', {
-      cast: castSegmentStage
-    })
-    .option('--start <seconds>', 'segment start time in seconds', { cast: castNumber })
-    .option('--end <seconds>', 'segment end time in seconds', { cast: castNumber })
-    .option('--speaker <speaker>', 'segment speaker')
-    .option('--ja <text>', 'Japanese subtitle text')
-    .option('--zh <text>', 'Chinese subtitle text')
-    .option('--dry-run', 'validate and print the edited segment without writing segments.toml')
-    .option('--json', 'print JSON output')
-    .allowUnknownOption(rejectUnknownOption)
-    .action(async (target, id, options) => {
-      const output = prepareSegmentOutput({ json: Boolean(options.json) });
-      const context = await loadSegmentEditContext({
-        sessionTarget: target,
-        stage: options.stage
-      });
-      const segment = editSegment(context.file, id, {
-        start: options.start,
-        end: options.end,
-        speaker: options.speaker,
-        ja: options.ja,
-        zh: options.zh
-      });
-      await persistUnlessDryRun(context, Boolean(options.dryRun));
-      printSegments([segment], output, { totalDuration: getTotalDuration(context.file.segments) });
-    });
-
-  app
     .command(
       'segments apply <target> [file]',
       'Apply a TOML patch of batch edit, split, merge, and delete operations'
@@ -128,6 +98,36 @@ export function registerSegmentCommands(app: RajioApp): void {
       printSegments(result.affected, output, {
         totalDuration: getTotalDuration(context.file.segments)
       });
+    });
+
+  app
+    .command('segments edit <target> <id>', 'Edit fields on one segment')
+    .option('--stage <stage>', 'manual stage: transcript or translation', {
+      cast: castSegmentStage
+    })
+    .option('--start <seconds>', 'segment start time in seconds', { cast: castNumber })
+    .option('--end <seconds>', 'segment end time in seconds', { cast: castNumber })
+    .option('--speaker <speaker>', 'segment speaker')
+    .option('--ja <text>', 'Japanese subtitle text')
+    .option('--zh <text>', 'Chinese subtitle text')
+    .option('--dry-run', 'validate and print the edited segment without writing segments.toml')
+    .option('--json', 'print JSON output')
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, id, options) => {
+      const output = prepareSegmentOutput({ json: Boolean(options.json) });
+      const context = await loadSegmentEditContext({
+        sessionTarget: target,
+        stage: options.stage
+      });
+      const segment = editSegment(context.file, id, {
+        start: options.start,
+        end: options.end,
+        speaker: options.speaker,
+        ja: options.ja,
+        zh: options.zh
+      });
+      await persistUnlessDryRun(context, Boolean(options.dryRun));
+      printSegments([segment], output, { totalDuration: getTotalDuration(context.file.segments) });
     });
 
   app

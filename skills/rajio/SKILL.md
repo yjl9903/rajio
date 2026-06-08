@@ -159,8 +159,6 @@ rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --stage transcript --start 600 --end 660
 rajio segments list /path/to/session --stage transcript --issues invalid-time,overlap,long,fragment
 rajio segments list /path/to/session --stage translation --issues empty-zh --json
-rajio segments edit /path/to/session 12 --stage transcript --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
-rajio segments edit /path/to/session 12 --stage transcript --ja "修正した日本語" --dry-run --json
 rajio segments apply /path/to/session patch.toml --stage translation
 rajio segments apply /path/to/session --stage translation <<'EOF'
 [[operations]]
@@ -168,6 +166,8 @@ op = "edit"
 segment_id = "12"
 zh = "修正后的中文字幕"
 EOF
+rajio segments edit /path/to/session 12 --stage transcript --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
+rajio segments edit /path/to/session 12 --stage transcript --ja "修正した日本語" --dry-run --json
 rajio segments split /path/to/session 12 --stage transcript --at 11.8 --gap 0.08 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
 rajio segments merge /path/to/session 12.1 12.2 --stage transcript --id 12 --ja "結合した日本語" --speaker A,B
 rajio segments delete /path/to/session 13 --stage transcript

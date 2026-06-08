@@ -12,8 +12,8 @@ utility commands, segment tools, and clip tools now use the same target-first co
 - `rajio doctor <target>`
 - `rajio clean <target>`
 - `rajio segments list <target> [options]`
-- `rajio segments edit <target> <id> [fields]`
 - `rajio segments apply <target> [patch] [options]`
+- `rajio segments edit <target> <id> [fields]`
 - `rajio segments split <target> <id> [fields]`
 - `rajio segments merge <target> <id1> <id2> [fields]`
 - `rajio segments delete <target> <id> [options]`

@@ -7,7 +7,7 @@ raw transcript files are read-only references, and clip transcripts are review a
 ## Agent Defaults
 
 - Always pass the session target as the first positional argument on every command.
-- Prefer `--json` for `segments list`, `segments edit`, `segments apply`,
+- Prefer `--json` for `segments list`, `segments apply`, `segments edit`,
   `segments split`, `segments merge`, `segments delete`, `clips list`, and
   `clips show` whenever the output will be parsed.
 - Edit only manual work files through `rajio segments`: `transcript/work/segments.toml`
@@ -167,8 +167,8 @@ Use these commands for stable targeted edits to manual work-stage `segments.toml
 
 ```bash
 rajio segments list /path/to/session --stage transcript
-rajio segments edit /path/to/session <id> --stage transcript [fields]
 rajio segments apply /path/to/session [file] --stage translation
+rajio segments edit /path/to/session <id> --stage transcript [fields]
 rajio segments split /path/to/session <id> --stage transcript [fields]
 rajio segments merge /path/to/session <id1> <id2> --stage transcript [fields]
 rajio segments delete /path/to/session <id> --stage transcript
@@ -220,73 +220,6 @@ In JSON mode, list output includes:
 
 - `segments`: rows with `id`, `start`, `end`, `speaker`, `ja`, and `zh`.
 - `stats`: `total`, `listed`, `translated`, and `untranslated` counts.
-
-### segments edit
-
-```bash
-rajio segments edit /path/to/session 12 --stage transcript \
-  --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
-
-rajio segments edit /path/to/session 12 --stage translation \
-  --zh "修正后的中文字幕" --dry-run --json
-```
-
-Editable fields are `--start`, `--end`, `--speaker`, `--ja`, and `--zh`. At least one
-field is required.
-
-### segments split
-
-```bash
-rajio segments split /path/to/session 12 --stage transcript \
-  --at 11.8 --gap 0.08 --id1 12.1 --id2 12.2 \
-  --ja1 "前半の日本語" --ja2 "後半の日本語" \
-  --speaker1 A --speaker2 B
-```
-
-`segments split` replaces one segment with exactly two segments separated by a subtitle
-gap. Required options are `--at`, `--id1`, `--id2`, `--ja1`, and `--ja2`.
-
-Rules:
-
-- `--at` is the midpoint of the inserted gap.
-- `--gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
-- The first segment ends at `--at - --gap / 2`; the second starts at
-  `--at + --gap / 2`.
-- Both generated segments must remain at least `0.5` seconds long.
-- `--id1` and `--id2` must be different and must not conflict with other segment ids.
-- `--speaker1` and `--speaker2` default to the original speaker when omitted.
-- If the source segment has `zh`, both `--zh1` and `--zh2` are required.
-
-Use `segments apply` for splits into more than two replacement segments.
-
-### segments merge
-
-```bash
-rajio segments merge /path/to/session 12.1 12.2 --stage transcript \
-  --id 12 --ja "結合した日本語" --speaker A,B
-```
-
-`segments merge` merges exactly two adjacent segments in file order. Required options
-are `--id` and `--ja`.
-
-Rules:
-
-- The two source ids must be adjacent in file order.
-- The merged id must not conflict with another segment id except the two source ids.
-- If either source segment has `zh`, `--zh` is required.
-- If `--speaker` is omitted, speakers are merged as a comma-separated de-duplicated list.
-
-Use `segments apply` to merge more than two adjacent source segments.
-
-### segments delete
-
-```bash
-rajio segments delete /path/to/session 13 --stage transcript
-```
-
-`segments delete` removes one segment and prints the removed row. Use this only for
-semantically empty filler or unwanted subtitle units, not for uncertain ASR text that
-should be corrected or merged.
 
 ### segments apply
 
@@ -370,6 +303,73 @@ segment_id = "14"
 
 For large or risky batches, keep the patch under a session-local `patches/` directory,
 run with `--dry-run --json`, then apply the same file without `--dry-run`.
+
+### segments edit
+
+```bash
+rajio segments edit /path/to/session 12 --stage transcript \
+  --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
+
+rajio segments edit /path/to/session 12 --stage translation \
+  --zh "修正后的中文字幕" --dry-run --json
+```
+
+Editable fields are `--start`, `--end`, `--speaker`, `--ja`, and `--zh`. At least one
+field is required.
+
+### segments split
+
+```bash
+rajio segments split /path/to/session 12 --stage transcript \
+  --at 11.8 --gap 0.08 --id1 12.1 --id2 12.2 \
+  --ja1 "前半の日本語" --ja2 "後半の日本語" \
+  --speaker1 A --speaker2 B
+```
+
+`segments split` replaces one segment with exactly two segments separated by a subtitle
+gap. Required options are `--at`, `--id1`, `--id2`, `--ja1`, and `--ja2`.
+
+Rules:
+
+- `--at` is the midpoint of the inserted gap.
+- `--gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
+- The first segment ends at `--at - --gap / 2`; the second starts at
+  `--at + --gap / 2`.
+- Both generated segments must remain at least `0.5` seconds long.
+- `--id1` and `--id2` must be different and must not conflict with other segment ids.
+- `--speaker1` and `--speaker2` default to the original speaker when omitted.
+- If the source segment has `zh`, both `--zh1` and `--zh2` are required.
+
+Use `segments apply` for splits into more than two replacement segments.
+
+### segments merge
+
+```bash
+rajio segments merge /path/to/session 12.1 12.2 --stage transcript \
+  --id 12 --ja "結合した日本語" --speaker A,B
+```
+
+`segments merge` merges exactly two adjacent segments in file order. Required options
+are `--id` and `--ja`.
+
+Rules:
+
+- The two source ids must be adjacent in file order.
+- The merged id must not conflict with another segment id except the two source ids.
+- If either source segment has `zh`, `--zh` is required.
+- If `--speaker` is omitted, speakers are merged as a comma-separated de-duplicated list.
+
+Use `segments apply` to merge more than two adjacent source segments.
+
+### segments delete
+
+```bash
+rajio segments delete /path/to/session 13 --stage transcript
+```
+
+`segments delete` removes one segment and prints the removed row. Use this only for
+semantically empty filler or unwanted subtitle units, not for uncertain ASR text that
+should be corrected or merged.
 
 ## Clips Commands
 
