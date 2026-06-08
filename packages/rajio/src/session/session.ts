@@ -82,6 +82,9 @@ export class Session {
   ): Promise<Session> {
     const sessionPath = path.join(resolved.dir, SESSION_FILE);
     const exists = await pathExists(sessionPath);
+    if (!exists && saveIfCreated) {
+      await assertMediaFileExists(resolved.mediaPath);
+    }
     const session = new Session({
       ...resolved,
       state: exists
@@ -273,7 +276,7 @@ async function resolveExistingSessionTarget(
   return {
     dir,
     description: await readDescription(undefined),
-    mediaPath: mediaOverride ? path.resolve(dir, mediaOverride) : ''
+    mediaPath: mediaOverride ? resolveCliPath(mediaOverride) : ''
   };
 }
 
@@ -319,7 +322,7 @@ async function resolveSessionTarget(
     const dir = path.dirname(absoluteTarget);
     const descriptionPath = await findSingleDescription(dir);
     const description = await readDescription(descriptionPath);
-    const mediaPath = mediaOverride ? path.resolve(dir, mediaOverride) : absoluteTarget;
+    const mediaPath = mediaOverride ? resolveCliPath(mediaOverride) : absoluteTarget;
     return { dir, description, mediaPath };
   }
 
@@ -344,7 +347,7 @@ async function resolveDirectoryTarget(
       ? fromSessionRelative(dir, session.input.media)
       : undefined;
   const mediaPath = mediaOverride
-    ? path.resolve(dir, mediaOverride)
+    ? resolveCliPath(mediaOverride)
     : mediaPathFromSession
       ? mediaPathFromSession
       : resolveMediaPath(dir, description, undefined, await findSingleMedia(dir));
@@ -358,7 +361,7 @@ function resolveMediaPath(
   fallbackMedia?: string
 ): string {
   if (mediaOverride) {
-    return path.resolve(dir, mediaOverride);
+    return resolveCliPath(mediaOverride);
   }
   if (description.frontmatter.media) {
     const baseDir = description.path ? path.dirname(description.path) : dir;
@@ -408,6 +411,24 @@ function isMarkdownPath(filePath: string): boolean {
 
 function isMediaPath(filePath: string): boolean {
   return MEDIA_EXTENSIONS.has(path.extname(filePath).toLowerCase());
+}
+
+function resolveCliPath(value: string): string {
+  return path.isAbsolute(value) ? value : path.resolve(value);
+}
+
+async function assertMediaFileExists(mediaPath: string): Promise<void> {
+  try {
+    const mediaStat = await stat(mediaPath);
+    if (mediaStat.isFile()) {
+      return;
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      throw error;
+    }
+  }
+  throw new Error(`Media file not found: ${mediaPath}`);
 }
 
 function createSessionState(resolved: ResolvedSessionTarget, now: Date): SessionState {

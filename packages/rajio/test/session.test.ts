@@ -59,6 +59,63 @@ describe('session target resolution', () => {
     expect(second.mediaPath).toBe(path.join(dir, 'video-main.mp4'));
   });
 
+  it('resolves relative media overrides from the current working directory', async () => {
+    const root = await tempDir();
+    const dir = path.join(root, '.rajio/show');
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, 'video.mp4'), 'media');
+    await writeFile(
+      path.join(dir, 'description.md'),
+      ['---', 'title: Example', '---', '', 'context'].join('\n')
+    );
+    const cwd = process.cwd();
+    process.chdir(root);
+
+    try {
+      const first = await Session.loadOrCreate('.rajio/show', '.rajio/show/video.mp4');
+      const expectedMediaPath = path.join(process.cwd(), '.rajio/show/video.mp4');
+      expect(first.mediaPath).toBe(expectedMediaPath);
+      expect(first.state.input.media).toBe('video.mp4');
+
+      const second = await Session.loadOrCreate('.rajio/show');
+      expect(second.mediaPath).toBe(expectedMediaPath);
+    } finally {
+      process.chdir(cwd);
+    }
+  });
+
+  it('does not create a session when a new session media override is missing', async () => {
+    const root = await tempDir();
+    const dir = path.join(root, '.rajio/show');
+    await mkdir(dir, { recursive: true });
+    await writeFile(
+      path.join(dir, 'description.md'),
+      ['---', 'title: Example', '---', '', 'context'].join('\n')
+    );
+    const cwd = process.cwd();
+    process.chdir(root);
+
+    try {
+      await expect(Session.loadOrCreate('.rajio/show', '.rajio/show/missing.mp4')).rejects.toThrow(
+        'Media file not found:'
+      );
+      await expect(readFile(path.join(dir, 'session.toml'), 'utf8')).rejects.toThrow();
+    } finally {
+      process.chdir(cwd);
+    }
+  });
+
+  it('does not create a session when new session frontmatter media is missing', async () => {
+    const dir = await tempDir();
+    await writeFile(
+      path.join(dir, 'description.md'),
+      ['---', 'media: ./missing.mp4', 'title: Example', '---', '', 'context'].join('\n')
+    );
+
+    await expect(Session.loadOrCreate(dir)).rejects.toThrow('Media file not found:');
+    await expect(readFile(path.join(dir, 'session.toml'), 'utf8')).rejects.toThrow();
+  });
+
   it('cleans generated session artifacts without deleting session inputs', async () => {
     const dir = await preparedSession('transcript_work', {});
     await writeFile(path.join(dir, 'notes.txt'), 'keep');

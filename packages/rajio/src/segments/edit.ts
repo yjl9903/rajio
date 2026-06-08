@@ -25,7 +25,7 @@ export async function loadSegmentEditContext(input: {
   sessionTarget: string;
   stage?: SegmentEditStage;
 }): Promise<SegmentEditContext> {
-  const session = await Session.loadOrCreate(input.sessionTarget);
+  const session = await Session.load(input.sessionTarget);
   return resolveSegmentEditContext({ session, stage: input.stage });
 }
 

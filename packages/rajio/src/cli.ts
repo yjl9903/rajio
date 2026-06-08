@@ -184,7 +184,7 @@ app
   });
 
 app.command('clean <target>', 'Clean generated session artifacts').action(async (target) => {
-  const session = await Session.loadOrCreate(target);
+  const session = await Session.load(target);
   const removed = await session.clean();
   process.stdout.write(`${session.dir}\n`);
   process.stdout.write(`removed: ${removed.length > 0 ? removed.join(', ') : 'none'}\n`);
@@ -192,7 +192,7 @@ app.command('clean <target>', 'Clean generated session artifacts').action(async 
 
 const argv = process.argv.slice(2);
 
-app.run(argv).catch((error) => {
+await app.run(argv).catch((error) => {
   cliLogger.error(formatCliError(error, argv));
   process.exitCode = 1;
 });

@@ -212,6 +212,33 @@ describe('cli explicit targets', () => {
     }
   });
 
+  it('cleans generated artifacts without creating a missing session', async () => {
+    vi.useRealTimers();
+    const dir = await tempDir();
+    await mkdir(path.join(dir, 'output'), { recursive: true });
+    await writeFile(path.join(dir, 'output/example.zh.srt'), 'subtitle');
+
+    const result = await runCliSideEffect(['clean', dir]);
+
+    expect(result.exitCode).toBeUndefined();
+    await expect(readFile(path.join(dir, 'output/example.zh.srt'), 'utf8')).rejects.toThrow();
+    await expect(readFile(path.join(dir, 'session.toml'), 'utf8')).rejects.toThrow();
+  });
+
+  it('does not create a session when segment commands require an existing manual stage', async () => {
+    const dir = await tempDir();
+    await writeFile(path.join(dir, 'video.mp4'), 'media');
+    await writeFile(
+      path.join(dir, 'description.md'),
+      ['---', 'media: ./video.mp4', 'title: Example', '---', '', 'context'].join('\n')
+    );
+
+    await expect(
+      createCommandApp().run(['segments', 'list', dir, '--stage', 'transcript'])
+    ).rejects.toThrow('transcript_work does not have a work segments path.');
+    await expect(readFile(path.join(dir, 'session.toml'), 'utf8')).rejects.toThrow();
+  });
+
   it('rejects unknown segment and clip options before session resolution', async () => {
     const dir = await tempDir();
     await writeFile(path.join(dir, 'a.md'), 'a');
@@ -262,7 +289,6 @@ async function runCliSideEffect(argv: string[]): Promise<{
   process.exitCode = undefined;
   try {
     await import(/* @vite-ignore */ `${cliUrl}?cli-target-test=${cliImportCounter++}`);
-    await new Promise<void>((resolve) => setImmediate(resolve));
     return { exitCode: process.exitCode, stderr };
   } finally {
     process.argv = originalArgv;
