@@ -39,7 +39,8 @@ operate a rajio subtitle session.
   translation consistency.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
-  empty filler segments. Always pass `--session /path/to/session` in agent work.
+  empty filler segments. Always pass the session target as the first positional
+  argument.
 - Use `rajio clips` commands for difficult source-video ranges that need independent
   retranscription for comparison. Clip outputs are sidecar review artifacts only; do not
   treat them as automatic replacements for `transcript/work/segments.toml`.
@@ -90,8 +91,8 @@ Use the installed CLI:
 
 ```bash
 rajio <target> [options]
-rajio segments <command> --session <target> --stage transcript
-rajio clips <command> --session <target>
+rajio segments <command> <target> --stage transcript
+rajio clips <command> <target>
 rajio check <target>
 rajio check <target> --level error
 rajio check <target> --stage transcript
@@ -142,37 +143,35 @@ for parseable JSON; otherwise output is a human-readable table.
 Segment command examples:
 
 ```bash
-rajio segments list --session /path/to/session --stage transcript
-rajio segments list --session /path/to/session --stage transcript --json
-rajio segments list --session /path/to/session --stage transcript --id 12 --id 13 --id 14
-rajio segments list --session /path/to/session --stage transcript --id 12 --around 3
-rajio segments list --session /path/to/session --stage transcript --offset 100 --limit 50
-rajio segments list --session /path/to/session --stage transcript --start 600 --end 660
-rajio segments list --session /path/to/session --stage transcript --issues invalid-time,overlap,long,fragment
-rajio segments list --session /path/to/session --stage translation --issues empty-zh --json
-rajio segments edit 12 --session /path/to/session --stage transcript --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
-rajio segments edit 12 --session /path/to/session --stage transcript --ja "修正した日本語" --dry-run --json
-rajio segments apply patch.toml --session /path/to/session --stage translation
-rajio segments apply --session /path/to/session --stage translation <<'EOF'
+rajio segments list /path/to/session --stage transcript
+rajio segments list /path/to/session --stage transcript --json
+rajio segments list /path/to/session --stage transcript --id 12
+rajio segments list /path/to/session --stage transcript --id 12 --around 3
+rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
+rajio segments list /path/to/session --stage transcript --start 600 --end 660
+rajio segments list /path/to/session --stage transcript --issues invalid-time,overlap,long,fragment
+rajio segments list /path/to/session --stage translation --issues empty-zh --json
+rajio segments edit /path/to/session 12 --stage transcript --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
+rajio segments edit /path/to/session 12 --stage transcript --ja "修正した日本語" --dry-run --json
+rajio segments apply /path/to/session patch.toml --stage translation
+rajio segments apply /path/to/session --stage translation <<'EOF'
 [[edits]]
 id = "12"
 zh = "修正后的中文字幕"
 EOF
-rajio segments split 12 --session /path/to/session --stage transcript --at 11.8 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
-rajio segments merge 12.1 12.2 --session /path/to/session --stage transcript --id 12 --ja "結合した日本語" --speaker A,B
-rajio segments delete 13 --session /path/to/session --stage transcript
+rajio segments split /path/to/session 12 --stage transcript --at 11.8 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
+rajio segments merge /path/to/session 12.1 12.2 --stage transcript --id 12 --ja "結合した日本語" --speaker A,B
+rajio segments delete /path/to/session 13 --stage transcript
 ```
 
-Always pass `--session /path/to/session` in agent work, even though the CLI can infer a
-session from cwd. This avoids editing the wrong session after directory changes. Replace
+Always pass `/path/to/session` as the first positional argument in agent work. Replace
 `--stage transcript` with `--stage translation` when working on
 `translation/work/segments.toml`.
 
 `segments list` accepts one filter mode at a time:
 
-- `--id [...id]`: show one or more specific segment ids.
-- `--id <id> --around <count>`: show one segment plus surrounding context; this requires
-  exactly one `--id`.
+- `--id <id>`: show one segment.
+- `--id <id> --around <count>`: show one segment plus surrounding context.
 - `--offset <count> --limit <count>`: show a zero-based segment window; omit `--limit`
   to read from offset to the end.
 - `--start <time> --end <time>`: show segments whose `start` time is in `[start, end)`.
@@ -181,7 +180,7 @@ session from cwd. This avoids editing the wrong session after directory changes.
   `--issues empty-zh --json` to list untranslated segments and read JSON `stats` for
   total, listed, translated, and untranslated counts.
 
-`segments apply [file]` applies a TOML patch as the batch form of `edit`, `split`,
+`segments apply <target> [file]` applies a TOML patch as the batch form of `edit`, `split`,
 `merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in
 the same shell command, such as `<<'EOF' ... EOF`. For larger or riskier batches, prefer
 a patch file under a session-local `patches/` directory: run it once with `--dry-run`,
@@ -228,11 +227,11 @@ id = "14"
 Clip command examples:
 
 ```bash
-rajio clips transcribe --session /path/to/session --start 120 --end 180 --label noisy-overlap
-rajio clips list --session /path/to/session
-rajio clips list --session /path/to/session --json
-rajio clips show clip-120000-180000 --session /path/to/session
-rajio clips show clip-120000-180000 --session /path/to/session --json
+rajio clips transcribe /path/to/session --start 120 --end 180 --label noisy-overlap
+rajio clips list /path/to/session
+rajio clips list /path/to/session --json
+rajio clips show /path/to/session clip-120000-180000
+rajio clips show /path/to/session clip-120000-180000 --json
 ```
 
 Use clips when an initial transcription has a complex, noisy, overlapped, or error-prone

@@ -48,7 +48,7 @@ session/
 
 ## Clips Commands
 
-- `rajio clips transcribe --session <target> --start <seconds> --end <seconds> [options]`
+- `rajio clips transcribe <target> --start <seconds> --end <seconds> [options]`
   - Extracts the source media range, creates `source.m4a` and `chunks/chunk-*.m4a`.
   - Supports the same four local chunk options as the default command and records them in
     `clip.toml`.
@@ -56,13 +56,13 @@ session/
   - Merges checkpoints into `segments.toml`, offsetting segment times back to source-video time.
   - Supports checkpoint resume: successful chunks are skipped; failed or missing chunks are retried.
 
-- `rajio clips list --session <target> [--json]`
+- `rajio clips list <target> [--json]`
   - Scans `clips/*/clip.toml`.
   - Uses the same output mode rule as `segments`: TTY human table, non-TTY CSV, `--json` JSON.
   - Columns: `id,label,start,end,duration,status,segments`.
   - Status values: `done`, `failed`, `partial`, `missing`.
 
-- `rajio clips show <id> --session <target> [--json]`
+- `rajio clips show <target> <id> [--json]`
   - Outputs only that clip's `segments.toml`, not `clip.toml` metadata.
   - Uses the same output mode rule and segment columns as `segments list`.
 

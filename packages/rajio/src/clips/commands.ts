@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import type { breadc } from 'breadc';
+import type { UnknownOptionMiddleware, breadc } from 'breadc';
 
 import { readRuntimeConfig } from '../utils/env.js';
 import { fromSessionRelative, pathExists } from '../utils/fs.js';
@@ -14,11 +14,13 @@ import { prepareClipOutput, printClipList } from './output.js';
 import { transcribeClip } from './transcribe.js';
 
 type RajioApp = ReturnType<typeof breadc>;
+const rejectUnknownOption: UnknownOptionMiddleware = (_context, key) => {
+  throw new Error(`Unknown option: --${key}`);
+};
 
 export function registerClipCommands(app: RajioApp): void {
   app
-    .command('clips transcribe', 'Transcribe a source media time range as a review clip')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('clips transcribe <target>', 'Transcribe a source media time range as a review clip')
     .option('--start <seconds>', 'clip start time in seconds', { cast: castNumber })
     .option('--end <seconds>', 'clip end time in seconds', { cast: castNumber })
     .option('--label <name>', 'optional clip label')
@@ -34,8 +36,9 @@ export function registerClipCommands(app: RajioApp): void {
     .option('--chunk-silence-duration <seconds>', 'ffmpeg silencedetect minimum silence duration', {
       cast: castNumber
     })
-    .action(async (options) => {
-      const session = await Session.load(options.session ?? '.');
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, options) => {
+      const session = await Session.load(target);
       const runtime = await readRuntimeConfig({ cwd: process.cwd(), sessionDir: session.dir });
       const chunking = {
         targetSeconds: options.chunkTarget,
@@ -55,22 +58,22 @@ export function registerClipCommands(app: RajioApp): void {
     });
 
   app
-    .command('clips list', 'List review clips')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('clips list <target>', 'List review clips')
     .option('--json', 'print JSON output')
-    .action(async (options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, options) => {
       const output = prepareClipOutput({ json: Boolean(options.json) });
-      const session = await Session.load(options.session ?? '.');
+      const session = await Session.load(target);
       printClipList(await listClips(session), output);
     });
 
   app
-    .command('clips show <id>', 'Print clip transcript segments')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('clips show <target> <id>', 'Print clip transcript segments')
     .option('--json', 'print JSON output')
-    .action(async (id, options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, id, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
-      const session = await Session.load(options.session ?? '.');
+      const session = await Session.load(target);
       const clipPath = session.artifact('clips', id, 'clip.toml');
       if (!(await pathExists(clipPath))) {
         throw new Error(`clip not found: ${id}`);

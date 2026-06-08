@@ -10,6 +10,7 @@ import type { CliOptions } from './types.js';
 import { STAGES } from './types.js';
 import { installBrokenPipeHandler } from './utils/broken-pipe.js';
 import { castNumber } from './utils/cast.js';
+import { formatCliError } from './utils/cli-error.js';
 import { taggedLogger, wrapConsoleLogger } from './utils/logger.js';
 import { runRajio } from './workflow/index.js';
 import { resolveAudioChunkOptions } from './workflow/stages/audio.js';
@@ -24,7 +25,7 @@ const cleanLogger = taggedLogger('clean');
 const cliLogger = taggedLogger('cli');
 
 app
-  .command('[target]', 'Run or resume a rajio subtitle session')
+  .command('<target>', 'Run or resume a rajio subtitle session')
   .option('--media <path>', 'override media path for this invocation')
   .option('--continue <mode>', 'continue mode: until-manual or step', {
     default: 'until-manual' as const,
@@ -80,10 +81,6 @@ app
     cast: castNumber
   })
   .action(async (target, options) => {
-    if (!target) {
-      throw new Error('target is required.');
-    }
-
     const chunking = {
       targetSeconds: options.chunkTarget,
       boundarySearchSeconds: options.chunkBoundarySearch,
@@ -109,7 +106,7 @@ registerSegmentCommands(app);
 registerClipCommands(app);
 
 app
-  .command('check [target]', 'Validate session.toml and segments.toml files')
+  .command('check <target>', 'Validate session.toml and segments.toml files')
   .option('--verbose', 'print every issue')
   .option('--json', 'print JSON output')
   .option('--level <level>', 'filter issues by level: all, error, or warning', {
@@ -149,7 +146,7 @@ app
     }
   )
   .action(async (target, options) => {
-    const session = await Session.load(target ?? '.');
+    const session = await Session.load(target);
     const result = await checkRajio(session);
     const issues = filterCheckIssues(result.issues, {
       level: options.level,
@@ -170,9 +167,9 @@ app
   });
 
 app
-  .command('doctor [target]', 'Check environment, provider, Codex, ffmpeg, and Node.js')
+  .command('doctor <target>', 'Check environment, provider, Codex, ffmpeg, and Node.js')
   .action(async (target) => {
-    const session = await Session.load(target ?? '.');
+    const session = await Session.load(target);
     const result = await runDoctor(session);
     printDoctorChecks(result.checks);
     if (!result.ok) {
@@ -182,8 +179,8 @@ app
     doctorLogger.success('doctor passed.');
   });
 
-app.command('clean [target]', 'Clean generated session artifacts').action(async (target) => {
-  const session = await Session.loadOrCreate(target ?? '.');
+app.command('clean <target>', 'Clean generated session artifacts').action(async (target) => {
+  const session = await Session.loadOrCreate(target);
   const removed = await session.clean();
   if (removed.length === 0) {
     cleanLogger.info(`nothing to clean in ${session.dir}.`);
@@ -193,6 +190,6 @@ app.command('clean [target]', 'Clean generated session artifacts').action(async 
 });
 
 app.run(process.argv.slice(2)).catch((error) => {
-  cliLogger.error(error instanceof Error ? error.message : error);
+  cliLogger.error(formatCliError(error));
   process.exitCode = 1;
 });

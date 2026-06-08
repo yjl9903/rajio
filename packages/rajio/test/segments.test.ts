@@ -649,10 +649,7 @@ describe('segment edit tools', () => {
       { id: '3', start: 3, end: 4.2, speaker: 'C', ja: 'またね' }
     ];
 
-    expect(listSegments(segments, { ids: ['2', '1'] }).map((segment) => segment.id)).toEqual([
-      '2',
-      '1'
-    ]);
+    expect(listSegments(segments, { id: '2' }).map((segment) => segment.id)).toEqual(['2']);
     expect(listSegments(segments, { offset: 1, limit: 1 }).map((segment) => segment.id)).toEqual([
       '2'
     ]);
@@ -660,7 +657,7 @@ describe('segment edit tools', () => {
     expect(listSegments(segments, { start: 1.2, end: 2.8 }).map((segment) => segment.id)).toEqual([
       '2'
     ]);
-    expect(listSegments(segments, { ids: ['2'], around: 1 }).map((segment) => segment.id)).toEqual([
+    expect(listSegments(segments, { id: '2', around: 1 }).map((segment) => segment.id)).toEqual([
       '1',
       '2',
       '3'
@@ -670,18 +667,15 @@ describe('segment edit tools', () => {
   it('rejects conflicting or invalid segment list filters', () => {
     const segments = sampleTranscript().segments;
 
-    expect(() => listSegments(segments, { ids: ['1'], offset: 0 })).toThrow('mutually exclusive');
+    expect(() => listSegments(segments, { id: '1', offset: 0 })).toThrow('mutually exclusive');
     expect(() => listSegments(segments, { issues: ['overlap'], start: 0, end: 1 })).toThrow(
       'mutually exclusive'
     );
     expect(() => listSegments(segments, { start: 0 })).toThrow('provided together');
     expect(() => listSegments(segments, { start: 2, end: 1 })).toThrow('greater than or equal');
     expect(() => listSegments(segments, { offset: -1 })).toThrow('non-negative integer');
-    expect(() => listSegments(segments, { ids: ['missing'] })).toThrow('segment not found');
-    expect(() => listSegments(segments, { around: 1 })).toThrow('requires exactly one --id');
-    expect(() => listSegments(segments, { ids: ['1', '2'], around: 1 })).toThrow(
-      'requires exactly one --id'
-    );
+    expect(() => listSegments(segments, { id: 'missing' })).toThrow('segment not found');
+    expect(() => listSegments(segments, { around: 1 })).toThrow('requires --id');
   });
 
   it('lists segments by issue filters', () => {
@@ -1167,18 +1161,11 @@ describe('segment edit tools', () => {
     ).toThrow('requires --zh');
   });
 
-  it('resolves cwd sessions and marks committed stages dirty after edits', async () => {
+  it('requires explicit session target and marks committed stages dirty after edits', async () => {
     const dir = await preparedCompleteSession();
-    const cwd = process.cwd();
-    process.chdir(dir);
-    try {
-      await expect(loadSegmentEditContext({})).rejects.toThrow('current stage is not manual');
-      const context = await loadSegmentEditContext({ stage: 'translation' });
-      editSegment(context.file, '1', { zh: '您好' });
-      await persistSegmentEdit(context);
-    } finally {
-      process.chdir(cwd);
-    }
+    const context = await loadSegmentEditContext({ sessionTarget: dir, stage: 'translation' });
+    editSegment(context.file, '1', { zh: '您好' });
+    await persistSegmentEdit(context);
 
     const session = await Session.loadOrCreate(dir);
     await session.refreshDirtyState();

@@ -24,14 +24,14 @@ rajio <target> [options]
 Segment editing commands:
 
 ```bash
-rajio segments <command> --session <target> --stage transcript
-rajio segments <command> --session <target> --stage translation
+rajio segments <command> <target> --stage transcript
+rajio segments <command> <target> --stage translation
 ```
 
 Check command:
 
 ```bash
-rajio check [target]
+rajio check <target>
 ```
 
 `check` validates `session.toml` and every `segments.toml` under `transcript/` and
@@ -66,9 +66,9 @@ Options:
   `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
 
 `rajio check` defaults to concise human output and summarizes repeated issues by file,
-stage, severity, and code. Use `rajio check --verbose [target]` to print every issue.
-Use `rajio check --json [target]` for compact summary JSON; full issue details
-are emitted only with `rajio check --verbose --json [target]`. `--level` and `--stage`
+stage, severity, and code. Use `rajio check <target> --verbose` to print every issue.
+Use `rajio check <target> --json` for compact summary JSON; full issue details
+are emitted only with `rajio check <target> --verbose --json`. `--level` and `--stage`
 apply consistently to human and JSON output before summaries, details, and exit codes are
 computed.
 

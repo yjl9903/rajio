@@ -6,8 +6,7 @@ raw transcript files are read-only references, and clip transcripts are review a
 
 ## Agent Defaults
 
-- Always pass `--session /path/to/session` on `segments` and `clips` subcommands.
-  The CLI can infer a session from cwd, but agents should avoid cwd-dependent edits.
+- Always pass the session target as the first positional argument on every command.
 - Prefer `--json` for `segments list`, `segments edit`, `segments apply`,
   `segments split`, `segments merge`, `segments delete`, `clips list`, and
   `clips show` whenever the output will be parsed.
@@ -150,12 +149,12 @@ options are read during first audio generation and `--reset audio`, then recorde
 Use these commands for stable targeted edits to manual work-stage `segments.toml` files.
 
 ```bash
-rajio segments list --session /path/to/session --stage transcript
-rajio segments edit <id> --session /path/to/session --stage transcript [fields]
-rajio segments apply [file] --session /path/to/session --stage translation
-rajio segments split <id> --session /path/to/session --stage transcript [fields]
-rajio segments merge <id1> <id2> --session /path/to/session --stage transcript [fields]
-rajio segments delete <id> --session /path/to/session --stage transcript
+rajio segments list /path/to/session --stage transcript
+rajio segments edit /path/to/session <id> --stage transcript [fields]
+rajio segments apply /path/to/session [file] --stage translation
+rajio segments split /path/to/session <id> --stage transcript [fields]
+rajio segments merge /path/to/session <id1> <id2> --stage transcript [fields]
+rajio segments delete /path/to/session <id> --stage transcript
 ```
 
 Stage selection:
@@ -179,19 +178,19 @@ operation counts. `--dry-run` validates and prints the result without writing
 ### segments list
 
 ```bash
-rajio segments list --session /path/to/session --stage transcript --json
-rajio segments list --session /path/to/session --stage transcript --id 12 --id 13 --id 14
-rajio segments list --session /path/to/session --stage transcript --id 12 --around 3
-rajio segments list --session /path/to/session --stage transcript --offset 100 --limit 50
-rajio segments list --session /path/to/session --stage transcript --start 600 --end 660
-rajio segments list --session /path/to/session --stage translation --issues empty-zh --json
+rajio segments list /path/to/session --stage transcript --json
+rajio segments list /path/to/session --stage transcript --id 12
+rajio segments list /path/to/session --stage transcript --id 12 --around 3
+rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
+rajio segments list /path/to/session --stage transcript --start 600 --end 660
+rajio segments list /path/to/session --stage translation --issues empty-zh --json
 ```
 
 `segments list` accepts only one filter mode per invocation:
 
-- `--id [...id]`: list one or more ids in the requested order.
-- `--id <id> --around <count>`: list one id plus that many neighboring segments on
-  each side. Requires exactly one `--id`; `--around` must be a non-negative integer.
+- `--id <id>`: list one segment.
+- `--id <id> --around <count>`: list one segment plus that many neighboring segments
+  on each side. `--around` must be a non-negative integer.
 - `--offset <count> --limit <count>`: list a zero-based window. `--offset` and
   `--limit` must be non-negative integers. If `--limit` is omitted, list from offset
   to the end.
@@ -208,10 +207,10 @@ In JSON mode, list output includes:
 ### segments edit
 
 ```bash
-rajio segments edit 12 --session /path/to/session --stage transcript \
+rajio segments edit /path/to/session 12 --stage transcript \
   --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
 
-rajio segments edit 12 --session /path/to/session --stage translation \
+rajio segments edit /path/to/session 12 --stage translation \
   --zh "修正后的中文字幕" --dry-run --json
 ```
 
@@ -221,7 +220,7 @@ field is required.
 ### segments split
 
 ```bash
-rajio segments split 12 --session /path/to/session --stage transcript \
+rajio segments split /path/to/session 12 --stage transcript \
   --at 11.8 --id1 12.1 --id2 12.2 \
   --ja1 "前半の日本語" --ja2 "後半の日本語" \
   --speaker1 A --speaker2 B
@@ -242,7 +241,7 @@ Use `segments apply` for splits into more than two replacement segments.
 ### segments merge
 
 ```bash
-rajio segments merge 12.1 12.2 --session /path/to/session --stage transcript \
+rajio segments merge /path/to/session 12.1 12.2 --stage transcript \
   --id 12 --ja "結合した日本語" --speaker A,B
 ```
 
@@ -261,7 +260,7 @@ Use `segments apply` to merge more than two adjacent source segments.
 ### segments delete
 
 ```bash
-rajio segments delete 13 --session /path/to/session --stage transcript
+rajio segments delete /path/to/session 13 --stage transcript
 ```
 
 `segments delete` removes one segment and prints the removed row. Use this only for
@@ -271,11 +270,16 @@ should be corrected or merged.
 ### segments apply
 
 ```bash
-rajio segments apply patch.toml --session /path/to/session --stage translation --dry-run --json
-rajio segments apply patch.toml --session /path/to/session --stage translation
+rajio segments apply /path/to/session patch.toml --stage translation --dry-run --json
+rajio segments apply /path/to/session patch.toml --stage translation
+rajio segments apply /path/to/session --stage translation <<'EOF'
+[[edits]]
+id = "12"
+zh = "修正后的中文字幕"
+EOF
 ```
 
-`segments apply [file]` applies a TOML patch as the batch form of edit, split, merge,
+`segments apply <target> [file]` applies a TOML patch as the batch form of edit, split, merge,
 and delete operations. Pass a patch file path, or omit `[file]` only when supplying
 TOML on stdin in the same shell command. It prints operation counts by default; add
 `--verbose` to print affected segment rows.
@@ -342,16 +346,16 @@ not modify workflow stage state, `transcript/raw/segments.toml`, or
 `transcript/work/segments.toml`.
 
 ```bash
-rajio clips transcribe --session /path/to/session --start 120 --end 180
-rajio clips transcribe --session /path/to/session --start 120 --end 180 --label noisy-overlap
-rajio clips list --session /path/to/session --json
-rajio clips show clip-120000-180000 --session /path/to/session --json
+rajio clips transcribe /path/to/session --start 120 --end 180
+rajio clips transcribe /path/to/session --start 120 --end 180 --label noisy-overlap
+rajio clips list /path/to/session --json
+rajio clips show /path/to/session clip-120000-180000 --json
 ```
 
 ### clips transcribe
 
 ```bash
-rajio clips transcribe --session /path/to/session \
+rajio clips transcribe /path/to/session \
   --start 120 --end 180 --label noisy-overlap \
   --chunk-target 300
 ```
@@ -393,8 +397,8 @@ by a different clip, a numeric suffix is added.
 ### clips list
 
 ```bash
-rajio clips list --session /path/to/session
-rajio clips list --session /path/to/session --json
+rajio clips list /path/to/session
+rajio clips list /path/to/session --json
 ```
 
 Output columns are `id`, `label`, `start`, `end`, `duration`, `status`, and `segments`.
@@ -408,11 +412,11 @@ Status values:
 ### clips show
 
 ```bash
-rajio clips show clip-120000-180000 --session /path/to/session
-rajio clips show clip-120000-180000 --session /path/to/session --json
+rajio clips show /path/to/session clip-120000-180000
+rajio clips show /path/to/session clip-120000-180000 --json
 ```
 
-`clips show <id>` prints only that clip's `segments.toml` rows using the same segment
+`clips show <target> <id>` prints only that clip's `segments.toml` rows using the same segment
 columns and output modes as `segments list`. It does not print `clip.toml` metadata.
 
 ## Check
@@ -427,7 +431,7 @@ rajio check /path/to/session --verbose
 ```
 
 `rajio check` validates `session.toml` and `segments.toml` files under `transcript/`
-and `translation/`. It defaults to the current directory when target is omitted.
+and `translation/`. The target is required.
 
 Filters:
 
@@ -458,8 +462,8 @@ rajio doctor /path/to/session
 
 `rajio doctor` checks session runtime readiness: `.env` loading, API key presence,
 OpenAI-compatible provider reachability, ffmpeg, ffprobe, Codex availability where
-relevant, and Node.js version expectations. It defaults to the current directory when
-target is omitted. If any check fails, process exit code is `1`.
+relevant, and Node.js version expectations. The target is required. If any check fails,
+process exit code is `1`.
 
 Run `doctor` before automatic transcription/export stages or when provider, ffmpeg, or
 environment setup looks misconfigured.

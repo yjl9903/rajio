@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-import type { breadc } from 'breadc';
+import type { UnknownOptionMiddleware, breadc } from 'breadc';
 
 import type { Segment } from '../types.js';
 import { applySegmentPatch, parseSegmentPatch, summarizeSegmentPatchResult } from './apply.js';
@@ -19,15 +19,17 @@ import { prepareSegmentOutput, printSegmentPatchStats, printSegments } from './o
 
 type RajioApp = ReturnType<typeof breadc>;
 const segmentIssuesHelp = SEGMENT_ISSUE_FILTERS.join(',');
+const rejectUnknownOption: UnknownOptionMiddleware = (_context, key) => {
+  throw new Error(`Unknown option: --${key}`);
+};
 
 export function registerSegmentCommands(app: RajioApp): void {
   app
-    .command('segments list', 'List editable segments for the current manual stage')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('segments list <target>', 'List editable segments for the current manual stage')
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
-    .option('--id [...id]', 'filter by one or more segment ids')
+    .option('--id <id>', 'filter by segment id')
     .option('--around <count>', 'with one --id, include this many neighboring segments', {
       cast: castCount
     })
@@ -43,14 +45,16 @@ export function registerSegmentCommands(app: RajioApp): void {
       cast: castIssues
     })
     .option('--json', 'print JSON output')
-    .action(async (options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, options) => {
+      rejectUnexpectedArguments(options);
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
-        sessionTarget: options.session,
+        sessionTarget: target,
         stage: options.stage
       });
       const segments = listSegments(context.file.segments, {
-        ids: options.id,
+        id: options.id,
         around: options.around,
         offset: options.offset,
         limit: options.limit,
@@ -65,8 +69,7 @@ export function registerSegmentCommands(app: RajioApp): void {
     });
 
   app
-    .command('segments edit <id>', 'Edit fields on one segment')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('segments edit <target> <id>', 'Edit fields on one segment')
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
@@ -77,10 +80,11 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--zh <text>', 'Chinese subtitle text')
     .option('--dry-run', 'validate and print the edited segment without writing segments.toml')
     .option('--json', 'print JSON output')
-    .action(async (id, options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, id, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
-        sessionTarget: options.session,
+        sessionTarget: target,
         stage: options.stage
       });
       const segment = editSegment(context.file, id, {
@@ -96,20 +100,20 @@ export function registerSegmentCommands(app: RajioApp): void {
 
   app
     .command(
-      'segments apply [file]',
+      'segments apply <target> [file]',
       'Apply a TOML patch of batch edit, split, merge, and delete operations'
     )
-    .option('--session <target>', 'session target; defaults to cwd')
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
     .option('--dry-run', 'validate the patch without writing segments.toml')
     .option('--verbose', 'print affected segment rows')
     .option('--json', 'print JSON output')
-    .action(async (file, options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, file, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
-        sessionTarget: options.session,
+        sessionTarget: target,
         stage: options.stage
       });
       const patch = parseSegmentPatch(await readPatchInput(file));
@@ -129,8 +133,7 @@ export function registerSegmentCommands(app: RajioApp): void {
     });
 
   app
-    .command('segments split <id>', 'Split one segment into two adjacent segments')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('segments split <target> <id>', 'Split one segment into two adjacent segments')
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
@@ -145,10 +148,11 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--zh2 <text>', 'second Chinese subtitle text')
     .option('--dry-run', 'validate and print the split segments without writing segments.toml')
     .option('--json', 'print JSON output')
-    .action(async (id, options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, id, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
-        sessionTarget: options.session,
+        sessionTarget: target,
         stage: options.stage
       });
       const segments = splitSegment(context.file, id, {
@@ -167,8 +171,7 @@ export function registerSegmentCommands(app: RajioApp): void {
     });
 
   app
-    .command('segments merge <id1> <id2>', 'Merge two adjacent segments')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('segments merge <target> <id1> <id2>', 'Merge two adjacent segments')
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
@@ -178,10 +181,11 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--zh <text>', 'merged Chinese subtitle text')
     .option('--dry-run', 'validate and print the merged segment without writing segments.toml')
     .option('--json', 'print JSON output')
-    .action(async (id1, id2, options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, id1, id2, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
-        sessionTarget: options.session,
+        sessionTarget: target,
         stage: options.stage
       });
       const segment = mergeSegments(context.file, id1, id2, {
@@ -195,17 +199,17 @@ export function registerSegmentCommands(app: RajioApp): void {
     });
 
   app
-    .command('segments delete <id>', 'Delete one segment')
-    .option('--session <target>', 'session target; defaults to cwd')
+    .command('segments delete <target> <id>', 'Delete one segment')
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
     .option('--dry-run', 'validate and print the deleted segment without writing segments.toml')
     .option('--json', 'print JSON output')
-    .action(async (id, options) => {
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, id, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
-        sessionTarget: options.session,
+        sessionTarget: target,
         stage: options.stage
       });
       const segment = deleteSegment(context.file, id);
@@ -296,6 +300,12 @@ function requireNumberOption(value: number | undefined, name: string): number {
     throw new Error(`${name} is required.`);
   }
   return value;
+}
+
+function rejectUnexpectedArguments(options: { '--'?: string[] }): void {
+  if (options['--']?.length) {
+    throw new Error(`Unexpected argument: ${options['--'][0]}`);
+  }
 }
 
 async function readPatchInput(file: string | undefined): Promise<string> {

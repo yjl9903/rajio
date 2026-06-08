@@ -11,7 +11,7 @@ export const SEGMENT_ISSUE_FILTERS = [
 export type SegmentIssueFilter = (typeof SEGMENT_ISSUE_FILTERS)[number];
 
 export interface SegmentListOptions {
-  ids?: string[];
+  id?: string;
   offset?: number;
   limit?: number;
   start?: number;
@@ -22,19 +22,17 @@ export interface SegmentListOptions {
 
 export function listSegments(segments: Segment[], options: SegmentListOptions): Segment[] {
   const mode = resolveListMode(options);
-  if (mode === 'ids') {
+  if (mode === 'id') {
     if (options.around !== undefined) {
       validateAroundOptions(options);
-      return listAroundId(segments, options.ids![0]!, options.around);
+      return listAroundId(segments, options.id!, options.around);
     }
     const byId = new Map(segments.map((segment) => [segment.id, segment]));
-    return options.ids!.map((id) => {
-      const segment = byId.get(id);
-      if (!segment) {
-        throw new Error(`segment not found: ${id}`);
-      }
-      return segment;
-    });
+    const segment = byId.get(options.id!);
+    if (!segment) {
+      throw new Error(`segment not found: ${options.id}`);
+    }
+    return [segment];
   }
 
   if (mode === 'range') {
@@ -59,21 +57,21 @@ export function listSegments(segments: Segment[], options: SegmentListOptions): 
   return segments;
 }
 
-function resolveListMode(options: SegmentListOptions): 'all' | 'ids' | 'range' | 'time' | 'issues' {
-  const hasIds = options.ids !== undefined && options.ids.length > 0;
+function resolveListMode(options: SegmentListOptions): 'all' | 'id' | 'range' | 'time' | 'issues' {
+  const hasId = options.id !== undefined;
   const hasRange = options.offset !== undefined || options.limit !== undefined;
   const hasTime = options.start !== undefined || options.end !== undefined;
   const hasIssues = options.issues !== undefined && options.issues.length > 0;
-  const modeCount = [hasIds, hasRange, hasTime, hasIssues].filter(Boolean).length;
+  const modeCount = [hasId, hasRange, hasTime, hasIssues].filter(Boolean).length;
   if (modeCount > 1) {
     throw new Error('--id, --offset/--limit, --start/--end, and --issues are mutually exclusive.');
   }
-  if (!hasIds && options.around !== undefined) {
-    throw new Error('--around requires exactly one --id.');
+  if (!hasId && options.around !== undefined) {
+    throw new Error('--around requires --id.');
   }
 
-  if (hasIds) {
-    return 'ids';
+  if (hasId) {
+    return 'id';
   }
   if (hasRange) {
     validateRangeOptions(options);
@@ -98,9 +96,6 @@ function listAroundId(segments: Segment[], id: string, around: number): Segment[
 }
 
 function validateAroundOptions(options: SegmentListOptions): void {
-  if (options.ids?.length !== 1) {
-    throw new Error('--around requires exactly one --id.');
-  }
   if (!isNonnegativeInteger(options.around!)) {
     throw new Error('--around must be a non-negative integer.');
   }
