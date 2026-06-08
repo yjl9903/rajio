@@ -6,20 +6,53 @@ import type { Segment, SegmentsFile, ValidationIssue } from '../types.js';
 import { writeFileAtomic } from '../utils/fs.js';
 
 const TRANSCRIPT_PRECUT = {
-  targetChars: 28,
-  hardChars: 40,
-  minChars: 10
+  targetChars: 13,
+  hardChars: 20,
+  minChars: 6
 } as const;
 
 const TEXT_LIMITS = {
-  ja: { label: 'Japanese', soft: 28, hard: 40, softLines: 1, hardLines: 2 },
-  zh: { label: 'Chinese', soft: 24, hard: 34, softLines: 1, hardLines: 2 }
+  ja: {
+    label: 'Japanese',
+    soft: 13,
+    hard: 20,
+    softLines: 1,
+    hardLines: 2,
+    readingSpeedSoft: 4,
+    readingSpeedHard: 6,
+    warningPunctuation: /[。、,.]/,
+    terminalPunctuation: /[。．.,，、;；:：…]$/
+  },
+  zh: {
+    label: 'Chinese',
+    soft: 16,
+    hard: 24,
+    softLines: 1,
+    hardLines: 2,
+    readingSpeedSoft: 9,
+    readingSpeedHard: 12,
+    warningPunctuation: /[，,。.]/,
+    terminalPunctuation: /[。．.,，、;；:：…]$/
+  }
+} as const;
+
+const DURATION_LIMITS = {
+  shortSoft: 0.8,
+  shortHard: 0.5,
+  longSoft: 7,
+  longHard: 10
+} as const;
+
+const GAP_LIMITS = {
+  soft: 0.25,
+  hard: 0.08
 } as const;
 
 const TIME_EPSILON = 1e-3;
 
-const COMMA_PUNCTUATION = /[,，、]/;
-const TERMINAL_PUNCTUATION = /[。．.!！?？;；:：,，、…]$/;
+const REPEATED_EMPHATIC_PUNCTUATION = /[?!？！]{2,}/;
+const REPEATED_EMPHATIC_PUNCTUATION_HARD = /[?!？！]{3,}/;
+const PUNCTUATION_ONLY_LINE = /^[\s\p{P}\p{S}]+$/u;
 const TRAILING_CLOSERS = /[\s"'”’）)」』】》]+$/;
 
 export const segmentSchema = z.object({
@@ -86,13 +119,24 @@ export function validateSegments(
       });
     }
 
-    if (strict && previous && segment.start < previous.end - TIME_EPSILON) {
-      issues.push({
-        level: 'error',
-        code: 'overlap',
-        segmentId: segment.id,
-        message: `Segment ${segment.id} overlaps previous segment ${previous.id}.`
-      });
+    let hasInvalidTime = false;
+    if (strict) {
+      if (segment.end <= segment.start) {
+        hasInvalidTime = true;
+      }
+
+      if (previous) {
+        if (segment.start < previous.end - TIME_EPSILON) {
+          issues.push({
+            level: 'error',
+            code: 'overlap',
+            segmentId: segment.id,
+            message: `Segment ${segment.id} overlaps previous segment ${previous.id}.`
+          });
+        } else {
+          validateSubtitleGap(issues, previous, segment);
+        }
+      }
     }
 
     if (strict && !segment.ja.trim()) {
@@ -118,13 +162,10 @@ export function validateSegments(
       validateTextLines(issues, segment, 'zh', segment.zh);
     }
 
-    if (strict && segment.end - segment.start > 7) {
-      issues.push({
-        level: 'warning',
-        code: 'duration_too_long',
-        segmentId: segment.id,
-        message: `Segment ${segment.id} lasts longer than 7 seconds.`
-      });
+    if (strict && !hasInvalidTime) {
+      validateDuration(issues, segment);
+      validateReadingSpeed(issues, segment, 'ja', segment.ja);
+      validateReadingSpeed(issues, segment, 'zh', segment.zh);
     }
 
     previous = segment;
@@ -272,7 +313,7 @@ function findBestBoundary(
       return best.index;
     }
   }
-  return undefined;
+  return maxIndex;
 }
 
 function charIndexToStringIndex(text: string, charIndex: number): number {
@@ -334,22 +375,139 @@ function validateTextLines(
       });
     }
 
-    if (COMMA_PUNCTUATION.test(line)) {
+    if (PUNCTUATION_ONLY_LINE.test(line)) {
       issues.push({
-        level: 'warning',
-        code: `${language}_comma_punctuation`,
+        level: 'error',
+        code: `${language}_punctuation_only_line`,
         segmentId: segment.id,
-        message: `Segment ${segment.id} ${limits.label} line ${lineNumber} uses comma punctuation; prefer a space or split the subtitle.`
+        message: `Segment ${segment.id} ${limits.label} line ${lineNumber} contains only punctuation.`
       });
     }
 
-    if (TERMINAL_PUNCTUATION.test(line.trim().replace(TRAILING_CLOSERS, ''))) {
+    const repeatedPunctuation = line.match(REPEATED_EMPHATIC_PUNCTUATION);
+    if (repeatedPunctuation) {
+      const hard = REPEATED_EMPHATIC_PUNCTUATION_HARD.test(repeatedPunctuation[0]);
+      issues.push({
+        level: hard ? 'error' : 'warning',
+        code: `${language}_repeated_punctuation`,
+        segmentId: segment.id,
+        message: `Segment ${segment.id} ${limits.label} line ${lineNumber} uses repeated question/exclamation punctuation: ${repeatedPunctuation[0]}.`
+      });
+    }
+
+    if (limits.warningPunctuation.test(line)) {
+      issues.push({
+        level: 'warning',
+        code: `${language}_common_punctuation`,
+        segmentId: segment.id,
+        message: `Segment ${segment.id} ${limits.label} line ${lineNumber} uses ordinary comma/period punctuation; prefer a space, rewrite, or split the subtitle.`
+      });
+    }
+
+    if (limits.terminalPunctuation.test(line.trim().replace(TRAILING_CLOSERS, ''))) {
       issues.push({
         level: 'warning',
         code: `${language}_terminal_punctuation`,
         segmentId: segment.id,
-        message: `Segment ${segment.id} ${limits.label} line ${lineNumber} ends with punctuation; subtitle lines should omit sentence-ending punctuation.`
+        message: `Segment ${segment.id} ${limits.label} line ${lineNumber} ends with ordinary punctuation; subtitle lines should omit ordinary sentence-ending punctuation.`
       });
     }
   }
+}
+
+function validateDuration(issues: ValidationIssue[], segment: Segment): void {
+  const duration = segment.end - segment.start;
+  if (duration < DURATION_LIMITS.shortHard) {
+    issues.push({
+      level: 'error',
+      code: 'duration_too_short',
+      segmentId: segment.id,
+      message: `Segment ${segment.id} lasts ${formatSeconds(duration)} seconds; hard minimum is ${formatSeconds(DURATION_LIMITS.shortHard)} seconds.`
+    });
+  } else if (duration < DURATION_LIMITS.shortSoft) {
+    issues.push({
+      level: 'warning',
+      code: 'duration_too_short',
+      segmentId: segment.id,
+      message: `Segment ${segment.id} lasts ${formatSeconds(duration)} seconds; soft minimum is ${formatSeconds(DURATION_LIMITS.shortSoft)} seconds.`
+    });
+  }
+
+  if (duration > DURATION_LIMITS.longHard) {
+    issues.push({
+      level: 'error',
+      code: 'duration_too_long',
+      segmentId: segment.id,
+      message: `Segment ${segment.id} lasts ${formatSeconds(duration)} seconds; hard maximum is ${formatSeconds(DURATION_LIMITS.longHard)} seconds.`
+    });
+  } else if (duration > DURATION_LIMITS.longSoft) {
+    issues.push({
+      level: 'warning',
+      code: 'duration_too_long',
+      segmentId: segment.id,
+      message: `Segment ${segment.id} lasts ${formatSeconds(duration)} seconds; soft maximum is ${formatSeconds(DURATION_LIMITS.longSoft)} seconds.`
+    });
+  }
+}
+
+function validateReadingSpeed(
+  issues: ValidationIssue[],
+  segment: Segment,
+  language: keyof typeof TEXT_LIMITS,
+  value: string | undefined
+): void {
+  if (!value) {
+    return;
+  }
+
+  const duration = segment.end - segment.start;
+  if (duration <= 0) {
+    return;
+  }
+
+  const limits = TEXT_LIMITS[language];
+  const chars = textWeight(value);
+  const charsPerSecond = chars / duration;
+  if (charsPerSecond > limits.readingSpeedHard) {
+    issues.push({
+      level: 'error',
+      code: `${language}_reading_speed_limit`,
+      segmentId: segment.id,
+      message: `Segment ${segment.id} ${limits.label} reading speed is ${formatRate(charsPerSecond)} chars/s (${chars} chars over ${formatSeconds(duration)} seconds); hard limit is ${limits.readingSpeedHard} chars/s.`
+    });
+  } else if (charsPerSecond > limits.readingSpeedSoft) {
+    issues.push({
+      level: 'warning',
+      code: `${language}_reading_speed_limit`,
+      segmentId: segment.id,
+      message: `Segment ${segment.id} ${limits.label} reading speed is ${formatRate(charsPerSecond)} chars/s (${chars} chars over ${formatSeconds(duration)} seconds); soft limit is ${limits.readingSpeedSoft} chars/s.`
+    });
+  }
+}
+
+function validateSubtitleGap(issues: ValidationIssue[], previous: Segment, segment: Segment): void {
+  const gap = segment.start - previous.end;
+  if (gap < GAP_LIMITS.hard) {
+    issues.push({
+      level: 'error',
+      code: 'subtitle_gap_too_short',
+      segmentId: segment.id,
+      message: `Segment ${segment.id} starts ${formatSeconds(gap)} seconds after previous segment ${previous.id}; hard minimum gap is ${formatSeconds(GAP_LIMITS.hard)} seconds.`
+    });
+  } else if (gap < GAP_LIMITS.soft) {
+    issues.push({
+      level: 'warning',
+      code: 'subtitle_gap_short',
+      segmentId: segment.id,
+      message: `Segment ${segment.id} starts ${formatSeconds(gap)} seconds after previous segment ${previous.id}; soft minimum gap is ${formatSeconds(GAP_LIMITS.soft)} seconds.`
+    });
+  }
+}
+
+function formatSeconds(value: number): string {
+  return Number(value.toFixed(3)).toString();
+}
+
+function formatRate(value: number): string {
+  return Number(value.toFixed(2)).toString();
 }

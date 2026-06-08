@@ -321,19 +321,30 @@ Blocking validation for editable/manual subtitle files:
 - Invalid time values or adjacent overlaps.
 - Required text is empty.
 - Translation stage misses `zh`.
-- Japanese subtitle line exceeds 40 visible non-space characters.
-- Chinese subtitle line exceeds 34 visible non-space characters.
+- Japanese subtitle line exceeds 20 visible non-space characters.
+- Chinese subtitle line exceeds 24 visible non-space characters.
 - Japanese or Chinese subtitle text contains three or more lines.
+- Segment duration is shorter than 0.5 seconds or longer than 10 seconds.
+- Japanese reading speed exceeds 6 visible non-space characters per second.
+- Chinese reading speed exceeds 12 visible non-space characters per second.
+- Gap from the previous subtitle is shorter than 80 ms.
+- Japanese or Chinese subtitle line contains only punctuation.
+- Japanese or Chinese subtitle text contains more than two repeated question/exclamation marks.
 - Upstream work is dirty.
 
 Warning validation:
 
-- Japanese subtitle line exceeds 28 visible non-space characters.
-- Chinese subtitle line exceeds 24 visible non-space characters.
+- Japanese subtitle line exceeds 13 visible non-space characters.
+- Chinese subtitle line exceeds 16 visible non-space characters.
 - Japanese or Chinese subtitle text contains two lines; prefer one line or split segments.
-- Japanese or Chinese subtitle text uses comma punctuation; prefer a space or split.
-- Japanese or Chinese subtitle line ends with sentence punctuation.
-- Segment duration is too long.
+- Segment duration is shorter than 0.8 seconds or longer than 7 seconds.
+- Japanese reading speed exceeds 4 visible non-space characters per second.
+- Chinese reading speed exceeds 9 visible non-space characters per second.
+- Gap from the previous subtitle is 80-250 ms.
+- Japanese or Chinese subtitle text uses ordinary comma or period punctuation; prefer a
+  space, rewrite, or split.
+- Japanese or Chinese subtitle line ends with ordinary sentence punctuation.
+- Japanese or Chinese subtitle text contains two repeated question/exclamation marks.
 - Segment may mix speakers or have unnatural splitting.
 
 Raw transcript files are parsed and schema-checked, but strict timing, text, line-length, and

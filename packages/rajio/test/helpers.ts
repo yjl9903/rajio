@@ -133,7 +133,7 @@ export function sampleTranscript(): SegmentsFile {
     source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
     segments: [
       { id: '1', start: 0, end: 1.2, speaker: 'A', ja: 'こんにちは' },
-      { id: '2', start: 1.2, end: 2.4, speaker: 'B', ja: 'さようなら' }
+      { id: '2', start: 1.5, end: 2.7, speaker: 'B', ja: 'さようなら' }
     ]
   };
 }

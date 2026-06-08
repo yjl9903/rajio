@@ -326,6 +326,27 @@ requests may still be in flight unless there is a clear CLI/provider failure.
 Treat automatically created work segments as a draft. Review text, speaker boundaries,
 timing, and chunk boundaries during transcript proofread.
 
+### Subtitle QA Rules
+
+`rajio check` uses two levels: `error` blocks commit/export and must be fixed; `warning`
+requires human review and should be fixed unless doing so harms meaning, timing, or
+readability.
+
+| Rule                 | Warning                                                                                                             | Error                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Japanese line length | `ja` line exceeds 13 visible non-space characters                                                                   | `ja` line exceeds 20 visible non-space characters                          |
+| Chinese line length  | `zh` line exceeds 16 visible non-space characters                                                                   | `zh` line exceeds 24 visible non-space characters                          |
+| Line count           | Japanese or Chinese text has 2 lines                                                                                | Japanese or Chinese text has more than 2 lines                             |
+| Subtitle duration    | shorter than 0.8 seconds or longer than 7 seconds                                                                   | shorter than 0.5 seconds or longer than 10 seconds                         |
+| Reading speed        | Japanese exceeds 4 chars/s; Chinese exceeds 9 chars/s                                                               | Japanese exceeds 6 chars/s; Chinese exceeds 12 chars/s                     |
+| Adjacent gap         | gap is 80-250 ms                                                                                                    | gap is under 80 ms                                                         |
+| Punctuation          | ordinary comma/period punctuation, ordinary sentence-ending punctuation, or two repeated question/exclamation marks | punctuation-only line or more than two repeated question/exclamation marks |
+
+Do not satisfy numeric limits by creating unreadable single-character, single-syllable,
+or isolated filler subtitles. Prefer natural compression, merging with an adjacent segment,
+retiming, or splitting at a semantic pause. Single `？` or `！` is allowed when needed for
+intent, but use it sparingly.
+
 ### 2. Proofread And Polish Japanese
 
 Delegate proofread batches to sub-agents. Apply their returned structured edits to
@@ -358,14 +379,8 @@ Acceptance criteria:
   glossary terms.
 - Check high-risk positions explicitly: opening title call, self-introductions, listener
   greetings, corner starts, event announcements, mail-address reads, and ending sign-off.
-- Keep each Japanese subtitle line under 28 visible characters when practical; 40 visible
-  characters is the hard limit.
-- Prefer one-line `ja`, but allow at most one `\n` in `ja` when a genuinely long sentence
-  cannot be split naturally without creating a bad subtitle cut. Hard limits apply per line.
-- Avoid comma punctuation in Japanese subtitle text. Replace an essential pause comma with
-  a space, or split the segment.
-- Do not end Japanese subtitle lines with sentence punctuation such as `。`, `？`, `！`, or
-  commas.
+- Follow the Subtitle QA Rules for line length, line count, duration, reading speed, gaps,
+  and punctuation.
 
 Speaker and segment structure:
 
@@ -442,17 +457,10 @@ Acceptance criteria:
   are discovered.
 - Translate merged multi-speaker phrases as one complete subtitle. Do not preserve
   syllable-by-syllable fragments in Chinese.
-- Keep each Chinese subtitle line under 24 visible characters when practical. This is a
-  soft limit, not a mandatory split rule.
-- Do not create an awkward short trailing subtitle only to satisfy a soft length limit.
+- Follow the Subtitle QA Rules for line length, line count, duration, reading speed, gaps,
+  and punctuation.
+- Do not create an awkward short trailing subtitle only to satisfy a warning threshold.
   Preserve subtitle continuity and readability first.
-- 34 visible characters per Chinese subtitle line is the hard limit. If a genuinely long
-  sentence cannot be shortened naturally, allow at most one `\n` in `ja` and at most one
-  `\n` in `zh` instead of forcing a bad segment split. Hard limits apply per line.
-- Avoid comma punctuation in Chinese subtitle text. Replace an essential pause comma with a
-  space, or split the segment.
-- Do not end Chinese subtitle lines with sentence punctuation such as `。`, `？`, `！`, or
-  commas.
 
 Before committing:
 

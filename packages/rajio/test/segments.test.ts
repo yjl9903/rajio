@@ -77,39 +77,39 @@ describe('segments validation and subtitle rendering', () => {
           {
             id: 'soft',
             start: 0,
-            end: 1,
+            end: 2,
             speaker: 'A',
-            ja: 'あ'.repeat(29),
-            zh: '你'.repeat(25)
+            ja: 'あ'.repeat(14),
+            zh: '你'.repeat(17)
           },
           {
             id: 'hard',
-            start: 1,
-            end: 2,
+            start: 2.3,
+            end: 4.3,
             speaker: 'A',
-            ja: 'あ'.repeat(41),
-            zh: '你'.repeat(35)
+            ja: 'あ'.repeat(21),
+            zh: '你'.repeat(25)
           },
           {
             id: 'punctuation',
-            start: 2,
-            end: 3,
+            start: 4.6,
+            end: 5.6,
             speaker: 'A',
             ja: 'これは、テストです。',
             zh: '你好，世界。'
           },
           {
             id: 'soft-break',
-            start: 3,
-            end: 4,
+            start: 5.9,
+            end: 6.9,
             speaker: 'A',
             ja: '一行目\n二行目',
             zh: '第一行\n第二行'
           },
           {
             id: 'hard-break',
-            start: 4,
-            end: 5,
+            start: 7.2,
+            end: 8.2,
             speaker: 'A',
             ja: '一行目\n二行目\n三行目',
             zh: '第一行\n第二行\n第三行'
@@ -125,14 +125,210 @@ describe('segments validation and subtitle rendering', () => {
         expect.objectContaining({ code: 'zh_line_soft_limit', level: 'warning' }),
         expect.objectContaining({ code: 'ja_line_hard_limit', level: 'error' }),
         expect.objectContaining({ code: 'zh_line_hard_limit', level: 'error' }),
-        expect.objectContaining({ code: 'ja_comma_punctuation', level: 'warning' }),
-        expect.objectContaining({ code: 'zh_comma_punctuation', level: 'warning' }),
+        expect.objectContaining({ code: 'ja_common_punctuation', level: 'warning' }),
+        expect.objectContaining({ code: 'zh_common_punctuation', level: 'warning' }),
         expect.objectContaining({ code: 'ja_terminal_punctuation', level: 'warning' }),
         expect.objectContaining({ code: 'zh_terminal_punctuation', level: 'warning' }),
         expect.objectContaining({ code: 'ja_line_break_soft_limit', level: 'warning' }),
         expect.objectContaining({ code: 'zh_line_break_soft_limit', level: 'warning' }),
         expect.objectContaining({ code: 'ja_line_break_hard_limit', level: 'error' }),
         expect.objectContaining({ code: 'zh_line_break_hard_limit', level: 'error' })
+      ])
+    );
+  });
+
+  it('reports subtitle duration limits', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        { id: 'short-hard', start: 0, end: 0.49, speaker: 'A', ja: 'あ' },
+        { id: 'short-soft', start: 1, end: 1.7, speaker: 'A', ja: 'あ' },
+        { id: 'long-soft', start: 2, end: 9.1, speaker: 'A', ja: 'あ' },
+        { id: 'long-hard', start: 10, end: 20.1, speaker: 'A', ja: 'あ' }
+      ]
+    });
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'duration_too_short',
+          level: 'error',
+          segmentId: 'short-hard'
+        }),
+        expect.objectContaining({
+          code: 'duration_too_short',
+          level: 'warning',
+          segmentId: 'short-soft'
+        }),
+        expect.objectContaining({
+          code: 'duration_too_long',
+          level: 'warning',
+          segmentId: 'long-soft'
+        }),
+        expect.objectContaining({
+          code: 'duration_too_long',
+          level: 'error',
+          segmentId: 'long-hard'
+        })
+      ])
+    );
+  });
+
+  it('reports language-specific reading speed limits', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: 'ja-speed-soft',
+          start: 0,
+          end: 2,
+          speaker: 'A',
+          ja: 'あ'.repeat(9),
+          zh: '好'
+        },
+        {
+          id: 'ja-speed-hard',
+          start: 2.3,
+          end: 4.3,
+          speaker: 'A',
+          ja: 'あ'.repeat(13),
+          zh: '好'
+        },
+        {
+          id: 'zh-speed-soft',
+          start: 4.6,
+          end: 6.6,
+          speaker: 'A',
+          ja: 'あ',
+          zh: '你'.repeat(19)
+        },
+        {
+          id: 'zh-speed-hard',
+          start: 6.9,
+          end: 8.9,
+          speaker: 'A',
+          ja: 'あ',
+          zh: '你'.repeat(25)
+        }
+      ]
+    });
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'ja_reading_speed_limit',
+          level: 'warning',
+          segmentId: 'ja-speed-soft'
+        }),
+        expect.objectContaining({
+          code: 'ja_reading_speed_limit',
+          level: 'error',
+          segmentId: 'ja-speed-hard'
+        }),
+        expect.objectContaining({
+          code: 'zh_reading_speed_limit',
+          level: 'warning',
+          segmentId: 'zh-speed-soft'
+        }),
+        expect.objectContaining({
+          code: 'zh_reading_speed_limit',
+          level: 'error',
+          segmentId: 'zh-speed-hard'
+        })
+      ])
+    );
+  });
+
+  it('reports short subtitle gaps on the following segment', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        { id: '1', start: 0, end: 1, speaker: 'A', ja: '一' },
+        { id: '2', start: 1.079, end: 2, speaker: 'A', ja: '二' },
+        { id: '3', start: 2.179, end: 3, speaker: 'A', ja: '三' },
+        { id: '4', start: 3.25, end: 4, speaker: 'A', ja: '四' }
+      ]
+    });
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'subtitle_gap_too_short',
+          level: 'error',
+          segmentId: '2'
+        }),
+        expect.objectContaining({
+          code: 'subtitle_gap_short',
+          level: 'warning',
+          segmentId: '3'
+        })
+      ])
+    );
+    expect(issues.some((issue) => issue.segmentId === '4' && issue.code?.includes('gap'))).toBe(
+      false
+    );
+  });
+
+  it('reports repeated and punctuation-only subtitle punctuation', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        { id: 'allowed', start: 0, end: 1, speaker: 'A', ja: '本当？', zh: '真的吗？' },
+        { id: 'repeat-soft', start: 1.3, end: 2.3, speaker: 'A', ja: '本当？!', zh: '真的吗？！' },
+        {
+          id: 'repeat-hard',
+          start: 2.6,
+          end: 3.6,
+          speaker: 'A',
+          ja: '本当？？？',
+          zh: '真的吗？？？'
+        },
+        { id: 'only', start: 3.9, end: 4.9, speaker: 'A', ja: '！？', zh: '？！' }
+      ]
+    });
+
+    expect(
+      issues.filter((issue) => issue.segmentId === 'allowed').map((issue) => issue.code)
+    ).not.toContain('ja_terminal_punctuation');
+    expect(
+      issues.filter((issue) => issue.segmentId === 'allowed').map((issue) => issue.code)
+    ).not.toContain('zh_terminal_punctuation');
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'ja_repeated_punctuation',
+          level: 'warning',
+          segmentId: 'repeat-soft'
+        }),
+        expect.objectContaining({
+          code: 'zh_repeated_punctuation',
+          level: 'warning',
+          segmentId: 'repeat-soft'
+        }),
+        expect.objectContaining({
+          code: 'ja_repeated_punctuation',
+          level: 'error',
+          segmentId: 'repeat-hard'
+        }),
+        expect.objectContaining({
+          code: 'zh_repeated_punctuation',
+          level: 'error',
+          segmentId: 'repeat-hard'
+        }),
+        expect.objectContaining({
+          code: 'ja_punctuation_only_line',
+          level: 'error',
+          segmentId: 'only'
+        }),
+        expect.objectContaining({
+          code: 'zh_punctuation_only_line',
+          level: 'error',
+          segmentId: 'only'
+        })
       ])
     );
   });
@@ -144,7 +340,7 @@ describe('segments validation and subtitle rendering', () => {
         stage: 'transcript_work' as const,
         level: 'warning' as const,
         code: 'ja_line_soft_limit',
-        message: 'Segment 1 Japanese line 1 has 29 chars; soft limit is 28.',
+        message: 'Segment 1 Japanese line 1 has 14 chars; soft limit is 13.',
         segmentId: '1',
         segment: {
           id: '1',
@@ -152,8 +348,8 @@ describe('segments validation and subtitle rendering', () => {
           end: 1.2,
           duration: 1.2,
           nextId: '2',
-          jaChars: 29,
-          text: 'あ'.repeat(29)
+          jaChars: 14,
+          text: 'あ'.repeat(14)
         }
       },
       {
@@ -161,7 +357,7 @@ describe('segments validation and subtitle rendering', () => {
         stage: 'transcript_work' as const,
         level: 'warning' as const,
         code: 'ja_line_soft_limit',
-        message: 'Segment 2 Japanese line 1 has 30 chars; soft limit is 28.',
+        message: 'Segment 2 Japanese line 1 has 15 chars; soft limit is 13.',
         segmentId: '2',
         segment: {
           id: '2',
@@ -169,8 +365,8 @@ describe('segments validation and subtitle rendering', () => {
           end: 2.4,
           duration: 1.2,
           previousId: '1',
-          jaChars: 30,
-          text: 'い'.repeat(30)
+          jaChars: 15,
+          text: 'い'.repeat(15)
         }
       }
     ];
@@ -185,12 +381,12 @@ describe('segments validation and subtitle rendering', () => {
       expect.stringContaining('2 warning issues (ja_line_soft_limit)')
     );
     expect(summarizedLogger.warn).toHaveBeenCalledWith(
-      expect.stringContaining('id=1 time=0s-1.2s duration=1.2s chars=ja:29 adjacent=-|2')
+      expect.stringContaining('id=1 time=0s-1.2s duration=1.2s chars=ja:14 adjacent=-|2')
     );
     expect(verboseLogger.warn).toHaveBeenCalledTimes(2);
     expect(verboseLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining(
-        'transcript/work/segments.toml: Segment 1 Japanese line 1 has 29 chars; soft limit is 28.'
+        'transcript/work/segments.toml: Segment 1 Japanese line 1 has 14 chars; soft limit is 13.'
       )
     );
   });
@@ -364,16 +560,15 @@ describe('segments validation and subtitle rendering', () => {
     const result = precutTranscriptSegments(source);
 
     expect(result.segments.length).toBeGreaterThan(1);
-    expect(result.segments.map((segment) => segment.id)).toEqual(['long.1', 'long.2']);
     expect(
-      result.segments.every((segment) => Array.from(segment.ja.replace(/\s/g, '')).length <= 40)
+      result.segments.every((segment) => Array.from(segment.ja.replace(/\s/g, '')).length <= 20)
     ).toBe(true);
     expect(result.segments[0]?.start).toBe(0);
     expect(result.segments.at(-1)?.end).toBe(12);
     expect(result.segments[1]?.start).toBe(result.segments[0]?.end);
   });
 
-  it('does not pre-cut long transcript segments when no safe boundary exists', () => {
+  it('falls back to hard-boundary pre-cutting when no safe boundary exists', () => {
     const source: SegmentsFile = {
       ...sampleTranscript(),
       segments: [
@@ -389,7 +584,12 @@ describe('segments validation and subtitle rendering', () => {
 
     const result = precutTranscriptSegments(source);
 
-    expect(result.segments).toEqual(source.segments);
+    expect(result.segments.map((segment) => segment.id)).toEqual(['long.1', 'long.2', 'long.3']);
+    expect(
+      result.segments.every((segment) => Array.from(segment.ja.replace(/\s/g, '')).length <= 20)
+    ).toBe(true);
+    expect(result.segments[0]?.start).toBe(0);
+    expect(result.segments.at(-1)?.end).toBe(12);
   });
 
   it('can pre-cut long transcript segments at line breaks', () => {
@@ -401,7 +601,7 @@ describe('segments validation and subtitle rendering', () => {
           start: 0,
           end: 12,
           speaker: 'A',
-          ja: `${'あ'.repeat(28)}\n${'い'.repeat(28)}`
+          ja: `${'あ'.repeat(13)}\n${'い'.repeat(13)}`
         }
       ]
     };
@@ -409,8 +609,8 @@ describe('segments validation and subtitle rendering', () => {
     const result = precutTranscriptSegments(source);
 
     expect(result.segments.map((segment) => segment.id)).toEqual(['long.1', 'long.2']);
-    expect(result.segments[0]?.ja).toBe('あ'.repeat(28));
-    expect(result.segments[1]?.ja).toBe('い'.repeat(28));
+    expect(result.segments[0]?.ja).toBe('あ'.repeat(13));
+    expect(result.segments[1]?.ja).toBe('い'.repeat(13));
   });
 });
 
@@ -418,7 +618,7 @@ describe('segment edit tools', () => {
   it('lists segments by id, offset range, or time range', () => {
     const segments = [
       ...sampleTranscript().segments,
-      { id: '3', start: 2.4, end: 3.6, speaker: 'C', ja: 'またね' }
+      { id: '3', start: 3, end: 4.2, speaker: 'C', ja: 'またね' }
     ];
 
     expect(listSegments(segments, { ids: ['2', '1'] }).map((segment) => segment.id)).toEqual([
@@ -429,7 +629,7 @@ describe('segment edit tools', () => {
       '2'
     ]);
     expect(listSegments(segments, { offset: 1 }).map((segment) => segment.id)).toEqual(['2', '3']);
-    expect(listSegments(segments, { start: 1.2, end: 2.4 }).map((segment) => segment.id)).toEqual([
+    expect(listSegments(segments, { start: 1.2, end: 2.8 }).map((segment) => segment.id)).toEqual([
       '2'
     ]);
     expect(listSegments(segments, { ids: ['2'], around: 1 }).map((segment) => segment.id)).toEqual([
@@ -461,7 +661,7 @@ describe('segment edit tools', () => {
       { id: 'invalid', start: 2, end: 1, speaker: 'A', ja: '時間' },
       { id: 'overlap', start: 0.5, end: 1.5, speaker: 'A', ja: '重なり' },
       { id: 'long-duration', start: 1.5, end: 9, speaker: 'A', ja: '長い' },
-      { id: 'long-text', start: 9, end: 10, speaker: 'A', ja: 'あ'.repeat(41) },
+      { id: 'long-text', start: 9, end: 10, speaker: 'A', ja: 'あ'.repeat(21) },
       { id: 'fragment', start: 10, end: 11, speaker: 'A', ja: 'あ' },
       { id: 'missing-zh', start: 12, end: 13, speaker: 'A', ja: '未翻訳' },
       { id: 'blank-zh', start: 13, end: 14, speaker: 'A', ja: '空白', zh: '  ' },
@@ -783,7 +983,7 @@ describe('segment edit tools', () => {
           ...sampleTranslation(),
           segments: [
             sampleTranslation().segments[0]!,
-            { id: 'gap', start: 1.2, end: 2, speaker: 'A', ja: '間', zh: '中间' },
+            { id: 'gap', start: 1.25, end: 1.4, speaker: 'A', ja: '間', zh: '中间' },
             sampleTranslation().segments[1]!
           ]
         },
@@ -940,7 +1140,7 @@ describe('segment edit tools', () => {
       ...sampleTranscript(),
       segments: [
         ...sampleTranscript().segments,
-        { id: '3', start: 2.4, end: 3.6, speaker: 'C', ja: 'またね' }
+        { id: '3', start: 3, end: 4.2, speaker: 'C', ja: 'またね' }
       ]
     };
 

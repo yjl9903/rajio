@@ -66,7 +66,11 @@ describe('session workflow', () => {
     await runRajio(session, baseOptions);
 
     const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
-    expect(work.segments.map((segment) => segment.id)).toEqual(['long.1', 'long.2']);
+    expect(work.segments.length).toBeGreaterThan(1);
+    expect(work.segments.every((segment) => segment.id.startsWith('long.'))).toBe(true);
+    expect(
+      work.segments.every((segment) => Array.from(segment.ja.replace(/\s/g, '')).length <= 20)
+    ).toBe(true);
   });
 
   it('sets up transcript work even when raw transcript needs manual fixes', async () => {
@@ -224,12 +228,12 @@ describe('session workflow', () => {
     });
     await writeSegmentsFile(path.join(dir, 'transcript/raw/segments.toml'), {
       ...sampleTranscript(),
-      segments: [{ ...sampleTranscript().segments[0]!, ja: 'あ'.repeat(29) }]
+      segments: [{ ...sampleTranscript().segments[0]!, end: 3, ja: 'あ'.repeat(14) }]
     });
     await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
     await writeSegmentsFile(path.join(dir, 'transcript/work/segments.toml'), {
       ...sampleTranscript(),
-      segments: [{ ...sampleTranscript().segments[0]!, ja: 'あ'.repeat(29) }]
+      segments: [{ ...sampleTranscript().segments[0]!, end: 3, ja: 'あ'.repeat(14) }]
     });
 
     const session = await Session.loadOrCreate(dir);
@@ -244,9 +248,9 @@ describe('session workflow', () => {
         segment: expect.objectContaining({
           id: '1',
           start: 0,
-          end: 1.2,
-          jaChars: 29,
-          text: 'あ'.repeat(29)
+          end: 3,
+          jaChars: 14,
+          text: 'あ'.repeat(14)
         })
       })
     );
