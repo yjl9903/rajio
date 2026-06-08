@@ -251,7 +251,7 @@ describe('segments validation and subtitle rendering', () => {
       source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
       segments: [
         { id: '1', start: 0, end: 1, speaker: 'A', ja: '一' },
-        { id: '2', start: 1.079, end: 2, speaker: 'A', ja: '二' },
+        { id: '2', start: 1.07, end: 2, speaker: 'A', ja: '二' },
         { id: '3', start: 2.179, end: 3, speaker: 'A', ja: '三' },
         { id: '4', start: 3.25, end: 4, speaker: 'A', ja: '四' }
       ]
@@ -274,6 +274,25 @@ describe('segments validation and subtitle rendering', () => {
     expect(issues.some((issue) => issue.segmentId === '4' && issue.code?.includes('gap'))).toBe(
       false
     );
+  });
+
+  it('allows exact and near hard minimum subtitle gaps', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        { id: '1', start: 0, end: 1, speaker: 'A', ja: '一' },
+        { id: '2', start: 1.08, end: 2, speaker: 'A', ja: '二' },
+        { id: '3', start: 2.0795, end: 3, speaker: 'A', ja: '三' },
+        { id: '4', start: 3.07, end: 4, speaker: 'A', ja: '四' }
+      ]
+    });
+
+    expect(
+      issues
+        .filter((issue) => issue.code === 'subtitle_gap_too_short')
+        .map((issue) => issue.segmentId)
+    ).toEqual(['4']);
   });
 
   it('reports repeated and punctuation-only subtitle punctuation', () => {

@@ -10,6 +10,7 @@ import {
   cloneForTranslation,
   formatValidationErrorSummary,
   isForceCommittableValidationIssue,
+  normalizeTranscriptWorkGaps,
   readSegmentsFile,
   validateSegments,
   writeSegmentsFile
@@ -43,7 +44,7 @@ export async function setupManualStage(input: {
   await mkdir(path.dirname(workPath), { recursive: true });
   if (stage === 'transcript_work') {
     const source = await readSegmentsFile(sourcePath);
-    await writeSegmentsFile(workPath, source, {
+    await writeSegmentsFile(workPath, normalizeTranscriptWorkGaps(source), {
       requireZh: false,
       validate: false
     });

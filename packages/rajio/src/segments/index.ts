@@ -56,7 +56,6 @@ const REPEATED_EMPHATIC_PUNCTUATION = /[?!？！]{2,}/;
 const REPEATED_EMPHATIC_PUNCTUATION_HARD = /[?!？！]{3,}/;
 const PUNCTUATION_ONLY_LINE = /^[\s\p{P}\p{S}]+$/u;
 const TRAILING_CLOSERS = /[\s"'”’）)」』】》]+$/;
-const GAP_FLOAT_EPSILON = 1e-9;
 
 export const segmentSchema = z.object({
   id: z.string().min(1),
@@ -258,6 +257,44 @@ export function cloneForTranslation(source: SegmentsFile, generatedAt: string): 
   };
 }
 
+export function normalizeTranscriptWorkGaps(source: SegmentsFile): SegmentsFile {
+  const segments = source.segments.map((segment) => ({ ...segment }));
+
+  for (let index = 1; index < segments.length; index += 1) {
+    const previous = segments[index - 1]!;
+    const segment = segments[index]!;
+    if (!hasValidDuration(previous) || !hasValidDuration(segment)) {
+      continue;
+    }
+
+    const gap = segment.start - previous.end;
+    if (gap >= GAP_LIMITS.hard - TIME_EPSILON || gap < -TIME_EPSILON) {
+      continue;
+    }
+
+    const midpoint = (previous.end + segment.start) / 2;
+    const previousEnd = roundSegmentTime(midpoint - GAP_LIMITS.hard / 2);
+    const segmentStart = roundSegmentTime(midpoint + GAP_LIMITS.hard / 2);
+    if (
+      previousEnd - previous.start < DURATION_LIMITS.shortHard - TIME_EPSILON ||
+      segment.end - segmentStart < DURATION_LIMITS.shortHard - TIME_EPSILON
+    ) {
+      continue;
+    }
+    previous.end = previousEnd;
+    segment.start = segmentStart;
+  }
+
+  return {
+    ...source,
+    segments
+  };
+}
+
+function hasValidDuration(segment: Segment): boolean {
+  return segment.end > segment.start;
+}
+
 function textWeight(value: string): number {
   return Array.from(stripSpaces(value)).length;
 }
@@ -425,14 +462,14 @@ function validateReadingSpeed(
 
 function validateSubtitleGap(issues: ValidationIssue[], previous: Segment, segment: Segment): void {
   const gap = segment.start - previous.end;
-  if (gap < GAP_LIMITS.hard - GAP_FLOAT_EPSILON) {
+  if (gap < GAP_LIMITS.hard - TIME_EPSILON) {
     issues.push({
       level: 'error',
       code: 'subtitle_gap_too_short',
       segmentId: segment.id,
       message: `Segment ${segment.id} starts ${formatSeconds(gap)} seconds after previous segment ${previous.id}; hard minimum gap is ${formatSeconds(GAP_LIMITS.hard)} seconds.`
     });
-  } else if (gap < GAP_LIMITS.soft - GAP_FLOAT_EPSILON) {
+  } else if (gap < GAP_LIMITS.soft - TIME_EPSILON) {
     issues.push({
       level: 'warning',
       code: 'subtitle_gap_short',
@@ -448,4 +485,8 @@ function formatSeconds(value: number): string {
 
 function formatRate(value: number): string {
   return Number(value.toFixed(2)).toString();
+}
+
+function roundSegmentTime(value: number): number {
+  return Number(value.toFixed(6));
 }

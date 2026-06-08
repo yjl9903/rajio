@@ -64,6 +64,126 @@ describe('session workflow', () => {
     );
   });
 
+  it('normalizes adjacent raw transcript gaps when setting up transcript work', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    const rawPath = path.join(dir, 'transcript/raw/segments.toml');
+    await writeFile(
+      rawPath,
+      stringify({
+        ...sampleTranscript(),
+        segments: [
+          { id: '1', start: 0, end: 1, speaker: 'A', ja: '一' },
+          { id: '2', start: 1, end: 2, speaker: 'A', ja: '二' }
+        ]
+      })
+    );
+    const rawBefore = await readFile(rawPath, 'utf8');
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, baseOptions);
+
+    const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
+    expect(work.segments).toEqual([
+      { id: '1', start: 0, end: 0.96, speaker: 'A', ja: '一' },
+      { id: '2', start: 1.04, end: 2, speaker: 'A', ja: '二' }
+    ]);
+    expect(await readFile(rawPath, 'utf8')).toBe(rawBefore);
+  });
+
+  it('normalizes tiny negative raw transcript drift when setting up transcript work', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    await writeFile(
+      path.join(dir, 'transcript/raw/segments.toml'),
+      stringify({
+        ...sampleTranscript(),
+        segments: [
+          { id: '1', start: 0, end: 1.0005, speaker: 'A', ja: '一' },
+          { id: '2', start: 1, end: 2, speaker: 'A', ja: '二' }
+        ]
+      })
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, baseOptions);
+
+    const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
+    expect(work.segments[0]?.end).toBe(0.96025);
+    expect(work.segments[1]?.start).toBe(1.04025);
+  });
+
+  it('preserves real raw transcript overlaps for manual validation', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    await writeFile(
+      path.join(dir, 'transcript/raw/segments.toml'),
+      stringify({
+        ...sampleTranscript(),
+        segments: [
+          { id: '1', start: 0, end: 1.002, speaker: 'A', ja: '一' },
+          { id: '2', start: 1, end: 2, speaker: 'A', ja: '二' }
+        ]
+      })
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, baseOptions);
+
+    const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
+    expect(work.segments[0]?.end).toBe(1.002);
+    expect(work.segments[1]?.start).toBe(1);
+
+    const checked = await checkRajio(await Session.loadOrCreate(dir));
+    expect(checked.issues).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: 'overlap', segmentId: '2' })])
+    );
+  });
+
+  it('skips transcript work gap normalization that would make adjusted segments too short', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    await writeFile(
+      path.join(dir, 'transcript/raw/segments.toml'),
+      stringify({
+        ...sampleTranscript(),
+        segments: [
+          { id: '1', start: 0, end: 0.52, speaker: 'A', ja: '一' },
+          { id: '2', start: 0.52, end: 1.1, speaker: 'A', ja: '二' }
+        ]
+      })
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, baseOptions);
+
+    const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
+    expect(work.segments).toEqual([
+      { id: '1', start: 0, end: 0.52, speaker: 'A', ja: '一' },
+      { id: '2', start: 0.52, end: 1.1, speaker: 'A', ja: '二' }
+    ]);
+  });
+
   it('copies long raw transcript segments without pre-cutting transcript work', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
