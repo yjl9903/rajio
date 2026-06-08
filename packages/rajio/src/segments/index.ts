@@ -39,12 +39,12 @@ export type ValidationProfile = 'default' | 'translation_work';
 const TEXT_LIMITS = {
   ja: {
     label: 'Japanese',
-    soft: 13,
-    hard: 20,
+    soft: 20,
+    hard: 28,
     softLines: 1,
     hardLines: 2,
-    readingSpeedSoft: 4,
-    readingSpeedHard: 6,
+    readingSpeedSoft: 6,
+    readingSpeedHard: 9,
     warningPunctuation: /[。、,.]/,
     terminalPunctuation: /[。．.,，、;；:：…]$/
   },

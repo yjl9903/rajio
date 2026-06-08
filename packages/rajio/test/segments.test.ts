@@ -81,39 +81,39 @@ describe('segments validation and subtitle rendering', () => {
           {
             id: 'soft',
             start: 0,
-            end: 2,
+            end: 4,
             speaker: 'A',
-            ja: 'あ'.repeat(14),
+            ja: 'あ'.repeat(21),
             zh: '你'.repeat(17)
           },
           {
             id: 'hard',
-            start: 2.3,
-            end: 4.3,
+            start: 4.3,
+            end: 8.3,
             speaker: 'A',
-            ja: 'あ'.repeat(21),
+            ja: 'あ'.repeat(29),
             zh: '你'.repeat(25)
           },
           {
             id: 'punctuation',
-            start: 4.6,
-            end: 5.6,
+            start: 8.6,
+            end: 9.6,
             speaker: 'A',
             ja: 'これは、テストです。',
             zh: '你好，世界。'
           },
           {
             id: 'soft-break',
-            start: 5.9,
-            end: 6.9,
+            start: 9.9,
+            end: 10.9,
             speaker: 'A',
             ja: '一行目\n二行目',
             zh: '第一行\n第二行'
           },
           {
             id: 'hard-break',
-            start: 7.2,
-            end: 8.2,
+            start: 11.2,
+            end: 12.2,
             speaker: 'A',
             ja: '一行目\n二行目\n三行目',
             zh: '第一行\n第二行\n第三行'
@@ -189,7 +189,7 @@ describe('segments validation and subtitle rendering', () => {
           start: 0,
           end: 2,
           speaker: 'A',
-          ja: 'あ'.repeat(9),
+          ja: 'あ'.repeat(13),
           zh: '好'
         },
         {
@@ -197,7 +197,7 @@ describe('segments validation and subtitle rendering', () => {
           start: 2.3,
           end: 4.3,
           speaker: 'A',
-          ja: 'あ'.repeat(13),
+          ja: 'あ'.repeat(19),
           zh: '好'
         },
         {
@@ -363,16 +363,16 @@ describe('segments validation and subtitle rendering', () => {
         stage: 'transcript_work' as const,
         level: 'warning' as const,
         code: 'ja_line_soft_limit',
-        message: 'Segment 1 Japanese line 1 has 14 chars; soft limit is 13.',
+        message: 'Segment 1 Japanese line 1 has 21 chars; soft limit is 20.',
         segmentId: '1',
         segment: {
           id: '1',
           start: 0,
-          end: 1.2,
-          duration: 1.2,
+          end: 4,
+          duration: 4,
           nextId: '2',
-          jaChars: 14,
-          text: 'あ'.repeat(14)
+          jaChars: 21,
+          text: 'あ'.repeat(21)
         }
       },
       {
@@ -380,16 +380,16 @@ describe('segments validation and subtitle rendering', () => {
         stage: 'transcript_work' as const,
         level: 'warning' as const,
         code: 'ja_line_soft_limit',
-        message: 'Segment 2 Japanese line 1 has 15 chars; soft limit is 13.',
+        message: 'Segment 2 Japanese line 1 has 22 chars; soft limit is 20.',
         segmentId: '2',
         segment: {
           id: '2',
-          start: 1.2,
-          end: 2.4,
-          duration: 1.2,
+          start: 4.3,
+          end: 8.3,
+          duration: 4,
           previousId: '1',
-          jaChars: 15,
-          text: 'い'.repeat(15)
+          jaChars: 22,
+          text: 'い'.repeat(22)
         }
       }
     ];
@@ -404,12 +404,12 @@ describe('segments validation and subtitle rendering', () => {
       expect.stringContaining('2 warning issues (ja_line_soft_limit)')
     );
     expect(summarizedLogger.warn).toHaveBeenCalledWith(
-      expect.stringContaining('id=1 time=0s-1.2s duration=1.2s chars=ja:14 adjacent=-|2')
+      expect.stringContaining('id=1 time=0s-4s duration=4s chars=ja:21 adjacent=-|2')
     );
     expect(verboseLogger.warn).toHaveBeenCalledTimes(2);
     expect(verboseLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining(
-        'transcript/work/segments.toml: Segment 1 Japanese line 1 has 14 chars; soft limit is 13.'
+        'transcript/work/segments.toml: Segment 1 Japanese line 1 has 21 chars; soft limit is 20.'
       )
     );
   });
@@ -702,7 +702,7 @@ describe('segment edit tools', () => {
       { id: 'invalid', start: 2, end: 1, speaker: 'A', ja: '時間' },
       { id: 'overlap', start: 0.5, end: 1.5, speaker: 'A', ja: '重なり' },
       { id: 'long-duration', start: 1.5, end: 9, speaker: 'A', ja: '長い' },
-      { id: 'long-text', start: 9, end: 10, speaker: 'A', ja: 'あ'.repeat(21) },
+      { id: 'long-text', start: 9, end: 10, speaker: 'A', ja: 'あ'.repeat(29) },
       { id: 'fragment', start: 10, end: 11, speaker: 'A', ja: 'あ' },
       { id: 'missing-zh', start: 12, end: 13, speaker: 'A', ja: '未翻訳' },
       { id: 'blank-zh', start: 13, end: 14, speaker: 'A', ja: '空白', zh: '  ' },

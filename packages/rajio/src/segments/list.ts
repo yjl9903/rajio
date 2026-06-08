@@ -144,7 +144,7 @@ function hasRequestedIssue(
 function isLongSegment(segment: Segment): boolean {
   return (
     segment.end - segment.start > 7 ||
-    hasLongLine(segment.ja, 20) ||
+    hasLongLine(segment.ja, 28) ||
     (segment.zh !== undefined && hasLongLine(segment.zh, 24))
   );
 }

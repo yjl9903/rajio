@@ -27,7 +27,7 @@ function forceQaTranscript() {
         start: 0,
         end: 5,
         speaker: 'A',
-        ja: 'STRAIGHT! REACH!! CHEER!!!'
+        ja: 'STRAIGHT! REACH!! CHEER!!! EXCEPTION'
       }
     ]
   };
@@ -752,12 +752,12 @@ describe('session workflow', () => {
     });
     await writeSegmentsFile(path.join(dir, 'transcript/raw/segments.toml'), {
       ...sampleTranscript(),
-      segments: [{ ...sampleTranscript().segments[0]!, end: 3, ja: 'あ'.repeat(14) }]
+      segments: [{ ...sampleTranscript().segments[0]!, end: 4, ja: 'あ'.repeat(21) }]
     });
     await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
     await writeSegmentsFile(path.join(dir, 'transcript/work/segments.toml'), {
       ...sampleTranscript(),
-      segments: [{ ...sampleTranscript().segments[0]!, end: 3, ja: 'あ'.repeat(14) }]
+      segments: [{ ...sampleTranscript().segments[0]!, end: 4, ja: 'あ'.repeat(21) }]
     });
 
     const session = await Session.loadOrCreate(dir);
@@ -772,9 +772,9 @@ describe('session workflow', () => {
         segment: expect.objectContaining({
           id: '1',
           start: 0,
-          end: 3,
-          jaChars: 14,
-          text: 'あ'.repeat(14)
+          end: 4,
+          jaChars: 21,
+          text: 'あ'.repeat(21)
         })
       })
     );

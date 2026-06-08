@@ -332,11 +332,11 @@ Blocking validation for editable/manual subtitle files:
 - Invalid time values or adjacent overlaps.
 - Required text is empty.
 - Translation stage misses `zh`.
-- Japanese subtitle line exceeds 20 visible non-space characters.
+- Japanese subtitle line exceeds 28 visible non-space characters.
 - Chinese subtitle line exceeds 24 visible non-space characters.
 - Japanese or Chinese subtitle text contains three or more lines.
 - Segment duration is shorter than 0.5 seconds or longer than 10 seconds.
-- Japanese reading speed exceeds 6 visible non-space characters per second.
+- Japanese reading speed exceeds 9 visible non-space characters per second.
 - Chinese reading speed exceeds 12 visible non-space characters per second.
 - Gap from the previous subtitle is shorter than 80 ms.
 - Japanese or Chinese subtitle line contains only punctuation.
@@ -349,11 +349,11 @@ rules remain blocking.
 
 Warning validation:
 
-- Japanese subtitle line exceeds 13 visible non-space characters.
+- Japanese subtitle line exceeds 20 visible non-space characters.
 - Chinese subtitle line exceeds 16 visible non-space characters.
 - Japanese or Chinese subtitle text contains two lines; prefer one line or split segments.
 - Segment duration is shorter than 0.8 seconds or longer than 7 seconds.
-- Japanese reading speed exceeds 4 visible non-space characters per second.
+- Japanese reading speed exceeds 6 visible non-space characters per second.
 - Chinese reading speed exceeds 9 visible non-space characters per second.
 - Gap from the previous subtitle is 80-250 ms.
 - Japanese or Chinese subtitle text uses ordinary comma or period punctuation; prefer a
