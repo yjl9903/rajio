@@ -6,7 +6,9 @@ raw transcript files are read-only references, and clip transcripts are review a
 
 ## Agent Defaults
 
-- Always pass the session target as the first positional argument on every command.
+- Always pass an explicit session target. Target position follows the command shape:
+  `rajio <target>`, `rajio check|doctor|clean <target>`, and
+  `rajio segments|clips <command> <target>`.
 - Prefer `--json` for `segments list`, `segments apply`, `segments edit`,
   `segments split`, `segments merge`, `segments delete`, `clips list`, and
   `clips show` whenever the output will be parsed.

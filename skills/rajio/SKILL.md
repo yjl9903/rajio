@@ -42,8 +42,7 @@ operate a rajio subtitle session.
   Never force commit data integrity errors, unfinished translation, or unreviewed batches.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
-  empty filler segments. Always pass the session target as the first positional
-  argument.
+  empty filler segments. Shape: `rajio segments <command> <target>`.
 - Use `rajio clips` commands for difficult source-video ranges that need independent
   retranscription for comparison. Clip outputs are sidecar review artifacts only; do not
   treat them as automatic replacements for `transcript/work/segments.toml`.
@@ -163,9 +162,8 @@ rajio segments merge /path/to/session 12.1 12.2 --stage transcript --id 12 --ja 
 rajio segments delete /path/to/session 13 --stage transcript
 ```
 
-Always pass `/path/to/session` as the first positional argument in agent work. Replace
-`--stage transcript` with `--stage translation` when working on
-`translation/work/segments.toml`.
+In `segments` commands, pass `/path/to/session` after the segment subcommand. Replace
+`--stage transcript` with `--stage translation` for `translation/work/segments.toml`.
 
 `segments list` accepts one filter mode at a time:
 

@@ -3,7 +3,8 @@
 ## Summary
 
 All rajio commands require an explicit positional session target. The default command,
-utility commands, segment tools, and clip tools now use the same target-first convention.
+utility commands, segment tools, and clip tools now use explicit targets. The target
+position follows each command shape.
 
 ## CLI Shape
 
@@ -30,7 +31,7 @@ utility commands, segment tools, and clip tools now use the same target-first co
 
 ## Test Plan
 
-- CLI parsing tests cover target-first `segments list`, `segments apply`, `clips list`, and
+- CLI parsing tests cover explicit targets for `segments list`, `segments apply`, `clips list`, and
   `clips show`.
 - `segments apply <target>` is tested with stdin input.
 - Utility commands are tested for missing-target failure.
