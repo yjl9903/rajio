@@ -78,6 +78,12 @@ computed.
 
 ASR chunking target:
 
+- Temporary provider fallback (2026-06-09): keep `TRANSCRIPTION_MODEL` set to `whisper-1` while
+  the `gpt-4o-transcribe-diarize` relay is unstable. Derive transcription API request options
+  from the model constant so `whisper-1` uses `response_format: verbose_json` with segment
+  timestamps, while `gpt-4o-transcribe-diarize` keeps `response_format: diarized_json` with
+  automatic provider chunking. Because Whisper responses do not include speaker annotations,
+  normalize its segments with `speaker = "A"`, while preserving diarized speaker labels.
 - The audio stage must split when the extracted audio is either too large for the
   transcription upload limit or too long for `gpt-4o-transcribe-diarize`.
 - Use 24 MB as the local safety threshold for the documented 25 MB upload limit.

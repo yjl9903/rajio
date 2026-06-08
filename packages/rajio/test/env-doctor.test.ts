@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { runDoctor } from '../src/doctor.js';
 import { Session } from '../src/index.js';
 import { readRuntimeConfig } from '../src/utils/env.js';
+import { TRANSCRIPTION_MODEL } from '../src/workflow/transcription.js';
 import type { RuntimeConfig } from '../src/types.js';
 import { tempDir } from './helpers.js';
 
@@ -53,7 +54,7 @@ describe('doctor', () => {
         execa: vi.fn(async (command: string) => ({
           stdout: `${command} version test`
         })) as never,
-        listProviderModels: async () => ['gpt-4o-transcribe-diarize'],
+        listProviderModels: async () => [TRANSCRIPTION_MODEL],
         createCodex: () => undefined,
         nodeVersion: '24.1.0'
       }
@@ -99,7 +100,7 @@ describe('doctor', () => {
         execa: execaMock as never,
         listProviderModels: async (runtime) => {
           seenProviderConfigs.push(runtime);
-          return ['gpt-4o-transcribe-diarize'];
+          return [TRANSCRIPTION_MODEL];
         },
         createCodex: (runtime) => {
           seenCodexConfigs.push(runtime);

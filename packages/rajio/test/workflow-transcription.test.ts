@@ -10,9 +10,124 @@ import {
   runTranscriptRawStage,
   startTranscriptionHeartbeat
 } from '../src/workflow/stages/transcription.js';
+import {
+  mergeTranscriptChunks,
+  transcriptionRequestOptionsForModel
+} from '../src/workflow/transcription.js';
 import { baseSession, fakeFfprobeBin, preparedSession, tempDir } from './helpers.js';
 
 describe('transcript raw stage', () => {
+  it('maps supported transcription models to their API request options', () => {
+    expect(transcriptionRequestOptionsForModel('whisper-1')).toEqual({
+      response_format: 'verbose_json',
+      timestamp_granularities: ['segment']
+    });
+    expect(transcriptionRequestOptionsForModel('gpt-4o-transcribe-diarize')).toEqual({
+      response_format: 'diarized_json',
+      chunking_strategy: 'auto'
+    });
+  });
+
+  it('normalizes whisper verbose JSON segments with chunk offsets and default speaker', () => {
+    const segments = mergeTranscriptChunks({
+      generatedAt: '2026-06-09T00:00:00.000Z',
+      chunks: [
+        {
+          index: 0,
+          audioPath: 'chunk-000.m4a',
+          start: 10,
+          end: 15,
+          response: {
+            text: 'こんにちは。次です。',
+            segments: [
+              { id: 0, start: 0.25, end: 1.5, text: 'こんにちは。' },
+              { id: 1, start: 1.5, end: 3, text: '次です。' }
+            ]
+          }
+        }
+      ]
+    });
+
+    expect(segments.segments).toEqual([
+      {
+        id: '1-0',
+        start: 10.25,
+        end: 11.5,
+        speaker: 'A',
+        ja: 'こんにちは。'
+      },
+      {
+        id: '1-1',
+        start: 11.5,
+        end: 13,
+        speaker: 'A',
+        ja: '次です。'
+      }
+    ]);
+  });
+
+  it('normalizes diarized JSON segments while preserving speaker labels', () => {
+    const segments = mergeTranscriptChunks({
+      generatedAt: '2026-06-09T00:00:00.000Z',
+      chunks: [
+        {
+          index: 0,
+          audioPath: 'chunk-000.m4a',
+          start: 20,
+          end: 25,
+          response: {
+            segments: [
+              { id: 'a', start: 0, end: 1, speaker: 'A', text: 'はい。' },
+              { id: 'b', start: 1, end: 2.5, speaker: 'B', text: 'そうです。' }
+            ]
+          }
+        }
+      ]
+    });
+
+    expect(segments.segments).toEqual([
+      {
+        id: '1-a',
+        start: 20,
+        end: 21,
+        speaker: 'A',
+        ja: 'はい。'
+      },
+      {
+        id: '1-b',
+        start: 21,
+        end: 22.5,
+        speaker: 'B',
+        ja: 'そうです。'
+      }
+    ]);
+  });
+
+  it('normalizes simplified transcription JSON into a single chunk segment', () => {
+    const segments = mergeTranscriptChunks({
+      generatedAt: '2026-06-09T00:00:00.000Z',
+      chunks: [
+        {
+          index: 0,
+          audioPath: 'chunk-000.m4a',
+          start: 10,
+          end: 15,
+          response: { text: 'こんにちは' }
+        }
+      ]
+    });
+
+    expect(segments.segments).toEqual([
+      {
+        id: '1-s1',
+        start: 10,
+        end: 15,
+        speaker: 'A',
+        ja: 'こんにちは'
+      }
+    ]);
+  });
+
   it('transcribes chunks concurrently and resumes from completed chunk files', async () => {
     const dir = await preparedSession('transcript_raw', {});
     const ffprobeBin = await fakeFfprobeBin();

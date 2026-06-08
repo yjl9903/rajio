@@ -4,7 +4,21 @@ import OpenAI from 'openai';
 
 import type { DescriptionInfo, RuntimeConfig, Segment, SegmentsFile } from '../types.js';
 
-export const TRANSCRIPTION_MODEL = 'gpt-4o-transcribe-diarize';
+export type SupportedTranscriptionModel = 'whisper-1' | 'gpt-4o-transcribe-diarize';
+export type TranscriptionLanguage = 'ja';
+
+export const TRANSCRIPTION_MODEL: SupportedTranscriptionModel = 'whisper-1';
+export const TRANSCRIPTION_LANGUAGE: TranscriptionLanguage = 'ja';
+
+export type TranscriptionRequestOptions =
+  | {
+      response_format: 'verbose_json';
+      timestamp_granularities: ['segment'];
+    }
+  | {
+      response_format: 'diarized_json';
+      chunking_strategy: 'auto';
+    };
 
 export interface TranscribeInput {
   audioPath: string;
@@ -26,10 +40,26 @@ export async function transcribeWithOpenAI(input: TranscribeInput): Promise<unkn
   return client.audio.transcriptions.create({
     file: createReadStream(input.audioPath),
     model: TRANSCRIPTION_MODEL,
-    response_format: 'diarized_json',
-    language: 'ja',
-    chunking_strategy: 'auto'
+    language: TRANSCRIPTION_LANGUAGE,
+    ...transcriptionRequestOptionsForModel(TRANSCRIPTION_MODEL)
   });
+}
+
+export function transcriptionRequestOptionsForModel(
+  model: SupportedTranscriptionModel
+): TranscriptionRequestOptions {
+  switch (model) {
+    case 'whisper-1':
+      return {
+        response_format: 'verbose_json',
+        timestamp_granularities: ['segment']
+      };
+    case 'gpt-4o-transcribe-diarize':
+      return {
+        response_format: 'diarized_json',
+        chunking_strategy: 'auto'
+      };
+  }
 }
 
 export function mergeTranscriptChunks(input: {
@@ -43,7 +73,7 @@ export function mergeTranscriptChunks(input: {
       generated_at: input.generatedAt
     },
     segments: input.chunks.flatMap((chunk) =>
-      normalizeTranscriptSegments(chunk.response)
+      normalizeTranscriptSegments(chunk.response, chunk.end - chunk.start)
         .filter((segment) => segment.ja.trim())
         .map((segment, index) => ({
           ...segment,
@@ -55,8 +85,9 @@ export function mergeTranscriptChunks(input: {
   };
 }
 
-export function normalizeTranscriptSegments(value: unknown): Segment[] {
+export function normalizeTranscriptSegments(value: unknown, duration?: number): Segment[] {
   const input = value as {
+    text?: string;
     segments?: Array<{
       id?: string | number;
       start: number;
@@ -66,7 +97,19 @@ export function normalizeTranscriptSegments(value: unknown): Segment[] {
     }>;
   };
   if (!Array.isArray(input.segments)) {
-    throw new Error('Diarized transcription response does not contain segments.');
+    const text = input.text?.trim();
+    if (!text) {
+      throw new Error('Transcription response does not contain text or segments.');
+    }
+    return [
+      {
+        id: 's1',
+        start: 0,
+        end: duration ?? 0,
+        speaker: 'A',
+        ja: text
+      }
+    ];
   }
 
   return input.segments.map((segment, index) => ({
