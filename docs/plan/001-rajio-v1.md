@@ -67,10 +67,10 @@ Options:
 
 `rajio check` defaults to concise human output and summarizes repeated issues by file,
 stage, severity, and code. Use `rajio check --verbose [target]` to print every issue.
-Use `rajio check --json [target]` for bounded structured output with `ok`, `counts`, and
-`summary` only; full issue details are emitted only with
-`rajio check --verbose --json [target]`. `--level` and `--stage` apply consistently to
-human and JSON output before summaries, details, and exit codes are computed.
+Use `rajio check --json [target]` for compact one-line summary JSON; full issue details
+are emitted only with `rajio check --verbose --json [target]`. `--level` and `--stage`
+apply consistently to human and JSON output before summaries, details, and exit codes are
+computed.
 
 ASR chunking target:
 

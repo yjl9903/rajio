@@ -253,8 +253,9 @@ keeping them makes the subtitles more accurate, natural, or comfortable to watch
 - `rajio check /path/to/session --stage transcript`: focus on transcript raw/work issues.
 - `rajio check /path/to/session --stage translation`: focus on translation work issues.
 - `rajio check /path/to/session --verbose`: print every issue when you need the full list.
-- `rajio check /path/to/session --json`: output structured `ok`, `counts`, `summary`, and
-  `issues` for agents, scripts, or UI. Prefer `--json` over parsing human output.
+- `rajio check /path/to/session --json`: output compact summary JSON for agents and
+  scripts. Prefer `--json` over parsing human output.
+- `rajio check /path/to/session --verbose --json`: include full sorted `issues`.
 
 ## Workflow
 

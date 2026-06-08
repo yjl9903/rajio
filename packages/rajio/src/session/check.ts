@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import type { ConsolaInstance } from 'consola';
 
-import { fromSessionRelative, pathExists, sha256File } from '../utils/fs.js';
+import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../utils/fs.js';
 import type { Session } from './index.js';
 import { readSegmentsFile, validateSegments } from '../segments/index.js';
 import { STAGES, STAGE_STATUSES, type Segment, type StageName, type StageState } from '../types.js';
@@ -81,11 +81,16 @@ export function printCheckIssues(
     verbose: boolean;
     logger?: ConsolaInstance;
     json?: boolean;
+    sessionDir?: string;
     writer?: { write(chunk: string): unknown };
   }
 ): void {
   if (options.json) {
-    printCheckJson(issues, { verbose: options.verbose }, options.writer ?? process.stdout);
+    printCheckJson(
+      issues,
+      { verbose: options.verbose, sessionDir: options.sessionDir },
+      options.writer ?? process.stdout
+    );
     return;
   }
 
@@ -124,12 +129,12 @@ export function filterCheckIssues(
 
 export function formatCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean } = {}
+  options: { verbose?: boolean; sessionDir?: string } = {}
 ): string {
   const output: {
     ok: boolean;
     counts: ReturnType<typeof countIssues>;
-    summary: CheckIssueSummary[];
+    summary: CheckIssueJsonSummary[];
     issues?: Array<{
       file: string;
       stage?: StageName;
@@ -142,7 +147,7 @@ export function formatCheckJson(
   } = {
     ok: !issues.some((issue) => issue.level === 'error'),
     counts: countIssues(issues),
-    summary: summarizeCheckIssues(issues)
+    summary: summarizeCheckIssuesForJson(issues, options)
   };
 
   if (options.verbose) {
@@ -157,11 +162,7 @@ export function formatCheckJson(
     }));
   }
 
-  return JSON.stringify(
-    output,
-    null,
-    2
-  );
+  return JSON.stringify(output);
 }
 
 async function checkSession(
@@ -414,6 +415,15 @@ interface CheckIssueSummary {
   examples: CheckIssue[];
 }
 
+interface CheckIssueJsonSummary {
+  file: string;
+  level: 'error' | 'warning';
+  code: string;
+  count: number;
+  message: string;
+  examples?: Array<{ id: string }>;
+}
+
 function summarizeCheckIssues(issues: CheckIssue[]): CheckIssueSummary[] {
   const groups = new Map<string, CheckIssueSummary>();
   for (const issue of sortCheckIssues(issues)) {
@@ -435,6 +445,34 @@ function summarizeCheckIssues(issues: CheckIssue[]): CheckIssueSummary[] {
     groups.set(key, summary);
   }
   return Array.from(groups.values()).sort(compareSummaries);
+}
+
+function summarizeCheckIssuesForJson(
+  issues: CheckIssue[],
+  options: { sessionDir?: string } = {}
+): CheckIssueJsonSummary[] {
+  const groups = new Map<string, CheckIssueJsonSummary>();
+  for (const issue of sortCheckIssues(issues)) {
+    const code = issue.code ?? 'uncategorized';
+    const file = formatCheckJsonFile(issue.file, options.sessionDir);
+    const key = `${issue.level}\0${code}\0${file}`;
+    const summary = groups.get(key) ?? {
+      file,
+      level: issue.level,
+      code,
+      count: 0,
+      message: issue.message
+    };
+    summary.count += 1;
+
+    const id = issue.segment?.id ?? issue.segmentId;
+    if (id && (summary.examples?.length ?? 0) < 3) {
+      summary.examples = [...(summary.examples ?? []), { id }];
+    }
+
+    groups.set(key, summary);
+  }
+  return Array.from(groups.values()).sort(compareJsonSummaries);
 }
 
 function formatCheckSummary(summary: CheckIssueSummary): string {
@@ -469,16 +507,16 @@ function formatIssueContext(issue: CheckIssue): string {
 
 function printCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean },
+  options: { verbose?: boolean; sessionDir?: string },
   writer: { write(chunk: string): unknown }
 ): void {
   writer.write(`${formatCheckJson(issues, options)}\n`);
 }
 
-function countIssues(issues: CheckIssue[]): { errors: number; warnings: number } {
+function countIssues(issues: CheckIssue[]): { error: number; warning: number } {
   return {
-    errors: issues.filter((issue) => issue.level === 'error').length,
-    warnings: issues.filter((issue) => issue.level === 'warning').length
+    error: issues.filter((issue) => issue.level === 'error').length,
+    warning: issues.filter((issue) => issue.level === 'warning').length
   };
 }
 
@@ -503,6 +541,12 @@ function compareSummaries(a: CheckIssueSummary, b: CheckIssueSummary): number {
     a.file.localeCompare(b.file) ||
     (a.stage ?? '').localeCompare(b.stage ?? '') ||
     a.code.localeCompare(b.code)
+  );
+}
+
+function compareJsonSummaries(a: CheckIssueJsonSummary, b: CheckIssueJsonSummary): number {
+  return (
+    compareLevel(a.level, b.level) || a.file.localeCompare(b.file) || a.code.localeCompare(b.code)
   );
 }
 
@@ -575,6 +619,10 @@ function formatNumber(value: number): string {
   return Number.isInteger(value)
     ? String(value)
     : value.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+function formatCheckJsonFile(file: string, sessionDir: string | undefined): string {
+  return sessionDir ? toSessionRelative(sessionDir, file) : file;
 }
 
 async function findSegmentFiles(root: string): Promise<string[]> {

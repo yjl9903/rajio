@@ -14,11 +14,7 @@ import {
   persistSegmentEdit,
   splitSegment
 } from '../src/segments/edit.js';
-import {
-  readSegmentsFile,
-  validateSegments,
-  writeSegmentsFile
-} from '../src/segments/index.js';
+import { readSegmentsFile, validateSegments, writeSegmentsFile } from '../src/segments/index.js';
 import { listSegments } from '../src/segments/list.js';
 import { formatSegments } from '../src/segments/output.js';
 import { filterCheckIssues, formatCheckJson, printCheckIssues } from '../src/session/check.js';
@@ -390,10 +386,45 @@ describe('segments validation and subtitle rendering', () => {
     );
   });
 
-  it('formats summary JSON check output by default and filters issues', () => {
+  it('formats compact summary JSON check output by default and filters issues', () => {
+    const sessionDir = path.join('/tmp', 'rajio-session');
+    const transcriptFile = path.join(sessionDir, 'transcript/work/segments.toml');
+    const translationFile = path.join(sessionDir, 'translation/work/segments.toml');
     const issues = [
       {
-        file: 'transcript/work/segments.toml',
+        file: transcriptFile,
+        stage: 'transcript_work' as const,
+        level: 'error' as const,
+        code: 'empty_ja',
+        message: 'Segment 1 has empty Japanese text.',
+        segmentId: '1'
+      },
+      {
+        file: transcriptFile,
+        stage: 'transcript_work' as const,
+        level: 'error' as const,
+        code: 'empty_ja',
+        message: 'Segment 2 has empty Japanese text.',
+        segmentId: '2'
+      },
+      {
+        file: transcriptFile,
+        stage: 'transcript_work' as const,
+        level: 'error' as const,
+        code: 'empty_ja',
+        message: 'Segment 3 has empty Japanese text.',
+        segmentId: '3'
+      },
+      {
+        file: transcriptFile,
+        stage: 'transcript_work' as const,
+        level: 'error' as const,
+        code: 'empty_ja',
+        message: 'Segment 4 has empty Japanese text.',
+        segmentId: '4'
+      },
+      {
+        file: transcriptFile,
         stage: 'transcript_work' as const,
         level: 'warning' as const,
         code: 'ja_terminal_punctuation',
@@ -401,31 +432,70 @@ describe('segments validation and subtitle rendering', () => {
         segmentId: '1'
       },
       {
-        file: 'translation/work/segments.toml',
+        file: translationFile,
         stage: 'translation_work' as const,
         level: 'error' as const,
         code: 'empty_zh',
         message: 'Segment 1 has empty Chinese text.',
         segmentId: '1'
+      },
+      {
+        file: translationFile,
+        stage: 'translation_work' as const,
+        level: 'error' as const,
+        code: 'empty_ja',
+        message: 'Segment 9 has empty Japanese text.',
+        segmentId: '9'
+      },
+      {
+        file: path.join(sessionDir, 'session.toml'),
+        level: 'error' as const,
+        code: 'invalid_schema_version',
+        message: 'schema_version must be 1.'
       }
     ];
 
-    expect(filterCheckIssues(issues, { level: 'error' })).toHaveLength(1);
-    expect(filterCheckIssues(issues, { stage: 'transcript' })).toHaveLength(1);
+    expect(filterCheckIssues(issues, { level: 'error' })).toHaveLength(7);
+    expect(filterCheckIssues(issues, { stage: 'transcript' })).toHaveLength(5);
 
-    const json = JSON.parse(formatCheckJson(issues)) as {
+    const output = formatCheckJson(issues, { sessionDir });
+    expect(output).not.toContain('\n');
+
+    const json = JSON.parse(output) as {
       ok: boolean;
-      counts: { errors: number; warnings: number };
-      summary: Array<{ level: string; code: string }>;
+      counts: { error: number; warning: number };
+      summary: Array<{
+        file: string;
+        stage?: string;
+        level: string;
+        code: string;
+        count: number;
+        examples?: Array<Record<string, string>>;
+      }>;
       issues?: Array<{ level: string; code: string }>;
     };
     expect(json.ok).toBe(false);
-    expect(json.counts).toEqual({ errors: 1, warnings: 1 });
-    expect(json.summary.map((summary) => summary.code)).toEqual([
-      'empty_zh',
-      'ja_terminal_punctuation'
-    ]);
+    expect(json.counts).toEqual({ error: 7, warning: 1 });
     expect(json).not.toHaveProperty('issues');
+    expect(json.summary.every((summary) => !('stage' in summary))).toBe(true);
+
+    const transcriptSummary = json.summary.find(
+      (summary) => summary.file === 'transcript/work/segments.toml' && summary.code === 'empty_ja'
+    );
+    expect(transcriptSummary).toMatchObject({
+      level: 'error',
+      count: 4,
+      examples: [{ id: '1' }, { id: '2' }, { id: '3' }]
+    });
+    expect(transcriptSummary?.examples?.every((example) => Object.keys(example).length === 1)).toBe(
+      true
+    );
+    expect(
+      json.summary.filter((summary) => summary.level === 'error' && summary.code === 'empty_ja')
+    ).toHaveLength(2);
+
+    const sessionSummary = json.summary.find((summary) => summary.file === 'session.toml');
+    expect(sessionSummary).not.toHaveProperty('examples');
   });
 
   it('formats full check issues only for verbose JSON output', () => {
@@ -541,7 +611,6 @@ describe('segments validation and subtitle rendering', () => {
       generated_at: '2026-06-06T00:00:00.000Z'
     });
   });
-
 });
 
 describe('segment edit tools', () => {

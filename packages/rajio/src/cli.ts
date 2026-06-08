@@ -108,8 +108,8 @@ registerClipCommands(app);
 
 app
   .command('check [target]', 'Validate session.toml and segments.toml files')
-  .option('--verbose', 'print every issue; with --json, include full issue details')
-  .option('--json', 'print structured summary JSON; use --verbose --json for full issues')
+  .option('--verbose', 'print every issue')
+  .option('--json', 'print JSON output')
   .option('--level <level>', 'filter issues by level: all, error, or warning', {
     cast: (value) => {
       if (value === undefined) {
@@ -155,7 +155,8 @@ app
     });
     printCheckIssues(issues, {
       verbose: Boolean(options.verbose),
-      json: Boolean(options.json)
+      json: Boolean(options.json),
+      sessionDir: session.dir
     });
     if (issues.some((issue) => issue.level === 'error')) {
       process.exitCode = 1;

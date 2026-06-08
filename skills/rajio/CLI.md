@@ -439,7 +439,8 @@ Output:
 - Default human output groups repeated issues by severity, code, file, and stage, with
   up to five examples per group.
 - `--verbose` prints every issue.
-- `--json` prints `ok`, `counts`, `summary`, and sorted `issues`.
+- `--json` prints compact one-line summary JSON.
+- `--verbose --json` adds sorted full `issues`.
 
 Exit behavior:
 
