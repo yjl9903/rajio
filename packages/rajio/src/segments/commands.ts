@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import type { breadc } from 'breadc';
 
 import type { Segment } from '../types.js';
-import { applySegmentPatch, parseSegmentPatch } from './apply.js';
+import { applySegmentPatch, parseSegmentPatch, summarizeSegmentPatchResult } from './apply.js';
 import {
   deleteSegment,
   editSegment,
@@ -15,7 +15,7 @@ import {
 } from './edit.js';
 import { SEGMENT_ISSUE_FILTERS, listSegments } from './list.js';
 import type { SegmentIssueFilter } from './list.js';
-import { prepareSegmentOutput, printSegments } from './output.js';
+import { prepareSegmentOutput, printSegmentPatchStats, printSegments } from './output.js';
 
 type RajioApp = ReturnType<typeof breadc>;
 const segmentIssuesHelp = SEGMENT_ISSUE_FILTERS.join(',');
@@ -104,6 +104,7 @@ export function registerSegmentCommands(app: RajioApp): void {
       cast: castSegmentStage
     })
     .option('--dry-run', 'validate the patch without writing segments.toml')
+    .option('--verbose', 'print affected segment rows')
     .option('--json', 'print JSON output')
     .action(async (file, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
@@ -115,6 +116,10 @@ export function registerSegmentCommands(app: RajioApp): void {
       const result = applySegmentPatch(context.file, patch);
       if (!options.dryRun) {
         await persistSegmentEdit(context);
+      }
+      if (!options.verbose) {
+        printSegmentPatchStats(summarizeSegmentPatchResult(patch), output);
+        return;
       }
       printSegments(
         [...result.edits, ...result.splits, ...result.merges, ...result.deletes],

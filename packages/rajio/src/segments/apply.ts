@@ -93,6 +93,14 @@ export interface SegmentPatchResult {
   deletes: Segment[];
 }
 
+export interface SegmentPatchResultStats {
+  edits: number;
+  splits: number;
+  merges: number;
+  deletes: number;
+  total: number;
+}
+
 export function parseSegmentPatch(text: string): SegmentPatch {
   return segmentPatchSchema.parse(parse(text));
 }
@@ -128,6 +136,20 @@ export function applySegmentPatch(file: SegmentsFile, patch: SegmentPatch): Segm
   assertUniqueFinalIds(next);
   file.segments = next.segments;
   return result;
+}
+
+export function summarizeSegmentPatchResult(patch: SegmentPatch): SegmentPatchResultStats {
+  const edits = patch.edits?.length ?? 0;
+  const splits = patch.splits?.length ?? 0;
+  const merges = patch.merges?.length ?? 0;
+  const deletes = patch.deletes?.length ?? 0;
+  return {
+    edits,
+    splits,
+    merges,
+    deletes,
+    total: edits + splits + merges + deletes
+  };
 }
 
 function applySplit(

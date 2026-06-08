@@ -172,8 +172,9 @@ Output mode:
 - Non-TTY without `--json`: CSV.
 - `--json`: structured JSON.
 
-All segment mutation commands print the affected segment rows. `--dry-run` validates
-and prints the result without writing `segments.toml`.
+Segment mutation commands print affected rows, except `segments apply`, which defaults to
+operation counts. `--dry-run` validates and prints the result without writing
+`segments.toml`.
 
 ### segments list
 
@@ -276,7 +277,8 @@ rajio segments apply patch.toml --session /path/to/session --stage translation
 
 `segments apply [file]` applies a TOML patch as the batch form of edit, split, merge,
 and delete operations. Pass a patch file path, or omit `[file]` only when supplying
-TOML on stdin in the same shell command.
+TOML on stdin in the same shell command. It prints operation counts by default; add
+`--verbose` to print affected segment rows.
 
 Patch rules:
 

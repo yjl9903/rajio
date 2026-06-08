@@ -34,7 +34,16 @@ export interface SegmentOutputStats {
   untranslated: number;
 }
 
+export interface SegmentPatchOutputStats {
+  edits: number;
+  splits: number;
+  merges: number;
+  deletes: number;
+  total: number;
+}
+
 const columns = ['id', 'start', 'end', 'speaker', 'ja', 'zh'] as const;
+const patchStatColumns = ['edits', 'splits', 'merges', 'deletes', 'total'] as const;
 
 export function prepareSegmentOutput(options: SegmentOutputOptions): SegmentOutput {
   const writer = options.writer ?? process.stdout;
@@ -58,6 +67,13 @@ export function printSegments(
   );
 }
 
+export function printSegmentPatchStats(
+  stats: SegmentPatchOutputStats,
+  output: SegmentOutput
+): void {
+  output.writer.write(`${formatSegmentPatchStats(stats, output.format, output.jsonPretty)}\n`);
+}
+
 export function formatSegments(
   segments: Segment[],
   format: SegmentOutputFormat,
@@ -77,6 +93,37 @@ export function formatSegments(
     return formatCsv(segments);
   }
   return formatHumanTable(segments, usesHours, options.stats);
+}
+
+export function formatSegmentPatchStats(
+  stats: SegmentPatchOutputStats,
+  format: SegmentOutputFormat,
+  jsonPretty = false
+): string {
+  if (format === 'json') {
+    return formatJson({ stats }, jsonPretty);
+  }
+  if (format === 'csv') {
+    return [
+      patchStatColumns.join(','),
+      patchStatColumns.map((column) => stats[column]).join(',')
+    ].join('\n');
+  }
+  const values = patchStatColumns.map((column) => String(stats[column]));
+  const widths = Object.fromEntries(
+    patchStatColumns.map((column, index) => [
+      column,
+      Math.max(column.length, values[index]!.length)
+    ])
+  ) as Record<(typeof patchStatColumns)[number], number>;
+  const header = patchStatColumns
+    .map((column) => padRight(column.toUpperCase(), widths[column]))
+    .join('  ');
+  const separator = patchStatColumns.map((column) => '-'.repeat(widths[column])).join('  ');
+  const body = patchStatColumns
+    .map((column, index) => padRight(values[index]!, widths[column]))
+    .join('  ');
+  return [header, separator, body].join('\n');
 }
 
 function toSegmentRow(segment: Segment): Record<(typeof columns)[number], string | number> {

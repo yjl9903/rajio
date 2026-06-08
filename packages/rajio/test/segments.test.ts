@@ -5,7 +5,11 @@ import { stringWidth } from 'breadc';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Session } from '../src/index.js';
-import { applySegmentPatch, parseSegmentPatch } from '../src/segments/apply.js';
+import {
+  applySegmentPatch,
+  parseSegmentPatch,
+  summarizeSegmentPatchResult
+} from '../src/segments/apply.js';
 import {
   deleteSegment,
   editSegment,
@@ -21,7 +25,7 @@ import {
   writeSegmentsFile
 } from '../src/segments/index.js';
 import { listSegments } from '../src/segments/list.js';
-import { formatSegments } from '../src/segments/output.js';
+import { formatSegmentPatchStats, formatSegments } from '../src/segments/output.js';
 import { filterCheckIssues, formatCheckJson, printCheckIssues } from '../src/session/check.js';
 import { renderAss, renderSrt } from '../src/workflow/subtitles.js';
 import { mergeTranscriptChunks } from '../src/workflow/transcription.js';
@@ -779,6 +783,21 @@ describe('segment edit tools', () => {
     ).not.toContain('total 2');
   });
 
+  it('formats segment patch stats as human table, csv, or json', () => {
+    const stats = { edits: 2, splits: 1, merges: 1, deletes: 1, total: 5 };
+
+    expect(formatSegmentPatchStats(stats, 'human')).toContain(
+      'EDITS  SPLITS  MERGES  DELETES  TOTAL'
+    );
+    expect(formatSegmentPatchStats(stats, 'csv')).toBe(
+      ['edits,splits,merges,deletes,total', '2,1,1,1,5'].join('\n')
+    );
+    expect(formatSegmentPatchStats(stats, 'json')).toBe(
+      '{"stats":{"edits":2,"splits":1,"merges":1,"deletes":1,"total":5}}'
+    );
+    expect(formatSegmentPatchStats(stats, 'json', true)).toContain('\n  "stats"');
+  });
+
   it('aligns human segment output with full-width Japanese and Chinese text', () => {
     const output = formatSegments(
       [
@@ -906,6 +925,13 @@ describe('segment edit tools', () => {
       ],
       merges: [{ id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }],
       deletes: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除' }]
+    });
+    expect(summarizeSegmentPatchResult(patch)).toEqual({
+      edits: 0,
+      splits: 1,
+      merges: 1,
+      deletes: 1,
+      total: 3
     });
     expect(file.segments).toEqual([
       { id: 'long.1', start: 0, end: 2, speaker: 'A', ja: '前半' },

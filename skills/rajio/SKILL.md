@@ -185,7 +185,8 @@ session from cwd. This avoids editing the wrong session after directory changes.
 `merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in
 the same shell command, such as `<<'EOF' ... EOF`. For larger or riskier batches, prefer
 a patch file under a session-local `patches/` directory: run it once with `--dry-run`,
-then apply the same file without `--dry-run`.
+then apply the same file without `--dry-run`. It prints operation counts by default; use
+`--verbose` when you need affected segment rows.
 
 ```toml
 [[edits]]
