@@ -7,7 +7,7 @@ import type { DescriptionInfo, RuntimeConfig, Segment, SegmentsFile } from '../t
 export type SupportedTranscriptionModel = 'whisper-1' | 'gpt-4o-transcribe-diarize';
 export type TranscriptionLanguage = 'ja';
 
-export const TRANSCRIPTION_MODEL: SupportedTranscriptionModel = 'whisper-1';
+export const TRANSCRIPTION_MODEL: SupportedTranscriptionModel = 'gpt-4o-transcribe-diarize';
 export const TRANSCRIPTION_LANGUAGE: TranscriptionLanguage = 'ja';
 
 export type TranscriptionRequestOptions =
