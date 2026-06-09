@@ -13,17 +13,23 @@ delete, or add sections to fit the session, current tooling, and batch risk.
 - Respect the environment's spawn limit. By default, run at most 6 sub-agents at the same
   time; if the environment allows fewer, use the actual lower limit.
 - Give each worker one non-overlapping segment range plus nearby context.
+- Give each worker a `worker label`. Use the sub-agent nickname if the tool provides one;
+  otherwise use a short random string.
 - Tell every worker that they are not alone in the workspace and must not revert or
   overwrite edits made by other agents.
 - The main agent owns batch boundaries, glossary decisions, patch application,
   cross-batch consistency, `description.md`, validation, commits, exports, and final
   reporting.
-- Workers return structured edits or a session-local patch file. They do not commit,
-  export, edit raw transcript files, or change global glossary policy.
+- Workers return structured edits or a patch file under the provided session root:
+  `<session>/patches/<stage>/`. Name patch files as `<worker-label>-<time-range>.toml`,
+  for example `sakura-0000s-0600s.toml` or `a1b2c3-0600s-1214s.toml`.
+- Workers leave commits, exports, raw transcript files, and global glossary policy to the
+  main agent.
 
 Before spawning a worker, provide:
 
 - absolute session path
+- worker label
 - stage: `transcript` or `translation`
 - assigned segment range, such as offset/limit or explicit ids
 - nearby segment context before and after the assigned range
@@ -44,6 +50,7 @@ range unless explicitly asked.
 
 Task:
 - session: <absolute session path>
+- worker label: <sub-agent nickname or short random string>
 - stage: transcript
 - assigned range: <offset/limit, time range, or segment ids>
 - work file: <session>/transcript/work/segments.toml
@@ -71,8 +78,8 @@ Rules:
 - If you discover a glossary or context issue, report it for the main agent.
 
 Output:
-Return either a TOML patch using ordered `[[operations]]` entries, or the path to a
-session-local patch file. Use `op = "edit"`, `op = "split"`, `op = "merge"`, or
+Return a `[[operations]]` TOML patch or a patch path under
+`<session>/patches/transcript/`. Use `op = "edit"`, `op = "split"`, `op = "merge"`, or
 `op = "delete"` according to CLI.md. Also report unresolved doubts, proposed glossary
 updates, and any consistency risks with neighboring batches.
 ```
@@ -88,6 +95,7 @@ range unless explicitly asked.
 
 Task:
 - session: <absolute session path>
+- worker label: <sub-agent nickname or short random string>
 - stage: translation
 - assigned range: <offset/limit, time range, or segment ids>
 - work file: <session>/translation/work/segments.toml
@@ -120,7 +128,8 @@ Rules:
 - If you discover a glossary or context issue, report it for the main agent.
 
 Output:
-Return a `[[operations]]` TOML patch or a session-local patch path. For translation, use
-`op = "edit"` with `segment_id` and `zh`. Also report source doubts, glossary proposals,
-and neighboring-batch consistency risks.
+Return a `[[operations]]` TOML patch or a patch path under
+`<session>/patches/translation/`. For translation, use `op = "edit"` with `segment_id`
+and `zh`. Also report source doubts, glossary proposals, and neighboring-batch consistency
+risks.
 ```
