@@ -22,7 +22,8 @@ delete, or add sections to fit the session, current tooling, and batch risk.
   reporting.
 - Workers return structured edits or a patch file under the provided session root:
   `<session>/patches/<stage>/`. Name patch files as `<worker-label>-<time-range>.toml`,
-  for example `sakura-0000s-0600s.toml` or `a1b2c3-0600s-1214s.toml`.
+  for example `sakura-0000s-0600s.toml` or `a1b2c3-0600s-1214s.toml`. When reporting a
+  patch path, use the absolute path.
 - Workers leave commits, exports, raw transcript files, and global glossary policy to the
   main agent.
 
@@ -78,7 +79,7 @@ Rules:
 - If you discover a glossary or context issue, report it for the main agent.
 
 Output:
-Return a `[[operations]]` TOML patch or a patch path under
+Return a `[[operations]]` TOML patch or an absolute patch path under
 `<session>/patches/transcript/`. Use `op = "edit"`, `op = "split"`, `op = "merge"`, or
 `op = "delete"` according to CLI.md. Also report unresolved doubts, proposed glossary
 updates, and any consistency risks with neighboring batches.
@@ -128,7 +129,7 @@ Rules:
 - If you discover a glossary or context issue, report it for the main agent.
 
 Output:
-Return a `[[operations]]` TOML patch or a patch path under
+Return a `[[operations]]` TOML patch or an absolute patch path under
 `<session>/patches/translation/`. For translation, use `op = "edit"` with `segment_id`
 and `zh`. Also report source doubts, glossary proposals, and neighboring-batch consistency
 risks.
