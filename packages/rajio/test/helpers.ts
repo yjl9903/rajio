@@ -80,7 +80,7 @@ export async function preparedCompleteSession(): Promise<string> {
   await writeSegmentsFile(translationPath, sampleTranslation(), { requireZh: true });
   await writeFile(path.join(dir, 'output/Example.zh.srt'), '你好');
 
-  const session = baseSession('export');
+  const session = baseSession('done');
   session.input.media_sha256 = await sha256File(path.join(dir, 'video.mp4'));
   session.stages.transcript_raw = {
     status: 'done',

@@ -309,7 +309,7 @@ describe('session workflow', () => {
     await runRajio(session, { ...baseOptions, commit: true, continue: 'until-manual' });
 
     sessionToml = await readFile(path.join(dir, 'session.toml'), 'utf8');
-    expect(sessionToml).toContain('current_stage = "export"');
+    expect(sessionToml).toContain('current_stage = "done"');
     expect(sessionToml).toContain('status = "done"');
     expect(sessionToml).toContain('ja_srt = "output/Example.ja.srt"');
     expect(sessionToml).toContain('zh_srt = "output/Example.zh.srt"');
@@ -501,6 +501,36 @@ describe('session workflow', () => {
     const session = await Session.loadOrCreate(dir);
     const result = await checkRajio(session);
     expect(result.ok).toBe(true);
+  });
+
+  it('accepts terminal done current stage during session checks', async () => {
+    const dir = await preparedCompleteSession();
+    const session = await Session.loadOrCreate(dir);
+    const result = await checkRajio(session);
+
+    expect(result.ok).toBe(true);
+    expect(result.issues.some((issue) => issue.code === 'invalid_current_stage')).toBe(false);
+    expect(result.issues.some((issue) => issue.code === 'failed_stage')).toBe(false);
+  });
+
+  it('reports terminal done current stage when export is incomplete', async () => {
+    const dir = await preparedCompleteSession();
+    const session = await Session.loadOrCreate(dir);
+    session.state.stages.export = { status: 'pending' };
+    await session.save();
+
+    const result = await checkRajio(await Session.loadOrCreate(dir));
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual(
+      expect.objectContaining({
+        file: path.join(dir, 'session.toml'),
+        stage: 'export',
+        level: 'error',
+        code: 'incomplete_terminal_stage',
+        message: 'current_stage is done but export status is pending.'
+      })
+    );
   });
 
   it('reports failed current automatic stages as check errors', async () => {
@@ -859,6 +889,7 @@ describe('session workflow', () => {
   it('logs export output paths once when export completes', async () => {
     const dir = await preparedCompleteSession();
     const session = await Session.loadOrCreate(dir);
+    session.currentStage = 'export';
     session.state.stages.export = { status: 'pending' };
     await session.save();
     const logger = { success: vi.fn(), info: vi.fn() };
@@ -871,6 +902,21 @@ describe('session workflow', () => {
       'zh srt: output/Example.zh.srt',
       'bilingual ass: output/Example.ja-zh.ass'
     ]);
+  });
+
+  it('rejects terminal done workflow state when export is incomplete', async () => {
+    const dir = await preparedCompleteSession();
+    const session = await Session.loadOrCreate(dir);
+    session.state.stages.export = { status: 'pending' };
+    await session.save();
+
+    await expect(runRajio(session, baseOptions)).rejects.toThrow(
+      'current_stage is done but export is not done.'
+    );
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.currentStage).toBe('done');
+    expect(reloaded.stage('export').status).toBe('pending');
   });
 
   it('invalidates completed workflow state when the media file changes', async () => {

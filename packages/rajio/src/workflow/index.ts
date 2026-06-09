@@ -90,10 +90,13 @@ async function continueAfterAction(
     }
     const stage = session.currentStage;
 
-    if (stage === 'export' && session.stage('export').status === 'done') {
-      workflowLogger.success('session is already complete.');
-      logExportOutputs(session, deps.outputLogger);
-      return;
+    if (stage === 'done') {
+      if (session.stage('export').status === 'done') {
+        workflowLogger.success('session is already complete.');
+        logExportOutputs(session, deps.outputLogger);
+        return;
+      }
+      throw new Error('current_stage is done but export is not done.');
     }
 
     if (isManualStage(stage)) {

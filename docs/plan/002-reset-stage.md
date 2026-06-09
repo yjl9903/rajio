@@ -67,7 +67,8 @@ and waits.
 ### Reset To `export`
 
 Only `export` becomes `pending`, and `current_stage` becomes `export`. If translation work is
-clean committed, the workflow regenerates subtitle output files.
+clean committed, the workflow regenerates subtitle output files and then advances
+`current_stage` to `done`.
 
 ## Edge Rules
 

@@ -8,6 +8,10 @@ export const STAGES = [
 
 export type StageName = (typeof STAGES)[number];
 
+export const CURRENT_STAGES = [...STAGES, 'done'] as const;
+
+export type CurrentStageName = (typeof CURRENT_STAGES)[number];
+
 export const MANUAL_STAGES = ['transcript_work', 'translation_work'] as const;
 
 export type ManualStageName = (typeof MANUAL_STAGES)[number];
@@ -45,7 +49,7 @@ export interface SessionState {
   session_id: string;
   created_at: string;
   updated_at: string;
-  current_stage: StageName;
+  current_stage: CurrentStageName;
   input: {
     description?: string;
     media?: string;

@@ -11,6 +11,7 @@ import {
   validateSegments
 } from '../segments/index.js';
 import {
+  CURRENT_STAGES,
   MANUAL_STAGES,
   STAGES,
   STAGE_STATUSES,
@@ -195,7 +196,7 @@ async function checkSession(
       message: 'schema_version must be 1.'
     });
   }
-  if (!STAGES.includes(state.current_stage)) {
+  if (!CURRENT_STAGES.includes(state.current_stage)) {
     issues.push({
       file: session.path,
       level: 'error',
@@ -324,6 +325,7 @@ async function checkSession(
     }
   }
   checkFailedCurrentAutomaticStage(session, issues);
+  checkTerminalDoneConsistency(session, issues);
 }
 
 function shouldValidateAudioChunks(stageState: StageState): boolean {
@@ -336,6 +338,9 @@ function shouldValidateAudioChunks(stageState: StageState): boolean {
 
 function checkFailedCurrentAutomaticStage(session: Session, issues: CheckIssue[]): void {
   const stage = session.state.current_stage;
+  if (stage === 'done') {
+    return;
+  }
   if (!AUTOMATIC_STAGES.has(stage)) {
     return;
   }
@@ -353,6 +358,25 @@ function checkFailedCurrentAutomaticStage(session: Session, issues: CheckIssue[]
     level: 'error',
     code: 'failed_stage',
     message: reason ? `${stage} failed: ${reason}` : `${stage} failed.`
+  });
+}
+
+function checkTerminalDoneConsistency(session: Session, issues: CheckIssue[]): void {
+  if (session.state.current_stage !== 'done') {
+    return;
+  }
+
+  const exportStage = session.state.stages.export;
+  if (!exportStage || exportStage.status === 'done') {
+    return;
+  }
+
+  issues.push({
+    file: session.path,
+    stage: 'export',
+    level: 'error',
+    code: 'incomplete_terminal_stage',
+    message: `current_stage is done but export status is ${String(exportStage.status)}.`
   });
 }
 

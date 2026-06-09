@@ -195,7 +195,7 @@ schema_version = 1
 session_id = "20260605-rajio-example"
 created_at = "2026-06-05T12:00:00+08:00"
 updated_at = "2026-06-05T12:30:00+08:00"
-current_stage = "transcript_work"
+current_stage = "done"
 
 [input]
 description = "description.md"
@@ -222,6 +222,10 @@ Fixed stages:
 - `transcript_work`
 - `translation_work`
 - `export`
+
+`current_stage` may also be `done` after export completes. `done` is a terminal workflow
+marker, not a stage table; it is valid only when `[stages.export].status = "done"`, where
+completed export artifacts remain recorded.
 
 Stage statuses:
 
@@ -258,12 +262,14 @@ segments_sha256 = "..."
 committed_at = "2026-06-05T12:20:00+08:00"
 
 [stages.translation_work]
-status = "waiting"
+status = "committed"
 source_segments = "transcript/work/segments.toml"
 segments = "translation/work/segments.toml"
+segments_sha256 = "..."
+committed_at = "2026-06-05T12:25:00+08:00"
 
 [stages.export]
-status = "pending"
+status = "done"
 ja_srt = "output/example.ja.srt"
 zh_srt = "output/example.zh.srt"
 bilingual_ass = "output/example.ja-zh.ass"
@@ -277,7 +283,7 @@ Rules:
 - Before reading upstream work, downstream stages must confirm the upstream stage is
   committed and hash-valid.
 - Automatic stages write artifact paths and hashes, set status to `done`, and advance
-  `current_stage`.
+  `current_stage`; advancing past `export` sets `current_stage = "done"`.
 - Manual stage setup copies source segments to work without automatic subtitle cutting, sets
   status to `waiting`, and stops. Transcript work starts from the raw transcript so human or
   agent edits can decide semantic split points, timing, and gaps together.
