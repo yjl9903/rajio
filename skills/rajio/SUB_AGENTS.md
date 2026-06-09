@@ -71,9 +71,10 @@ Rules:
 - If you discover a glossary or context issue, report it for the main agent.
 
 Output:
-Return either a TOML patch using edits/splits/merges/deletes, or the path to a
-session-local patch file. Also report unresolved doubts, proposed glossary updates, and
-any consistency risks with neighboring batches.
+Return either a TOML patch using ordered `[[operations]]` entries, or the path to a
+session-local patch file. Use `op = "edit"`, `op = "split"`, `op = "merge"`, or
+`op = "delete"` according to CLI.md. Also report unresolved doubts, proposed glossary
+updates, and any consistency risks with neighboring batches.
 ```
 
 ## Translation Worker Prompt
@@ -119,7 +120,7 @@ Rules:
 - If you discover a glossary or context issue, report it for the main agent.
 
 Output:
-Return either a TOML patch using [[edits]] with zh fields, or the path to a session-local
-patch file. Also report unresolved source doubts, proposed glossary updates, and any
-consistency risks with neighboring batches.
+Return a `[[operations]]` TOML patch or a session-local patch path. For translation, use
+`op = "edit"` with `segment_id` and `zh`. Also report source doubts, glossary proposals,
+and neighboring-batch consistency risks.
 ```
