@@ -1,8 +1,8 @@
 schema_version = 1
-session_id = "20260608T181417-2712ab8f"
-created_at = "2026-06-08T18:14:17.805Z"
-updated_at = "2026-06-08T18:38:59.955Z"
-current_stage = "export"
+session_id = "20260609T055250-4197d411"
+created_at = "2026-06-09T05:52:50.620Z"
+updated_at = "2026-06-09T06:33:47.808Z"
+current_stage = "done"
 
 [input]
 description = "description.md"
@@ -11,12 +11,12 @@ media_sha256 = "9e5b8c99459473f198b8d284f4539cf1325d6ce34c27b3f3909517a343da2fab
 
 [stages.audio]
 status = "done"
-started_at = "2026-06-08T18:14:17.808Z"
+started_at = "2026-06-09T05:52:50.624Z"
 metadata = "audio/metadata.json"
 audio = "audio/extracted.m4a"
 chunks_dir = "audio/chunks"
 media_sha256 = "9e5b8c99459473f198b8d284f4539cf1325d6ce34c27b3f3909517a343da2fab"
-completed_at = "2026-06-08T18:14:46.128Z"
+completed_at = "2026-06-09T05:53:19.044Z"
 
 [[stages.audio.chunks]]
 audio = "audio/chunks/chunk-000.m4a"
@@ -58,39 +58,38 @@ max_bytes = 25165824
 
 [stages.transcript_raw]
 status = "done"
-started_at = "2026-06-08T18:14:46.129Z"
+started_at = "2026-06-09T05:53:19.045Z"
 input_audio = "audio/extracted.m4a"
 chunks_dir = "transcript/raw/chunks"
 chunk_count = 4
 chunk_concurrency = 5
 segments = "transcript/raw/segments.toml"
-segments_sha256 = "6c92ba72058729cf10eee1569c783d0bd9cda3c6b5b513a2ef7ea85f5ed9ec4e"
-completed_at = "2026-06-08T18:15:32.614Z"
+segments_sha256 = "2839ab98bf1f943f38e7e8eae13bbf872085b002b96097f0ed0fd57a6973a543"
+completed_at = "2026-06-09T05:57:01.747Z"
 
 [stages.transcript_work]
 status = "committed"
 source_segments = "transcript/raw/segments.toml"
 segments = "transcript/work/segments.toml"
-started_at = "2026-06-08T18:15:32.626Z"
-segments_sha256 = "2775e1061465108a683bdff1f20bb615a76b74323ef75dc5375c230c67ed8a2e"
-committed_at = "2026-06-08T18:28:11.817Z"
-completed_at = "2026-06-08T18:28:11.817Z"
+started_at = "2026-06-09T05:57:01.775Z"
+segments_sha256 = "4b64c81dbe822a9eba244ea90739c4840fc1f81143dadaedb552b0c166a74edf"
+committed_at = "2026-06-09T06:21:22.365Z"
+completed_at = "2026-06-09T06:21:22.365Z"
 force_committed = true
 
 [stages.translation_work]
 status = "committed"
 source_segments = "transcript/work/segments.toml"
 segments = "translation/work/segments.toml"
-started_at = "2026-06-08T18:28:11.824Z"
-segments_sha256 = "8cedea7c2c33ac1c8b6e44616af017073ee4b1d4fdc32da944eee158fc7d2efb"
-committed_at = "2026-06-08T18:38:59.942Z"
-completed_at = "2026-06-08T18:38:59.942Z"
-force_committed = true
+started_at = "2026-06-09T06:21:22.371Z"
+segments_sha256 = "88905eb2c078a999c5524708659d2417f94987ac14038bb8a1f76fb374740f07"
+committed_at = "2026-06-09T06:33:47.797Z"
+completed_at = "2026-06-09T06:33:47.797Z"
 
 [stages.export]
 status = "done"
-started_at = "2026-06-08T18:38:59.943Z"
+started_at = "2026-06-09T06:33:47.799Z"
 ja_srt = "output/【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回.ja.srt"
 zh_srt = "output/【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回.zh.srt"
 bilingual_ass = "output/【高画質・完全版】春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回.ja-zh.ass"
-completed_at = "2026-06-08T18:38:59.955Z"
+completed_at = "2026-06-09T06:33:47.808Z"
