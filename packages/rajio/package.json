@@ -45,7 +45,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@openai/codex-sdk": "0.137.0",
+    "@openai/codex-sdk": "0.139.0",
     "breadc": "1.0.0-beta.16",
     "consola": "3.4.2",
     "dotenv": "17.4.2",
