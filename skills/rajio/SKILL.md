@@ -59,6 +59,8 @@ create polished Chinese subtitles from Japanese audio/video with rajio.
 - Spawn sub-agents for every `transcript_work` proofread batch and every
   `translation_work` translation batch. If sub-agent tooling is unavailable, stop and
   report that manual stages cannot be completed under this skill.
+- Run sub-agent batches within the active concurrency/thread limit, and close or release
+  completed workers before spawning more.
 - Read [SUB_AGENTS.md](SUB_AGENTS.md) before spawning sub-agents. Keep this file focused
   on workflow rules; use that document for batch-worker instructions and prompt patterns.
 - The main agent owns batch planning, patch application, glossary decisions, consistency
