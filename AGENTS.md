@@ -23,6 +23,19 @@ Save new agreed plans under `docs/plan/` with numbered kebab-case names, for exa
 `001-rajio-v1.md`. If behavior changes during implementation, update the plan instead of leaving it
 stale.
 
+## Implementation Principles
+
+When designing or implementing changes that affect historical behavior, ask the user whether backward
+compatibility for historical data or behavior is required. If compatibility is not required, remove
+old-logic remnants from code and docs completely, and refactor where needed to keep the new logic
+simple and direct.
+
+Keep first principles in mind: clarify the real problem, identify the smallest behavior change that
+solves it, and prefer the direct implementation path. Do not add entities, abstractions, layers,
+configuration, or code wrapping unless they solve a real current problem or remove concrete
+complexity already present in the code. Avoid speculative extensibility, generic frameworks for a
+single use case, and over-encapsulation that makes the execution path harder to read.
+
 ## Commands
 
 - `pnpm install`: install dependencies. Use Node `>=24`; CI uses Node `26.3.0`.
