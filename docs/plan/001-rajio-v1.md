@@ -35,11 +35,11 @@ rajio check <target>
 ```
 
 `check` validates `session.toml` and every `segments.toml` under `transcript/` and
-`translation/`. It is intended for humans and Codex agents to verify file shape, session
-references, and editable work before committing a manual stage. Raw ASR output under
-`transcript/raw/segments.toml` is checked for parse/schema validity but not strict subtitle
-quality or timeline cleanup, because those issues are expected to be fixed in
-`transcript/work/segments.toml`.
+`translation/`, then filters the displayed result to global `fatal` issues plus the target
+stage/language subtitle QA. It is intended for humans and Codex agents to verify file
+shape, session references, and editable work before committing a manual stage. Raw ASR
+output under `transcript/raw/segments.toml` is parsed for global fatal issues, but is not a
+subtitle QA target.
 
 `<target>` supports:
 
@@ -57,9 +57,9 @@ Options:
   `until-manual`.
 - `--commit`: commit the current manual stage.
 - `--force-commit`: commit the current manual stage after manually confirming that all
-  remaining blocking errors are subtitle QA heuristic exceptions. This records
+  remaining blocking `error` issues are subtitle QA heuristic exceptions. This records
   `force_committed = true` with the committed work hash and does not bypass data
-  integrity errors.
+  integrity `fatal` issues.
 - `--agent=codex|false`: currently only `codex` is supported. If `--commit` and
   `--agent=codex` are both present, run agent flow.
 - `--full`: run all remaining stages automatically. Manual stages use Codex by default.
@@ -72,9 +72,24 @@ Options:
 `rajio check` defaults to concise human output and summarizes repeated issues by file,
 stage, severity, and code. Use `rajio check <target> --verbose` to print every issue.
 Use `rajio check <target> --json` for compact summary JSON; full issue details
-are emitted only with `rajio check <target> --verbose --json`. `--level` and `--stage`
-apply consistently to human and JSON output before summaries, details, and exit codes are
-computed.
+are emitted only with `rajio check <target> --verbose --json`.
+
+Check filtering:
+
+- Levels are `fatal`, `error`, and `warning`; default `--level warning` shows all three.
+- `--level error` shows `fatal` and `error`; `--level fatal` shows only `fatal`.
+- There is no catch-all pseudo-level beyond the default warning threshold.
+- Default stage comes from `session.current_stage`.
+- `transcript_work` defaults to `--language ja`; `--language zh` is invalid.
+- `translation_work`, `export`, and `done` default to `translation_work + --language zh`.
+  Use `--language ja` to inspect Japanese QA in `translation/work/segments.toml`.
+- `audio`, `transcript_raw`, and explicit `--stage audio|transcript_raw|export` have no
+  subtitle QA target and display only global `fatal` issues.
+- `--stage transcript` maps to `transcript_work`; `--stage translation` maps to
+  `translation_work`.
+- Duration and adjacent-gap QA are language-neutral and display in both `ja` and `zh`
+  language views.
+- Exit code is based on the filtered output: any displayed `fatal` or `error` exits 1.
 
 ASR chunking target:
 
@@ -288,8 +303,9 @@ Rules:
 - `--commit` validates work, writes `segments_sha256` and `committed_at`, sets status to
   `committed`, and advances.
 - `--force-commit` follows the same flow but allows manually confirmed subtitle QA
-  heuristic errors, records `force_committed = true`, and still blocks schema, empty text,
-  missing translation, invalid timing, overlap, and duplicate ID errors.
+  `error` issues, records `force_committed = true`, and still blocks `fatal` issues.
+  Dirty manual work is refreshed and retargeted by the workflow entrypoint; it is not a
+  `rajio check` fatal issue.
 - `--agent=codex` runs Codex, writes JSONL output, then commits. On failure, the stage is
   `failed` and does not advance.
 
@@ -316,7 +332,7 @@ Rules:
    transcript work, then stop for human or Codex to fill `zh`.
 6. Translation commit: human or Codex edits `translation/work/segments.toml`; `--commit`
    validates it, requires `zh`, and records hash. `--force-commit` may be used only after
-   manual review confirms remaining blocking errors are subtitle QA exceptions.
+   manual review confirms remaining blocking `error` issues are subtitle QA exceptions.
 7. Export: read committed and clean translation work and generate Japanese SRT, Chinese
    SRT, and bilingual ASS.
 
@@ -330,12 +346,28 @@ Rules:
 - Segment: `id`, `start`, `end`, `speaker`, `ja`, `zh?`, `notes?`, `flags?`.
 - Time unit is seconds.
 
-Blocking validation for editable/manual subtitle files:
+Validation severities:
+
+- `fatal`: data, file, schema, time, overlap, required-text, and workflow/session integrity
+  issues. These block commit/export and cannot be bypassed by `--force-commit`.
+- `error`: subtitle QA hard issues. These block commit/export, but allowlisted QA errors
+  can be manually confirmed with `--force-commit`.
+- `warning`: subtitle QA soft issues for human review. These do not block commit/export.
+
+Fatal validation:
 
 - Invalid TOML shape or segment schema.
+- Duplicate segment ids.
 - Invalid time values or adjacent overlaps.
 - Required text is empty.
 - Translation stage misses `zh`.
+- Missing referenced segment or audio chunk files.
+- Audio chunk metadata/hash mismatch.
+- Failed current automatic stage.
+- Terminal `done` state with incomplete export.
+
+Subtitle QA hard validation:
+
 - Japanese subtitle line exceeds 28 visible non-space characters.
 - Chinese subtitle line exceeds 24 visible non-space characters.
 - Japanese or Chinese subtitle text contains three or more lines.
@@ -345,11 +377,10 @@ Blocking validation for editable/manual subtitle files:
 - Gap from the previous subtitle is shorter than 80 ms.
 - Japanese or Chinese subtitle line contains only punctuation.
 - Japanese or Chinese subtitle text contains more than two repeated question/exclamation marks.
-- Upstream work is dirty.
 
 In `translation_work`, inherited Japanese subtitle QA hard rules are reported as warnings
-instead of blocking errors. Data integrity errors, missing `zh`, and Chinese subtitle QA hard
-rules remain blocking.
+instead of blocking `error` issues. They appear in the `--language ja` check view. Data
+integrity fatal issues, missing `zh`, and Chinese subtitle QA hard rules remain blocking.
 
 Warning validation:
 

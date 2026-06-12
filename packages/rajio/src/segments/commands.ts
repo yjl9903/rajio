@@ -13,6 +13,7 @@ import {
   splitSegment,
   type SegmentEditStage
 } from './edit.js';
+import { validateSegments } from './index.js';
 import { SEGMENT_ISSUE_FILTERS, listSegments } from './list.js';
 import type { SegmentIssueFilter } from './list.js';
 import { prepareSegmentOutput, printSegmentPatchStats, printSegments } from './output.js';
@@ -60,7 +61,11 @@ export function registerSegmentCommands(app: RajioApp): void {
         limit: options.limit,
         start: options.start,
         end: options.end,
-        issues: options.issues
+        issues: options.issues,
+        validationIssues:
+          options.issues === undefined
+            ? undefined
+            : validateSegments(context.file, { requireZh: context.stage === 'translation_work' })
       });
       printSegments(segments, output, {
         totalDuration: getTotalDuration(context.file.segments),

@@ -174,7 +174,7 @@ describe('session target resolution', () => {
     expect(result.issues).toEqual([
       expect.objectContaining({
         file: path.join(dir, 'session.toml'),
-        level: 'error',
+        level: 'fatal',
         code: 'missing_session',
         message: 'Missing session.toml.'
       })

@@ -1,11 +1,33 @@
-import type { Segment } from '../types.js';
+import type { Segment, ValidationIssue } from '../types.js';
 
 export const SEGMENT_ISSUE_FILTERS = [
-  'invalid-time',
+  'duplicate_id',
+  'invalid_time',
   'overlap',
-  'long',
-  'fragment',
-  'empty-zh'
+  'empty_ja',
+  'empty_zh',
+  'ja_line_soft_limit',
+  'ja_line_hard_limit',
+  'zh_line_soft_limit',
+  'zh_line_hard_limit',
+  'ja_line_break_soft_limit',
+  'ja_line_break_hard_limit',
+  'zh_line_break_soft_limit',
+  'zh_line_break_hard_limit',
+  'duration_too_short',
+  'duration_too_long',
+  'ja_reading_speed_limit',
+  'zh_reading_speed_limit',
+  'subtitle_gap_too_short',
+  'subtitle_gap_short',
+  'ja_common_punctuation',
+  'zh_common_punctuation',
+  'ja_terminal_punctuation',
+  'zh_terminal_punctuation',
+  'ja_repeated_punctuation',
+  'zh_repeated_punctuation',
+  'ja_punctuation_only_line',
+  'zh_punctuation_only_line'
 ] as const;
 
 export type SegmentIssueFilter = (typeof SEGMENT_ISSUE_FILTERS)[number];
@@ -18,6 +40,7 @@ export interface SegmentListOptions {
   end?: number;
   around?: number;
   issues?: SegmentIssueFilter[];
+  validationIssues?: ValidationIssue[];
 }
 
 export function listSegments(segments: Segment[], options: SegmentListOptions): Segment[] {
@@ -49,9 +72,10 @@ export function listSegments(segments: Segment[], options: SegmentListOptions): 
 
   if (mode === 'issues') {
     const filters = new Set(options.issues);
-    return segments.filter((segment, index) =>
-      hasRequestedIssue(segments, segment, index, filters)
-    );
+    if (!options.validationIssues) {
+      throw new Error('--issues requires validation issues.');
+    }
+    return listByValidationIssues(segments, filters, options.validationIssues);
   }
 
   return segments;
@@ -126,41 +150,20 @@ function isNonnegativeInteger(value: number): boolean {
   return Number.isInteger(value) && value >= 0;
 }
 
-function hasRequestedIssue(
+function listByValidationIssues(
   segments: Segment[],
-  segment: Segment,
-  index: number,
-  filters: Set<SegmentIssueFilter>
-): boolean {
-  return (
-    (filters.has('invalid-time') && segment.end <= segment.start) ||
-    (filters.has('overlap') && index > 0 && segment.start < segments[index - 1]!.end) ||
-    (filters.has('long') && isLongSegment(segment)) ||
-    (filters.has('fragment') && isFragmentSegment(segment)) ||
-    (filters.has('empty-zh') && isEmptyZhSegment(segment))
+  filters: Set<SegmentIssueFilter>,
+  issues: ValidationIssue[]
+): Segment[] {
+  const matchingIds = new Set(
+    issues
+      .filter((issue) => isSegmentIssueFilter(issue.code) && filters.has(issue.code))
+      .filter((issue) => issue.segmentId)
+      .map((issue) => issue.segmentId!)
   );
+  return segments.filter((segment) => matchingIds.has(segment.id));
 }
 
-function isLongSegment(segment: Segment): boolean {
-  return (
-    segment.end - segment.start > 7 ||
-    hasLongLine(segment.ja, 28) ||
-    (segment.zh !== undefined && hasLongLine(segment.zh, 24))
-  );
-}
-
-function hasLongLine(value: string, limit: number): boolean {
-  return value.split(/\r?\n/).some((line) => compactLength(line) > limit);
-}
-
-function isFragmentSegment(segment: Segment): boolean {
-  return compactLength(segment.ja) <= 1;
-}
-
-function isEmptyZhSegment(segment: Segment): boolean {
-  return segment.zh === undefined || segment.zh.trim() === '';
-}
-
-function compactLength(value: string): number {
-  return Array.from(value.replace(/\s/g, '')).length;
+function isSegmentIssueFilter(code: string): code is SegmentIssueFilter {
+  return (SEGMENT_ISSUE_FILTERS as readonly string[]).includes(code);
 }

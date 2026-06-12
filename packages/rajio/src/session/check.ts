@@ -15,6 +15,8 @@ import {
   MANUAL_STAGES,
   STAGES,
   STAGE_STATUSES,
+  type CurrentStageName,
+  type IssueLevel,
   type Segment,
   type StageName,
   type StageState
@@ -28,7 +30,7 @@ const AUTOMATIC_STAGES = new Set<StageName>(['audio', 'transcript_raw', 'export'
 export interface CheckIssue {
   file: string;
   stage?: StageName;
-  level: 'error' | 'warning';
+  level: IssueLevel;
   code?: string;
   message: string;
   segmentId?: string;
@@ -52,7 +54,7 @@ export interface CheckResult {
   issues: CheckIssue[];
 }
 
-export type CheckIssueLevelFilter = 'all' | 'error' | 'warning';
+export type CheckIssueLevelFilter = IssueLevel;
 export type CheckStageFilter =
   | 'audio'
   | 'transcript'
@@ -61,6 +63,19 @@ export type CheckStageFilter =
   | 'translation'
   | 'translation_work'
   | 'export';
+export type CheckLanguageFilter = 'ja' | 'zh';
+
+interface CheckFilterOptions {
+  level?: CheckIssueLevelFilter;
+  stage?: CheckStageFilter;
+  language?: CheckLanguageFilter;
+  currentStage?: CurrentStageName;
+}
+
+interface CheckQaTarget {
+  stage?: StageName;
+  language?: CheckLanguageFilter;
+}
 
 export async function checkRajio(session: Session): Promise<CheckResult> {
   const issues: CheckIssue[] = [];
@@ -71,7 +86,7 @@ export async function checkRajio(session: Session): Promise<CheckResult> {
   } else {
     issues.push({
       file: session.path,
-      level: 'error',
+      level: 'fatal',
       code: 'missing_session',
       message: 'Missing session.toml.'
     });
@@ -83,7 +98,7 @@ export async function checkRajio(session: Session): Promise<CheckResult> {
   }
 
   return {
-    ok: !issues.some((issue) => issue.level === 'error'),
+    ok: !hasBlockingIssue(issues),
     issues
   };
 }
@@ -121,7 +136,7 @@ export function printCheckIssues(
 
   for (const summary of summarizeCheckIssues(issues)) {
     const message = formatCheckSummary(summary);
-    if (summary.level === 'error') {
+    if (isBlockingLevel(summary.level)) {
       logger.error(message);
     } else {
       logger.warn(message);
@@ -131,16 +146,18 @@ export function printCheckIssues(
 
 export function filterCheckIssues(
   issues: CheckIssue[],
-  options: { level?: CheckIssueLevelFilter; stage?: CheckStageFilter } = {}
+  options: CheckFilterOptions = {}
 ): CheckIssue[] {
+  const level = options.level ?? 'warning';
+  const target = resolveCheckQaTarget(options);
   return issues.filter((issue) => {
-    if (options.level && options.level !== 'all' && issue.level !== options.level) {
+    if (!isAtOrAboveLevel(issue.level, level)) {
       return false;
     }
-    if (options.stage && !matchesStageFilter(issue, options.stage)) {
-      return false;
+    if (issue.level === 'fatal') {
+      return true;
     }
-    return true;
+    return matchesQaTarget(issue, target);
   });
 }
 
@@ -162,7 +179,7 @@ export function formatCheckJson(
       segment?: CheckIssueSegmentContext;
     }>;
   } = {
-    ok: !issues.some((issue) => issue.level === 'error'),
+    ok: !hasBlockingIssue(issues),
     counts: countIssues(issues),
     summary: summarizeCheckIssuesForJson(issues, options)
   };
@@ -191,7 +208,7 @@ async function checkSession(
   if (state.schema_version !== 1) {
     issues.push({
       file: session.path,
-      level: 'error',
+      level: 'fatal',
       code: 'invalid_schema_version',
       message: 'schema_version must be 1.'
     });
@@ -199,7 +216,7 @@ async function checkSession(
   if (!CURRENT_STAGES.includes(state.current_stage)) {
     issues.push({
       file: session.path,
-      level: 'error',
+      level: 'fatal',
       code: 'invalid_current_stage',
       message: `Invalid current_stage: ${String(state.current_stage)}.`
     });
@@ -207,7 +224,7 @@ async function checkSession(
   if (!state.input || typeof state.input !== 'object') {
     issues.push({
       file: session.path,
-      level: 'error',
+      level: 'fatal',
       code: 'missing_input',
       message: 'Missing [input] table.'
     });
@@ -215,7 +232,7 @@ async function checkSession(
   if (!state.stages || typeof state.stages !== 'object') {
     issues.push({
       file: session.path,
-      level: 'error',
+      level: 'fatal',
       code: 'missing_stages',
       message: 'Missing [stages] table.'
     });
@@ -228,7 +245,7 @@ async function checkSession(
       issues.push({
         file: session.path,
         stage,
-        level: 'error',
+        level: 'fatal',
         code: 'missing_stage',
         message: `Missing [stages.${stage}] table.`
       });
@@ -238,7 +255,7 @@ async function checkSession(
       issues.push({
         file: session.path,
         stage,
-        level: 'error',
+        level: 'fatal',
         code: 'invalid_stage_status',
         message: `Invalid status for ${stage}: ${String(stageState.status)}.`
       });
@@ -249,7 +266,7 @@ async function checkSession(
         issues.push({
           file: session.path,
           stage,
-          level: 'error',
+          level: 'fatal',
           code: 'missing_segments_file',
           message: `Referenced segments file does not exist: ${stageState.segments}.`
         });
@@ -273,7 +290,7 @@ async function checkSession(
         issues.push({
           file: session.path,
           stage,
-          level: 'error',
+          level: 'fatal',
           code: 'missing_audio_chunks',
           message: 'audio stage is missing detailed chunk metadata.'
         });
@@ -284,7 +301,7 @@ async function checkSession(
         issues.push({
           file: session.path,
           stage,
-          level: 'error',
+          level: 'fatal',
           code: 'missing_audio_chunks',
           message: 'audio stage is missing detailed chunk metadata.'
         });
@@ -295,7 +312,7 @@ async function checkSession(
           issues.push({
             file: session.path,
             stage,
-            level: 'error',
+            level: 'fatal',
             code: 'missing_audio_chunk_file',
             message: `audio chunk file does not exist: ${chunk.audio} (chunk ${index + 1}).`
           });
@@ -307,7 +324,7 @@ async function checkSession(
             issues.push({
               file: session.path,
               stage,
-              level: 'error',
+              level: 'fatal',
               code: 'audio_chunk_hash_mismatch',
               message: `audio chunk hash mismatch: ${chunk.audio} (chunk ${index + 1}).`
             });
@@ -316,7 +333,7 @@ async function checkSession(
           issues.push({
             file: session.path,
             stage,
-            level: 'error',
+            level: 'fatal',
             code: 'audio_chunk_hash_error',
             message: formatError(error)
           });
@@ -355,7 +372,7 @@ function checkFailedCurrentAutomaticStage(session: Session, issues: CheckIssue[]
   issues.push({
     file: session.path,
     stage,
-    level: 'error',
+    level: 'fatal',
     code: 'failed_stage',
     message: reason ? `${stage} failed: ${reason}` : `${stage} failed.`
   });
@@ -374,7 +391,7 @@ function checkTerminalDoneConsistency(session: Session, issues: CheckIssue[]): v
   issues.push({
     file: session.path,
     stage: 'export',
-    level: 'error',
+    level: 'fatal',
     code: 'incomplete_terminal_stage',
     message: `current_stage is done but export status is ${String(exportStage.status)}.`
   });
@@ -420,7 +437,7 @@ async function checkSegments(
     issues.push({
       file: filePath,
       stage: inferStageFromPath(filePath),
-      level: 'error',
+      level: 'fatal',
       code: 'segments_parse_error',
       message: formatError(error)
     });
@@ -491,7 +508,7 @@ function buildSegmentContext(
 
 function printCheckIssue(issue: CheckIssue, logger: ConsolaInstance): void {
   const message = `${issue.file}: ${issue.message}${formatIssueContext(issue)}`;
-  if (issue.level === 'error') {
+  if (isBlockingLevel(issue.level)) {
     logger.error(message);
   } else {
     logger.warn(message);
@@ -501,7 +518,7 @@ function printCheckIssue(issue: CheckIssue, logger: ConsolaInstance): void {
 interface CheckIssueSummary {
   file: string;
   stage?: StageName;
-  level: 'error' | 'warning';
+  level: IssueLevel;
   code: string;
   count: number;
   message: string;
@@ -510,7 +527,7 @@ interface CheckIssueSummary {
 
 interface CheckIssueJsonSummary {
   file: string;
-  level: 'error' | 'warning';
+  level: IssueLevel;
   code: string;
   count: number;
   message: string;
@@ -606,8 +623,9 @@ function printCheckJson(
   writer.write(`${formatCheckJson(issues, options)}\n`);
 }
 
-function countIssues(issues: CheckIssue[]): { error: number; warning: number } {
+function countIssues(issues: CheckIssue[]): { fatal: number; error: number; warning: number } {
   return {
+    fatal: issues.filter((issue) => issue.level === 'fatal').length,
     error: issues.filter((issue) => issue.level === 'error').length,
     warning: issues.filter((issue) => issue.level === 'warning').length
   };
@@ -648,7 +666,77 @@ function compareLevel(a: CheckIssue['level'], b: CheckIssue['level']): number {
 }
 
 function levelRank(level: CheckIssue['level']): number {
-  return level === 'error' ? 0 : 1;
+  if (level === 'fatal') {
+    return 0;
+  }
+  return level === 'error' ? 1 : 2;
+}
+
+function isAtOrAboveLevel(issueLevel: IssueLevel, threshold: IssueLevel): boolean {
+  return levelRank(issueLevel) <= levelRank(threshold);
+}
+
+function isBlockingLevel(level: IssueLevel): boolean {
+  return level === 'fatal' || level === 'error';
+}
+
+function hasBlockingIssue(issues: CheckIssue[]): boolean {
+  return issues.some((issue) => isBlockingLevel(issue.level));
+}
+
+function resolveCheckQaTarget(options: CheckFilterOptions): CheckQaTarget {
+  const stage = options.stage
+    ? resolveExplicitStageQaTarget(options.stage)
+    : resolveCurrentStageQaTarget(options.currentStage);
+  if (!stage) {
+    return {};
+  }
+
+  if (stage === 'transcript_work') {
+    if (options.language === 'zh') {
+      throw new Error('transcript check supports only --language ja.');
+    }
+    return { stage, language: 'ja' };
+  }
+
+  return { stage, language: options.language ?? 'zh' };
+}
+
+function resolveExplicitStageQaTarget(stage: CheckStageFilter): StageName | undefined {
+  if (stage === 'transcript' || stage === 'transcript_work') {
+    return 'transcript_work';
+  }
+  if (stage === 'translation' || stage === 'translation_work') {
+    return 'translation_work';
+  }
+  return undefined;
+}
+
+function resolveCurrentStageQaTarget(stage: CurrentStageName | undefined): StageName | undefined {
+  if (stage === 'transcript_work') {
+    return 'transcript_work';
+  }
+  if (stage === 'translation_work' || stage === 'export' || stage === 'done') {
+    return 'translation_work';
+  }
+  return undefined;
+}
+
+function matchesQaTarget(issue: CheckIssue, target: CheckQaTarget): boolean {
+  if (!target.stage || !target.language || issue.stage !== target.stage || !issue.code) {
+    return false;
+  }
+  if (isLanguageNeutralQaCode(issue.code)) {
+    return true;
+  }
+  if (target.language === 'ja') {
+    return issue.code.startsWith('ja_');
+  }
+  return issue.code.startsWith('zh_');
+}
+
+function isLanguageNeutralQaCode(code: string): boolean {
+  return code.startsWith('duration_') || code.startsWith('subtitle_gap_');
 }
 
 function compareSegmentContext(
@@ -665,16 +753,6 @@ function compareSegmentContext(
     return -1;
   }
   return a.start - b.start || a.end - b.end || a.id.localeCompare(b.id);
-}
-
-function matchesStageFilter(issue: CheckIssue, stage: CheckStageFilter): boolean {
-  if (stage === 'transcript') {
-    return issue.stage === 'transcript_raw' || issue.stage === 'transcript_work';
-  }
-  if (stage === 'translation') {
-    return issue.stage === 'translation_work';
-  }
-  return issue.stage === stage;
 }
 
 function summarizeSegmentText(segment: Segment): string {

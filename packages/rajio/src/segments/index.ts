@@ -99,7 +99,7 @@ export function validateSegments(
   if (!parsed.success) {
     for (const issue of parsed.error.issues) {
       issues.push({
-        level: 'error',
+        level: 'fatal',
         code: 'schema',
         message: `${issue.path.join('.') || 'segments'}: ${issue.message}`
       });
@@ -113,7 +113,7 @@ export function validateSegments(
   for (const segment of parsed.data.segments) {
     if (ids.has(segment.id)) {
       issues.push({
-        level: 'error',
+        level: 'fatal',
         code: 'duplicate_id',
         segmentId: segment.id,
         message: `Duplicate segment id: ${segment.id}`
@@ -123,7 +123,7 @@ export function validateSegments(
 
     if (strict && segment.end <= segment.start) {
       issues.push({
-        level: 'error',
+        level: 'fatal',
         code: 'invalid_time',
         segmentId: segment.id,
         message: `Segment ${segment.id} end must be greater than start.`
@@ -139,7 +139,7 @@ export function validateSegments(
       if (previous) {
         if (segment.start < previous.end - TIME_EPSILON) {
           issues.push({
-            level: 'error',
+            level: 'fatal',
             code: 'overlap',
             segmentId: segment.id,
             message: `Segment ${segment.id} overlaps previous segment ${previous.id}.`
@@ -152,7 +152,7 @@ export function validateSegments(
 
     if (strict && !segment.ja.trim()) {
       issues.push({
-        level: 'error',
+        level: 'fatal',
         code: 'empty_ja',
         segmentId: segment.id,
         message: `Segment ${segment.id} has empty Japanese text.`
@@ -161,7 +161,7 @@ export function validateSegments(
 
     if (options.requireZh && !segment.zh?.trim()) {
       issues.push({
-        level: 'error',
+        level: 'fatal',
         code: 'empty_zh',
         segmentId: segment.id,
         message: `Segment ${segment.id} has empty Chinese text.`
@@ -193,7 +193,7 @@ export function assertValidSegments(
     requireZh: options.requireZh,
     strict: options.strict
   });
-  const errors = issues.filter((issue) => issue.level === 'error');
+  const errors = blockingValidationErrors(issues);
   if (errors.length > 0) {
     throw new Error(formatValidationErrorSummary(errors));
   }
@@ -212,7 +212,7 @@ export function blockingValidationErrors(
   issues: ValidationIssue[],
   options: { forceCommit?: boolean; profile?: ValidationProfile } = {}
 ): ValidationIssue[] {
-  const errors = issues.filter((issue) => issue.level === 'error');
+  const errors = issues.filter((issue) => issue.level === 'fatal' || issue.level === 'error');
   return errors.filter((issue) => isBlockingValidationIssue(issue, options));
 }
 
@@ -241,6 +241,9 @@ function isBlockingValidationIssue(
   issue: ValidationIssue,
   options: { forceCommit?: boolean; profile?: ValidationProfile }
 ): boolean {
+  if (issue.level === 'fatal') {
+    return true;
+  }
   if (options.profile === 'translation_work' && isTranslationInheritedJapaneseQaIssue(issue)) {
     return false;
   }
@@ -251,7 +254,7 @@ export function formatValidationErrorSummary(
   errors: ValidationIssue[],
   label = 'segments'
 ): string {
-  const issueLabel = errors.length === 1 ? 'error' : 'errors';
+  const issueLabel = errors.length === 1 ? 'issue' : 'issues';
   const codes = summarizeValidationCodes(errors);
   const codeText = codes.length > 0 ? ` (${codes.join(', ')})` : '';
   return `${label} has ${errors.length} blocking ${issueLabel}${codeText}.`;

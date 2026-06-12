@@ -113,15 +113,26 @@ app
   .command('check <target>', 'Validate session.toml and segments.toml files')
   .option('--verbose', 'print every issue')
   .option('--json', 'print JSON output')
-  .option('--level <level>', 'filter issues by level: all, error, or warning', {
+  .option('--level <level>', 'filter issues by level: fatal, error, or warning', {
     cast: (value) => {
       if (value === undefined) {
-        return 'all';
+        return undefined;
       }
-      if (value === 'all' || value === 'error' || value === 'warning') {
+      if (value === 'fatal' || value === 'error' || value === 'warning') {
         return value;
       }
-      throw new Error('--level must be "all", "error", or "warning".');
+      throw new Error('--level must be "fatal", "error", or "warning".');
+    }
+  })
+  .option('--language <language>', 'filter subtitle QA by language: ja or zh', {
+    cast: (value) => {
+      if (value === undefined) {
+        return undefined;
+      }
+      if (value === 'ja' || value === 'zh') {
+        return value;
+      }
+      throw new Error('--language must be "ja" or "zh".');
     }
   })
   .option(
@@ -154,14 +165,16 @@ app
     const result = await checkRajio(session);
     const issues = filterCheckIssues(result.issues, {
       level: options.level,
-      stage: options.stage
+      stage: options.stage,
+      language: options.language,
+      currentStage: session.currentStage
     });
     printCheckIssues(issues, {
       verbose: Boolean(options.verbose),
       json: Boolean(options.json),
       sessionDir: session.dir
     });
-    if (issues.some((issue) => issue.level === 'error')) {
+    if (issues.some((issue) => issue.level === 'fatal' || issue.level === 'error')) {
       process.exitCode = 1;
       return;
     }

@@ -37,8 +37,8 @@ Before spawning a worker, provide:
 - `description.md` path and the relevant glossary/style/fixed phrase notes
 - output format expected by the main agent
 
-Workers may read [SKILL.md](SKILL.md) and [CLI.md](CLI.md) when they need the full
-workflow, validation rules, or command syntax.
+Workers may read [SKILL.md](SKILL.md) and [CLI.md](CLI.md#rajio-cli-reference) when they
+need the full workflow, validation rules, or command syntax.
 
 ## Transcript Proofread Worker Prompt
 
@@ -59,7 +59,8 @@ Task:
 Read as needed:
 - <session>/description.md for context, glossary, fixed phrases, style, and uncertainty
 - SKILL.md for the overall workflow and subtitle QA rules
-- CLI.md for rajio segments/clips/check command syntax
+- [CLI.md](CLI.md#segments-commands), [CLI.md](CLI.md#clips-commands), and
+  [CLI.md](CLI.md#check) for command syntax
 - assigned batch segments and nearby context segments
 
 Highest principle:
@@ -81,8 +82,8 @@ Rules:
 Output:
 Return a `[[operations]]` TOML patch or an absolute patch path under
 `<session>/patches/transcript/`. Use `op = "edit"`, `op = "split"`, `op = "merge"`, or
-`op = "delete"` according to CLI.md. Also report unresolved doubts, proposed glossary
-updates, and any consistency risks with neighboring batches.
+`op = "delete"` according to [CLI.md](CLI.md#segments-apply). Also report unresolved
+doubts, proposed glossary updates, and any consistency risks with neighboring batches.
 ```
 
 ## Translation Worker Prompt
@@ -104,7 +105,7 @@ Task:
 Read as needed:
 - <session>/description.md for context, glossary, fixed phrases, style, and uncertainty
 - SKILL.md for the overall workflow and subtitle QA rules
-- CLI.md for rajio segments/check command syntax
+- [CLI.md](CLI.md#segments-commands) and [CLI.md](CLI.md#check) for command syntax
 - assigned batch segments and nearby context segments
 
 Highest principle:

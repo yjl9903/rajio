@@ -340,7 +340,7 @@ describe('session workflow', () => {
 
     const session = await Session.loadOrCreate(dir);
     await expect(runRajio(session, { ...baseOptions, commit: true })).rejects.toThrow(
-      'blocking error'
+      'blocking issue'
     );
 
     const reloaded = await Session.loadOrCreate(dir);
@@ -526,7 +526,7 @@ describe('session workflow', () => {
       expect.objectContaining({
         file: path.join(dir, 'session.toml'),
         stage: 'export',
-        level: 'error',
+        level: 'fatal',
         code: 'incomplete_terminal_stage',
         message: 'current_stage is done but export status is pending.'
       })
@@ -549,7 +549,7 @@ describe('session workflow', () => {
       expect.objectContaining({
         file: path.join(dir, 'session.toml'),
         stage: 'transcript_raw',
-        level: 'error',
+        level: 'fatal',
         code: 'failed_stage',
         message: 'transcript_raw failed: transcription provider timed out'
       })
@@ -557,15 +557,15 @@ describe('session workflow', () => {
 
     const json = JSON.parse(formatCheckJson(result.issues, { sessionDir: dir })) as {
       ok: boolean;
-      counts: { error: number; warning: number };
+      counts: { fatal: number; error: number; warning: number };
       summary: Array<{ file: string; level: string; code: string; count: number }>;
     };
     expect(json.ok).toBe(false);
-    expect(json.counts).toEqual({ error: 1, warning: 0 });
+    expect(json.counts).toEqual({ fatal: 1, error: 0, warning: 0 });
     expect(json.summary).toContainEqual(
       expect.objectContaining({
         file: 'session.toml',
-        level: 'error',
+        level: 'fatal',
         code: 'failed_stage',
         count: 1
       })
@@ -603,7 +603,7 @@ describe('session workflow', () => {
       expect.objectContaining({
         file: path.join(dir, 'session.toml'),
         stage: 'audio',
-        level: 'error',
+        level: 'fatal',
         code: 'missing_audio_chunks',
         message: 'audio stage is missing detailed chunk metadata.'
       })

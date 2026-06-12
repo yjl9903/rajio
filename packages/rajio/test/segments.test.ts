@@ -24,7 +24,7 @@ import {
   validateSegments,
   writeSegmentsFile
 } from '../src/segments/index.js';
-import { listSegments } from '../src/segments/list.js';
+import { listSegments, type SegmentIssueFilter } from '../src/segments/list.js';
 import { formatSegmentPatchStats, formatSegments } from '../src/segments/output.js';
 import { filterCheckIssues, formatCheckJson, printCheckIssues } from '../src/session/check.js';
 import { renderAss, renderSrt } from '../src/workflow/subtitles.js';
@@ -52,8 +52,8 @@ describe('segments validation and subtitle rendering', () => {
       { requireZh: true }
     );
 
-    expect(issues.some((issue) => issue.code === 'overlap' && issue.level === 'error')).toBe(true);
-    expect(issues.some((issue) => issue.code === 'empty_zh' && issue.level === 'error')).toBe(true);
+    expect(issues.some((issue) => issue.code === 'overlap' && issue.level === 'fatal')).toBe(true);
+    expect(issues.some((issue) => issue.code === 'empty_zh' && issue.level === 'fatal')).toBe(true);
   });
 
   it('ignores tiny floating point drift when checking overlaps', () => {
@@ -423,75 +423,96 @@ describe('segments validation and subtitle rendering', () => {
         file: transcriptFile,
         stage: 'transcript_work' as const,
         level: 'error' as const,
-        code: 'empty_ja',
-        message: 'Segment 1 has empty Japanese text.',
+        code: 'ja_line_hard_limit',
+        message: 'Segment 1 Japanese line 1 has 29 chars; hard limit is 28.',
         segmentId: '1'
-      },
-      {
-        file: transcriptFile,
-        stage: 'transcript_work' as const,
-        level: 'error' as const,
-        code: 'empty_ja',
-        message: 'Segment 2 has empty Japanese text.',
-        segmentId: '2'
-      },
-      {
-        file: transcriptFile,
-        stage: 'transcript_work' as const,
-        level: 'error' as const,
-        code: 'empty_ja',
-        message: 'Segment 3 has empty Japanese text.',
-        segmentId: '3'
-      },
-      {
-        file: transcriptFile,
-        stage: 'transcript_work' as const,
-        level: 'error' as const,
-        code: 'empty_ja',
-        message: 'Segment 4 has empty Japanese text.',
-        segmentId: '4'
       },
       {
         file: transcriptFile,
         stage: 'transcript_work' as const,
         level: 'warning' as const,
         code: 'ja_terminal_punctuation',
-        message: 'Segment 1 Japanese line 1 ends with punctuation.',
-        segmentId: '1'
+        message: 'Segment 2 Japanese line 1 ends with ordinary punctuation.',
+        segmentId: '2'
+      },
+      {
+        file: transcriptFile,
+        stage: 'transcript_work' as const,
+        level: 'error' as const,
+        code: 'duration_too_short',
+        message: 'Segment 3 duration is 0.49s; hard minimum is 0.5s.',
+        segmentId: '3'
       },
       {
         file: translationFile,
         stage: 'translation_work' as const,
         level: 'error' as const,
-        code: 'empty_zh',
-        message: 'Segment 1 has empty Chinese text.',
-        segmentId: '1'
+        code: 'zh_line_hard_limit',
+        message: 'Segment 4 Chinese line 1 has 25 chars; hard limit is 24.',
+        segmentId: '4'
+      },
+      {
+        file: translationFile,
+        stage: 'translation_work' as const,
+        level: 'warning' as const,
+        code: 'subtitle_gap_short',
+        message: 'Segment 5 starts 0.1s after previous segment 4; recommended gap is 0.25s.',
+        segmentId: '5'
       },
       {
         file: translationFile,
         stage: 'translation_work' as const,
         level: 'error' as const,
-        code: 'empty_ja',
-        message: 'Segment 9 has empty Japanese text.',
-        segmentId: '9'
+        code: 'ja_line_hard_limit',
+        message: 'Segment 6 Japanese line 1 has 29 chars; hard limit is 28.',
+        segmentId: '6'
+      },
+      {
+        file: translationFile,
+        stage: 'translation_work' as const,
+        level: 'warning' as const,
+        code: 'zh_terminal_punctuation',
+        message: 'Segment 7 Chinese line 1 ends with ordinary punctuation.',
+        segmentId: '7'
       },
       {
         file: path.join(sessionDir, 'session.toml'),
-        level: 'error' as const,
+        level: 'fatal' as const,
         code: 'invalid_schema_version',
         message: 'schema_version must be 1.'
       }
     ];
 
-    expect(filterCheckIssues(issues, { level: 'error' })).toHaveLength(7);
-    expect(filterCheckIssues(issues, { stage: 'transcript' })).toHaveLength(5);
+    expect(filterCheckIssues(issues, { level: 'fatal', currentStage: 'translation_work' })).toEqual(
+      [expect.objectContaining({ code: 'invalid_schema_version' })]
+    );
+    expect(
+      filterCheckIssues(issues, { level: 'error', currentStage: 'translation_work' }).map(
+        (issue) => issue.code
+      )
+    ).toEqual(['zh_line_hard_limit', 'invalid_schema_version']);
+    expect(
+      filterCheckIssues(issues, { stage: 'translation', language: 'ja' }).map((issue) => issue.code)
+    ).toEqual(['subtitle_gap_short', 'ja_line_hard_limit', 'invalid_schema_version']);
+    expect(filterCheckIssues(issues, { stage: 'transcript' }).map((issue) => issue.code)).toEqual([
+      'ja_line_hard_limit',
+      'ja_terminal_punctuation',
+      'duration_too_short',
+      'invalid_schema_version'
+    ]);
+    expect(() => filterCheckIssues(issues, { stage: 'transcript', language: 'zh' })).toThrow(
+      'transcript check supports only --language ja.'
+    );
+    expect(filterCheckIssues(issues, { stage: 'audio' })).toEqual([
+      expect.objectContaining({ code: 'invalid_schema_version' })
+    ]);
 
     const output = formatCheckJson(issues, { sessionDir });
     expect(output).not.toContain('\n');
 
     const json = JSON.parse(output) as {
       ok: boolean;
-      counts: { error: number; warning: number };
+      counts: { fatal: number; error: number; warning: number };
       summary: Array<{
         file: string;
         stage?: string;
@@ -503,23 +524,26 @@ describe('segments validation and subtitle rendering', () => {
       issues?: Array<{ level: string; code: string }>;
     };
     expect(json.ok).toBe(false);
-    expect(json.counts).toEqual({ error: 7, warning: 1 });
+    expect(json.counts).toEqual({ fatal: 1, error: 4, warning: 3 });
     expect(json).not.toHaveProperty('issues');
     expect(json.summary.every((summary) => !('stage' in summary))).toBe(true);
 
     const transcriptSummary = json.summary.find(
-      (summary) => summary.file === 'transcript/work/segments.toml' && summary.code === 'empty_ja'
+      (summary) =>
+        summary.file === 'transcript/work/segments.toml' && summary.code === 'ja_line_hard_limit'
     );
     expect(transcriptSummary).toMatchObject({
       level: 'error',
-      count: 4,
-      examples: [{ id: '1' }, { id: '2' }, { id: '3' }]
+      count: 1,
+      examples: [{ id: '1' }]
     });
     expect(transcriptSummary?.examples?.every((example) => Object.keys(example).length === 1)).toBe(
       true
     );
     expect(
-      json.summary.filter((summary) => summary.level === 'error' && summary.code === 'empty_ja')
+      json.summary.filter(
+        (summary) => summary.level === 'error' && summary.code === 'ja_line_hard_limit'
+      )
     ).toHaveLength(2);
 
     const sessionSummary = json.summary.find((summary) => summary.file === 'session.toml');
@@ -580,7 +604,7 @@ describe('segments validation and subtitle rendering', () => {
         'transcript_work transcript/work/segments.toml'
       )
     ).toBe(
-      'transcript_work transcript/work/segments.toml has 3 blocking errors (empty_ja: 2, overlap: 1).'
+      'transcript_work transcript/work/segments.toml has 3 blocking issues (empty_ja: 2, overlap: 1).'
     );
   });
 
@@ -699,38 +723,37 @@ describe('segment edit tools', () => {
 
   it('lists segments by issue filters', () => {
     const segments = [
-      { id: 'invalid', start: 2, end: 1, speaker: 'A', ja: '時間' },
-      { id: 'overlap', start: 0.5, end: 1.5, speaker: 'A', ja: '重なり' },
-      { id: 'long-duration', start: 1.5, end: 9, speaker: 'A', ja: '長い' },
-      { id: 'long-text', start: 9, end: 10, speaker: 'A', ja: 'あ'.repeat(29) },
-      { id: 'fragment', start: 10, end: 11, speaker: 'A', ja: 'あ' },
-      { id: 'missing-zh', start: 12, end: 13, speaker: 'A', ja: '未翻訳' },
-      { id: 'blank-zh', start: 13, end: 14, speaker: 'A', ja: '空白', zh: '  ' },
-      { id: 'ok', start: 14, end: 15, speaker: 'A', ja: '大丈夫です', zh: '没问题' }
+      { id: 'base', start: 0, end: 1, speaker: 'A', ja: '基準です', zh: '基准' },
+      { id: 'overlap', start: 0.9, end: 1.5, speaker: 'A', ja: '重なり', zh: '重叠' },
+      { id: 'gap-short', start: 1.6, end: 2.5, speaker: 'A', ja: '短い間隔', zh: '短间隔' },
+      { id: 'duration-long', start: 2.75, end: 9.9, speaker: 'A', ja: '長い', zh: '很长' },
+      { id: 'hard-line', start: 10.2, end: 11.2, speaker: 'A', ja: 'あ'.repeat(29), zh: '长行' },
+      { id: 'punctuation-only', start: 11.5, end: 12.5, speaker: 'A', ja: '！？', zh: '？！' },
+      { id: 'missing-zh', start: 12.8, end: 13.8, speaker: 'A', ja: '未翻訳' },
+      { id: 'blank-zh', start: 14.1, end: 15.1, speaker: 'A', ja: '空白', zh: '  ' },
+      { id: 'ok', start: 15.4, end: 16.4, speaker: 'A', ja: '大丈夫です', zh: '没问题' },
+      { id: 'invalid', start: 16.7, end: 16.6, speaker: 'A', ja: '時間', zh: '时间' }
     ];
+    const file = {
+      version: 1 as const,
+      source: { kind: 'translation' as const, generated_at: '2026-06-06T00:00:00.000Z' },
+      segments
+    };
+    const validationIssues = validateSegments(file, { requireZh: true });
+    const listByIssues = (...issues: SegmentIssueFilter[]) =>
+      listSegments(segments, { issues, validationIssues }).map((segment) => segment.id);
 
-    expect(
-      listSegments(segments, { issues: ['invalid-time', 'overlap'] }).map((segment) => segment.id)
-    ).toEqual(['invalid', 'overlap']);
-    expect(listSegments(segments, { issues: ['long'] }).map((segment) => segment.id)).toEqual([
-      'long-duration',
-      'long-text'
-    ]);
-    expect(listSegments(segments, { issues: ['fragment'] }).map((segment) => segment.id)).toEqual([
-      'fragment'
-    ]);
-    expect(listSegments(segments, { issues: ['empty-zh'] }).map((segment) => segment.id)).toEqual([
-      'invalid',
-      'overlap',
-      'long-duration',
-      'long-text',
-      'fragment',
+    expect(listByIssues('invalid_time', 'overlap')).toEqual(['overlap', 'invalid']);
+    expect(listByIssues('duration_too_long')).toEqual(['duration-long']);
+    expect(listByIssues('ja_line_hard_limit')).toEqual(['hard-line']);
+    expect(listByIssues('subtitle_gap_short')).toEqual(['gap-short']);
+    expect(listByIssues('ja_punctuation_only_line')).toEqual(['punctuation-only']);
+    expect(listByIssues('empty_zh')).toEqual(['missing-zh', 'blank-zh']);
+    expect(listByIssues('ja_line_hard_limit', 'empty_zh')).toEqual([
+      'hard-line',
       'missing-zh',
       'blank-zh'
     ]);
-    expect(
-      listSegments(segments, { issues: ['fragment', 'empty-zh'] }).map((segment) => segment.id)
-    ).toContain('blank-zh');
   });
 
   it('formats segment command output as human table, csv, or json', () => {

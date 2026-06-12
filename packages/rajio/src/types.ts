@@ -134,8 +134,12 @@ export interface SegmentsFile {
   segments: Segment[];
 }
 
+export const ISSUE_LEVELS = ['fatal', 'error', 'warning'] as const;
+
+export type IssueLevel = (typeof ISSUE_LEVELS)[number];
+
 export interface ValidationIssue {
-  level: 'error' | 'warning';
+  level: IssueLevel;
   code: string;
   message: string;
   segmentId?: string;

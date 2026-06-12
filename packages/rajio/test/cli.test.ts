@@ -64,6 +64,54 @@ describe('cli explicit targets', () => {
     expect(output.segments.map((segment) => segment.id)).toEqual(['2']);
   });
 
+  it('filters segments list by validation issue code', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeSegmentsFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      {
+        version: 1,
+        source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+        segments: [
+          { id: 'translated', start: 0, end: 1, speaker: 'A', ja: 'はい', zh: '是' },
+          { id: 'missing-zh', start: 1.3, end: 2.3, speaker: 'A', ja: '未翻訳' }
+        ]
+      },
+      { validate: false }
+    );
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'list',
+      dir,
+      '--stage',
+      'translation',
+      '--issues',
+      'empty_zh',
+      '--json'
+    ]);
+
+    const output = JSON.parse(stdout.text()) as { segments: Array<{ id: string }> };
+    expect(output.segments.map((segment) => segment.id)).toEqual(['missing-zh']);
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'list',
+        dir,
+        '--stage',
+        'translation',
+        '--issues',
+        'unknown_code'
+      ])
+    ).rejects.toThrow('--issues must be a comma-separated list');
+  });
+
   it('splits segments with a custom midpoint gap', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_work: {
@@ -264,6 +312,39 @@ describe('cli explicit targets', () => {
       process.chdir(cwd);
     }
   });
+
+  it('rejects removed check level all', async () => {
+    const result = await runCliSideEffect([
+      'check',
+      '/tmp/rajio-missing-session',
+      '--level',
+      'all'
+    ]);
+
+    expect(result.exitCode).toBe(1);
+  });
+
+  it('rejects Chinese language filtering for transcript check', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_work: {
+        status: 'waiting',
+        segments: 'transcript/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
+    await writeSegmentsFile(path.join(dir, 'transcript/work/segments.toml'), sampleTranscript());
+
+    const result = await runCliSideEffect([
+      'check',
+      dir,
+      '--stage',
+      'transcript',
+      '--language',
+      'zh'
+    ]);
+
+    expect(result.exitCode).toBe(1);
+  });
 });
 
 function createCommandApp(): ReturnType<typeof breadc> {
@@ -284,6 +365,9 @@ async function runCliSideEffect(argv: string[]): Promise<{
     stderr += chunk.toString();
     return true;
   }) as typeof process.stderr.write);
+  vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
+    stderr += `${args.join(' ')}\n`;
+  });
 
   process.argv = ['node', cliPath, ...argv];
   process.exitCode = undefined;

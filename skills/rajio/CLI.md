@@ -10,8 +10,8 @@ raw transcript files are read-only references, and clip transcripts are review a
   `rajio <target>`, `rajio check|doctor|clean <target>`, and
   `rajio segments|clips <command> <target>`.
 - Prefer `--json` for `segments list`, `segments apply`, `segments edit`,
-  `segments split`, `segments merge`, `segments delete`, `clips list`, and
-  `clips show` whenever the output will be parsed.
+  `segments split`, `segments merge`, `segments delete`, `clips list`, `clips show`,
+  and `check` whenever the output will be parsed.
 - Edit only manual work files through `rajio segments`: `transcript/work/segments.toml`
   with `--stage transcript`, or `translation/work/segments.toml` with
   `--stage translation`.
@@ -104,9 +104,10 @@ Workflow controls:
 - `--commit`: validate and commit the current manual stage, recording the current
   work file hash in `session.toml`, then continue according to `--continue`.
 - `--force-commit`: commit the current manual stage after manually confirming that all
-  remaining blocking errors are intentional subtitle QA exceptions. It records
-  `force_committed = true` with the current work file hash. It does not bypass schema,
-  empty text, missing `zh`, invalid timing, overlap, or duplicate ID errors.
+  remaining blocking `error` issues are intentional subtitle QA exceptions. It records
+  `force_committed = true` with the current work file hash. It does not bypass `fatal`
+  issues such as schema errors, empty required text, missing `zh`, invalid timing,
+  overlap, duplicate IDs, missing files, or failed automatic stages.
 - `--reset <stage>`: reset the selected stage and all downstream stages to
   `pending`, set `current_stage` to that stage, and continue. Valid stages are
   `audio`, `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
@@ -123,16 +124,16 @@ Workflow controls:
 Force commit is an exception path, not a normal QA shortcut. Before using it, run:
 
 ```bash
-rajio check /path/to/session --level error --verbose
+rajio check /path/to/session --json --level error --verbose
 ```
 
-Inspect every remaining error manually. Use `--force-commit` only when keeping the
+Inspect every remaining `fatal`/`error` issue manually. Use `--force-commit` only when keeping the
 exception makes the subtitle more accurate, natural, or comfortable, for example an
 official title or event name such as `STRAIGHT! REACH!! CHEER!!!`. Do not use it for
 unfinished translation, empty text, broken timing, overlaps, duplicate IDs, bad schema, or
 large unreviewed batches of errors. In `translation_work`, inherited Japanese subtitle QA
-hard rules are warnings, so they do not require `--force-commit`; Chinese hard QA exceptions
-still do.
+hard rules are warnings and appear in the `--language ja` check view, so they do not require
+`--force-commit`; Chinese hard QA exceptions still do.
 
 Reset boundaries:
 
@@ -148,7 +149,8 @@ Reset boundaries:
 - If media changed and `--reset` is not `audio`, the command errors and asks for an
   audio-stage rerun first.
 - If a committed manual work file changed, rajio marks it `dirty` and retargets the
-  workflow to that manual stage before continuing.
+  workflow to that manual stage before continuing. Recommit that manual stage after
+  review; `dirty` is a workflow state, not a `rajio check` issue.
 
 Audio chunk options:
 
@@ -190,7 +192,8 @@ Output mode:
 
 - TTY without `--json`: human-readable table.
 - Non-TTY without `--json`: CSV.
-- `--json`: structured JSON.
+- `--json`: structured JSON. Use shell pipelines with `jq` when you need to extract fields
+  or slice down the output.
 
 Segment mutation commands print affected rows, except `segments apply`, which defaults to
 operation counts. `--dry-run` validates and prints the result without writing
@@ -199,12 +202,12 @@ operation counts. `--dry-run` validates and prints the result without writing
 ### segments list
 
 ```bash
-rajio segments list /path/to/session --stage transcript --json
+rajio segments list /path/to/session --stage transcript
 rajio segments list /path/to/session --stage transcript --id 12
 rajio segments list /path/to/session --stage transcript --id 12 --around 3
 rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --stage transcript --start 600 --end 660
-rajio segments list /path/to/session --stage translation --issues empty-zh --json
+rajio segments list /path/to/session --stage translation --issues empty_zh,zh_line_hard_limit
 ```
 
 `segments list` accepts only one filter mode per invocation:
@@ -217,18 +220,29 @@ rajio segments list /path/to/session --stage translation --issues empty-zh --jso
   to the end.
 - `--start <seconds> --end <seconds>`: list segments whose `start` is in
   `[start, end)`. Both options are required together.
-- `--issues <types>`: list segments matching comma-separated issue types:
-  `invalid-time`, `overlap`, `long`, `fragment`, and `empty-zh`.
+- `--issues <codes>`: list segments matching comma-separated `rajio check` validation
+  codes. It uses the same codes documented in Check > Issue Codes.
 
 In JSON mode, list output includes:
 
 - `segments`: rows with `id`, `start`, `end`, `speaker`, `ja`, and `zh`.
 - `stats`: `total`, `listed`, `translated`, and `untranslated` counts.
 
+JSON shape:
+
+```json
+{
+  "segments": [
+    { "id": "12", "start": 10.2, "end": 13.4, "speaker": "A", "ja": "...", "zh": "..." }
+  ],
+  "stats": { "total": 120, "listed": 1, "translated": 80, "untranslated": 40 }
+}
+```
+
 ### segments apply
 
 ```bash
-rajio segments apply /path/to/session patch.toml --stage translation --dry-run --json
+rajio segments apply /path/to/session patch.toml --stage translation --dry-run
 rajio segments apply /path/to/session patch.toml --stage translation
 rajio segments apply /path/to/session --stage translation <<'EOF'
 [[operations]]
@@ -242,6 +256,14 @@ EOF
 merge, and delete operations. Pass a patch file path, or omit `[file]` only when supplying
 TOML on stdin in the same shell command. It prints operation counts by default; add
 `--verbose` to print affected segment rows in operation order.
+
+In JSON mode, non-verbose apply output is:
+
+```json
+{
+  "stats": { "edits": 1, "splits": 0, "merges": 0, "deletes": 0, "total": 1 }
+}
+```
 
 Patch rules:
 
@@ -306,7 +328,7 @@ segment_id = "14"
 ```
 
 For large or risky batches, keep the patch under a session-local `patches/` directory,
-run with `--dry-run --json`, then apply the same file without `--dry-run`.
+run with `--dry-run`, then apply the same file without `--dry-run`.
 
 ### segments edit
 
@@ -315,7 +337,7 @@ rajio segments edit /path/to/session 12 --stage transcript \
   --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
 
 rajio segments edit /path/to/session 12 --stage translation \
-  --zh "修正后的中文字幕" --dry-run --json
+  --zh "修正后的中文字幕" --dry-run
 ```
 
 Editable fields are `--start`, `--end`, `--speaker`, `--ja`, and `--zh`. At least one
@@ -434,10 +456,11 @@ by a different clip, a numeric suffix is added.
 
 ```bash
 rajio clips list /path/to/session
-rajio clips list /path/to/session --json
 ```
 
 Output columns are `id`, `label`, `start`, `end`, `duration`, `status`, and `segments`.
+JSON mode returns `{ "clips": [...] }` with the same fields.
+
 Status values:
 
 - `done`: `segments.toml` exists and parses.
@@ -449,48 +472,110 @@ Status values:
 
 ```bash
 rajio clips show /path/to/session clip-120000-180000
-rajio clips show /path/to/session clip-120000-180000 --json
 ```
 
 `clips show <target> <id>` prints only that clip's `segments.toml` rows using the same segment
-columns and output modes as `segments list`. It does not print `clip.toml` metadata.
+columns and output modes as `segments list`. In JSON mode it returns `{ "segments": [...] }`
+using the segment row shape documented above. It does not print `clip.toml` metadata.
 
 ## Check
 
 ```bash
 rajio check /path/to/session
 rajio check /path/to/session --level error
-rajio check /path/to/session --level warning
-rajio check /path/to/session --stage transcript
-rajio check /path/to/session --stage translation --json
+rajio check /path/to/session --level fatal
+rajio check /path/to/session --stage transcript --language ja
+rajio check /path/to/session --stage translation
+rajio check /path/to/session --stage translation --language ja
 rajio check /path/to/session --verbose
 ```
 
 `rajio check` validates `session.toml` and `segments.toml` files under `transcript/`
-and `translation/`. The target is required.
+and `translation/`, then displays global `fatal` issues plus subtitle QA for the target
+stage/language. The target is required.
 
 Filters:
 
-- `--level all|error|warning`: default is `all`.
+- `--level fatal|error|warning`: default is `warning`.
+  - `warning` shows `fatal`, `error`, and `warning`.
+  - `error` shows `fatal` and `error`.
+  - `fatal` shows only `fatal`.
 - `--stage audio|transcript|transcript_raw|transcript_work|translation|translation_work|export`.
-  `transcript` means both `transcript_raw` and `transcript_work`; `translation` means
-  `translation_work`.
+  `transcript` maps to `transcript_work`; `translation` maps to `translation_work`.
+- `--language ja|zh`: filters language-specific subtitle QA.
+  - Transcript checks target `transcript/work/segments.toml`, default to `ja`, and reject
+    `zh`.
+  - Translation checks target `translation/work/segments.toml`, default to `zh`, and can
+    use `ja` to inspect Japanese subtitle QA left in the translation work file.
+  - Duration and adjacent-gap QA are language-neutral and appear in either language view.
+- Without `--stage`, the target stage comes from `session.current_stage`. `export` and
+  `done` default to `translation_work + zh`; `audio` and `transcript_raw` have no subtitle
+  QA target and show only global `fatal` issues.
 
 Output:
 
 - Default human output groups repeated issues by severity, code, file, and stage, with
   up to five examples per group.
 - `--verbose` prints every issue.
-- `--json` prints summary JSON.
-- `--verbose --json` adds sorted full `issues`.
-- `translation_work` reports inherited Japanese subtitle QA hard rules as warnings. Chinese
-  subtitle QA hard rules and data integrity problems still report as errors.
+- `--json` prints compact summary JSON with `counts.fatal`, `counts.error`, and
+  `counts.warning`. Pipe it to `jq` when you need to extract fields or slice down the
+  output.
+- `--json --verbose` adds sorted full `issues`.
+- `fatal` means data/file/schema/timeline/workflow integrity and cannot be force committed.
+- `error` means subtitle QA hard issue; it blocks commit/export but may be force committed
+  only when allowlisted and manually confirmed.
+- `warning` means subtitle QA soft issue for review only.
+- `translation_work` reports inherited Japanese subtitle QA hard rules as warnings in the
+  `ja` language view. Chinese subtitle QA hard rules remain `error`, and data integrity
+  problems remain `fatal`.
+
+### Issue Codes
+
+`rajio check` reports these validation codes. `segments list --issues` accepts the same
+codes for segment-scoped issues.
+
+| Rule                  | When reported                              | Issue codes                                                                                                    |
+| --------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Data integrity        | duplicate ids, invalid time, overlap       | `duplicate_id`, `invalid_time`, `overlap`                                                                      |
+| Required text         | required Japanese or Chinese text is empty | `empty_ja`, `empty_zh`                                                                                         |
+| Line length           | line exceeds soft or hard character limit  | `ja_line_soft_limit`, `ja_line_hard_limit`, `zh_line_soft_limit`, `zh_line_hard_limit`                         |
+| Line count            | text has too many lines                    | `ja_line_break_soft_limit`, `ja_line_break_hard_limit`, `zh_line_break_soft_limit`, `zh_line_break_hard_limit` |
+| Subtitle duration     | segment is too short or too long           | `duration_too_short`, `duration_too_long`                                                                      |
+| Reading speed         | text is too dense for the duration         | `ja_reading_speed_limit`, `zh_reading_speed_limit`                                                             |
+| Adjacent gap          | gap from previous segment is too short     | `subtitle_gap_too_short`, `subtitle_gap_short`                                                                 |
+| Common punctuation    | ordinary comma/period punctuation appears  | `ja_common_punctuation`, `zh_common_punctuation`                                                               |
+| Terminal punctuation  | line ends with ordinary sentence mark      | `ja_terminal_punctuation`, `zh_terminal_punctuation`                                                           |
+| Repeated punctuation  | repeated question/exclamation punctuation  | `ja_repeated_punctuation`, `zh_repeated_punctuation`                                                           |
+| Punctuation-only line | a line contains only punctuation           | `ja_punctuation_only_line`, `zh_punctuation_only_line`                                                         |
+
+Compact JSON shape:
+
+```json
+{
+  "ok": false,
+  "counts": { "fatal": 0, "error": 1, "warning": 2 },
+  "summary": [
+    {
+      "file": "translation/work/segments.toml",
+      "level": "error",
+      "code": "zh_line_hard_limit",
+      "count": 1,
+      "message": "Segment 12 Chinese line 1 has 25 chars; hard limit is 24.",
+      "examples": [{ "id": "12" }]
+    }
+  ]
+}
+```
+
+With `--json --verbose`, `issues` is added. Each issue contains `file`, optional `stage`,
+`level`, optional `code`, `message`, optional `segmentId`, and optional `segment` context
+with `id`, `start`, `end`, `duration`, adjacent ids, text lengths, and text preview.
 
 Exit behavior:
 
-- If any filtered issue is an error, process exit code is `1`.
-- If no filtered error remains, the command exits successfully, even if unfiltered errors
-  existed outside the selected stage/level.
+- If any displayed issue is `fatal` or `error`, process exit code is `1`.
+- If no displayed `fatal` or `error` remains, the command exits successfully, even if
+  unfiltered issues existed outside the selected stage/language/level.
 
 ## Doctor
 
