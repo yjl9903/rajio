@@ -1,0 +1,7 @@
+interface:
+  display_name: "Rajio"
+  short_description: "Polished Simplified Chinese subtitles for Japanese media"
+  default_prompt: "Use $rajio to create polished Simplified Chinese subtitles for this Japanese audio/video."
+
+policy:
+  allow_implicit_invocation: false

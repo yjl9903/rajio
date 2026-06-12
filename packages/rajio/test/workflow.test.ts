@@ -1080,6 +1080,35 @@ describe('session workflow', () => {
     expect(reloaded.stage('export').status).toBe('pending');
   });
 
+  it('recommits dirty translation work and regenerates export in one reset command', async () => {
+    const dir = await preparedCompleteSession();
+    const translationPath = path.join(dir, 'translation/work/segments.toml');
+    const translation = await readSegmentsFile(translationPath);
+    await writeSegmentsFile(translationPath, {
+      ...translation,
+      segments: translation.segments.map((segment) => ({ ...segment, zh: '精修后的字幕' }))
+    });
+
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, {
+      ...baseOptions,
+      reset: 'export',
+      commit: true,
+      continue: 'until-manual'
+    });
+
+    const reloaded = await Session.loadOrCreate(dir);
+    expect(reloaded.currentStage).toBe('done');
+    expect(reloaded.stage('translation_work').status).toBe('committed');
+    expect(reloaded.stage('export').status).toBe('done');
+    expect(await readFile(path.join(dir, 'output/Example.zh.srt'), 'utf8')).toContain(
+      '精修后的字幕'
+    );
+    expect(await readFile(path.join(dir, 'output/Example.ja-zh.ass'), 'utf8')).toContain(
+      '精修后的字幕'
+    );
+  });
+
   it('saves media invalidation and rejects reset to a later stage', async () => {
     const dir = await preparedCompleteSession();
     await writeFile(path.join(dir, 'video.mp4'), 'replacement media');

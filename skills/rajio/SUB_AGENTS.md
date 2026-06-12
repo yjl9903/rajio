@@ -58,7 +58,10 @@ Task:
 
 Read as needed:
 - <session>/description.md for context, glossary, fixed phrases, style, and uncertainty
-- SKILL.md for the overall workflow and subtitle QA rules
+- [SKILL.md](SKILL.md#2-proofread-and-polish-japanese) for transcript proofread
+  requirements and acceptance criteria
+- [SKILL.md](SKILL.md#subtitle-qa-rules) for subtitle QA thresholds and the rule that
+  readability and correctness outrank mechanical warning cleanup
 - [CLI.md](CLI.md#segments-commands), [CLI.md](CLI.md#clips-commands), and
   [CLI.md](CLI.md#check) for command syntax
 - assigned batch segments and nearby context segments
@@ -67,6 +70,8 @@ Highest principle:
 Make the Japanese transcript accurate, natural, readable, and comfortable as subtitles.
 Do not mechanically satisfy formatting heuristics if that harms correctness, readability,
 timing, or viewing comfort. Warnings are QA hints, not goals to clear at all costs.
+Treat the ASR output as a draft: verify proper nouns, fixed phrases, speaker boundaries,
+timing, subtitle-unit structure, and nearby context instead of making isolated text edits.
 
 Rules:
 - Never edit transcript/raw/segments.toml or transcript/raw/chunks/*.toml.
@@ -104,7 +109,13 @@ Task:
 
 Read as needed:
 - <session>/description.md for context, glossary, fixed phrases, style, and uncertainty
-- SKILL.md for the overall workflow and subtitle QA rules
+- [SKILL.md](SKILL.md#3-translate-and-polish-chinese) for translation requirements,
+  acceptance criteria, and first-draft expectations
+- [SKILL.md](SKILL.md#subtitle-qa-rules) for subtitle QA thresholds and the rule that
+  readability and correctness outrank mechanical warning cleanup
+- [SKILL.md](SKILL.md#4-refine-chinese-subtitles) for the later main-agent refinement
+  standard; use it as quality direction, but leave global multi-round refinement to the
+  main agent
 - [CLI.md](CLI.md#segments-commands) and [CLI.md](CLI.md#check) for command syntax
 - assigned batch segments and nearby context segments
 
@@ -113,6 +124,9 @@ Create accurate, natural, comfortable Simplified Chinese subtitles. Preserve mea
 speaker intent, tone, jokes, references, and dialogue flow. Do not mechanically satisfy
 formatting heuristics if that makes the subtitle less accurate, less natural, or less
 comfortable to watch. Warnings are QA hints, not goals to clear at all costs.
+Translate the assigned range as connected dialogue, not isolated lines: respect nearby
+context, recurring terms, speaker register, omitted subjects, callbacks, and subtitle
+continuity.
 
 Rules:
 - Do not call the OpenAI-compatible provider configured in .env to translate.

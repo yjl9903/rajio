@@ -1,16 +1,17 @@
 ---
 name: rajio
-description: Use only when explicitly asked to operate a rajio Japanese video transcription and Chinese subtitle session.
+description: Use only when explicitly asked to use rajio for Japanese audio/video subtitle translation.
 ---
 
 # Rajio
 
-Use this skill to operate a `rajio` subtitle session for Japanese audio/video:
-prepare context, extract audio, transcribe Japanese, proofread the transcript, translate
-and polish Simplified Chinese subtitles, and export SRT/ASS files.
+Use this skill to translate Japanese audio/video into polished, carefully proofread
+subtitles with `rajio`: prepare context, extract audio, transcribe Japanese, proofread
+the transcript, run multi-round Simplified Chinese translation and review, polish the
+final subtitle text, and export SRT/ASS files.
 
 Do not use this skill unless the user explicitly asks for the rajio skill or asks you to
-operate a rajio subtitle session.
+create polished Chinese subtitles from Japanese audio/video with rajio.
 
 ## Non-Negotiable Rules
 
@@ -22,7 +23,11 @@ operate a rajio subtitle session.
   user authorizes that upload.
 - `transcript_work` and `translation_work` are manual stages. Always process these stages
   through sub-agent batches. The main agent orchestrates, merges, validates, and commits;
-  it must not try to proofread or translate the full stage by itself.
+  it must not try to proofread or translate the full first-draft stage by itself.
+- The final Chinese refinement pass is the explicit exception to that boundary: after
+  sub-agent translation batches have produced and committed the first draft, the main
+  agent must perform full-file Chinese subtitle refinement as described in
+  [Refine Chinese Subtitles](#4-refine-chinese-subtitles).
 - Do not use CLI `--agent=codex` as a substitute for sub-agent batch work unless the user
   explicitly asks for the CLI automation path.
 - During `translation_work`, do not call the OpenAI-compatible provider configured in
@@ -57,7 +62,8 @@ operate a rajio subtitle session.
 - Read [SUB_AGENTS.md](SUB_AGENTS.md) before spawning sub-agents. Keep this file focused
   on workflow rules; use that document for batch-worker instructions and prompt patterns.
 - The main agent owns batch planning, patch application, glossary decisions, consistency
-  QA, `description.md`, `rajio check`, commits, exports, and final reporting.
+  QA, final full-file Chinese refinement, `description.md`, `rajio check`, commits,
+  exports, and final reporting.
 
 ## Required Input
 
@@ -501,7 +507,7 @@ rajio check /path/to/session --json --stage translation --language ja --level wa
 
 - Record unresolved uncertainty in `description.md` or mention it in the final report.
 
-When clean, commit and export:
+When clean, commit and export the first translation draft:
 
 ```bash
 rajio /path/to/session --commit --continue=until-manual
@@ -520,13 +526,88 @@ intentional subtitle QA exceptions and no `fatal` issues remain.
 rajio /path/to/session --force-commit --continue=until-manual
 ```
 
-Expected output:
+Expected result: rajio commits `translation_work`, runs export, and reaches the
+terminal `done` state. This ends the CLI workflow, but the exported subtitles are still
+only a first-pass translation and proofread draft. The current main agent must continue
+with the refinement pass below before treating the subtitles as final polished output.
+
+Expected draft output:
 
 - `output/*.ja.srt`
 - `output/*.zh.srt`
 - `output/*.ja-zh.ass`
 
-### 4. Final Verification
+### 4. Refine Chinese Subtitles
+
+After the first draft export, the main agent must perform at least one full-pass Chinese
+subtitle refinement over `translation/work/segments.toml`, and should iterate through
+multiple refinement passes until the subtitles are genuinely polished. This is not a
+substitute for the sub-agent batch translation stage: do not use these passes to fill
+large missing sections or redo the whole translation from scratch. Use them to raise the
+already translated draft to final subtitle quality.
+
+Preserve the committed draft's structure unless a change clearly improves accuracy,
+readability, or subtitle continuity. Do not break the Subtitle QA Rules, timeline
+integrity, required fields, segment IDs, or transcript alignment. If refinement changes
+the work file after export, recommit `translation_work` and regenerate export output.
+
+Refinement requirements:
+
+- Treat refinement as an active, multi-round editorial process. After each pass, inspect
+  remaining rough spots, recurring wording problems, and consistency risks, then run
+  another pass when meaningful improvements are still available.
+- Read the Chinese subtitles continuously across adjacent segments, not only segment by
+  segment. Repair places where the text reads like isolated translated fragments.
+- Enforce global term consistency for names, programs, corners, events, works, products,
+  hashtags, recurring jokes, honorific choices, and fixed phrases.
+- Match register, tone, and speaker intent to the local context: casual speech should not
+  become stiff, jokes should not become flat, and emotional emphasis should not disappear.
+- Prefer natural Simplified Chinese subtitle language over literal completeness. Compress
+  harmless repetition and spoken clutter when the source meaning, rhythm, and speaker
+  personality are preserved.
+- Check pronouns, ellipses, omitted subjects, callbacks, and topic shifts against nearby
+  Japanese context so Chinese lines do not become ambiguous or misleading.
+- Smooth sentence flow across subtitle boundaries while keeping each subtitle readable on
+  its own timing. Avoid awkward trailing fragments created only to satisfy line limits.
+- Revisit glossary decisions in `description.md`; update it when a better confirmed term
+  or style rule is chosen, then apply that choice consistently through the full file.
+- Search for stale draft assumptions, mixed translations of the same term, untranslated
+  Japanese, accidental simplified/traditional mismatches, and Chinese punctuation noise.
+- Preserve meaningful speaker style differences where the source supports them, but do
+  not over-characterize beyond the audio/video evidence.
+- If a Chinese issue exposes a likely transcript mistake, fix and recommit
+  `transcript_work` first, then reconcile `translation/work/segments.toml` and rerun the
+  translation checks.
+
+During and after refinement, validate with:
+
+```bash
+rajio check /path/to/session --json --stage translation --language zh --level error --verbose
+rajio check /path/to/session --json --stage translation --language ja --level warning --verbose
+```
+
+After the final refinement pass, run export reset with commit. This commits dirty
+`translation_work` when refinement changed it, and otherwise just regenerates export from
+the existing committed translation:
+
+```bash
+rajio /path/to/session --reset export --commit --continue=until-manual
+```
+
+If the final refined translation still has intentional Chinese QA exceptions, inspect them
+first as documented above, then use the force-commit variant:
+
+```bash
+rajio /path/to/session --reset export --force-commit --continue=until-manual
+```
+
+Expected final output:
+
+- `output/*.ja.srt`
+- `output/*.zh.srt`
+- `output/*.ja-zh.ass`
+
+### 5. Final Verification
 
 Before reporting completion:
 
