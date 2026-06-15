@@ -92,7 +92,6 @@ invalidates the workflow back to `audio`.
 rajio /path/to/session --continue=until-manual
 rajio /path/to/session --continue=step
 rajio /path/to/session --commit --continue=until-manual
-rajio /path/to/session --force-commit --continue=until-manual
 rajio /path/to/session --reset transcript_raw
 ```
 
@@ -103,11 +102,6 @@ Workflow controls:
   stage unless `--full` is also set.
 - `--commit`: validate and commit the current manual stage, recording the current
   work file hash in `session.toml`, then continue according to `--continue`.
-- `--force-commit`: commit the current manual stage after manually confirming that all
-  remaining blocking `error` issues are intentional subtitle QA exceptions. It records
-  `force_committed = true` with the current work file hash. It does not bypass `fatal`
-  issues such as schema errors, empty required text, missing `zh`, invalid timing,
-  overlap, duplicate IDs, missing files, or failed automatic stages.
 - `--reset <stage>`: reset the selected stage and all downstream stages to
   `pending`, set `current_stage` to that stage, and continue. Valid stages are
   `audio`, `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
@@ -121,19 +115,48 @@ Workflow controls:
 - `--verbose`: print every validation warning where the command supports verbose
   output instead of summarized warnings.
 
-Force commit is an exception path, not a normal QA shortcut. Before using it, run:
+Subtitle QA exceptions are recorded per segment in `segments.toml`, not in `session.toml`.
+Before adding a skip annotation, run:
 
 ```bash
 rajio check /path/to/session --json --level error --verbose
 ```
 
-Inspect every remaining `fatal`/`error` issue manually. Use `--force-commit` only when keeping the
-exception makes the subtitle more accurate, natural, or comfortable, for example an
-official title or event name such as `STRAIGHT! REACH!! CHEER!!!`. Do not use it for
-unfinished translation, empty text, broken timing, overlaps, duplicate IDs, bad schema, or
-large unreviewed batches of errors. In `translation_work`, inherited Japanese subtitle QA
-hard rules are warnings and appear in the `--language ja` check view, so they do not require
-`--force-commit`; Chinese hard QA exceptions still do.
+Inspect every remaining `fatal`/`error` issue manually. Only segment-level subtitle QA
+`error` issues may be skipped, and every skip must name the exact issue code and give a
+reason. Never skip unfinished translation, empty text, broken timing, overlaps, duplicate
+IDs, bad schema, missing files, failed automatic stages, or large unreviewed batches of
+errors. In `translation_work`, inherited Japanese subtitle QA hard rules are warnings and
+appear in the `--language ja` check view, so they do not require skip annotations; Chinese
+hard QA exceptions do.
+
+```toml
+[[segments]]
+id = "12"
+start = 10.0
+end = 12.0
+speaker = "A"
+ja = "STRAIGHT! REACH!! CHEER!!!"
+zh = "STRAIGHT! REACH!! CHEER!!!"
+skip_checks = [
+  { code = "zh_repeated_punctuation", reason = "Official title spelling." },
+  { code = "zh_line_hard_limit", reason = "Official title should stay on one line." }
+]
+```
+
+Skipped issues are still shown as `warning` by `rajio check`. If a skip no longer matches
+an actual issue on that segment, `rajio check` reports a blocking `unused_skip_check` fatal
+issue until the stale annotation is removed.
+
+Allowed `skip_checks.code` values are:
+
+- `ja_line_hard_limit`, `zh_line_hard_limit`
+- `ja_line_break_hard_limit`, `zh_line_break_hard_limit`
+- `duration_too_short`, `duration_too_long`
+- `ja_reading_speed_limit`, `zh_reading_speed_limit`
+- `subtitle_gap_too_short`
+- `ja_punctuation_only_line`, `zh_punctuation_only_line`
+- `ja_repeated_punctuation`, `zh_repeated_punctuation`
 
 Reset boundaries:
 
@@ -269,7 +292,10 @@ Patch rules:
 
 - A patch must contain at least one `[[operations]]`.
 - `op = "edit"` requires `segment_id` plus at least one changed field: `start`, `end`, `speaker`,
-  `ja`, or `zh`.
+  `ja`, `zh`, or `skip_checks`.
+- In an edit operation, missing `skip_checks` preserves existing annotations,
+  `skip_checks = []` clears annotations, and a non-empty array replaces annotations exactly.
+  Each skip requires an allowed `code` and non-empty `reason`.
 - `op = "split"` replaces `source_id` with two or more `[[operations.replacements]]`.
   `gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
   Replacement segments use virtual continuous timing: they must cover the original
@@ -280,8 +306,12 @@ Patch rules:
 - Every generated split segment must remain at least `0.5` seconds long after gap
   insertion.
 - If a split source has `zh`, every replacement segment must include `zh`.
+- Split replacements do not inherit `skip_checks`; add a later edit operation for each
+  replacement that needs a fresh skip annotation.
 - `op = "merge"` accepts two or more adjacent source ids in `source_ids`; `merged_id` and `ja` are
   required. If any source has `zh`, merged `zh` is required.
+- Merged segments do not inherit `skip_checks`; add a later edit operation when the merged
+  text still has an intentional QA exception.
 - `op = "delete"` requires only `segment_id`.
 - Current segment ids must be unique after every operation.
 
@@ -292,6 +322,14 @@ Patch example:
 op = "edit"
 segment_id = "12"
 zh = "修正后的中文字幕"
+
+[[operations]]
+op = "edit"
+segment_id = "title"
+skip_checks = [
+  { code = "zh_repeated_punctuation", reason = "Official title spelling." },
+  { code = "zh_line_hard_limit", reason = "Official title should stay on one line." }
+]
 
 [[operations]]
 op = "split"
@@ -338,10 +376,13 @@ rajio segments edit /path/to/session 12 --stage transcript \
 
 rajio segments edit /path/to/session 12 --stage translation \
   --zh "修正后的中文字幕" --dry-run
+
+rajio segments edit /path/to/session 12 --stage translation --clear-skip-checks
 ```
 
-Editable fields are `--start`, `--end`, `--speaker`, `--ja`, and `--zh`. At least one
-field is required.
+Editable fields are `--start`, `--end`, `--speaker`, `--ja`, and `--zh`. Use
+`--clear-skip-checks` to remove stale segment skip annotations. At least one field or
+`--clear-skip-checks` is required. Ordinary edits preserve existing `skip_checks`.
 
 ### segments split
 
@@ -521,10 +562,11 @@ Output:
   `counts.warning`. Pipe it to `jq` when you need to extract fields or slice down the
   output.
 - `--json --verbose` adds sorted full `issues`.
-- `fatal` means data/file/schema/timeline/workflow integrity and cannot be force committed.
-- `error` means subtitle QA hard issue; it blocks commit/export but may be force committed
-  only when allowlisted and manually confirmed.
+- `fatal` means data/file/schema/timeline/workflow integrity and cannot be skipped.
+- `error` means subtitle QA hard issue; it blocks commit/export unless the exact issue code
+  is listed in that segment's `skip_checks` with a reason.
 - `warning` means subtitle QA soft issue for review only.
+- A skipped `error` is reported as `warning` so exceptions remain visible.
 - `translation_work` reports inherited Japanese subtitle QA hard rules as warnings in the
   `ja` language view. Chinese subtitle QA hard rules remain `error`, and data integrity
   problems remain `fatal`.
@@ -547,6 +589,7 @@ codes for segment-scoped issues.
 | Terminal punctuation  | line ends with ordinary sentence mark      | `ja_terminal_punctuation`, `zh_terminal_punctuation`                                                           |
 | Repeated punctuation  | repeated question/exclamation punctuation  | `ja_repeated_punctuation`, `zh_repeated_punctuation`                                                           |
 | Punctuation-only line | a line contains only punctuation           | `ja_punctuation_only_line`, `zh_punctuation_only_line`                                                         |
+| Skip annotations      | stale per-segment skip metadata            | `unused_skip_check`                                                                                            |
 
 Compact JSON shape:
 

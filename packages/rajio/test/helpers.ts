@@ -14,7 +14,6 @@ const originalEnv = { ...process.env };
 export const baseOptions: CliOptions = {
   continue: 'until-manual',
   commit: false,
-  forceCommit: false,
   agent: undefined,
   full: false,
   verbose: false

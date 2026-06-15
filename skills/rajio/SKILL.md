@@ -42,10 +42,9 @@ create polished Chinese subtitles from Japanese audio/video with rajio.
 - Use `rajio check` as documented in the CLI section. It is not a substitute for manual
   QA of typos, ASR errors, proper nouns, context, terminology, fixed phrases, and
   translation consistency.
-- Use `--force-commit` only after `rajio check <target> --json --level error --verbose`
-  and manual review confirm every remaining `error` is an intentional subtitle QA
-  exception.
-  Never force commit `fatal` data/file/schema/timeline issues, unfinished translation, or
+- Record intentional subtitle QA `error` exceptions with per-segment `skip_checks` in the
+  work-stage `segments.toml`. Every skip must name the exact issue code and include a
+  reason. Never skip `fatal` data/file/schema/timeline issues, unfinished translation, or
   unreviewed batches.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
@@ -115,8 +114,6 @@ Default command workflow controls:
 - `--continue=until-manual`: run automatic stages until the next manual stage.
 - `--continue=step`: run one automatic stage.
 - `--commit`: commit the current manual stage after validating its work file.
-- `--force-commit`: manually confirmed subtitle QA exception commit; records
-  `force_committed = true` and still blocks `fatal` data/file/schema/timeline issues.
 - `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
   `translation_work`, or `export`.
 - `--agent=codex`: CLI automation escape hatch. Do not use it as the default manual-stage
@@ -195,6 +192,14 @@ then apply the same file without `--dry-run`. It prints operation counts by defa
 op = "edit"
 segment_id = "12"
 zh = "修正后的中文字幕"
+
+[[operations]]
+op = "edit"
+segment_id = "title"
+skip_checks = [
+  { code = "zh_repeated_punctuation", reason = "Official title spelling." },
+  { code = "zh_line_hard_limit", reason = "Official title should stay on one line." }
+]
 
 [[operations]]
 op = "split"
@@ -420,11 +425,12 @@ If only intentional subtitle QA exceptions remain, inspect them first:
 rajio check /path/to/session --json --stage transcript --language ja --level error --verbose
 ```
 
-Then force commit only if preserving the exception improves accuracy, naturalness, or
-readability:
+If preserving an exception improves accuracy, naturalness, or readability, add
+`skip_checks` to the affected segment with the exact issue code and a reason, then commit
+normally:
 
 ```bash
-rajio /path/to/session --force-commit --continue=until-manual
+rajio /path/to/session --commit --continue=until-manual
 ```
 
 Expected result: rajio commits `transcript_work`, creates
@@ -521,11 +527,12 @@ If intentional Chinese QA exceptions remain, inspect them first:
 rajio check /path/to/session --json --stage translation --level error --verbose
 ```
 
-Then force commit only after manual review confirms all remaining `error` issues are
-intentional subtitle QA exceptions and no `fatal` issues remain.
+Add `skip_checks` to each affected segment only after manual review confirms every
+remaining `error` issue is an intentional subtitle QA exception and no `fatal` issues
+remain. Then commit normally.
 
 ```bash
-rajio /path/to/session --force-commit --continue=until-manual
+rajio /path/to/session --commit --continue=until-manual
 ```
 
 Expected result: rajio commits `translation_work`, runs export, and reaches the
@@ -597,10 +604,11 @@ rajio /path/to/session --reset export --commit --continue=until-manual
 ```
 
 If the final refined translation still has intentional Chinese QA exceptions, inspect them
-first as documented above, then use the force-commit variant:
+first as documented above, add exact per-segment `skip_checks`, then rerun the same commit
+and export reset command:
 
 ```bash
-rajio /path/to/session --reset export --force-commit --continue=until-manual
+rajio /path/to/session --reset export --commit --continue=until-manual
 ```
 
 Expected final output:

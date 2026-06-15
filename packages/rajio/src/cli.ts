@@ -36,10 +36,6 @@ app
     }
   })
   .option('--commit', 'commit current manual stage')
-  .option(
-    '--force-commit',
-    'commit current manual stage while allowing confirmed subtitle QA exceptions'
-  )
   .option('--agent <agent>', 'batch automation only, run agent for manual stage: codex or false', {
     cast: (value) => {
       if (value === undefined) {
@@ -95,7 +91,6 @@ app
       media: options.media,
       continue: options.continue,
       commit: options.commit,
-      forceCommit: options.forceCommit,
       agent: options.agent,
       full: options.full,
       reset: options.reset,

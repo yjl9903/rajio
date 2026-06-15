@@ -106,12 +106,34 @@ export interface CliOptions {
   media?: string;
   continue: 'until-manual' | 'step';
   commit: boolean;
-  forceCommit: boolean;
   agent: 'codex' | false | undefined;
   full: boolean;
   reset?: StageName;
   verbose: boolean;
   chunking?: AudioChunkOptions;
+}
+
+export const SKIPPABLE_ISSUE_CODES = [
+  'ja_line_hard_limit',
+  'zh_line_hard_limit',
+  'ja_line_break_hard_limit',
+  'zh_line_break_hard_limit',
+  'duration_too_short',
+  'duration_too_long',
+  'ja_reading_speed_limit',
+  'zh_reading_speed_limit',
+  'subtitle_gap_too_short',
+  'ja_punctuation_only_line',
+  'zh_punctuation_only_line',
+  'ja_repeated_punctuation',
+  'zh_repeated_punctuation'
+] as const;
+
+export type SkippableIssueCode = (typeof SKIPPABLE_ISSUE_CODES)[number];
+
+export interface SegmentSkipCheck {
+  code: SkippableIssueCode;
+  reason: string;
 }
 
 export interface Segment {
@@ -123,6 +145,7 @@ export interface Segment {
   zh?: string;
   notes?: string;
   flags?: string[];
+  skip_checks?: SegmentSkipCheck[];
 }
 
 export interface SegmentsFile {

@@ -69,9 +69,8 @@ export async function commitManualStage(input: {
   session: Session;
   stage: ManualStageName;
   verbose: boolean;
-  forceCommit?: boolean;
 }): Promise<void> {
-  const { session, stage, verbose, forceCommit = false } = input;
+  const { session, stage, verbose } = input;
   const state = session.stage(stage);
   if (typeof state.segments !== 'string') {
     throw new Error(`${stage} does not have a work segments path.`);
@@ -81,11 +80,11 @@ export async function commitManualStage(input: {
   const profile = stage === 'translation_work' ? 'translation_work' : 'default';
   const segments = await readSegmentsFile(segmentsPath);
   const issues = validateSegments(segments, { requireZh });
-  const errors = blockingValidationErrors(issues, { forceCommit, profile });
+  const errors = blockingValidationErrors(issues, { profile });
   const stageLogger = taggedLogger(stage);
   printCheckIssues(
     issues
-      .map((issue) => formatValidationIssueForProfile(issue, { forceCommit, profile }))
+      .map((issue) => formatValidationIssueForProfile(issue, { profile }))
       .filter((issue) => issue.level === 'warning')
       .map(
         (issue): CheckIssue => ({
@@ -110,7 +109,7 @@ export async function commitManualStage(input: {
     segments_sha256: await sha256File(segmentsPath),
     committed_at: new Date().toISOString(),
     completed_at: new Date().toISOString(),
-    force_committed: forceCommit ? true : undefined
+    force_committed: undefined
   });
 }
 
@@ -119,9 +118,8 @@ export async function runAgentAndCommit(input: {
   runtime: RuntimeConfig;
   stage: ManualStageName;
   verbose: boolean;
-  forceCommit?: boolean;
 }): Promise<void> {
-  const { session, runtime, stage, verbose, forceCommit = false } = input;
+  const { session, runtime, stage, verbose } = input;
   if (session.stage(stage).status === 'pending') {
     await setupManualStage({ session, stage });
   }
@@ -137,7 +135,7 @@ export async function runAgentAndCommit(input: {
       description: session.description,
       runtime
     });
-    await commitManualStage({ session, stage, verbose, forceCommit });
+    await commitManualStage({ session, stage, verbose });
   } catch (error) {
     session.markFailed(stage, error);
     await session.save();

@@ -2,7 +2,13 @@ import { z } from 'zod';
 import { readFile } from 'node:fs/promises';
 import { parse, stringify } from 'smol-toml';
 
-import type { Segment, SegmentsFile, ValidationIssue } from '../types.js';
+import {
+  SKIPPABLE_ISSUE_CODES,
+  type Segment,
+  type SegmentSkipCheck,
+  type SegmentsFile,
+  type ValidationIssue
+} from '../types.js';
 import { writeFileAtomic } from '../utils/fs.js';
 import {
   SEGMENT_DURATION_LIMITS as DURATION_LIMITS,
@@ -11,21 +17,6 @@ import {
 } from './limits.js';
 
 const VALIDATION_SUMMARY_CODE_LIMIT = 5;
-const FORCE_COMMITTABLE_VALIDATION_CODES = new Set([
-  'ja_line_hard_limit',
-  'zh_line_hard_limit',
-  'ja_line_break_hard_limit',
-  'zh_line_break_hard_limit',
-  'duration_too_short',
-  'duration_too_long',
-  'ja_reading_speed_limit',
-  'zh_reading_speed_limit',
-  'subtitle_gap_too_short',
-  'ja_punctuation_only_line',
-  'zh_punctuation_only_line',
-  'ja_repeated_punctuation',
-  'zh_repeated_punctuation'
-]);
 const TRANSLATION_INHERITED_JAPANESE_QA_CODES = new Set([
   'ja_line_hard_limit',
   'ja_line_break_hard_limit',
@@ -66,6 +57,11 @@ const REPEATED_EMPHATIC_PUNCTUATION_HARD = /[?!？！]{3,}/;
 const PUNCTUATION_ONLY_LINE = /^[\s\p{P}\p{S}]+$/u;
 const TRAILING_CLOSERS = /[\s"'”’）)」』】》]+$/;
 
+export const segmentSkipCheckSchema = z.object({
+  code: z.enum(SKIPPABLE_ISSUE_CODES),
+  reason: z.string().trim().min(1)
+});
+
 export const segmentSchema = z.object({
   id: z.string().min(1),
   start: z.number().nonnegative(),
@@ -74,7 +70,8 @@ export const segmentSchema = z.object({
   ja: z.string(),
   zh: z.string().optional(),
   notes: z.string().optional(),
-  flags: z.array(z.string()).optional()
+  flags: z.array(z.string()).optional(),
+  skip_checks: z.array(segmentSkipCheckSchema).optional()
 });
 
 export const segmentsFileSchema = z.object({
@@ -182,7 +179,59 @@ export function validateSegments(
     previous = segment;
   }
 
-  return issues;
+  return applySegmentSkipChecks(issues, parsed.data.segments);
+}
+
+function applySegmentSkipChecks(issues: ValidationIssue[], segments: Segment[]): ValidationIssue[] {
+  const skips = buildSkipCheckMap(segments);
+  const matched = new Set<string>();
+  const formatted = issues.map((issue) => {
+    if (issue.level !== 'error' || !issue.segmentId) {
+      return issue;
+    }
+    const key = skipCheckKey(issue.segmentId, issue.code);
+    const skip = skips.get(key);
+    if (!skip) {
+      return issue;
+    }
+    matched.add(key);
+    return {
+      ...issue,
+      level: 'warning' as const,
+      message: `skipped by segment annotation (${skip.reason}): ${issue.message}`
+    };
+  });
+
+  for (const segment of segments) {
+    for (const skip of segment.skip_checks ?? []) {
+      const key = skipCheckKey(segment.id, skip.code);
+      if (matched.has(key)) {
+        continue;
+      }
+      formatted.push({
+        level: 'fatal',
+        code: 'unused_skip_check',
+        segmentId: segment.id,
+        message: `Segment ${segment.id} skip_checks entry for ${skip.code} does not match any generated issue. Remove the stale skip annotation.`
+      });
+    }
+  }
+
+  return formatted;
+}
+
+function buildSkipCheckMap(segments: Segment[]): Map<string, SegmentSkipCheck> {
+  const skips = new Map<string, SegmentSkipCheck>();
+  for (const segment of segments) {
+    for (const skip of segment.skip_checks ?? []) {
+      skips.set(skipCheckKey(segment.id, skip.code), skip);
+    }
+  }
+  return skips;
+}
+
+function skipCheckKey(segmentId: string, code: string): string {
+  return `${segmentId}\0${code}`;
 }
 
 export function assertValidSegments(
@@ -200,17 +249,13 @@ export function assertValidSegments(
   return parseSegments(value);
 }
 
-export function isForceCommittableValidationIssue(issue: ValidationIssue): boolean {
-  return issue.level === 'error' && FORCE_COMMITTABLE_VALIDATION_CODES.has(issue.code);
-}
-
 export function isTranslationInheritedJapaneseQaIssue(issue: ValidationIssue): boolean {
   return issue.level === 'error' && TRANSLATION_INHERITED_JAPANESE_QA_CODES.has(issue.code);
 }
 
 export function blockingValidationErrors(
   issues: ValidationIssue[],
-  options: { forceCommit?: boolean; profile?: ValidationProfile } = {}
+  options: { profile?: ValidationProfile } = {}
 ): ValidationIssue[] {
   const errors = issues.filter((issue) => issue.level === 'fatal' || issue.level === 'error');
   return errors.filter((issue) => isBlockingValidationIssue(issue, options));
@@ -218,7 +263,7 @@ export function blockingValidationErrors(
 
 export function formatValidationIssueForProfile(
   issue: ValidationIssue,
-  options: { forceCommit?: boolean; profile?: ValidationProfile } = {}
+  options: { profile?: ValidationProfile } = {}
 ): ValidationIssue {
   if (options.profile === 'translation_work' && isTranslationInheritedJapaneseQaIssue(issue)) {
     return {
@@ -227,19 +272,12 @@ export function formatValidationIssueForProfile(
       message: `translation inherited Japanese QA: ${issue.message}`
     };
   }
-  if (options.forceCommit && isForceCommittableValidationIssue(issue)) {
-    return {
-      ...issue,
-      level: 'warning',
-      message: `force-committed exception: ${issue.message}`
-    };
-  }
   return issue;
 }
 
 function isBlockingValidationIssue(
   issue: ValidationIssue,
-  options: { forceCommit?: boolean; profile?: ValidationProfile }
+  options: { profile?: ValidationProfile }
 ): boolean {
   if (issue.level === 'fatal') {
     return true;
@@ -247,7 +285,7 @@ function isBlockingValidationIssue(
   if (options.profile === 'translation_work' && isTranslationInheritedJapaneseQaIssue(issue)) {
     return false;
   }
-  return !(options.forceCommit && isForceCommittableValidationIssue(issue));
+  return true;
 }
 
 export function formatValidationErrorSummary(
@@ -297,8 +335,14 @@ export function cloneForTranslation(source: SegmentsFile, generatedAt: string): 
       kind: 'translation',
       generated_at: generatedAt
     },
-    segments: source.segments.map((segment) => ({ ...segment }))
+    segments: source.segments.map(withoutSkipChecks)
   };
+}
+
+function withoutSkipChecks(segment: Segment): Segment {
+  const next = { ...segment };
+  delete next.skip_checks;
+  return next;
 }
 
 export function normalizeTranscriptWorkGaps(source: SegmentsFile): SegmentsFile {

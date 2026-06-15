@@ -1,4 +1,4 @@
-import type { Segment, SegmentsFile } from '../types.js';
+import type { Segment, SegmentSkipCheck, SegmentsFile } from '../types.js';
 import { Session } from '../session/index.js';
 import type { ManualStageName } from '../types.js';
 import { readSegmentsFile, writeSegmentsFile } from './index.js';
@@ -19,6 +19,8 @@ export interface SegmentEditUpdate {
   speaker?: string;
   ja?: string;
   zh?: string;
+  skipChecks?: SegmentSkipCheck[];
+  clearSkipChecks?: boolean;
 }
 
 export async function loadSegmentEditContext(input: {
@@ -54,8 +56,19 @@ export async function persistSegmentEdit(context: SegmentEditContext): Promise<v
 }
 
 export function editSegment(file: SegmentsFile, id: string, update: SegmentEditUpdate): Segment {
-  if (Object.values(update).every((value) => value === undefined)) {
+  const hasSegmentFieldUpdate = [
+    update.start,
+    update.end,
+    update.speaker,
+    update.ja,
+    update.zh,
+    update.skipChecks
+  ].some((value) => value !== undefined);
+  if (!hasSegmentFieldUpdate && update.clearSkipChecks !== true) {
     throw new Error('at least one field must be provided.');
+  }
+  if (update.skipChecks !== undefined && update.clearSkipChecks === true) {
+    throw new Error('skipChecks and clearSkipChecks are mutually exclusive.');
   }
   const segment = findSegment(file, id);
   if (update.start !== undefined) {
@@ -72,6 +85,16 @@ export function editSegment(file: SegmentsFile, id: string, update: SegmentEditU
   }
   if (update.zh !== undefined) {
     segment.zh = update.zh;
+  }
+  if (update.skipChecks !== undefined) {
+    if (update.skipChecks.length > 0) {
+      segment.skip_checks = update.skipChecks;
+    } else {
+      delete segment.skip_checks;
+    }
+  }
+  if (update.clearSkipChecks === true) {
+    delete segment.skip_checks;
   }
   return segment;
 }
@@ -106,7 +129,7 @@ export function splitSegment(
   }
 
   const first: Segment = {
-    ...source,
+    ...withoutSkipChecks(source),
     id: input.id1,
     start: source.start,
     end: boundary.end,
@@ -114,7 +137,7 @@ export function splitSegment(
     ja: input.ja1
   };
   const second: Segment = {
-    ...source,
+    ...withoutSkipChecks(source),
     id: input.id2,
     start: boundary.start,
     end: source.end,
@@ -162,7 +185,7 @@ export function mergeSegments(
   }
 
   const merged: Segment = {
-    ...first,
+    ...withoutSkipChecks(first),
     id: input.id,
     start: first.start,
     end: second.end,
@@ -229,6 +252,15 @@ export function cloneSegment(segment: Segment): Segment {
   if (segment.flags) {
     next.flags = [...segment.flags];
   }
+  if (segment.skip_checks) {
+    next.skip_checks = segment.skip_checks.map((skip) => ({ ...skip }));
+  }
+  return next;
+}
+
+export function withoutSkipChecks(segment: Segment): Segment {
+  const next = cloneSegment(segment);
+  delete next.skip_checks;
   return next;
 }
 

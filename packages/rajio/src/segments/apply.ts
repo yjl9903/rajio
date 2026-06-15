@@ -8,8 +8,10 @@ import {
   editSegment,
   findSegment,
   findSegmentIndex,
-  mergeSpeakerLabels
+  mergeSpeakerLabels,
+  withoutSkipChecks
 } from './edit.js';
+import { segmentSkipCheckSchema } from './index.js';
 import { SEGMENT_TIME_EPSILON as SPLIT_TIME_EPSILON } from './limits.js';
 import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
@@ -21,7 +23,8 @@ const editOperationSchema = z
     end: z.number().positive().optional(),
     speaker: z.string().min(1).optional(),
     ja: z.string().optional(),
-    zh: z.string().optional()
+    zh: z.string().optional(),
+    skip_checks: z.array(segmentSkipCheckSchema).optional()
   })
   .strict();
 
@@ -77,7 +80,8 @@ const segmentPatchOperationSchema = z
       operation.end === undefined &&
       operation.speaker === undefined &&
       operation.ja === undefined &&
-      operation.zh === undefined
+      operation.zh === undefined &&
+      operation.skip_checks === undefined
     ) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
@@ -159,7 +163,8 @@ function applyOperation(
       end: operation.end,
       speaker: operation.speaker,
       ja: operation.ja,
-      zh: operation.zh
+      zh: operation.zh,
+      skipChecks: operation.skip_checks
     });
     const segment = cloneSegment(findSegment(file, operation.segment_id));
     result.edits.push(segment);
@@ -230,7 +235,7 @@ function applyMerge(
   const first = sources[0]!;
   const last = sources.at(-1)!;
   const merged: Segment = {
-    ...first,
+    ...withoutSkipChecks(first),
     id: merge.merged_id,
     start: first.start,
     end: last.end,

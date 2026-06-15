@@ -4,7 +4,6 @@ import path from 'node:path';
 import {
   fromSessionRelative,
   sanitizeFileStem,
-  sha256File,
   toSessionRelative,
   writeFileAtomic
 } from '../../utils/fs.js';
@@ -24,12 +23,7 @@ export async function runExportStage(session: Session): Promise<void> {
   }
   const segmentsPath = fromSessionRelative(session.dir, translation.segments);
   const segments = await readSegmentsFile(segmentsPath);
-  const forceCommit =
-    translation.force_committed === true &&
-    typeof translation.segments_sha256 === 'string' &&
-    (await sha256File(segmentsPath)) === translation.segments_sha256;
   const errors = blockingValidationErrors(validateSegments(segments, { requireZh: true }), {
-    forceCommit,
     profile: 'translation_work'
   });
   if (errors.length > 0) {

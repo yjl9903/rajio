@@ -115,6 +115,7 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--speaker <speaker>', 'segment speaker')
     .option('--ja <text>', 'Japanese subtitle text')
     .option('--zh <text>', 'Chinese subtitle text')
+    .option('--clear-skip-checks', 'remove skip_checks annotations from this segment')
     .option('--dry-run', 'validate and print the edited segment without writing segments.toml')
     .option('--json', 'print JSON output')
     .allowUnknownOption(rejectUnknownOption)
@@ -129,7 +130,8 @@ export function registerSegmentCommands(app: RajioApp): void {
         end: options.end,
         speaker: options.speaker,
         ja: options.ja,
-        zh: options.zh
+        zh: options.zh,
+        clearSkipChecks: Boolean(options.clearSkipChecks)
       });
       await persistUnlessDryRun(context, Boolean(options.dryRun));
       printSegments([segment], output, { totalDuration: getTotalDuration(context.file.segments) });

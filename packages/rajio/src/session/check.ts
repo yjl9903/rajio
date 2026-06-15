@@ -12,7 +12,6 @@ import {
 } from '../segments/index.js';
 import {
   CURRENT_STAGES,
-  MANUAL_STAGES,
   STAGES,
   STAGE_STATUSES,
   type CurrentStageName,
@@ -271,14 +270,7 @@ async function checkSession(
           message: `Referenced segments file does not exist: ${stageState.segments}.`
         });
       } else {
-        await checkSegments(
-          segmentsPath,
-          issues,
-          {
-            forceCommitted: await hasValidForceCommit(session, stage, stageState, segmentsPath)
-          },
-          checkedSegments
-        );
+        await checkSegments(segmentsPath, issues, {}, checkedSegments);
       }
     }
     if (
@@ -400,7 +392,7 @@ function checkTerminalDoneConsistency(session: Session, issues: CheckIssue[]): v
 async function checkSegments(
   filePath: string,
   issues: CheckIssue[],
-  options: { requireZh?: boolean; strict?: boolean; forceCommitted?: boolean } = {},
+  options: { requireZh?: boolean; strict?: boolean } = {},
   checkedSegments?: Set<string>
 ): Promise<void> {
   const normalizedPath = path.resolve(filePath);
@@ -420,7 +412,6 @@ async function checkSegments(
         ? buildSegmentContext(file.segments, issue.segmentId)
         : undefined;
       const formattedIssue = formatValidationIssueForProfile(issue, {
-        forceCommit: options.forceCommitted,
         profile
       });
       issues.push({
@@ -442,23 +433,6 @@ async function checkSegments(
       message: formatError(error)
     });
   }
-}
-
-async function hasValidForceCommit(
-  session: Session,
-  stage: StageName,
-  state: StageState,
-  segmentsPath: string
-): Promise<boolean> {
-  if (
-    !MANUAL_STAGES.includes(stage as (typeof MANUAL_STAGES)[number]) ||
-    state.status !== 'committed' ||
-    state.force_committed !== true ||
-    typeof state.segments_sha256 !== 'string'
-  ) {
-    return false;
-  }
-  return (await sha256File(segmentsPath)) === state.segments_sha256;
 }
 
 function isRawTranscriptSegmentsPath(filePath: string): boolean {

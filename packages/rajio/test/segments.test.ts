@@ -356,6 +356,124 @@ describe('segments validation and subtitle rendering', () => {
     );
   });
 
+  it('downgrades matched segment skip checks to warnings with reasons', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: 'title',
+          start: 0,
+          end: 3,
+          speaker: 'A',
+          ja: 'タイトル',
+          zh: 'STRAIGHT!!! REACH!! CHEER!!!',
+          skip_checks: [
+            { code: 'zh_line_hard_limit', reason: 'Official title should stay on one line.' },
+            { code: 'zh_repeated_punctuation', reason: 'Official title spelling.' }
+          ]
+        }
+      ]
+    });
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'zh_line_hard_limit',
+          level: 'warning',
+          message: expect.stringContaining('Official title should stay on one line.')
+        }),
+        expect.objectContaining({
+          code: 'zh_repeated_punctuation',
+          level: 'warning',
+          message: expect.stringContaining('Official title spelling.')
+        })
+      ])
+    );
+    expect(issues.some((issue) => issue.level === 'error')).toBe(false);
+  });
+
+  it('reports stale segment skip checks as fatal issues', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: 'clean',
+          start: 0,
+          end: 3,
+          speaker: 'A',
+          ja: 'タイトル',
+          zh: '标题',
+          skip_checks: [{ code: 'zh_line_hard_limit', reason: 'Old exception.' }]
+        }
+      ]
+    });
+
+    expect(issues).toContainEqual(
+      expect.objectContaining({
+        code: 'unused_skip_check',
+        level: 'fatal',
+        segmentId: 'clean',
+        message: expect.stringContaining('zh_line_hard_limit')
+      })
+    );
+  });
+
+  it('rejects invalid segment skip check metadata', () => {
+    expect(
+      validateSegments({
+        version: 1,
+        source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+        segments: [
+          {
+            id: 'bad-code',
+            start: 0,
+            end: 3,
+            speaker: 'A',
+            ja: 'タイトル',
+            zh: '标题',
+            skip_checks: [{ code: 'empty_zh', reason: 'Not skippable.' }]
+          }
+        ]
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'schema',
+          level: 'fatal',
+          message: expect.stringContaining('segments.0.skip_checks.0.code')
+        })
+      ])
+    );
+
+    expect(
+      validateSegments({
+        version: 1,
+        source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+        segments: [
+          {
+            id: 'bad-reason',
+            start: 0,
+            end: 3,
+            speaker: 'A',
+            ja: 'タイトル',
+            zh: '标题',
+            skip_checks: [{ code: 'zh_line_hard_limit', reason: '' }]
+          }
+        ]
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'schema',
+          level: 'fatal',
+          message: expect.stringContaining('segments.0.skip_checks.0.reason')
+        })
+      ])
+    );
+  });
+
   it('summarizes check issues by severity and code unless verbose output is requested', () => {
     const issues = [
       {
@@ -967,6 +1085,39 @@ describe('segment edit tools', () => {
     ]);
   });
 
+  it('replaces and clears segment skip checks through edit patch operations', () => {
+    const file = sampleTranslation();
+    const patch = parseSegmentPatch(
+      [
+        '[[operations]]',
+        'op = "edit"',
+        'segment_id = "1"',
+        '',
+        '[[operations.skip_checks]]',
+        'code = "zh_line_hard_limit"',
+        'reason = "Official title should stay on one line."',
+        '',
+        '[[operations.skip_checks]]',
+        'code = "zh_repeated_punctuation"',
+        'reason = "Official title spelling."',
+        '',
+        '[[operations]]',
+        'op = "edit"',
+        'segment_id = "2"',
+        'skip_checks = []'
+      ].join('\n')
+    );
+    file.segments[1]!.skip_checks = [{ code: 'zh_line_hard_limit', reason: 'Stale exception.' }];
+
+    applySegmentPatch(file, patch);
+
+    expect(file.segments[0]?.skip_checks).toEqual([
+      { code: 'zh_line_hard_limit', reason: 'Official title should stay on one line.' },
+      { code: 'zh_repeated_punctuation', reason: 'Official title spelling.' }
+    ]);
+    expect(file.segments[1]).not.toHaveProperty('skip_checks');
+  });
+
   it('applies patches without running full subtitle validation', () => {
     const file = sampleTranslation();
 
@@ -996,6 +1147,58 @@ describe('segment edit tools', () => {
     expect(validateSegments(file).some((issue) => issue.code === 'subtitle_gap_too_short')).toBe(
       false
     );
+  });
+
+  it('does not inherit skip checks when splitting or merging segments', () => {
+    const splitFile: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [
+        {
+          id: '1',
+          start: 0,
+          end: 2,
+          speaker: 'A',
+          ja: '長いタイトルです',
+          skip_checks: [{ code: 'ja_line_hard_limit', reason: 'Old exception.' }]
+        }
+      ]
+    };
+
+    expect(
+      splitSegment(splitFile, '1', {
+        at: 1,
+        id1: '1.1',
+        id2: '1.2',
+        ja1: '前半',
+        ja2: '後半'
+      })
+    ).toEqual([
+      { id: '1.1', start: 0, end: 0.96, speaker: 'A', ja: '前半' },
+      { id: '1.2', start: 1.04, end: 2, speaker: 'A', ja: '後半' }
+    ]);
+
+    const mergeFile: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [
+        {
+          id: '1',
+          start: 0,
+          end: 1,
+          speaker: 'A',
+          ja: '前半',
+          skip_checks: [{ code: 'ja_line_hard_limit', reason: 'Old exception.' }]
+        },
+        { id: '2', start: 1.1, end: 2, speaker: 'A', ja: '後半' }
+      ]
+    };
+
+    expect(mergeSegments(mergeFile, '1', '2', { id: '1-2', ja: '前半後半' })).toEqual({
+      id: '1-2',
+      start: 0,
+      end: 2,
+      speaker: 'A',
+      ja: '前半後半'
+    });
   });
 
   it('rejects split gaps below the hard subtitle gap and too-short split results', () => {
@@ -1352,6 +1555,21 @@ describe('segment edit tools', () => {
 
     const result = await readSegmentsFile(path.join(dir, 'translation/work/segments.toml'));
     expect(result.segments[0]?.zh).toBe('第一行\n第二行\n第三行');
+  });
+
+  it('preserves and clears segment skip checks during direct edits', () => {
+    const file = sampleTranslation();
+    file.segments[0]!.skip_checks = [
+      { code: 'zh_line_hard_limit', reason: 'Official title should stay on one line.' }
+    ];
+
+    editSegment(file, '1', { zh: '您好' });
+    expect(file.segments[0]?.skip_checks).toEqual([
+      { code: 'zh_line_hard_limit', reason: 'Official title should stay on one line.' }
+    ]);
+
+    editSegment(file, '1', { clearSkipChecks: true });
+    expect(file.segments[0]).not.toHaveProperty('skip_checks');
   });
 
   it('requires zh when splitting or merging already translated segments', async () => {

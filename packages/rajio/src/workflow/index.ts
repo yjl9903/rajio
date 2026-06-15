@@ -56,16 +56,14 @@ export async function runRajio(
         session,
         runtime,
         stage: currentStage,
-        verbose: options.verbose,
-        forceCommit: options.forceCommit
+        verbose: options.verbose
       });
       await advancePastStage(session, currentStage);
-    } else if (options.commit || options.forceCommit) {
+    } else if (options.commit) {
       await commitManualStage({
         session,
         stage: currentStage,
-        verbose: options.verbose,
-        forceCommit: options.forceCommit
+        verbose: options.verbose
       });
       await advancePastStage(session, currentStage);
     }
@@ -157,16 +155,14 @@ async function handleManualStage(
       await commitManualStage({
         session,
         stage,
-        verbose: options.verbose,
-        forceCommit: options.forceCommit
+        verbose: options.verbose
       });
     } else {
       await runAgentAndCommit({
         session,
         runtime,
         stage,
-        verbose: options.verbose,
-        forceCommit: options.forceCommit
+        verbose: options.verbose
       });
     }
     await advancePastStage(session, stage);
