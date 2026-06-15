@@ -34,8 +34,8 @@ const TEXT_LIMITS = {
     hard: 28,
     softLines: 1,
     hardLines: 2,
-    readingSpeedSoft: 6,
-    readingSpeedHard: 9,
+    readingSpeedSoft: 15,
+    readingSpeedHard: 20,
     warningPunctuation: /[。、,.]/,
     terminalPunctuation: /[。．.,，、;；:：…]$/
   },
@@ -45,8 +45,8 @@ const TEXT_LIMITS = {
     hard: 24,
     softLines: 1,
     hardLines: 2,
-    readingSpeedSoft: 9,
-    readingSpeedHard: 12,
+    readingSpeedSoft: 11,
+    readingSpeedHard: 15,
     warningPunctuation: /[，,。.]/,
     terminalPunctuation: /[。．.,，、;；:：…]$/
   }

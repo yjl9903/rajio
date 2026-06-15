@@ -189,7 +189,7 @@ describe('segments validation and subtitle rendering', () => {
           start: 0,
           end: 2,
           speaker: 'A',
-          ja: 'あ'.repeat(13),
+          ja: `${'あ'.repeat(16)}\n${'あ'.repeat(15)}`,
           zh: '好'
         },
         {
@@ -197,7 +197,7 @@ describe('segments validation and subtitle rendering', () => {
           start: 2.3,
           end: 4.3,
           speaker: 'A',
-          ja: 'あ'.repeat(19),
+          ja: `${'あ'.repeat(21)}\n${'あ'.repeat(20)}`,
           zh: '好'
         },
         {
@@ -206,15 +206,15 @@ describe('segments validation and subtitle rendering', () => {
           end: 6.6,
           speaker: 'A',
           ja: 'あ',
-          zh: '你'.repeat(19)
+          zh: '你'.repeat(23)
         },
         {
           id: 'zh-speed-hard',
           start: 6.9,
-          end: 8.9,
+          end: 8.4,
           speaker: 'A',
           ja: 'あ',
-          zh: '你'.repeat(25)
+          zh: '你'.repeat(23)
         }
       ]
     });

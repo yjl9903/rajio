@@ -352,7 +352,7 @@ language filtering follow the Check section above.
 | Chinese line length  | `zh` line exceeds 16 visible non-space characters                                                                   | `zh` line exceeds 24 visible non-space characters                          |
 | Line count           | Japanese or Chinese text has 2 lines                                                                                | Japanese or Chinese text has more than 2 lines                             |
 | Subtitle duration    | shorter than 0.8 seconds or longer than 7 seconds                                                                   | shorter than 0.5 seconds or longer than 10 seconds                         |
-| Reading speed        | Japanese exceeds 6 chars/s; Chinese exceeds 9 chars/s                                                               | Japanese exceeds 9 chars/s; Chinese exceeds 12 chars/s                     |
+| Reading speed        | Japanese exceeds 15 chars/s; Chinese exceeds 11 chars/s                                                             | Japanese exceeds 20 chars/s; Chinese exceeds 15 chars/s                    |
 | Adjacent gap         | gap is 80-250 ms                                                                                                    | gap is under 80 ms                                                         |
 | Punctuation          | ordinary comma/period punctuation, ordinary sentence-ending punctuation, or two repeated question/exclamation marks | punctuation-only line or more than two repeated question/exclamation marks |
 

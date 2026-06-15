@@ -371,8 +371,8 @@ Subtitle QA hard validation:
 - Chinese subtitle line exceeds 24 visible non-space characters.
 - Japanese or Chinese subtitle text contains three or more lines.
 - Segment duration is shorter than 0.5 seconds or longer than 10 seconds.
-- Japanese reading speed exceeds 9 visible non-space characters per second.
-- Chinese reading speed exceeds 12 visible non-space characters per second.
+- Japanese reading speed exceeds 20 visible non-space characters per second.
+- Chinese reading speed exceeds 15 visible non-space characters per second.
 - Gap from the previous subtitle is shorter than 80 ms.
 - Japanese or Chinese subtitle line contains only punctuation.
 - Japanese or Chinese subtitle text contains more than two repeated question/exclamation marks.
@@ -387,8 +387,8 @@ Warning validation:
 - Chinese subtitle line exceeds 16 visible non-space characters.
 - Japanese or Chinese subtitle text contains two lines; prefer one line or split segments.
 - Segment duration is shorter than 0.8 seconds or longer than 7 seconds.
-- Japanese reading speed exceeds 6 visible non-space characters per second.
-- Chinese reading speed exceeds 9 visible non-space characters per second.
+- Japanese reading speed exceeds 15 visible non-space characters per second.
+- Chinese reading speed exceeds 11 visible non-space characters per second.
 - Gap from the previous subtitle is 80-250 ms.
 - Japanese or Chinese subtitle text uses ordinary comma or period punctuation; prefer a
   space, rewrite, or split.
