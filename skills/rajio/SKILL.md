@@ -269,7 +269,10 @@ or slice down the output. See [CLI.md](CLI.md#check) for JSON structures.
   `zh` is the default language for translation.
 - `rajio check /path/to/session --json --stage translation --language ja`: inspect Japanese
   subtitle QA inherited into `translation/work/segments.toml`.
-- `rajio check /path/to/session --json --verbose`: include full sorted `issues`.
+- Add `--verbose` only when you need full sorted `issues`, such as locating exact
+  segment IDs and issue codes before adding `skip_checks`. For large sessions, pipe
+  verbose JSON through `jq` to inspect a small slice of `issues` at a time instead of
+  reading the full issue list at once.
 
 ## Workflow
 
@@ -454,7 +457,7 @@ Do not commit `translation_work` until every batch has been translated, terminol
 been cross-checked, and this command has no blocking `fatal` or Chinese `error` issues:
 
 ```bash
-rajio check /path/to/session --json --stage translation --level error --verbose
+rajio check /path/to/session --json --stage translation --level error
 ```
 
 To inspect Japanese QA left over in `translation/work/segments.toml`, run the same command
@@ -510,7 +513,7 @@ Before committing:
   `translation/work/segments.toml`:
 
 ```bash
-rajio check /path/to/session --json --stage translation --language ja --level warning --verbose
+rajio check /path/to/session --json --stage translation --language ja --level warning
 ```
 
 - Record unresolved uncertainty in `description.md` or mention it in the final report.
@@ -591,8 +594,8 @@ Refinement requirements:
 During and after refinement, validate with:
 
 ```bash
-rajio check /path/to/session --json --stage translation --language zh --level error --verbose
-rajio check /path/to/session --json --stage translation --language ja --level warning --verbose
+rajio check /path/to/session --json --stage translation --language zh --level error
+rajio check /path/to/session --json --stage translation --language ja --level warning
 ```
 
 After the final refinement pass, run export reset with commit. This commits dirty
