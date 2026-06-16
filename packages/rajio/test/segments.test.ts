@@ -871,7 +871,7 @@ describe('segments validation and subtitle rendering', () => {
     expect(await readFile(filePath, 'utf8')).not.toContain('media =');
   });
 
-  it('filters empty transcript segments when merging raw chunks', () => {
+  it('preserves empty transcript segments when merging raw chunks', () => {
     const file = mergeTranscriptChunks({
       generatedAt: '2026-06-06T00:00:00.000Z',
       chunks: [
@@ -892,6 +892,20 @@ describe('segments validation and subtitle rendering', () => {
     });
 
     expect(file.segments).toEqual([
+      {
+        id: '1-empty',
+        start: 10,
+        end: 10.2,
+        speaker: 'A',
+        ja: ''
+      },
+      {
+        id: '1-blank',
+        start: 10.2,
+        end: 10.4,
+        speaker: 'A',
+        ja: '   '
+      },
       {
         id: '1-ok',
         start: 10.4,

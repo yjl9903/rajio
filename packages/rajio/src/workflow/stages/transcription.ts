@@ -16,7 +16,6 @@ import {
   mergeTranscriptChunks,
   transcribeWithOpenAI
 } from '../transcription.js';
-import { parseSegments } from '../../segments/index.js';
 import type { RuntimeConfig, SessionAudioChunk, StageRunnerDeps } from '../../types.js';
 import type { Session } from '../../session/index.js';
 import { taggedLogger } from '../../utils/logger.js';
@@ -84,7 +83,6 @@ export async function runTranscriptRawStage(input: {
     chunks,
     generatedAt: new Date().toISOString()
   });
-  parseSegments(segments);
   await writeFileAtomic(segmentsPath, stringify(segments));
   session.updateStage('transcript_raw', {
     input_audio: toSessionRelative(session.dir, audioPath),
@@ -217,6 +215,7 @@ async function transcribeChunk(input: {
       audioPath: fromSessionRelative(input.session.dir, chunkFile.audio),
       start: input.chunk.start,
       end: input.chunk.end,
+      model: chunkFile.model,
       response: chunkFile.response
     };
   }
@@ -271,6 +270,7 @@ async function transcribeChunk(input: {
       audioPath: input.chunk.audioPath,
       start: input.chunk.start,
       end: input.chunk.end,
+      model: TRANSCRIPTION_MODEL,
       response
     };
   } catch (error) {

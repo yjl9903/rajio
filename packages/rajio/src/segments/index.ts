@@ -345,8 +345,13 @@ function withoutSkipChecks(segment: Segment): Segment {
   return next;
 }
 
-export function normalizeTranscriptWorkGaps(source: SegmentsFile): SegmentsFile {
-  const segments = source.segments.map((segment) => ({ ...segment }));
+export function normalizeTranscriptWorkSegments(source: SegmentsFile): SegmentsFile {
+  const segments = source.segments
+    .map((segment) => ({
+      ...segment,
+      ja: segment.ja.trim()
+    }))
+    .filter((segment) => segment.ja);
 
   for (let index = 1; index < segments.length; index += 1) {
     const previous = segments[index - 1]!;

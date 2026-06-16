@@ -28,7 +28,7 @@ describe('transcript raw stage', () => {
     });
   });
 
-  it('normalizes whisper verbose JSON segments with chunk offsets and default speaker', () => {
+  it('merges whisper verbose JSON segments with chunk offsets and default speaker', () => {
     const segments = mergeTranscriptChunks({
       generatedAt: '2026-06-09T00:00:00.000Z',
       chunks: [
@@ -37,6 +37,7 @@ describe('transcript raw stage', () => {
           audioPath: 'chunk-000.m4a',
           start: 10,
           end: 15,
+          model: 'whisper-1',
           response: {
             text: 'こんにちは。次です。',
             segments: [
@@ -64,6 +65,26 @@ describe('transcript raw stage', () => {
         ja: '次です。'
       }
     ]);
+  });
+
+  it('requires speaker labels for non-whisper transcript segments', () => {
+    expect(() =>
+      mergeTranscriptChunks({
+        generatedAt: '2026-06-09T00:00:00.000Z',
+        chunks: [
+          {
+            index: 0,
+            audioPath: 'chunk-000.m4a',
+            start: 10,
+            end: 15,
+            model: 'gpt-4o-transcribe-diarize',
+            response: {
+              segments: [{ id: 'a', start: 0, end: 1, text: 'こんにちは' }]
+            }
+          }
+        ]
+      })
+    ).toThrow('Transcription segment 1 speaker must be a string.');
   });
 
   it('normalizes diarized JSON segments while preserving speaker labels', () => {
@@ -103,7 +124,47 @@ describe('transcript raw stage', () => {
     ]);
   });
 
-  it('normalizes simplified transcription JSON into a single chunk segment', () => {
+  it('rejects transcription responses without segments', () => {
+    expect(() =>
+      mergeTranscriptChunks({
+        generatedAt: '2026-06-09T00:00:00.000Z',
+        chunks: [
+          {
+            index: 0,
+            audioPath: 'chunk-000.m4a',
+            start: 10,
+            end: 15,
+            response: { text: 'こんにちは' }
+          }
+        ]
+      })
+    ).toThrow('Transcription response does not contain segments.');
+  });
+
+  it.each([
+    ['missing speaker', { id: 'a', start: 0, end: 1, text: 'こんにちは' }, 'speaker'],
+    ['missing text', { id: 'a', start: 0, end: 1, speaker: 'A' }, 'text'],
+    ['string start', { id: 'a', start: '0', end: 1, speaker: 'A', text: 'こんにちは' }, 'start'],
+    ['string end', { id: 'a', start: 0, end: '1', speaker: 'A', text: 'こんにちは' }, 'end'],
+    ['NaN start', { id: 'a', start: Number.NaN, end: 1, speaker: 'A', text: 'こんにちは' }, 'start']
+  ])('rejects malformed provider segment with %s', (_label, segment, field) => {
+    expect(() =>
+      mergeTranscriptChunks({
+        generatedAt: '2026-06-09T00:00:00.000Z',
+        chunks: [
+          {
+            index: 0,
+            audioPath: 'chunk-000.m4a',
+            start: 10,
+            end: 15,
+            response: { segments: [segment] }
+          }
+        ]
+      })
+    ).toThrow(`Transcription segment 1 ${field} must be`);
+  });
+
+  it('preserves provider text without trimming or dropping empty segments', () => {
     const segments = mergeTranscriptChunks({
       generatedAt: '2026-06-09T00:00:00.000Z',
       chunks: [
@@ -112,18 +173,38 @@ describe('transcript raw stage', () => {
           audioPath: 'chunk-000.m4a',
           start: 10,
           end: 15,
-          response: { text: 'こんにちは' }
+          response: {
+            segments: [
+              { id: 'empty', start: 0, end: 0.1, speaker: 'A', text: '' },
+              { id: 'blank', start: 0.1, end: 0.2, speaker: 'A', text: '   ' },
+              { id: 'spaced', start: 0.2, end: 1, speaker: 'A', text: ' こんにちは ' }
+            ]
+          }
         }
       ]
     });
 
     expect(segments.segments).toEqual([
       {
-        id: '1-s1',
+        id: '1-empty',
         start: 10,
-        end: 15,
+        end: 10.1,
         speaker: 'A',
-        ja: 'こんにちは'
+        ja: ''
+      },
+      {
+        id: '1-blank',
+        start: 10.1,
+        end: 10.2,
+        speaker: 'A',
+        ja: '   '
+      },
+      {
+        id: '1-spaced',
+        start: 10.2,
+        end: 11,
+        speaker: 'A',
+        ja: ' こんにちは '
       }
     ]);
   });

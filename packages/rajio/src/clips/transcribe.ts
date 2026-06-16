@@ -4,7 +4,6 @@ import path from 'node:path';
 import { parse, stringify } from 'smol-toml';
 
 import type { Session } from '../session/index.js';
-import { parseSegments } from '../segments/index.js';
 import type { AudioChunkOptions, RuntimeConfig, StageRunnerDeps } from '../types.js';
 import {
   createAudioChunksIfNeeded,
@@ -127,7 +126,6 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
     chunks,
     generatedAt: new Date().toISOString()
   });
-  parseSegments(segments);
   await writeFileAtomic(path.join(clipDir, clip.segments), stringify(segments));
   clip.updated_at = new Date().toISOString();
   await writeClipFile(clipPath, clip);
@@ -235,6 +233,7 @@ async function transcribeClipChunk(input: {
       audioPath: fromSessionRelative(input.clipDir, checkpoint.audio),
       start: checkpoint.absolute_start,
       end: checkpoint.absolute_end,
+      model: checkpoint.model,
       response: checkpoint.response
     };
   }
@@ -298,6 +297,7 @@ async function transcribeClipChunk(input: {
       audioPath,
       start: input.chunk.absolute_start,
       end: input.chunk.absolute_end,
+      model: TRANSCRIPTION_MODEL,
       response
     };
   } catch (error) {

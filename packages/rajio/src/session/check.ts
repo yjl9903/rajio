@@ -84,6 +84,8 @@ interface CheckQaTarget {
   language?: CheckLanguageFilter;
 }
 
+type SegmentCheckOptions = { requireZh?: boolean; strict?: boolean };
+
 export async function checkRajio(session: Session): Promise<CheckResult> {
   const issues: CheckIssue[] = [];
   const checkedSegments = new Set<string>();
@@ -101,7 +103,10 @@ export async function checkRajio(session: Session): Promise<CheckResult> {
 
   const segmentFiles = await findSegmentFiles(session.dir);
   for (const filePath of segmentFiles) {
-    await checkSegments(filePath, issues, {}, checkedSegments);
+    const segmentCheckOptions = segmentCheckOptionsForStage(inferStageFromPath(filePath));
+    if (segmentCheckOptions) {
+      await checkSegments(filePath, issues, segmentCheckOptions, checkedSegments);
+    }
   }
 
   return {
@@ -304,7 +309,10 @@ async function checkSession(
           message: `Referenced segments file does not exist: ${stageState.segments}.`
         });
       } else {
-        await checkSegments(segmentsPath, issues, {}, checkedSegments);
+        const segmentCheckOptions = segmentCheckOptionsForStage(stage);
+        if (segmentCheckOptions) {
+          await checkSegments(segmentsPath, issues, segmentCheckOptions, checkedSegments);
+        }
       }
     }
     if (
@@ -426,7 +434,7 @@ function checkTerminalDoneConsistency(session: Session, issues: CheckIssue[]): v
 async function checkSegments(
   filePath: string,
   issues: CheckIssue[],
-  options: { requireZh?: boolean; strict?: boolean } = {},
+  options: SegmentCheckOptions = {},
   checkedSegments?: Set<string>
 ): Promise<void> {
   const normalizedPath = path.resolve(filePath);
@@ -439,13 +447,15 @@ async function checkSegments(
 
 export async function checkSegmentsFile(
   filePath: string,
-  options: { requireZh?: boolean; strict?: boolean } = {}
+  options: SegmentCheckOptions = {}
 ): Promise<CheckIssue[]> {
   try {
     const file = await readSegmentsFile(filePath);
-    const requireZh = options.requireZh ?? file.source.kind === 'translation';
-    const strict = options.strict ?? !isRawTranscriptSegmentsPath(filePath);
     const stage = inferStageFromPath(filePath);
+    const stageOptions = segmentCheckOptionsForStage(stage) ?? {};
+    const mergedOptions = { ...stageOptions, ...options };
+    const requireZh = mergedOptions.requireZh ?? file.source.kind === 'translation';
+    const strict = mergedOptions.strict ?? true;
     const profile = stage === 'translation_work' ? 'translation_work' : 'default';
     return validateSegments(file, { requireZh, strict }).map((issue) => {
       const segment = issue.segmentId
@@ -477,13 +487,6 @@ export async function checkSegmentsFile(
   }
 }
 
-function isRawTranscriptSegmentsPath(filePath: string): boolean {
-  const parts = path.normalize(filePath).split(path.sep);
-  return (
-    parts.at(-3) === 'transcript' && parts.at(-2) === 'raw' && parts.at(-1) === 'segments.toml'
-  );
-}
-
 function inferStageFromPath(filePath: string): StageName | undefined {
   const parts = path.normalize(filePath).split(path.sep);
   const root = parts.at(-3);
@@ -498,6 +501,21 @@ function inferStageFromPath(filePath: string): StageName | undefined {
     return 'translation_work';
   }
   return undefined;
+}
+
+function segmentCheckOptionsForStage(
+  stage: StageName | undefined
+): SegmentCheckOptions | undefined {
+  switch (stage) {
+    case 'transcript_raw':
+      return { requireZh: false, strict: false };
+    case 'transcript_work':
+    case 'translation_work':
+    case undefined:
+      return {};
+    default:
+      return undefined;
+  }
 }
 
 function buildSegmentContext(

@@ -32,6 +32,7 @@ export interface TranscriptChunkResult {
   audioPath: string;
   start: number;
   end: number;
+  model?: string;
   response: unknown;
 }
 
@@ -73,52 +74,75 @@ export function mergeTranscriptChunks(input: {
       generated_at: input.generatedAt
     },
     segments: input.chunks.flatMap((chunk) =>
-      normalizeTranscriptSegments(chunk.response, chunk.end - chunk.start)
-        .filter((segment) => segment.ja.trim())
-        .map((segment, index) => ({
-          ...segment,
-          id: `${chunk.index + 1}-${segment.id || `s${index + 1}`}`,
-          start: segment.start + chunk.start,
-          end: segment.end + chunk.start
-        }))
+      normalizeTranscriptSegments(chunk.response, {
+        defaultSpeaker: chunk.model === 'whisper-1'
+      }).map((segment, index) => ({
+        ...segment,
+        id: `${chunk.index + 1}-${segment.id || `s${index + 1}`}`,
+        start: segment.start + chunk.start,
+        end: segment.end + chunk.start
+      }))
     )
   };
 }
 
-export function normalizeTranscriptSegments(value: unknown, duration?: number): Segment[] {
+export function normalizeTranscriptSegments(
+  value: unknown,
+  options: { defaultSpeaker?: boolean } = {}
+): Segment[] {
   const input = value as {
     text?: string;
-    segments?: Array<{
-      id?: string | number;
-      start: number;
-      end: number;
-      speaker?: string;
-      text?: string;
-    }>;
+    segments?: unknown[];
   };
   if (!Array.isArray(input.segments)) {
-    const text = input.text?.trim();
-    if (!text) {
-      throw new Error('Transcription response does not contain text or segments.');
-    }
-    return [
-      {
-        id: 's1',
-        start: 0,
-        end: duration ?? 0,
-        speaker: 'A',
-        ja: text
-      }
-    ];
+    throw new Error('Transcription response does not contain segments.');
   }
 
-  return input.segments.map((segment, index) => ({
-    id: String(segment.id ?? `s${index + 1}`),
-    start: Number(segment.start),
-    end: Number(segment.end),
-    speaker: segment.speaker || 'A',
-    ja: segment.text?.trim() ?? ''
-  }));
+  return input.segments.map((segment, index) => normalizeTranscriptSegment(segment, index, options));
+}
+
+function normalizeTranscriptSegment(
+  value: unknown,
+  index: number,
+  options: { defaultSpeaker?: boolean }
+): Segment {
+  const label = `Transcription segment ${index + 1}`;
+  if (!isRecord(value)) {
+    throw new Error(`${label} must be an object.`);
+  }
+  const { id, start, end, speaker, text } = value;
+  if (id !== undefined && typeof id !== 'string' && typeof id !== 'number') {
+    throw new Error(`${label} id must be a string or number.`);
+  }
+  if (typeof start !== 'number' || !Number.isFinite(start)) {
+    throw new Error(`${label} start must be a finite number.`);
+  }
+  if (typeof end !== 'number' || !Number.isFinite(end)) {
+    throw new Error(`${label} end must be a finite number.`);
+  }
+  if (speaker === undefined && !options.defaultSpeaker) {
+    throw new Error(`${label} speaker must be a string.`);
+  }
+  if (speaker !== undefined && typeof speaker !== 'string') {
+    throw new Error(`${label} speaker must be a string.`);
+  }
+  if (typeof text !== 'string') {
+    throw new Error(`${label} text must be a string.`);
+  }
+  return {
+    id: String(id ?? `s${index + 1}`),
+    start,
+    end,
+    // Hack for legacy whisper-1 verbose_json: timestamped segments do not carry
+    // diarization labels, but the internal Segment shape requires a speaker.
+    // Diarized providers must still return speaker explicitly.
+    speaker: speaker ?? 'A',
+    ja: text
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function createClient(runtime: RuntimeConfig): OpenAI {

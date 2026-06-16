@@ -137,7 +137,7 @@ describe('session workflow', () => {
     );
   });
 
-  it('normalizes adjacent raw transcript gaps when setting up transcript work', async () => {
+  it('normalizes raw transcript text and gaps when setting up transcript work', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
         status: 'done',
@@ -151,8 +151,9 @@ describe('session workflow', () => {
       stringify({
         ...sampleTranscript(),
         segments: [
-          { id: '1', start: 0, end: 1, speaker: 'A', ja: '一' },
-          { id: '2', start: 1, end: 2, speaker: 'A', ja: '二' }
+          { id: 'empty', start: 0, end: 0.1, speaker: 'A', ja: '   ' },
+          { id: '1', start: 0.1, end: 1.1, speaker: 'A', ja: ' 一 ' },
+          { id: '2', start: 1.1, end: 2.1, speaker: 'A', ja: '\n二\t' }
         ]
       })
     );
@@ -163,8 +164,8 @@ describe('session workflow', () => {
 
     const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
     expect(work.segments).toEqual([
-      { id: '1', start: 0, end: 0.96, speaker: 'A', ja: '一' },
-      { id: '2', start: 1.04, end: 2, speaker: 'A', ja: '二' }
+      { id: '1', start: 0.1, end: 1.06, speaker: 'A', ja: '一' },
+      { id: '2', start: 1.14, end: 2.1, speaker: 'A', ja: '二' }
     ]);
     expect(await readFile(rawPath, 'utf8')).toBe(rawBefore);
   });
@@ -311,6 +312,7 @@ describe('session workflow', () => {
         segments: [
           { id: 'bad-time', start: 1, end: 0.5, speaker: 'A', ja: '時間が逆です' },
           { id: 'empty', start: 0.5, end: 1, speaker: 'A', ja: '' },
+          { id: 'anchor', start: 0.5, end: 1, speaker: 'A', ja: '基準' },
           { id: 'overlap', start: 0.75, end: 2, speaker: 'A', ja: '重なっています' }
         ]
       })
@@ -319,15 +321,15 @@ describe('session workflow', () => {
     const session = await Session.loadOrCreate(dir);
     await runRajio(session, baseOptions);
 
-    await expect(
-      readFile(path.join(dir, 'transcript/work/segments.toml'), 'utf8')
-    ).resolves.toContain('id = "empty"');
+    const workText = await readFile(path.join(dir, 'transcript/work/segments.toml'), 'utf8');
+    expect(workText).not.toContain('id = "empty"');
+    expect(workText).toContain('id = "anchor"');
 
     const checked = await checkRajio(await Session.loadOrCreate(dir));
     expect(checked.ok).toBe(false);
     expect(checked.issues.every((issue) => !issue.file.includes('transcript/raw'))).toBe(true);
     expect(checked.issues.some((issue) => issue.code === 'invalid_time')).toBe(true);
-    expect(checked.issues.some((issue) => issue.code === 'empty_ja')).toBe(true);
+    expect(checked.issues.some((issue) => issue.code === 'empty_ja')).toBe(false);
     expect(checked.issues.some((issue) => issue.code === 'overlap')).toBe(true);
   });
 
@@ -851,7 +853,33 @@ describe('session workflow', () => {
     );
   });
 
-  it('does not block checks on raw transcript timing or text cleanup issues', async () => {
+  it('reports malformed raw transcript segment artifacts during checks', async () => {
+    const dir = await preparedSession('transcript_raw', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    await writeFile(
+      path.join(dir, 'transcript/raw/segments.toml'),
+      'this is not valid toml = ['
+    );
+
+    const session = await Session.loadOrCreate(dir);
+    const result = await checkRajio(session);
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toEqual([
+      expect.objectContaining({
+        stage: 'transcript_raw',
+        level: 'fatal',
+        code: 'segments_parse_error'
+      })
+    ]);
+  });
+
+  it('does not report subtitle QA issues for raw transcript segments', async () => {
     const dir = await preparedSession('transcript_raw', {
       transcript_raw: {
         status: 'done',
