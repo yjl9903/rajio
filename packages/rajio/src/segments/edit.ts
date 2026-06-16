@@ -124,7 +124,7 @@ export function splitSegment(
   }
   assertAvailableId(file, input.id1, id);
   assertAvailableId(file, input.id2, id);
-  if (source.zh !== undefined && (input.zh1 === undefined || input.zh2 === undefined)) {
+  if (hasTranslatedText(source) && (input.zh1 === undefined || input.zh2 === undefined)) {
     throw new Error('splitting a translated segment requires --zh1 and --zh2.');
   }
 
@@ -180,7 +180,7 @@ export function mergeSegments(
 
   const first = file.segments[index1]!;
   const second = file.segments[index2]!;
-  if ((first.zh !== undefined || second.zh !== undefined) && input.zh === undefined) {
+  if ((hasTranslatedText(first) || hasTranslatedText(second)) && input.zh === undefined) {
     throw new Error('merging translated segments requires --zh.');
   }
 
@@ -256,6 +256,10 @@ export function cloneSegment(segment: Segment): Segment {
     next.skip_checks = segment.skip_checks.map((skip) => ({ ...skip }));
   }
   return next;
+}
+
+export function hasTranslatedText(segment: Segment): boolean {
+  return segment.zh !== undefined && segment.zh.trim().length > 0;
 }
 
 export function withoutSkipChecks(segment: Segment): Segment {

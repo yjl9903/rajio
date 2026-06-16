@@ -1201,6 +1201,24 @@ describe('segment edit tools', () => {
     });
   });
 
+  it('does not require zh when merging segments with only blank zh text', () => {
+    const file: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [
+        { id: '1', start: 0, end: 1, speaker: 'A', ja: '前半', zh: '' },
+        { id: '2', start: 1.1, end: 2, speaker: 'A', ja: '後半', zh: '  ' }
+      ]
+    };
+
+    expect(mergeSegments(file, '1', '2', { id: '1-2', ja: '前半後半' })).toEqual({
+      id: '1-2',
+      start: 0,
+      end: 2,
+      speaker: 'A',
+      ja: '前半後半'
+    });
+  });
+
   it('rejects split gaps below the hard subtitle gap and too-short split results', () => {
     const file = sampleTranscript();
 
@@ -1357,6 +1375,31 @@ describe('segment edit tools', () => {
     expect(file.segments).toEqual([
       { id: '1a', start: 0, end: 1.16, speaker: 'A', ja: '正しい前半' },
       { id: '2a', start: 1.24, end: 2.4, speaker: 'B', ja: '正しい後半' }
+    ]);
+  });
+
+  it('does not require zh in merge patches when source zh text is blank', () => {
+    const file: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [
+        { id: '1', start: 0, end: 1, speaker: 'A', ja: '前半', zh: '' },
+        { id: '2', start: 1, end: 2.4, speaker: 'B', ja: '後半', zh: '  ' }
+      ]
+    };
+
+    applySegmentPatch(file, {
+      operations: [
+        {
+          op: 'merge',
+          source_ids: ['1', '2'],
+          merged_id: '1-2',
+          ja: '前半後半'
+        }
+      ]
+    });
+
+    expect(file.segments).toEqual([
+      { id: '1-2', start: 0, end: 2.4, speaker: 'A,B', ja: '前半後半' }
     ]);
   });
 

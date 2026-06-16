@@ -8,6 +8,7 @@ import {
   editSegment,
   findSegment,
   findSegmentIndex,
+  hasTranslatedText,
   mergeSpeakerLabels,
   withoutSkipChecks
 } from './edit.js';
@@ -203,7 +204,7 @@ function applySplit(
     ...(segment.zh !== undefined ? { zh: segment.zh } : {})
   }));
   validateSplitCoverage(source, replacements);
-  if (source.zh !== undefined && replacements.some((segment) => segment.zh === undefined)) {
+  if (hasTranslatedText(source) && replacements.some((segment) => segment.zh === undefined)) {
     throw new Error(
       `splitting translated segment ${split.source_id} requires zh on every new segment.`
     );
@@ -229,7 +230,7 @@ function applyMerge(
 
   const firstIndex = indexes[0]!;
   const sources = indexes.map((index) => file.segments[index]!);
-  if (sources.some((segment) => segment.zh !== undefined) && merge.zh === undefined) {
+  if (sources.some((segment) => hasTranslatedText(segment)) && merge.zh === undefined) {
     throw new Error(`merging translated segments requires zh: ${merge.source_ids.join(', ')}`);
   }
   const first = sources[0]!;
