@@ -16,9 +16,17 @@ import { segmentSkipCheckSchema } from './index.js';
 import { SEGMENT_TIME_EPSILON as SPLIT_TIME_EPSILON } from './limits.js';
 import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
+const patchConfidenceSchema = z.enum(['high', 'medium', 'low']);
+
+const operationMetadataSchema = {
+  reason: z.string().trim().min(1).optional(),
+  confidence: patchConfidenceSchema.optional()
+};
+
 const editOperationSchema = z
   .object({
     op: z.literal('edit'),
+    ...operationMetadataSchema,
     segment_id: z.string().min(1),
     start: z.number().nonnegative().optional(),
     end: z.number().positive().optional(),
@@ -43,6 +51,7 @@ const splitReplacementSchema = z
 const splitOperationSchema = z
   .object({
     op: z.literal('split'),
+    ...operationMetadataSchema,
     source_id: z.string().min(1),
     gap: z.number().nonnegative().optional(),
     replacements: z.array(splitReplacementSchema).min(2)
@@ -52,6 +61,7 @@ const splitOperationSchema = z
 const mergeOperationSchema = z
   .object({
     op: z.literal('merge'),
+    ...operationMetadataSchema,
     source_ids: z.array(z.string().min(1)).min(2),
     merged_id: z.string().min(1),
     speaker: z.string().min(1).optional(),
@@ -63,6 +73,7 @@ const mergeOperationSchema = z
 const deleteOperationSchema = z
   .object({
     op: z.literal('delete'),
+    ...operationMetadataSchema,
     segment_id: z.string().min(1)
   })
   .strict();
@@ -93,6 +104,9 @@ const segmentPatchOperationSchema = z
 
 const segmentPatchSchema = z
   .object({
+    name: z.string().trim().min(1).optional(),
+    summary: z.string().trim().min(1).optional(),
+    created_by: z.string().trim().min(1).optional(),
     operations: z.array(segmentPatchOperationSchema).min(1)
   })
   .strict();

@@ -2,6 +2,7 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
 import { runCodexAgent } from '../agent.js';
+import { generateTranscriptWorkSuggestedPatches } from '../suggested-patches.js';
 import { manualSegmentsPath } from '../stages.js';
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../../utils/fs.js';
 import {
@@ -48,10 +49,12 @@ export async function setupManualStage(input: {
   await mkdir(path.dirname(workPath), { recursive: true });
   if (stage === 'transcript_work') {
     const source = await readSegmentsFile(sourcePath);
-    await writeSegmentsFile(workPath, normalizeTranscriptWorkSegments(source), {
+    const work = normalizeTranscriptWorkSegments(source);
+    await writeSegmentsFile(workPath, work, {
       requireZh: false,
       validate: false
     });
+    await generateTranscriptWorkSuggestedPatches({ session, source: work });
   } else {
     const source = await readSegmentsFile(sourcePath);
     await writeSegmentsFile(workPath, cloneForTranslation(source, new Date().toISOString()), {

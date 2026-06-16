@@ -5,10 +5,12 @@ import { stringify } from 'smol-toml';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Session } from '../src/index.js';
+import { applySegmentPatch, parseSegmentPatch } from '../src/segments/apply.js';
 import { readSegmentsFile, writeSegmentsFile } from '../src/segments/index.js';
 import { checkRajio, formatCheckJson } from '../src/session/check.js';
 import { logger } from '../src/utils/logger.js';
 import { sha256File } from '../src/utils/fs.js';
+import { cleanJapaneseSubtitlePunctuation } from '../src/workflow/suggested-patches.js';
 import { logExportOutputs, runRajio } from '../src/workflow/index.js';
 import {
   baseOptions,
@@ -121,6 +123,15 @@ function captureConsoleOutput(): {
 }
 
 describe('session workflow', () => {
+  it('cleans ordinary Japanese subtitle punctuation for suggested patches', () => {
+    expect(cleanJapaneseSubtitlePunctuation('そうですね、今日は。')).toBe('そうですね 今日は');
+    expect(cleanJapaneseSubtitlePunctuation('「そうですね。」')).toBe('「そうですね」');
+    expect(cleanJapaneseSubtitlePunctuation('えっ！？')).toBe('えっ！？');
+    expect(cleanJapaneseSubtitlePunctuation('A、B，C...')).toBe('A B C');
+    expect(cleanJapaneseSubtitlePunctuation('第1部：開演')).toBe('第1部：開演');
+    expect(cleanJapaneseSubtitlePunctuation('。。。')).toBe('');
+  });
+
   it('sets up transcript work from raw and stops at manual stage', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
@@ -140,7 +151,7 @@ describe('session workflow', () => {
     );
   });
 
-  it('normalizes raw transcript text and gaps when setting up transcript work', async () => {
+  it('normalizes raw transcript text without changing gaps when setting up transcript work', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
         status: 'done',
@@ -167,13 +178,13 @@ describe('session workflow', () => {
 
     const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
     expect(work.segments).toEqual([
-      { id: '1', start: 0.1, end: 1.06, speaker: 'A', ja: '一' },
-      { id: '2', start: 1.14, end: 2.1, speaker: 'A', ja: '二' }
+      { id: '1', start: 0.1, end: 1.1, speaker: 'A', ja: '一' },
+      { id: '2', start: 1.1, end: 2.1, speaker: 'A', ja: '二' }
     ]);
     expect(await readFile(rawPath, 'utf8')).toBe(rawBefore);
   });
 
-  it('normalizes tiny negative raw transcript drift when setting up transcript work', async () => {
+  it('does not directly normalize tiny negative raw transcript drift when setting up transcript work', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
         status: 'done',
@@ -196,8 +207,8 @@ describe('session workflow', () => {
     await runRajio(session, baseOptions);
 
     const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
-    expect(work.segments[0]?.end).toBe(0.96025);
-    expect(work.segments[1]?.start).toBe(1.04025);
+    expect(work.segments[0]?.end).toBe(1.0005);
+    expect(work.segments[1]?.start).toBe(1);
   });
 
   it('preserves real raw transcript overlaps for manual validation', async () => {
@@ -259,6 +270,133 @@ describe('session workflow', () => {
       { id: '1', start: 0, end: 0.52, speaker: 'A', ja: '一' },
       { id: '2', start: 0.52, end: 1.1, speaker: 'A', ja: '二' }
     ]);
+  });
+
+  it('generates transcript work suggested patches without applying them', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    await writeFile(
+      path.join(dir, 'transcript/raw/segments.toml'),
+      stringify({
+        ...sampleTranscript(),
+        segments: [
+          { id: 'same-1', start: 0, end: 0.4, speaker: 'A', ja: 'な、' },
+          { id: 'punctuation-only', start: 0.4, end: 0.45, speaker: 'A', ja: '。。。' },
+          { id: 'same-2', start: 0.45, end: 0.9, speaker: 'A', ja: 'んか' },
+          { id: 'flicker-1', start: 1.2, end: 1.3, speaker: 'A', ja: 'バ' },
+          { id: 'flicker-2', start: 1.3, end: 1.4, speaker: 'B', ja: '可' },
+          { id: 'flicker-3', start: 1.4, end: 1.7, speaker: 'A', ja: 'ッサ' },
+          { id: 'retime-1', start: 2, end: 3, speaker: 'A', ja: '長めの文です' },
+          { id: 'retime-2', start: 3, end: 4, speaker: 'A', ja: '次の文です' },
+          {
+            id: 'long',
+            start: 5,
+            end: 16,
+            speaker: 'A',
+            ja: 'これはとても長い字幕候補なので人間が意味を見ながら分割する必要があります'
+          }
+        ]
+      })
+    );
+    const session = await Session.loadOrCreate(dir);
+    session.state.stages.audio = {
+      status: 'done',
+      chunks: [
+        {
+          audio: 'audio/chunks/chunk-000.m4a',
+          start: 0,
+          end: 20,
+          size: 1,
+          sha256: 'placeholder'
+        }
+      ]
+    };
+    await session.save();
+
+    await runRajio(session, baseOptions);
+
+    const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
+    expect(work.segments.find((segment) => segment.id === 'same-1')?.end).toBe(0.4);
+    expect(work.segments.find((segment) => segment.id === 'punctuation-only')).toBeDefined();
+    expect(work.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(3);
+
+    const suggestedPatchDir = path.join(dir, 'transcript/work/suggested-patches');
+    const punctuationHighPath = path.join(
+      suggestedPatchDir,
+      '01-punctuation-cleanup-chunk-000-000000s-000020s-high.toml'
+    );
+    const fragmentHighPath = path.join(
+      suggestedPatchDir,
+      '02-fragment-merge-chunk-000-000000s-000020s-high.toml'
+    );
+    const fragmentMediumPath = path.join(
+      suggestedPatchDir,
+      '02-fragment-merge-chunk-000-000000s-000020s-medium.toml'
+    );
+    const retimeHighPath = path.join(
+      suggestedPatchDir,
+      '03-boundary-retime-chunk-000-000000s-000020s-high.toml'
+    );
+    const longReportPath = path.join(
+      suggestedPatchDir,
+      '04-long-segment-candidates-chunk-000-000000s-000020s-low.md'
+    );
+
+    const punctuationHigh = await readFile(punctuationHighPath, 'utf8');
+    const punctuationPatch = parseSegmentPatch(punctuationHigh);
+    expect(punctuationPatch.operations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          op: 'edit',
+          confidence: 'high',
+          segment_id: 'same-1',
+          ja: 'な'
+        }),
+        expect.objectContaining({
+          op: 'delete',
+          confidence: 'high',
+          segment_id: 'punctuation-only'
+        })
+      ])
+    );
+    const fragmentHigh = await readFile(fragmentHighPath, 'utf8');
+    expect(fragmentHigh).toContain('confidence = "high"');
+    expect(parseSegmentPatch(fragmentHigh).operations[0]).toEqual(
+      expect.objectContaining({
+        op: 'merge',
+        confidence: 'high',
+        source_ids: ['same-1', 'same-2']
+      })
+    );
+    const fragmentMedium = await readFile(fragmentMediumPath, 'utf8');
+    expect(fragmentMedium).toContain('confidence = "medium"');
+    expect(parseSegmentPatch(fragmentMedium).operations[0]).toEqual(
+      expect.objectContaining({
+        op: 'merge',
+        confidence: 'medium',
+        source_ids: ['flicker-1', 'flicker-2', 'flicker-3']
+      })
+    );
+    const retimeHigh = await readFile(retimeHighPath, 'utf8');
+    expect(retimeHigh).toContain('segment_id = "retime-1"');
+    expect(retimeHigh).toContain('end = 2.96');
+    expect(retimeHigh).toContain('segment_id = "retime-2"');
+    expect(retimeHigh).toContain('start = 3.04');
+    await expect(readFile(longReportPath, 'utf8')).resolves.toContain('long');
+
+    const patched = structuredClone(work);
+    applySegmentPatch(patched, punctuationPatch);
+    applySegmentPatch(patched, parseSegmentPatch(fragmentHigh));
+    applySegmentPatch(patched, parseSegmentPatch(retimeHigh));
+    expect(patched.segments.find((segment) => segment.id === 'same-1')?.ja).toBe('なんか');
+    expect(patched.segments.find((segment) => segment.id === 'punctuation-only')).toBeUndefined();
+    expect(patched.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(2.96);
+    expect(patched.segments.find((segment) => segment.id === 'retime-2')?.start).toBe(3.04);
   });
 
   it('copies long raw transcript segments without pre-cutting transcript work', async () => {

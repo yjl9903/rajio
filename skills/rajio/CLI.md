@@ -291,6 +291,10 @@ In JSON mode, non-verbose apply output is:
 Patch rules:
 
 - A patch must contain at least one `[[operations]]`.
+- A patch may include top-level `name`, `summary`, and `created_by` metadata.
+- Any operation may include `reason` and `confidence`; `confidence` must be
+  `high`, `medium`, or `low`. These metadata fields are informational and do not
+  change apply behavior.
 - `op = "edit"` requires `segment_id` plus at least one changed field: `start`, `end`, `speaker`,
   `ja`, `zh`, or `skip_checks`.
 - In an edit operation, missing `skip_checks` preserves existing annotations,
@@ -318,8 +322,14 @@ Patch rules:
 Patch example:
 
 ```toml
+name = "Translation fixes"
+summary = "Batch edits for the first review pass."
+created_by = "worker-a"
+
 [[operations]]
 op = "edit"
+reason = "Use the agreed translation for the title."
+confidence = "high"
 segment_id = "12"
 zh = "修正后的中文字幕"
 
@@ -367,6 +377,30 @@ segment_id = "14"
 
 For large or risky batches, keep the patch under a session-local `patches/` directory,
 run with `--dry-run`, then apply the same file without `--dry-run`.
+
+When transcript work is created, rajio may also generate mechanical suggestions under
+`transcript/work/suggested-patches/`. These are ordinary segment patches or review reports and
+are never applied automatically. File names use:
+
+```text
+<pass>-chunk-<index>-<start>s-<end>s-<confidence>.toml
+<pass>-chunk-<index>-<start>s-<end>s-<confidence>.md
+```
+
+Example suggested patch files:
+
+```text
+transcript/work/suggested-patches/
+  01-punctuation-cleanup-chunk-000-000000s-000600s-high.toml
+  02-fragment-merge-chunk-000-000000s-000600s-high.toml
+  02-fragment-merge-chunk-000-000000s-000600s-medium.toml
+  03-boundary-retime-chunk-000-000000s-000600s-high.toml
+  04-long-segment-candidates-chunk-000-000000s-000600s-low.md
+```
+
+Review suggested patches in numeric filename order, make any necessary patch corrections, and
+apply `*.toml` files only after at least a dry run. Review `*-medium.toml` more carefully,
+and treat `*-low.*` files as review notes rather than direct edits.
 
 ### segments edit
 

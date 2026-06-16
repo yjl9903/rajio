@@ -356,31 +356,6 @@ export function normalizeTranscriptWorkSegments(source: SegmentsFile): SegmentsF
     }))
     .filter((segment) => segment.ja);
 
-  for (let index = 1; index < segments.length; index += 1) {
-    const previous = segments[index - 1]!;
-    const segment = segments[index]!;
-    if (!hasValidDuration(previous) || !hasValidDuration(segment)) {
-      continue;
-    }
-
-    const gap = segment.start - previous.end;
-    if (gap >= GAP_LIMITS.hard - TIME_EPSILON || gap < -TIME_EPSILON) {
-      continue;
-    }
-
-    const midpoint = (previous.end + segment.start) / 2;
-    const previousEnd = roundSegmentTime(midpoint - GAP_LIMITS.hard / 2);
-    const segmentStart = roundSegmentTime(midpoint + GAP_LIMITS.hard / 2);
-    if (
-      previousEnd - previous.start < DURATION_LIMITS.shortHard - TIME_EPSILON ||
-      segment.end - segmentStart < DURATION_LIMITS.shortHard - TIME_EPSILON
-    ) {
-      continue;
-    }
-    previous.end = previousEnd;
-    segment.start = segmentStart;
-  }
-
   return {
     ...source,
     segments
@@ -573,8 +548,4 @@ function formatSeconds(value: number): string {
 
 function formatRate(value: number): string {
   return Number(value.toFixed(2)).toString();
-}
-
-function roundSegmentTime(value: number): number {
-  return Number(value.toFixed(6));
 }

@@ -341,8 +341,23 @@ stops at `transcript_work`.
 If transcription is chunked, wait for chunk success or error logs. Do not restart while
 requests may still be in flight unless there is a clear CLI/provider failure.
 
-Treat automatically created work segments as a draft. Review text, speaker boundaries,
-timing, and chunk boundaries during transcript proofread.
+Treat automatically created work segments as a draft. Rajio may write suggested patches under
+`transcript/work/suggested-patches/`, but never applies them automatically. Example files:
+
+```text
+transcript/work/suggested-patches/
+  01-punctuation-cleanup-chunk-000-000000s-000600s-high.toml
+  02-fragment-merge-chunk-000-000000s-000600s-high.toml
+  02-fragment-merge-chunk-000-000000s-000600s-medium.toml
+  03-boundary-retime-chunk-000-000000s-000600s-high.toml
+  04-long-segment-candidates-chunk-000-000000s-000600s-low.md
+```
+
+Before spawning transcript proofread workers, review them in numeric filename order,
+adjust patches if needed, dry-run with
+`rajio segments apply <session> <patch> --stage transcript --dry-run`, then apply the
+safe ones. Treat `confidence = "medium"` patches with extra care and `*-low.*` files as
+notes; `reason` and `confidence` do not change apply behavior.
 
 ### Subtitle QA Rules
 

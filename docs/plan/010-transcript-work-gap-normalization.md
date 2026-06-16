@@ -1,5 +1,9 @@
 # Transcript Work Gap Normalization
 
+Superseded by [014-transcript-work-suggested-patches.md](014-transcript-work-suggested-patches.md).
+Small gap retiming is no longer applied directly while creating transcript work; it is generated as
+reviewable suggested patches instead.
+
 ## Summary
 
 Fix ASR-generated `transcript/work/segments.toml` so mechanical 0ms or near-0ms adjacent

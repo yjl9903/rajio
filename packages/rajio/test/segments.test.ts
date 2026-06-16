@@ -1226,6 +1226,39 @@ describe('segment edit tools', () => {
     ]);
   });
 
+  it('accepts optional patch and operation metadata', () => {
+    const file = sampleTranscript();
+    const patch = parseSegmentPatch(
+      [
+        'name = "Metadata example"',
+        'summary = "Patch metadata should not affect apply behavior."',
+        'created_by = "rajio"',
+        '',
+        '[[operations]]',
+        'op = "edit"',
+        'reason = "Review note"',
+        'confidence = "high"',
+        'segment_id = "1"',
+        'ja = "こんばんは"'
+      ].join('\n')
+    );
+
+    applySegmentPatch(file, patch);
+
+    expect(file.segments[0]?.ja).toBe('こんばんは');
+    expect(() =>
+      parseSegmentPatch(
+        [
+          '[[operations]]',
+          'op = "edit"',
+          'segment_id = "1"',
+          'confidence = "sure"',
+          'ja = "こんばんは"'
+        ].join('\n')
+      )
+    ).toThrow();
+  });
+
   it('applies ordered field edit operations', () => {
     const file = sampleTranslation();
     const patch = parseSegmentPatch(
