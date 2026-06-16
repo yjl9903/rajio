@@ -19,6 +19,9 @@ import {
   sampleTranslation
 } from './helpers.js';
 
+const QA_EXCEPTION_JA = `${'あ'.repeat(29)}！！！`;
+const QA_EXCEPTION_ZH = `${'你'.repeat(25)}！！！`;
+
 function qaExceptionTranscript() {
   return {
     ...sampleTranscript(),
@@ -28,7 +31,7 @@ function qaExceptionTranscript() {
         start: 0,
         end: 5,
         speaker: 'A',
-        ja: 'STRAIGHT!!! REACH!! CHEER!!! EXCEPTION'
+        ja: QA_EXCEPTION_JA
       }
     ]
   };
@@ -53,7 +56,7 @@ function qaExceptionTranslation() {
     source: { kind: 'translation' as const, generated_at: '2026-06-06T00:00:00.000Z' },
     segments: qaExceptionTranscript().segments.map((segment) => ({
       ...segment,
-      zh: 'STRAIGHT!!! REACH!! CHEER!!!'
+      zh: QA_EXCEPTION_ZH
     }))
   };
 }
@@ -491,7 +494,7 @@ describe('session workflow', () => {
     );
     expect(reloaded.stage('export').status).toBe('done');
     expect(await readFile(path.join(dir, 'output/Example.ja.srt'), 'utf8')).toContain(
-      'STRAIGHT!!! REACH!! CHEER!!!'
+      QA_EXCEPTION_JA
     );
   });
 
@@ -849,7 +852,7 @@ describe('session workflow', () => {
     );
     expect(reloaded.stage('export').status).toBe('done');
     expect(await readFile(path.join(dir, 'output/Example.ja.srt'), 'utf8')).toContain(
-      'STRAIGHT!!! REACH!! CHEER!!!'
+      QA_EXCEPTION_JA
     );
   });
 
@@ -861,10 +864,7 @@ describe('session workflow', () => {
         segments_sha256: 'placeholder'
       }
     });
-    await writeFile(
-      path.join(dir, 'transcript/raw/segments.toml'),
-      'this is not valid toml = ['
-    );
+    await writeFile(path.join(dir, 'transcript/raw/segments.toml'), 'this is not valid toml = [');
 
     const session = await Session.loadOrCreate(dir);
     const result = await checkRajio(session);

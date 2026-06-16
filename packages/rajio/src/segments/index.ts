@@ -15,6 +15,9 @@ import {
   SEGMENT_TIME_EPSILON as TIME_EPSILON,
   SUBTITLE_GAP_LIMITS as GAP_LIMITS
 } from './limits.js';
+import { countSubtitleTextUnits } from './text.js';
+
+export { countSubtitleTextUnits } from './text.js';
 
 const VALIDATION_SUMMARY_CODE_LIMIT = 5;
 const TRANSLATION_INHERITED_JAPANESE_QA_CODES = new Set([
@@ -388,14 +391,6 @@ function hasValidDuration(segment: Segment): boolean {
   return segment.end > segment.start;
 }
 
-function textWeight(value: string): number {
-  return Array.from(stripSpaces(value)).length;
-}
-
-function stripSpaces(value: string): string {
-  return value.replace(/\s/g, '');
-}
-
 function validateTextLines(
   issues: ValidationIssue[],
   segment: Segment,
@@ -426,7 +421,7 @@ function validateTextLines(
 
   for (const [lineIndex, line] of lines.entries()) {
     const lineNumber = lineIndex + 1;
-    const compactLength = Array.from(stripSpaces(line)).length;
+    const compactLength = countSubtitleTextUnits(line);
     if (compactLength > limits.hard) {
       issues.push({
         level: 'error',
@@ -534,7 +529,7 @@ function validateReadingSpeed(
   }
 
   const limits = TEXT_LIMITS[language];
-  const chars = textWeight(value);
+  const chars = countSubtitleTextUnits(value);
   const charsPerSecond = chars / duration;
   if (charsPerSecond > limits.readingSpeedHard) {
     issues.push({

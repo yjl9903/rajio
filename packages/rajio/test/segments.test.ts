@@ -21,6 +21,7 @@ import {
   splitSegment
 } from '../src/segments/edit.js';
 import {
+  countSubtitleTextUnits,
   formatValidationErrorSummary,
   readSegmentsFile,
   validateSegments,
@@ -47,6 +48,67 @@ import {
 } from './helpers.js';
 
 describe('segments validation and subtitle rendering', () => {
+  it('counts subtitle text units with word tokens for Latin letters and numbers', () => {
+    expect(countSubtitleTextUnits('Hello world')).toBe(2);
+    expect(countSubtitleTextUnits('OpenAI GPT-5 2026')).toBe(3);
+    expect(countSubtitleTextUnits('v1.2.3')).toBe(1);
+    expect(countSubtitleTextUnits("can't")).toBe(1);
+    expect(countSubtitleTextUnits('A/B')).toBe(1);
+    expect(countSubtitleTextUnits('cafe\u0301')).toBe(1);
+    expect(countSubtitleTextUnits('か\u3099')).toBe(1);
+    expect(countSubtitleTextUnits('这是 OpenAI 2026 测试')).toBe(6);
+    expect(countSubtitleTextUnits(' ,.!?()[]{} ')).toBe(0);
+    expect(countSubtitleTextUnits('❤️')).toBe(0);
+    expect(countSubtitleTextUnits('👨‍👩‍👧‍👦')).toBe(0);
+    expect(countSubtitleTextUnits('1️⃣')).toBe(0);
+    expect(countSubtitleTextUnits('hello🙂world')).toBe(1);
+  });
+
+  it('uses word tokens for Latin letters and numbers in length validation', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: 'long-word',
+          start: 0,
+          end: 4,
+          speaker: 'A',
+          ja: 'Internationalization',
+          zh: 'Supercalifragilisticexpialidocious'
+        },
+        {
+          id: 'many-words',
+          start: 4.3,
+          end: 8.3,
+          speaker: 'A',
+          ja: 'w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 w16 w17 w18 w19 w20 w21',
+          zh: 'w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 w16 w17'
+        }
+      ]
+    });
+
+    expect(
+      issues.filter((issue) => issue.segmentId === 'long-word').map((issue) => issue.code)
+    ).not.toEqual(expect.arrayContaining(['ja_line_soft_limit', 'zh_line_soft_limit']));
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          segmentId: 'many-words',
+          code: 'ja_line_soft_limit',
+          level: 'warning',
+          message: expect.stringContaining('has 21 chars')
+        }),
+        expect.objectContaining({
+          segmentId: 'many-words',
+          code: 'zh_line_soft_limit',
+          level: 'warning',
+          message: expect.stringContaining('has 17 chars')
+        })
+      ])
+    );
+  });
+
   it('reports blocking timeline and translation errors', () => {
     const issues = validateSegments(
       {
@@ -375,7 +437,7 @@ describe('segments validation and subtitle rendering', () => {
           end: 3,
           speaker: 'A',
           ja: 'タイトル',
-          zh: 'STRAIGHT!!! REACH!! CHEER!!!',
+          zh: `${'你'.repeat(25)}！！！`,
           skip_checks: [
             { code: 'zh_line_hard_limit', reason: 'Official title should stay on one line.' },
             { code: 'zh_repeated_punctuation', reason: 'Official title spelling.' }

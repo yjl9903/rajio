@@ -6,6 +6,7 @@ import type { ConsolaInstance } from 'consola';
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../utils/fs.js';
 import type { Session } from './index.js';
 import {
+  countSubtitleTextUnits,
   formatValidationIssueForProfile,
   readSegmentsFile,
   validateSegments
@@ -534,8 +535,8 @@ function buildSegmentContext(
     duration: segment.end - segment.start,
     previousId: segments[index - 1]?.id,
     nextId: segments[index + 1]?.id,
-    jaChars: countTextChars(segment.ja),
-    zhChars: segment.zh === undefined ? undefined : countTextChars(segment.zh),
+    jaChars: countSubtitleTextUnits(segment.ja),
+    zhChars: segment.zh === undefined ? undefined : countSubtitleTextUnits(segment.zh),
     text: summarizeSegmentText(segment)
   };
 }
@@ -832,10 +833,6 @@ function formatTextLengths(segment: CheckIssueSegmentContext): string {
   return segment.zhChars === undefined
     ? `ja:${segment.jaChars}`
     : `ja:${segment.jaChars},zh:${segment.zhChars}`;
-}
-
-function countTextChars(value: string): number {
-  return Array.from(value.replace(/\s/g, '')).length;
 }
 
 function formatTimeRange(segment: CheckIssueSegmentContext): string {

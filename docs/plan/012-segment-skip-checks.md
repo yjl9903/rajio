@@ -15,8 +15,8 @@ id = "12"
 start = 10.0
 end = 12.0
 speaker = "A"
-ja = "STRAIGHT! REACH!! CHEER!!!"
-zh = "STRAIGHT! REACH!! CHEER!!!"
+ja = "あああああああああああああああああああああああああああああ！！！"
+zh = "你你你你你你你你你你你你你你你你你你你你你你你你你！！！"
 skip_checks = [
   { code = "zh_repeated_punctuation", reason = "Official title spelling." },
   { code = "zh_line_hard_limit", reason = "Official title should stay on one line." }
@@ -65,7 +65,7 @@ rajio segments edit <target> <id> --stage translation --clear-skip-checks
 [[operations]]
 op = "edit"
 segment_id = "12"
-zh = "STRAIGHT! REACH!! CHEER!!!"
+zh = "你你你你你你你你你你你你你你你你你你你你你你你你你！！！"
 
 [[operations.skip_checks]]
 code = "zh_repeated_punctuation"
