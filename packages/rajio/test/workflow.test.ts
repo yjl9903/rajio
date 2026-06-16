@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Session } from '../src/index.js';
 import { readSegmentsFile, writeSegmentsFile } from '../src/segments/index.js';
 import { checkRajio, formatCheckJson } from '../src/session/check.js';
+import { logger } from '../src/utils/logger.js';
 import { sha256File } from '../src/utils/fs.js';
 import { logExportOutputs, runRajio } from '../src/workflow/index.js';
 import {
@@ -88,6 +89,31 @@ function chineseHardQaTranslation() {
       ...segment,
       zh: '你'.repeat(25)
     }))
+  };
+}
+
+function captureConsoleOutput(): {
+  output: () => string;
+  restore: () => void;
+} {
+  const chunks: string[] = [];
+  const loggerLevel = logger.level;
+  logger.level = 3;
+  const stdout = vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+    chunks.push(String(chunk));
+    return true;
+  });
+  const stderr = vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+    chunks.push(String(chunk));
+    return true;
+  });
+  return {
+    output: () => chunks.join(''),
+    restore: () => {
+      stdout.mockRestore();
+      stderr.mockRestore();
+      logger.level = loggerLevel;
+    }
   };
 }
 
@@ -446,8 +472,14 @@ describe('session workflow', () => {
       stringify(inheritedJapaneseQaTranslation())
     );
 
-    const session = await Session.loadOrCreate(dir);
-    await runRajio(session, { ...baseOptions, commit: true });
+    const capture = captureConsoleOutput();
+    try {
+      const session = await Session.loadOrCreate(dir);
+      await runRajio(session, { ...baseOptions, commit: true });
+    } finally {
+      capture.restore();
+    }
+    expect(capture.output()).not.toContain('translation inherited Japanese QA');
 
     const reloaded = await Session.loadOrCreate(dir);
     expect(reloaded.stage('translation_work')).toEqual(
@@ -459,6 +491,84 @@ describe('session workflow', () => {
     expect(await readFile(path.join(dir, 'output/Example.ja.srt'), 'utf8')).toContain(
       'STRAIGHT!!! REACH!! CHEER!!!'
     );
+  });
+
+  it('prints translation commit scope and Chinese QA warnings', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      stringify({
+        ...sampleTranslation(),
+        segments: sampleTranslation().segments.map((segment) => ({
+          ...segment,
+          zh: '你好。'
+        }))
+      })
+    );
+
+    const capture = captureConsoleOutput();
+    try {
+      const session = await Session.loadOrCreate(dir);
+      await runRajio(session, { ...baseOptions, commit: true });
+    } finally {
+      capture.restore();
+    }
+
+    const output = capture.output();
+    expect(output).toContain('commit scope: translation_work zh QA.');
+    expect(output).toContain('Run rajio check');
+    expect(output).toContain('--stage translation --language ja');
+    expect(output).toContain('zh_terminal_punctuation');
+    expect(output).not.toContain('translation inherited Japanese QA');
+  });
+
+  it('prints transcript commit scope and Japanese QA warnings', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      },
+      transcript_work: {
+        status: 'waiting',
+        segments: 'transcript/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
+    await writeFile(
+      path.join(dir, 'transcript/work/segments.toml'),
+      stringify({
+        ...sampleTranscript(),
+        segments: [
+          {
+            id: '1',
+            start: 0,
+            end: 4,
+            speaker: 'A',
+            ja: 'あ'.repeat(21)
+          }
+        ]
+      })
+    );
+
+    const capture = captureConsoleOutput();
+    try {
+      const session = await Session.loadOrCreate(dir);
+      await runRajio(session, { ...baseOptions, commit: true });
+    } finally {
+      capture.restore();
+    }
+
+    const output = capture.output();
+    expect(output).toContain('commit scope: transcript_work ja QA.');
+    expect(output).toContain('ja_line_soft_limit');
+    expect(output).not.toContain('--language zh');
   });
 
   it('rejects translation commit when Chinese QA has hard errors', async () => {
@@ -474,10 +584,19 @@ describe('session workflow', () => {
       stringify(chineseHardQaTranslation())
     );
 
-    const session = await Session.loadOrCreate(dir);
-    await expect(runRajio(session, { ...baseOptions, commit: true })).rejects.toThrow(
-      'zh_line_hard_limit'
-    );
+    const capture = captureConsoleOutput();
+    try {
+      const session = await Session.loadOrCreate(dir);
+      await expect(runRajio(session, { ...baseOptions, commit: true })).rejects.toThrow(
+        'zh_line_hard_limit'
+      );
+    } finally {
+      capture.restore();
+    }
+
+    const output = capture.output();
+    expect(output).toContain('commit scope: translation_work zh QA.');
+    expect(output).toContain('zh_line_hard_limit');
 
     const reloaded = await Session.loadOrCreate(dir);
     expect(reloaded.stage('translation_work').status).toBe('waiting');

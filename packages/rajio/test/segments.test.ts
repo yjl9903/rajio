@@ -1,7 +1,9 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { stringWidth } from 'breadc';
+import { stringify } from 'smol-toml';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Session } from '../src/index.js';
@@ -26,7 +28,13 @@ import {
 } from '../src/segments/index.js';
 import { listSegments, type SegmentIssueFilter } from '../src/segments/list.js';
 import { formatSegmentPatchStats, formatSegments } from '../src/segments/output.js';
-import { filterCheckIssues, formatCheckJson, printCheckIssues } from '../src/session/check.js';
+import {
+  checkSegmentsFile,
+  filterCheckIssues,
+  formatCheckJson,
+  printCheckIssues,
+  resolveCheckScope
+} from '../src/session/check.js';
 import { renderAss, renderSrt } from '../src/workflow/subtitles.js';
 import { mergeTranscriptChunks } from '../src/workflow/transcription.js';
 import type { SegmentsFile } from '../src/types.js';
@@ -625,11 +633,27 @@ describe('segments validation and subtitle rendering', () => {
       expect.objectContaining({ code: 'invalid_schema_version' })
     ]);
 
-    const output = formatCheckJson(issues, { sessionDir });
+    const scope = resolveCheckScope({ currentStage: 'translation_work' });
+    expect(scope).toMatchObject({
+      level: 'warning',
+      stage: 'translation_work',
+      language: 'zh',
+      description: 'translation_work zh QA',
+      hint: 'Use --language ja to inspect Japanese QA.'
+    });
+
+    const output = formatCheckJson(issues, { sessionDir, scope });
     expect(output).not.toContain('\n');
 
     const json = JSON.parse(output) as {
       ok: boolean;
+      scope: {
+        level: string;
+        stage: string;
+        language: string;
+        description: string;
+        hint: string;
+      };
       counts: { fatal: number; error: number; warning: number };
       summary: Array<{
         file: string;
@@ -642,6 +666,7 @@ describe('segments validation and subtitle rendering', () => {
       issues?: Array<{ level: string; code: string }>;
     };
     expect(json.ok).toBe(false);
+    expect(json.scope).toEqual(scope);
     expect(json.counts).toEqual({ fatal: 1, error: 4, warning: 3 });
     expect(json).not.toHaveProperty('issues');
     expect(json.summary.every((summary) => !('stage' in summary))).toBe(true);
@@ -667,6 +692,85 @@ describe('segments validation and subtitle rendering', () => {
     const sessionSummary = json.summary.find((summary) => summary.file === 'session.toml');
     expect(sessionSummary).not.toHaveProperty('examples');
     expect(formatCheckJson(issues, { sessionDir, pretty: true })).toContain('\n  "ok"');
+  });
+
+  it('prints check scope before human output when provided', () => {
+    const issues = [
+      {
+        file: 'translation/work/segments.toml',
+        stage: 'translation_work' as const,
+        level: 'warning' as const,
+        code: 'zh_terminal_punctuation',
+        message: 'Segment 1 Chinese line 1 ends with ordinary punctuation.',
+        segmentId: '1'
+      }
+    ];
+    const logger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
+    const scope = resolveCheckScope({ currentStage: 'translation_work' });
+
+    printCheckIssues(issues, { verbose: false, logger: logger as never, scope });
+
+    expect(logger.info).toHaveBeenCalledWith(
+      'check scope: translation_work zh QA. Use --language ja to inspect Japanese QA.'
+    );
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining('1 warning issue (zh_terminal_punctuation)')
+    );
+
+    const emptyLogger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
+    printCheckIssues([], { verbose: false, logger: emptyLogger as never, scope });
+    printCheckIssues([], {
+      verbose: false,
+      logger: emptyLogger as never,
+      scope,
+      scopeLabel: 'commit',
+      printScopeWhenEmpty: false
+    });
+    expect(emptyLogger.info).toHaveBeenCalledTimes(1);
+    expect(emptyLogger.info).toHaveBeenCalledWith(
+      'check scope: translation_work zh QA. Use --language ja to inspect Japanese QA.'
+    );
+  });
+
+  it('checks a single segments file with inferred stage and segment context', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'rajio-check-segments-'));
+    const filePath = path.join(dir, 'translation/work/segments.toml');
+    await mkdir(path.dirname(filePath), { recursive: true });
+    await writeFile(
+      filePath,
+      stringify({
+        version: 1,
+        source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+        segments: [
+          {
+            id: '1',
+            start: 0,
+            end: 4,
+            speaker: 'A',
+            ja: 'こんにちは',
+            zh: '你'.repeat(17)
+          }
+        ]
+      })
+    );
+
+    const issues = await checkSegmentsFile(filePath);
+
+    expect(issues).toEqual([
+      expect.objectContaining({
+        file: filePath,
+        stage: 'translation_work',
+        level: 'warning',
+        code: 'zh_line_soft_limit',
+        segmentId: '1',
+        segment: expect.objectContaining({
+          id: '1',
+          start: 0,
+          end: 4,
+          zhChars: 17
+        })
+      })
+    ]);
   });
 
   it('formats full check issues only for verbose JSON output', () => {

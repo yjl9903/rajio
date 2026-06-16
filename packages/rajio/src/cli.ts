@@ -4,7 +4,13 @@ import { version, description } from '../package.json' with { type: 'json' };
 import { registerClipCommands } from './clips/commands.js';
 import { printDoctorChecks, runDoctor } from './doctor.js';
 import { registerSegmentCommands } from './segments/commands.js';
-import { checkRajio, filterCheckIssues, printCheckIssues } from './session/check.js';
+import {
+  checkRajio,
+  filterCheckIssues,
+  printCheckIssues,
+  resolveCheckScope,
+  type CheckFilterOptions
+} from './session/check.js';
 import { Session } from './session/index.js';
 import type { CliOptions } from './types.js';
 import { STAGES } from './types.js';
@@ -158,16 +164,19 @@ app
   .action(async (target, options) => {
     const session = await Session.load(target);
     const result = await checkRajio(session);
-    const issues = filterCheckIssues(result.issues, {
+    const filterOptions: CheckFilterOptions = {
       level: options.level,
       stage: options.stage,
       language: options.language,
       currentStage: session.currentStage
-    });
+    };
+    const scope = resolveCheckScope(filterOptions);
+    const issues = filterCheckIssues(result.issues, filterOptions);
     printCheckIssues(issues, {
       verbose: Boolean(options.verbose),
       json: Boolean(options.json),
-      sessionDir: session.dir
+      sessionDir: session.dir,
+      scope
     });
     if (issues.some((issue) => issue.level === 'fatal' || issue.level === 'error')) {
       process.exitCode = 1;

@@ -4,11 +4,15 @@ import path from 'node:path';
 import { runCodexAgent } from '../agent.js';
 import { manualSegmentsPath } from '../stages.js';
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../../utils/fs.js';
-import { printCheckIssues, type CheckIssue } from '../../session/check.js';
+import {
+  checkSegmentsFile,
+  filterCheckIssues,
+  printCheckIssues,
+  resolveCheckScope
+} from '../../session/check.js';
 import {
   blockingValidationErrors,
   cloneForTranslation,
-  formatValidationIssueForProfile,
   formatValidationErrorSummary,
   normalizeTranscriptWorkGaps,
   readSegmentsFile,
@@ -81,22 +85,21 @@ export async function commitManualStage(input: {
   const segments = await readSegmentsFile(segmentsPath);
   const issues = validateSegments(segments, { requireZh });
   const errors = blockingValidationErrors(issues, { profile });
-  const stageLogger = taggedLogger(stage);
-  printCheckIssues(
-    issues
-      .map((issue) => formatValidationIssueForProfile(issue, { profile }))
-      .filter((issue) => issue.level === 'warning')
-      .map(
-        (issue): CheckIssue => ({
-          file: segmentsPath,
-          level: 'warning',
-          code: issue.code,
-          message: issue.message,
-          segmentId: issue.segmentId
-        })
-      ),
-    { verbose, logger: stageLogger }
+  const scope = resolveCheckScope(
+    { currentStage: stage },
+    { command: 'commit', target: session.dir }
   );
+  const checkIssues = filterCheckIssues(await checkSegmentsFile(segmentsPath), {
+    currentStage: stage
+  });
+  const stageLogger = taggedLogger(stage);
+  printCheckIssues(checkIssues, {
+    verbose,
+    logger: stageLogger,
+    scope,
+    scopeLabel: 'commit',
+    printScopeWhenEmpty: false
+  });
   if (errors.length > 0) {
     const file = toSessionRelative(session.dir, segmentsPath);
     throw new Error(

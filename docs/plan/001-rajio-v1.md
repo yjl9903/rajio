@@ -69,9 +69,11 @@ Options:
   `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
 
 `rajio check` defaults to concise human output and summarizes repeated issues by file,
-stage, severity, and code. Use `rajio check <target> --verbose` to print every issue.
-Use `rajio check <target> --json` for compact summary JSON; full issue details
-are emitted only with `rajio check <target> --verbose --json`.
+stage, severity, and code. Human and JSON output include the active check scope so agents
+do not mistake the default filtered view for a full-session QA pass. Use
+`rajio check <target> --verbose` to print every issue. Use `rajio check <target> --json`
+for compact summary JSON; full issue details are emitted only with
+`rajio check <target> --verbose --json`.
 
 Check filtering:
 

@@ -64,11 +64,19 @@ export type CheckStageFilter =
   | 'export';
 export type CheckLanguageFilter = 'ja' | 'zh';
 
-interface CheckFilterOptions {
+export interface CheckFilterOptions {
   level?: CheckIssueLevelFilter;
   stage?: CheckStageFilter;
   language?: CheckLanguageFilter;
   currentStage?: CurrentStageName;
+}
+
+export interface CheckScope {
+  level: CheckIssueLevelFilter;
+  stage?: StageName;
+  language?: CheckLanguageFilter;
+  description: string;
+  hint?: string;
 }
 
 interface CheckQaTarget {
@@ -106,6 +114,9 @@ export function printCheckIssues(
   issues: CheckIssue[],
   options: {
     verbose: boolean;
+    scope?: CheckScope;
+    scopeLabel?: 'check' | 'commit';
+    printScopeWhenEmpty?: boolean;
     logger?: ConsolaInstance;
     json?: boolean;
     sessionDir?: string;
@@ -118,6 +129,7 @@ export function printCheckIssues(
       {
         verbose: options.verbose,
         sessionDir: options.sessionDir,
+        scope: options.scope,
         pretty: Boolean((options.writer ?? process.stdout).isTTY)
       },
       options.writer ?? process.stdout
@@ -126,6 +138,9 @@ export function printCheckIssues(
   }
 
   const logger = options.logger ?? checkLogger;
+  if (options.scope && (issues.length > 0 || options.printScopeWhenEmpty !== false)) {
+    logger.info(formatCheckScopeMessage(options.scope, options.scopeLabel ?? 'check'));
+  }
   if (options.verbose) {
     for (const issue of sortCheckIssues(issues)) {
       printCheckIssue(issue, logger);
@@ -160,12 +175,30 @@ export function filterCheckIssues(
   });
 }
 
+export function resolveCheckScope(
+  options: CheckFilterOptions = {},
+  context: { command?: 'check' | 'commit'; target?: string } = {}
+): CheckScope {
+  const level = options.level ?? 'warning';
+  const target = resolveCheckQaTarget(options);
+  const description = formatCheckScopeDescription(target);
+  const hint = formatCheckScopeHint(target, context);
+  return {
+    level,
+    stage: target.stage,
+    language: target.language,
+    description,
+    hint
+  };
+}
+
 export function formatCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean; sessionDir?: string; pretty?: boolean } = {}
+  options: { verbose?: boolean; sessionDir?: string; scope?: CheckScope; pretty?: boolean } = {}
 ): string {
   const output: {
     ok: boolean;
+    scope?: CheckScope;
     counts: ReturnType<typeof countIssues>;
     summary: CheckIssueJsonSummary[];
     issues?: Array<{
@@ -179,6 +212,7 @@ export function formatCheckJson(
     }>;
   } = {
     ok: !hasBlockingIssue(issues),
+    scope: options.scope,
     counts: countIssues(issues),
     summary: summarizeCheckIssuesForJson(issues, options)
   };
@@ -400,21 +434,27 @@ async function checkSegments(
     return;
   }
   checkedSegments?.add(normalizedPath);
+  issues.push(...(await checkSegmentsFile(filePath, options)));
+}
 
+export async function checkSegmentsFile(
+  filePath: string,
+  options: { requireZh?: boolean; strict?: boolean } = {}
+): Promise<CheckIssue[]> {
   try {
     const file = await readSegmentsFile(filePath);
     const requireZh = options.requireZh ?? file.source.kind === 'translation';
     const strict = options.strict ?? !isRawTranscriptSegmentsPath(filePath);
     const stage = inferStageFromPath(filePath);
     const profile = stage === 'translation_work' ? 'translation_work' : 'default';
-    for (const issue of validateSegments(file, { requireZh, strict })) {
+    return validateSegments(file, { requireZh, strict }).map((issue) => {
       const segment = issue.segmentId
         ? buildSegmentContext(file.segments, issue.segmentId)
         : undefined;
       const formattedIssue = formatValidationIssueForProfile(issue, {
         profile
       });
-      issues.push({
+      return {
         file: filePath,
         stage,
         level: formattedIssue.level,
@@ -422,16 +462,18 @@ async function checkSegments(
         message: formattedIssue.message,
         segmentId: issue.segmentId,
         segment
-      });
-    }
-  } catch (error) {
-    issues.push({
-      file: filePath,
-      stage: inferStageFromPath(filePath),
-      level: 'fatal',
-      code: 'segments_parse_error',
-      message: formatError(error)
+      };
     });
+  } catch (error) {
+    return [
+      {
+        file: filePath,
+        stage: inferStageFromPath(filePath),
+        level: 'fatal',
+        code: 'segments_parse_error',
+        message: formatError(error)
+      }
+    ];
   }
 }
 
@@ -591,7 +633,7 @@ function formatIssueContext(issue: CheckIssue): string {
 
 function printCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean; sessionDir?: string; pretty?: boolean },
+  options: { verbose?: boolean; sessionDir?: string; scope?: CheckScope; pretty?: boolean },
   writer: { isTTY?: boolean; write(chunk: string): unknown }
 ): void {
   writer.write(`${formatCheckJson(issues, options)}\n`);
@@ -674,6 +716,32 @@ function resolveCheckQaTarget(options: CheckFilterOptions): CheckQaTarget {
   }
 
   return { stage, language: options.language ?? 'zh' };
+}
+
+function formatCheckScopeMessage(scope: CheckScope, label: 'check' | 'commit'): string {
+  const levelText = scope.level === 'warning' ? '' : `, level ${scope.level}`;
+  const hintText = scope.hint ? ` ${scope.hint}` : '';
+  return `${label} scope: ${scope.description}${levelText}.${hintText}`;
+}
+
+function formatCheckScopeDescription(target: CheckQaTarget): string {
+  if (target.stage && target.language) {
+    return `${target.stage} ${target.language} QA`;
+  }
+  return 'session/workflow integrity';
+}
+
+function formatCheckScopeHint(
+  target: CheckQaTarget,
+  context: { command?: 'check' | 'commit'; target?: string }
+): string | undefined {
+  if (target.stage !== 'translation_work' || target.language !== 'zh') {
+    return undefined;
+  }
+  if (context.command === 'commit') {
+    return `Run rajio check ${context.target ?? '<session>'} --stage translation --language ja to inspect Japanese QA.`;
+  }
+  return 'Use --language ja to inspect Japanese QA.';
 }
 
 function resolveExplicitStageQaTarget(stage: CheckStageFilter): StageName | undefined {
