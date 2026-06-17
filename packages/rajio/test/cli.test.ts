@@ -106,6 +106,30 @@ describe('cli explicit targets', () => {
         dir,
         '--stage',
         'translation',
+        '--level',
+        'error'
+      ])
+    ).rejects.toThrow('--level requires --issues');
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'list',
+        dir,
+        '--stage',
+        'translation',
+        '--issues',
+        'empty_zh',
+        '--level',
+        'all'
+      ])
+    ).rejects.toThrow('--level must be "fatal", "error", or "warning".');
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'list',
+        dir,
+        '--stage',
+        'translation',
         '--issues',
         'unknown_code'
       ])

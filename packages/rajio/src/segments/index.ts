@@ -188,22 +188,20 @@ export function validateSegments(
 function applySegmentSkipChecks(issues: ValidationIssue[], segments: Segment[]): ValidationIssue[] {
   const skips = buildSkipCheckMap(segments);
   const matched = new Set<string>();
-  const formatted = issues.map((issue) => {
+  const formatted: ValidationIssue[] = [];
+  for (const issue of issues) {
     if (issue.level !== 'error' || !issue.segmentId) {
-      return issue;
+      formatted.push(issue);
+      continue;
     }
     const key = skipCheckKey(issue.segmentId, issue.code);
     const skip = skips.get(key);
     if (!skip) {
-      return issue;
+      formatted.push(issue);
+      continue;
     }
     matched.add(key);
-    return {
-      ...issue,
-      level: 'warning' as const,
-      message: `skipped by segment annotation (${skip.reason}): ${issue.message}`
-    };
-  });
+  }
 
   for (const segment of segments) {
     for (const skip of segment.skip_checks ?? []) {

@@ -426,7 +426,7 @@ describe('segments validation and subtitle rendering', () => {
     );
   });
 
-  it('downgrades matched segment skip checks to warnings with reasons', () => {
+  it('silently omits matched segment skip checks', () => {
     const issues = validateSegments({
       version: 1,
       source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
@@ -446,21 +446,11 @@ describe('segments validation and subtitle rendering', () => {
       ]
     });
 
-    expect(issues).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          code: 'zh_line_hard_limit',
-          level: 'warning',
-          message: expect.stringContaining('Official title should stay on one line.')
-        }),
-        expect.objectContaining({
-          code: 'zh_repeated_punctuation',
-          level: 'warning',
-          message: expect.stringContaining('Official title spelling.')
-        })
-      ])
+    expect(issues.map((issue) => issue.code)).not.toContain('zh_line_hard_limit');
+    expect(issues.map((issue) => issue.code)).not.toContain('zh_repeated_punctuation');
+    expect(issues.some((issue) => issue.level === 'error' || issue.level === 'warning')).toBe(
+      false
     );
-    expect(issues.some((issue) => issue.level === 'error')).toBe(false);
   });
 
   it('reports stale segment skip checks as fatal issues', () => {
@@ -1025,12 +1015,13 @@ describe('segment edit tools', () => {
       { id: 'overlap', start: 0.9, end: 1.5, speaker: 'A', ja: '重なり', zh: '重叠' },
       { id: 'gap-short', start: 1.6, end: 2.5, speaker: 'A', ja: '短い間隔', zh: '短间隔' },
       { id: 'duration-long', start: 2.75, end: 9.9, speaker: 'A', ja: '長い', zh: '很长' },
-      { id: 'hard-line', start: 10.2, end: 11.2, speaker: 'A', ja: 'あ'.repeat(29), zh: '长行' },
-      { id: 'punctuation-only', start: 11.5, end: 12.5, speaker: 'A', ja: '！？', zh: '？！' },
-      { id: 'missing-zh', start: 12.8, end: 13.8, speaker: 'A', ja: '未翻訳' },
-      { id: 'blank-zh', start: 14.1, end: 15.1, speaker: 'A', ja: '空白', zh: '  ' },
-      { id: 'ok', start: 15.4, end: 16.4, speaker: 'A', ja: '大丈夫です', zh: '没问题' },
-      { id: 'invalid', start: 16.7, end: 16.6, speaker: 'A', ja: '時間', zh: '时间' }
+      { id: 'duration-hard', start: 10.2, end: 21, speaker: 'A', ja: '長すぎる', zh: '太长' },
+      { id: 'hard-line', start: 21.3, end: 22.3, speaker: 'A', ja: 'あ'.repeat(29), zh: '长行' },
+      { id: 'punctuation-only', start: 22.6, end: 23.6, speaker: 'A', ja: '！？', zh: '？！' },
+      { id: 'missing-zh', start: 23.9, end: 24.9, speaker: 'A', ja: '未翻訳' },
+      { id: 'blank-zh', start: 25.2, end: 26.2, speaker: 'A', ja: '空白', zh: '  ' },
+      { id: 'ok', start: 26.5, end: 27.5, speaker: 'A', ja: '大丈夫です', zh: '没问题' },
+      { id: 'invalid', start: 27.8, end: 27.7, speaker: 'A', ja: '時間', zh: '时间' }
     ];
     const file = {
       version: 1 as const,
@@ -1038,20 +1029,23 @@ describe('segment edit tools', () => {
       segments
     };
     const validationIssues = validateSegments(file, { requireZh: true });
-    const listByIssues = (...issues: SegmentIssueFilter[]) =>
-      listSegments(segments, { issues, validationIssues }).map((segment) => segment.id);
+    const listByIssues = (issues: SegmentIssueFilter[], level?: 'fatal' | 'error' | 'warning') =>
+      listSegments(segments, { issues, level, validationIssues }).map((segment) => segment.id);
 
-    expect(listByIssues('invalid_time', 'overlap')).toEqual(['overlap', 'invalid']);
-    expect(listByIssues('duration_too_long')).toEqual(['duration-long']);
-    expect(listByIssues('ja_line_hard_limit')).toEqual(['hard-line']);
-    expect(listByIssues('subtitle_gap_short')).toEqual(['gap-short']);
-    expect(listByIssues('ja_punctuation_only_line')).toEqual(['punctuation-only']);
-    expect(listByIssues('empty_zh')).toEqual(['missing-zh', 'blank-zh']);
-    expect(listByIssues('ja_line_hard_limit', 'empty_zh')).toEqual([
+    expect(listByIssues(['invalid_time', 'overlap'])).toEqual(['overlap', 'invalid']);
+    expect(listByIssues(['duration_too_long'])).toEqual(['duration-long', 'duration-hard']);
+    expect(listByIssues(['duration_too_long'], 'error')).toEqual(['duration-hard']);
+    expect(listByIssues(['duration_too_long'], 'fatal')).toEqual([]);
+    expect(listByIssues(['ja_line_hard_limit'])).toEqual(['hard-line']);
+    expect(listByIssues(['subtitle_gap_short'])).toEqual(['gap-short']);
+    expect(listByIssues(['ja_punctuation_only_line'])).toEqual(['punctuation-only']);
+    expect(listByIssues(['empty_zh'])).toEqual(['missing-zh', 'blank-zh']);
+    expect(listByIssues(['ja_line_hard_limit', 'empty_zh'])).toEqual([
       'hard-line',
       'missing-zh',
       'blank-zh'
     ]);
+    expect(() => listSegments(segments, { level: 'error' })).toThrow('--level requires --issues');
   });
 
   it('formats segment command output as human table, csv, or json', () => {

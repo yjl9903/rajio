@@ -43,10 +43,9 @@ skip_checks = [
 
 - `rajio <target> --commit` becomes the only manual commit path. It succeeds when no
   unskipped fatal/error issues remain.
-- `rajio check` shows skipped issues as warnings, so exceptions remain visible in normal QA
-  output.
-- `rajio check --level error` excludes skipped warnings but still reports stale
-  `unused_skip_check` fatal issues.
+- `rajio check` silently omits skipped issues because the segment annotation is the manual
+  confirmation.
+- `rajio check --level error` still reports stale `unused_skip_check` fatal issues.
 
 ## Segment Tooling
 

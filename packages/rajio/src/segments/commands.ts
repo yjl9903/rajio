@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 
 import type { UnknownOptionMiddleware, breadc } from 'breadc';
 
-import type { Segment } from '../types.js';
+import type { IssueLevel, Segment } from '../types.js';
 import { applySegmentPatch, parseSegmentPatch, summarizeSegmentPatchResult } from './apply.js';
 import {
   deleteSegment,
@@ -45,6 +45,9 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--issues <issues>', `filter by issue types: ${segmentIssuesHelp}`, {
       cast: castIssues
     })
+    .option('--level <level>', 'with --issues, filter by level: fatal, error, or warning', {
+      cast: castIssueLevel
+    })
     .option('--json', 'print JSON output')
     .allowUnknownOption(rejectUnknownOption)
     .action(async (target, options) => {
@@ -62,6 +65,7 @@ export function registerSegmentCommands(app: RajioApp): void {
         start: options.start,
         end: options.end,
         issues: options.issues,
+        level: options.level,
         validationIssues:
           options.issues === undefined
             ? undefined
@@ -295,6 +299,16 @@ function castIssues(value: string | undefined): SegmentIssueFilter[] | undefined
     }
   }
   return issues as SegmentIssueFilter[];
+}
+
+function castIssueLevel(value: string | undefined): IssueLevel | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (value === 'fatal' || value === 'error' || value === 'warning') {
+    return value;
+  }
+  throw new Error('--level must be "fatal", "error", or "warning".');
 }
 
 function requireOption(value: string | undefined, name: string): string {

@@ -144,9 +144,10 @@ skip_checks = [
 ]
 ```
 
-Skipped issues are still shown as `warning` by `rajio check`. If a skip no longer matches
-an actual issue on that segment, `rajio check` reports a blocking `unused_skip_check` fatal
-issue until the stale annotation is removed.
+Matched skipped issues are omitted from `rajio check` output because the annotation is the
+manual confirmation. If a skip no longer matches an actual issue on that segment, `rajio
+check` reports a blocking `unused_skip_check` fatal issue until the stale annotation is
+removed.
 
 Allowed `skip_checks.code` values are:
 
@@ -231,6 +232,7 @@ rajio segments list /path/to/session --stage transcript --id 12 --around 3
 rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --stage transcript --start 600 --end 660
 rajio segments list /path/to/session --stage translation --issues empty_zh,zh_line_hard_limit
+rajio segments list /path/to/session --stage translation --issues duration_too_long --level error
 ```
 
 `segments list` accepts only one filter mode per invocation:
@@ -244,7 +246,9 @@ rajio segments list /path/to/session --stage translation --issues empty_zh,zh_li
 - `--start <seconds> --end <seconds>`: list segments whose `start` is in
   `[start, end)`. Both options are required together.
 - `--issues <codes>`: list segments matching comma-separated `rajio check` validation
-  codes. It uses the same codes documented in Check > Issue Codes.
+  codes. Add `--level fatal|error|warning` to filter by threshold; default is `warning`,
+  and `error` excludes warning-level matches for soft-or-hard codes like duration and
+  reading speed.
 
 In JSON mode, list output includes:
 
@@ -600,7 +604,8 @@ Output:
 - `error` means subtitle QA hard issue; it blocks commit/export unless the exact issue code
   is listed in that segment's `skip_checks` with a reason.
 - `warning` means subtitle QA soft issue for review only.
-- A skipped `error` is reported as `warning` so exceptions remain visible.
+- A skipped `error` is omitted from output; stale or mistyped skips report
+  `fatal unused_skip_check`.
 - `translation_work` reports inherited Japanese subtitle QA hard rules as warnings in the
   `ja` language view. Chinese subtitle QA hard rules remain `error`, and data integrity
   problems remain `fatal`.
@@ -608,7 +613,8 @@ Output:
 ### Issue Codes
 
 `rajio check` reports these validation codes. `segments list --issues` accepts the same
-codes for segment-scoped issues.
+codes for segment-scoped issues; add `--level error` when you need only hard matches for
+codes that can be either `warning` or `error`.
 
 | Rule                  | When reported                              | Issue codes                                                                                                    |
 | --------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |

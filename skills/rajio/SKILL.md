@@ -45,7 +45,8 @@ create polished Chinese subtitles from Japanese audio/video with rajio.
 - Record intentional subtitle QA `error` exceptions with per-segment `skip_checks` in the
   work-stage `segments.toml`. Every skip must name the exact issue code and include a
   reason. Never skip `fatal` data/file/schema/timeline issues, unfinished translation, or
-  unreviewed batches.
+  unreviewed batches. Matched skips are omitted from check output; stale skips still report
+  `fatal unused_skip_check`.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
   empty filler segments. Shape: `rajio segments <command> <target>`.
@@ -152,6 +153,7 @@ rajio segments list /path/to/session --json --stage transcript --id 12 --around 
 rajio segments list /path/to/session --json --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --json --stage transcript --start 600 --end 660
 rajio segments list /path/to/session --json --stage translation --issues empty_zh,zh_line_hard_limit
+rajio segments list /path/to/session --json --stage translation --issues duration_too_long --level error
 rajio segments apply /path/to/session patch.toml --json --stage translation
 rajio segments apply /path/to/session --json --stage translation <<'EOF'
 [[operations]]
@@ -177,8 +179,8 @@ In `segments` commands, pass `/path/to/session` after the segment subcommand. Re
   to read from offset to the end.
 - `--start <time> --end <time>`: show segments whose `start` time is in `[start, end)`.
 - `--issues <codes>`: show segments matching validation codes such as `invalid_time`,
-  `ja_line_hard_limit`, or `empty_zh`; see [CLI.md](CLI.md#issue-codes) for the full
-  issue code table.
+  `ja_line_hard_limit`, or `empty_zh`; add `--level error` to exclude warning-level
+  matches for soft-or-hard codes like duration and reading speed.
 
 `segments apply <target> [file]` applies an ordered TOML patch as the batch form of `edit`,
 `split`, `merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in

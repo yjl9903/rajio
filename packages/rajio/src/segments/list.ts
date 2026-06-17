@@ -1,4 +1,4 @@
-import type { Segment, ValidationIssue } from '../types.js';
+import type { IssueLevel, Segment, ValidationIssue } from '../types.js';
 
 export const SEGMENT_ISSUE_FILTERS = [
   'duplicate_id',
@@ -40,6 +40,7 @@ export interface SegmentListOptions {
   end?: number;
   around?: number;
   issues?: SegmentIssueFilter[];
+  level?: IssueLevel;
   validationIssues?: ValidationIssue[];
 }
 
@@ -75,7 +76,7 @@ export function listSegments(segments: Segment[], options: SegmentListOptions): 
     if (!options.validationIssues) {
       throw new Error('--issues requires validation issues.');
     }
-    return listByValidationIssues(segments, filters, options.validationIssues);
+    return listByValidationIssues(segments, filters, options.validationIssues, options.level);
   }
 
   return segments;
@@ -86,6 +87,10 @@ function resolveListMode(options: SegmentListOptions): 'all' | 'id' | 'range' | 
   const hasRange = options.offset !== undefined || options.limit !== undefined;
   const hasTime = options.start !== undefined || options.end !== undefined;
   const hasIssues = options.issues !== undefined && options.issues.length > 0;
+  const hasLevel = options.level !== undefined;
+  if (hasLevel && !hasIssues) {
+    throw new Error('--level requires --issues.');
+  }
   const modeCount = [hasId, hasRange, hasTime, hasIssues].filter(Boolean).length;
   if (modeCount > 1) {
     throw new Error('--id, --offset/--limit, --start/--end, and --issues are mutually exclusive.');
@@ -153,15 +158,28 @@ function isNonnegativeInteger(value: number): boolean {
 function listByValidationIssues(
   segments: Segment[],
   filters: Set<SegmentIssueFilter>,
-  issues: ValidationIssue[]
+  issues: ValidationIssue[],
+  level: IssueLevel = 'warning'
 ): Segment[] {
   const matchingIds = new Set(
     issues
+      .filter((issue) => isAtOrAboveLevel(issue.level, level))
       .filter((issue) => isSegmentIssueFilter(issue.code) && filters.has(issue.code))
       .filter((issue) => issue.segmentId)
       .map((issue) => issue.segmentId!)
   );
   return segments.filter((segment) => matchingIds.has(segment.id));
+}
+
+function isAtOrAboveLevel(issueLevel: IssueLevel, threshold: IssueLevel): boolean {
+  return levelRank(issueLevel) <= levelRank(threshold);
+}
+
+function levelRank(level: IssueLevel): number {
+  if (level === 'fatal') {
+    return 0;
+  }
+  return level === 'error' ? 1 : 2;
 }
 
 function isSegmentIssueFilter(code: string): code is SegmentIssueFilter {
