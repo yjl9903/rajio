@@ -15,7 +15,7 @@ import {
   SEGMENT_TIME_EPSILON as TIME_EPSILON,
   SUBTITLE_GAP_LIMITS as GAP_LIMITS
 } from './limits.js';
-import { countSubtitleTextUnits } from './text.js';
+import { countSubtitleTextUnits, stripSubtitleProtectedText } from './text.js';
 
 export { countSubtitleTextUnits } from './text.js';
 
@@ -411,7 +411,8 @@ function validateTextLines(
       });
     }
 
-    if (PUNCTUATION_ONLY_LINE.test(line)) {
+    const punctuationLine = stripSubtitleProtectedText(line);
+    if (punctuationLine.trim() && PUNCTUATION_ONLY_LINE.test(punctuationLine)) {
       issues.push({
         level: 'error',
         code: `${language}_punctuation_only_line`,
@@ -420,7 +421,7 @@ function validateTextLines(
       });
     }
 
-    const repeatedPunctuation = line.match(REPEATED_EMPHATIC_PUNCTUATION);
+    const repeatedPunctuation = punctuationLine.match(REPEATED_EMPHATIC_PUNCTUATION);
     if (repeatedPunctuation) {
       const hard = REPEATED_EMPHATIC_PUNCTUATION_HARD.test(repeatedPunctuation[0]);
       issues.push({
@@ -431,7 +432,7 @@ function validateTextLines(
       });
     }
 
-    if (limits.warningPunctuation.test(line)) {
+    if (limits.warningPunctuation.test(punctuationLine)) {
       issues.push({
         level: 'warning',
         code: `${language}_common_punctuation`,
@@ -440,7 +441,7 @@ function validateTextLines(
       });
     }
 
-    if (limits.terminalPunctuation.test(line.trim().replace(TRAILING_CLOSERS, ''))) {
+    if (limits.terminalPunctuation.test(punctuationLine.trim().replace(TRAILING_CLOSERS, ''))) {
       issues.push({
         level: 'warning',
         code: `${language}_terminal_punctuation`,

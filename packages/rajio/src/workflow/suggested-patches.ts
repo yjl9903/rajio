@@ -10,7 +10,7 @@ import {
   SEGMENT_TIME_EPSILON as TIME_EPSILON,
   SUBTITLE_GAP_LIMITS as GAP_LIMITS
 } from '../segments/limits.js';
-import { countSubtitleTextUnits } from '../segments/text.js';
+import { countSubtitleTextUnits, replaceOutsideSubtitleProtectedText } from '../segments/text.js';
 import type { Session } from '../session/index.js';
 
 type PatchConfidence = 'high' | 'medium' | 'low';
@@ -164,21 +164,21 @@ function collectPunctuationCleanupOperations(
 }
 
 export function cleanJapaneseSubtitlePunctuation(value: string): string {
-  return value
-    .split(/\r?\n/)
-    .map(cleanJapaneseSubtitlePunctuationLine)
-    .join('\n')
-    .trim();
+  return value.split(/\r?\n/).map(cleanJapaneseSubtitlePunctuationLine).join('\n').trim();
 }
 
 function cleanJapaneseSubtitlePunctuationLine(value: string): string {
-  let line = value;
-  let previous: string;
-  do {
-    previous = line;
-    line = line.replace(TERMINAL_SUBTITLE_PUNCTUATION_WITH_CLOSERS, '$1');
-  } while (line !== previous);
-  return line.replace(ORDINARY_SUBTITLE_PUNCTUATION, ' ').replace(INLINE_WHITESPACE, ' ').trim();
+  return replaceOutsideSubtitleProtectedText(value, (text, isLast) => {
+    let line = text;
+    if (isLast) {
+      let previous: string;
+      do {
+        previous = line;
+        line = line.replace(TERMINAL_SUBTITLE_PUNCTUATION_WITH_CLOSERS, '$1');
+      } while (line !== previous);
+    }
+    return line.replace(ORDINARY_SUBTITLE_PUNCTUATION, ' ').replace(INLINE_WHITESPACE, ' ');
+  }).trim();
 }
 
 function collectFragmentMergeOperations(
@@ -509,7 +509,10 @@ function resolveSuggestedPatchChunks(
   ];
 }
 
-function commonChunk(segments: Segment[], chunks: SuggestedPatchChunk[]): SuggestedPatchChunk | undefined {
+function commonChunk(
+  segments: Segment[],
+  chunks: SuggestedPatchChunk[]
+): SuggestedPatchChunk | undefined {
   const first = segments[0]!;
   const last = segments.at(-1)!;
   const chunk = chunkForTime(chunks, first.start);
@@ -541,22 +544,19 @@ function hasAdjacentMergeGaps(segments: Segment[]): boolean {
 
 function isShortFragment(segment: Segment): boolean {
   return (
-    segment.end - segment.start <= 0.8 + TIME_EPSILON ||
-    countSubtitleTextUnits(segment.ja) <= 4
+    segment.end - segment.start <= 0.8 + TIME_EPSILON || countSubtitleTextUnits(segment.ja) <= 4
   );
 }
 
 function isVeryShortFragment(segment: Segment): boolean {
   return (
-    segment.end - segment.start <= 0.55 + TIME_EPSILON ||
-    countSubtitleTextUnits(segment.ja) <= 3
+    segment.end - segment.start <= 0.55 + TIME_EPSILON || countSubtitleTextUnits(segment.ja) <= 3
   );
 }
 
 function isTinyAnchor(segment: Segment): boolean {
   return (
-    segment.end - segment.start <= 0.5 + TIME_EPSILON ||
-    countSubtitleTextUnits(segment.ja) <= 2
+    segment.end - segment.start <= 0.5 + TIME_EPSILON || countSubtitleTextUnits(segment.ja) <= 2
   );
 }
 

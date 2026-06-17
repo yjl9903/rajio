@@ -54,6 +54,13 @@ describe('segments validation and subtitle rendering', () => {
     expect(countSubtitleTextUnits('v1.2.3')).toBe(1);
     expect(countSubtitleTextUnits("can't")).toBe(1);
     expect(countSubtitleTextUnits('A/B')).toBe(1);
+    expect(countSubtitleTextUnits('foo@example.com')).toBe(1);
+    expect(countSubtitleTextUnits('https://example.com/a.b')).toBe(1);
+    expect(countSubtitleTextUnits('https://example.com/path?q=a.b&v=1.2#top')).toBe(1);
+    expect(countSubtitleTextUnits('www.example.com/a.b')).toBe(1);
+    expect(countSubtitleTextUnits('example.com')).toBe(1);
+    expect(countSubtitleTextUnits('example.com/path?q=a.b#top')).toBe(1);
+    expect(countSubtitleTextUnits('https://example.com/a.、次')).toBe(2);
     expect(countSubtitleTextUnits('cafe\u0301')).toBe(1);
     expect(countSubtitleTextUnits('か\u3099')).toBe(1);
     expect(countSubtitleTextUnits('这是 OpenAI 2026 测试')).toBe(6);
@@ -207,6 +214,85 @@ describe('segments validation and subtitle rendering', () => {
         expect.objectContaining({ code: 'zh_line_break_soft_limit', level: 'warning' }),
         expect.objectContaining({ code: 'ja_line_break_hard_limit', level: 'error' }),
         expect.objectContaining({ code: 'zh_line_break_hard_limit', level: 'error' })
+      ])
+    );
+  });
+
+  it('ignores URL and email punctuation in subtitle punctuation QA', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: 'email',
+          start: 0,
+          end: 2,
+          speaker: 'A',
+          ja: 'foo@example.com',
+          zh: 'foo@example.com'
+        },
+        {
+          id: 'url',
+          start: 2.3,
+          end: 4.3,
+          speaker: 'A',
+          ja: 'https://example.com/path?q=a.b&v=1.2#top',
+          zh: 'https://example.com/path?q=a.b&v=1.2#top'
+        },
+        {
+          id: 'domain',
+          start: 4.6,
+          end: 6.6,
+          speaker: 'A',
+          ja: 'example.com',
+          zh: 'example.com'
+        },
+        {
+          id: 'terminal-url',
+          start: 6.9,
+          end: 8.9,
+          speaker: 'A',
+          ja: 'foo@example.com.',
+          zh: 'example.com.'
+        },
+        {
+          id: 'mixed',
+          start: 9.2,
+          end: 11.2,
+          speaker: 'A',
+          ja: '詳しくは https://example.com/path?q=a.b&v=1.2.',
+          zh: '看 https://example.com/path?q=a.b&v=1.2.'
+        }
+      ]
+    });
+
+    for (const segmentId of ['email', 'url', 'domain']) {
+      expect(
+        issues.filter((issue) => issue.segmentId === segmentId).map((issue) => issue.code)
+      ).not.toEqual(
+        expect.arrayContaining([
+          'ja_common_punctuation',
+          'zh_common_punctuation',
+          'ja_terminal_punctuation',
+          'zh_terminal_punctuation',
+          'ja_punctuation_only_line',
+          'zh_punctuation_only_line'
+        ])
+      );
+    }
+    expect(
+      issues.filter((issue) => issue.segmentId === 'terminal-url').map((issue) => issue.code)
+    ).not.toEqual(expect.arrayContaining(['ja_punctuation_only_line', 'zh_punctuation_only_line']));
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ segmentId: 'terminal-url', code: 'ja_common_punctuation' }),
+        expect.objectContaining({ segmentId: 'terminal-url', code: 'zh_common_punctuation' }),
+        expect.objectContaining({ segmentId: 'terminal-url', code: 'ja_terminal_punctuation' }),
+        expect.objectContaining({ segmentId: 'terminal-url', code: 'zh_terminal_punctuation' }),
+        expect.objectContaining({ segmentId: 'mixed', code: 'ja_common_punctuation' }),
+        expect.objectContaining({ segmentId: 'mixed', code: 'zh_common_punctuation' }),
+        expect.objectContaining({ segmentId: 'mixed', code: 'ja_terminal_punctuation' }),
+        expect.objectContaining({ segmentId: 'mixed', code: 'zh_terminal_punctuation' })
       ])
     );
   });

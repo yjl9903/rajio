@@ -98,7 +98,9 @@ export function normalizeTranscriptSegments(
     throw new Error('Transcription response does not contain segments.');
   }
 
-  return input.segments.map((segment, index) => normalizeTranscriptSegment(segment, index, options));
+  return input.segments.map((segment, index) =>
+    normalizeTranscriptSegment(segment, index, options)
+  );
 }
 
 function normalizeTranscriptSegment(

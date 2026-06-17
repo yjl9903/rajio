@@ -129,6 +129,18 @@ describe('session workflow', () => {
     expect(cleanJapaneseSubtitlePunctuation('えっ！？')).toBe('えっ！？');
     expect(cleanJapaneseSubtitlePunctuation('A、B，C...')).toBe('A B C');
     expect(cleanJapaneseSubtitlePunctuation('第1部：開演')).toBe('第1部：開演');
+    expect(cleanJapaneseSubtitlePunctuation('詳細は、https://example.com/path?q=a.b&v=1.2.')).toBe(
+      '詳細は https://example.com/path?q=a.b&v=1.2'
+    );
+    expect(
+      cleanJapaneseSubtitlePunctuation('詳細は、https://example.com/a.、次は、foo@example.com。')
+    ).toBe('詳細は https://example.com/a 次は foo@example.com');
+    expect(cleanJapaneseSubtitlePunctuation('詳細は、example.com/path?q=a.b#top。')).toBe(
+      '詳細は example.com/path?q=a.b#top'
+    );
+    expect(cleanJapaneseSubtitlePunctuation('連絡先、foo@example.com。')).toBe(
+      '連絡先 foo@example.com'
+    );
     expect(cleanJapaneseSubtitlePunctuation('。。。')).toBe('');
   });
 
