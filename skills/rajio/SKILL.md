@@ -477,12 +477,14 @@ been cross-checked, and this command has no blocking `fatal` or Chinese `error` 
 rajio check /path/to/session --json --stage translation --level error
 ```
 
-To inspect Japanese QA left over in `translation/work/segments.toml`, run the same command
-with `--language ja`.
+To inspect Japanese QA in the current translation work file, run the same command with
+`--language ja`.
 
-If translation reveals a transcript typo, wrong name, wrong fixed phrase, missing context,
-or bad segment structure, fix `transcript/work/segments.toml` first, update
-`description.md`, recommit the transcript, then reconcile the translation.
+During `translation_work`, `translation/work/segments.toml` is the active subtitle work
+file. If translation reveals a Japanese typo, wrong name, wrong fixed phrase, missing
+context, or bad segment structure, correct the relevant `ja` and `zh` in
+`translation/work/segments.toml` and update `description.md` when the decision affects
+terminology or future batches.
 
 If a translation problem points back to an uncertain or messy source-audio range, use
 `rajio clips transcribe` for that original media time range and inspect it with
@@ -495,9 +497,10 @@ content semantically against the acceptance criteria below.
 
 Acceptance criteria:
 
-- Keep `id`, `start`, `end`, `speaker`, and `ja` aligned with the committed transcript
-  unless a transcript fix is required or an intentionally removed subtitle segment is a
-  very short, semantically empty filler.
+- Keep `id`, `start`, `end`, and `speaker` stable unless a structural correction or
+  intentionally removed semantically empty filler genuinely requires a change. `ja` may be
+  corrected in `translation/work/segments.toml` when translation review finds a Japanese
+  typo, name, or fixed-phrase issue.
 - Every segment has non-empty `zh`.
 - Chinese is natural Simplified Chinese subtitle language, not word-by-word literal output.
 - Preserve meaning, tone, speaker intent, jokes, references, and discourse flow.
@@ -604,8 +607,8 @@ Refinement requirements:
   Japanese, accidental simplified/traditional mismatches, and Chinese punctuation noise.
 - Preserve meaningful speaker style differences where the source supports them, but do
   not over-characterize beyond the audio/video evidence.
-- If a Chinese issue exposes a likely transcript mistake, fix and recommit
-  `transcript_work` first, then reconcile `translation/work/segments.toml` and rerun the
+- If a Chinese issue exposes a likely Japanese subtitle mistake, fix the `ja`/`zh` pair in
+  `translation/work/segments.toml`, update `description.md` if needed, and rerun the
   translation checks.
 
 During and after refinement, validate with:
@@ -671,5 +674,3 @@ Before reporting completion:
   reruns transcription generation, `--reset transcript_work` regenerates the transcript
   work file, `--reset translation_work` regenerates the translation draft, and
   `--reset export` reruns subtitle export.
-- If translation reveals a transcript problem, fix and recommit `transcript_work`, then
-  regenerate or reconcile `translation/work/segments.toml`.

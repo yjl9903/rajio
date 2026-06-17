@@ -132,15 +132,18 @@ Rules:
 - Do not call the OpenAI-compatible provider configured in .env to translate.
 - Do not edit transcript/raw/segments.toml or transcript/raw/chunks/*.toml.
 - Do not commit stages or export subtitles.
-- Preserve id/start/end/speaker/ja unless reporting a transcript issue to the main agent.
+- Preserve id/start/end/speaker unless a structural correction is explicitly assigned.
+- If the assigned range contains an obvious Japanese typo, wrong name, or fixed phrase
+  problem, include the corrected `ja` together with the translated `zh` in the returned
+  patch and report the decision.
 - Fill or refine zh for every assigned segment unless a segment is semantically empty and
   should be proposed for deletion.
 - Keep names, titles, corners, events, hashtags, mail-address reads, and recurring phrases
   consistent with description.md.
 - Smooth hesitation and false starts in Chinese unless they carry meaning, rhythm, or
   characterization.
-- If ja appears wrong, do not silently translate around it. Report the transcript issue
-  and provide the best provisional zh only when useful.
+- If ja appears uncertain rather than clearly wrong, do not silently translate around it.
+  Report the doubt and provide the best provisional zh only when useful.
 - If you discover a glossary or context issue, report it for the main agent.
 
 Output:
