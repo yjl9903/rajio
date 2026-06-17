@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { stringify } from 'smol-toml';
@@ -18,7 +18,8 @@ import {
   preparedCompleteSession,
   preparedSession,
   sampleTranscript,
-  sampleTranslation
+  sampleTranslation,
+  tempDir
 } from './helpers.js';
 
 const QA_EXCEPTION_JA = `${'あ'.repeat(29)}！！！`;
@@ -1164,6 +1165,66 @@ describe('session workflow', () => {
     expect(sessionToml).toContain('status = "dirty"');
   });
 
+  it('prints the current stage and next command when step mode stops', async () => {
+    const dir = await preparedSession('audio', {
+      audio: { status: 'done' }
+    });
+    const capture = captureConsoleOutput();
+    try {
+      const session = await Session.loadOrCreate(dir);
+      await runRajio(session, { ...baseOptions, continue: 'step' });
+    } finally {
+      capture.restore();
+    }
+
+    const output = capture.output();
+    expect(output).toContain('current stage: transcript_raw.');
+    expect(output).toContain(`next step: run rajio '${dir}' --continue=step.`);
+  });
+
+  it('shell-quotes the next command target', async () => {
+    const originalDir = await preparedSession('audio', {
+      audio: { status: 'done' }
+    });
+    const dir = path.join(await tempDir(), "session;it's fine");
+    await rename(originalDir, dir);
+    const capture = captureConsoleOutput();
+    try {
+      const session = await Session.loadOrCreate(dir);
+      await runRajio(session, { ...baseOptions, continue: 'step' });
+    } finally {
+      capture.restore();
+    }
+
+    expect(capture.output()).toContain(
+      `next step: run rajio '${dir.replaceAll("'", "'\\''")}' --continue=step.`
+    );
+  });
+
+  it('prints the current manual stage and next action when stopping for manual work', async () => {
+    const dir = await preparedSession('transcript_raw', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    const capture = captureConsoleOutput();
+    try {
+      const session = await Session.loadOrCreate(dir);
+      await runRajio(session, baseOptions);
+    } finally {
+      capture.restore();
+    }
+
+    const output = capture.output();
+    expect(output).toContain('waiting for manual stage transcript_work.');
+    expect(output).toContain('current stage: transcript_work.');
+    expect(output).toContain(
+      `next step: edit transcript/work/segments.toml, then run rajio '${dir}' --commit.`
+    );
+  });
+
   it('logs export output paths from completed session state', async () => {
     const dir = await preparedCompleteSession();
     const session = await Session.loadOrCreate(dir);
@@ -1195,6 +1256,26 @@ describe('session workflow', () => {
       'zh srt: output/Example.zh.srt',
       'bilingual ass: output/Example.ja-zh.ass'
     ]);
+  });
+
+  it('prints session complete when export finishes', async () => {
+    const dir = await preparedCompleteSession();
+    const session = await Session.loadOrCreate(dir);
+    session.currentStage = 'export';
+    session.state.stages.export = { status: 'pending' };
+    await session.save();
+    const capture = captureConsoleOutput();
+    try {
+      await runRajio(session, baseOptions);
+    } finally {
+      capture.restore();
+    }
+
+    const output = capture.output();
+    expect(output).toContain('export outputs:');
+    expect(output).toContain('session complete.');
+    expect(output).not.toContain('current stage: done.');
+    expect(output).not.toContain('next step: session complete.');
   });
 
   it('rejects terminal done workflow state when export is incomplete', async () => {

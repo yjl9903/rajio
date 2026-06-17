@@ -28,8 +28,6 @@ import { taggedLogger } from '../utils/logger.js';
 import type { ClipChunkMetadata, ClipFile } from './types.js';
 import { readClipFile } from './list.js';
 
-const clipLogger = taggedLogger('clips');
-
 interface ClipTranscribeInput {
   session: Session;
   runtime: RuntimeConfig;
@@ -55,7 +53,14 @@ interface ClipChunkFile {
   response: unknown;
 }
 
+interface ClipLogger {
+  info(message: string): void;
+  success(message: string): void;
+  error(message: string): void;
+}
+
 export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFile> {
+  const logger = taggedLogger('clips');
   validateClipRange(input.start, input.end);
   const options = resolveAudioChunkOptions(input.chunking);
   const clipDir = await resolveClipDir(input.session, input.start, input.end, options);
@@ -113,14 +118,16 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
     session: input.session,
     runtime: input.runtime,
     clipDir,
-    clip
+    clip,
+    logger
   });
   const chunks = await transcribeClipChunks({
     session: input.session,
     runtime: input.runtime,
     clipDir,
     clip,
-    transcribe: input.deps?.transcribe ?? transcribeWithOpenAI
+    transcribe: input.deps?.transcribe ?? transcribeWithOpenAI,
+    logger
   });
   const segments = mergeTranscriptChunks({
     chunks,
@@ -129,7 +136,7 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
   await writeFileAtomic(path.join(clipDir, clip.segments), stringify(segments));
   clip.updated_at = new Date().toISOString();
   await writeClipFile(clipPath, clip);
-  clipLogger.success(
+  logger.success(
     `clip ${clip.id} wrote ${toSessionRelative(input.session.dir, path.join(clipDir, clip.segments))}.`
   );
   return clip;
@@ -193,6 +200,7 @@ async function transcribeClipChunks(input: {
   clipDir: string;
   clip: ClipFile;
   transcribe: NonNullable<StageRunnerDeps['transcribe']>;
+  logger: ClipLogger;
 }): Promise<TranscriptChunkResult[]> {
   const results: TranscriptChunkResult[] = [];
   for (const [index, chunk] of input.clip.chunks.entries()) {
@@ -217,12 +225,13 @@ async function transcribeClipChunk(input: {
   index: number;
   totalChunks: number;
   transcribe: NonNullable<StageRunnerDeps['transcribe']>;
+  logger: ClipLogger;
 }): Promise<TranscriptChunkResult> {
   const checkpointPath = fromSessionRelative(input.clipDir, input.chunk.checkpoint);
   const errorPath = checkpointPath.replace(/\.toml$/, '.error.log');
   if (await pathExists(checkpointPath)) {
     const checkpoint = await readClipChunkFile(checkpointPath);
-    clipLogger.info(
+    input.logger.info(
       `clip ${input.clip.id} chunk ${input.index + 1} resume ${formatTimeRange(
         checkpoint.absolute_start,
         checkpoint.absolute_end
@@ -241,7 +250,7 @@ async function transcribeClipChunk(input: {
   const audioPath = fromSessionRelative(input.clipDir, input.chunk.audio);
   await validateClipChunkAudio(audioPath, input.chunk);
   const startedAt = new Date().toISOString();
-  clipLogger.info(
+  input.logger.info(
     `clip ${input.clip.id} chunk ${input.index + 1}/${input.totalChunks} start ${formatTimeRange(
       input.chunk.absolute_start,
       input.chunk.absolute_end
@@ -257,7 +266,7 @@ async function transcribeClipChunk(input: {
       },
       totalChunks: input.totalChunks,
       sessionDir: input.session.dir,
-      logger: clipLogger
+      logger: input.logger
     });
     let response: unknown;
     try {
@@ -286,7 +295,7 @@ async function transcribeClipChunk(input: {
       response: toTomlCompatible(response)
     });
     await unlink(errorPath).catch(() => undefined);
-    clipLogger.success(
+    input.logger.success(
       `clip ${input.clip.id} chunk ${input.index + 1} done ${formatTimeRange(
         input.chunk.absolute_start,
         input.chunk.absolute_end
@@ -302,7 +311,7 @@ async function transcribeClipChunk(input: {
     };
   } catch (error) {
     await writeFileAtomic(errorPath, `${new Date().toISOString()}\n${formatError(error)}\n`);
-    clipLogger.error(
+    input.logger.error(
       `clip ${input.clip.id} chunk ${input.index + 1} failed ${formatTimeRange(
         input.chunk.absolute_start,
         input.chunk.absolute_end
@@ -331,22 +340,23 @@ async function printClipUploadNotice(input: {
   runtime: RuntimeConfig;
   clipDir: string;
   clip: ClipFile;
+  logger: ClipLogger;
 }): Promise<void> {
-  clipLogger.info(`transcribing clip: ${input.clip.id}.`);
-  clipLogger.info(
+  input.logger.info(`transcribing clip: ${input.clip.id}.`);
+  input.logger.info(
     `clip range: ${formatTimeRange(input.clip.start, input.clip.end)} (${formatRawRange(
       input.clip.start,
       input.clip.end
     )}s).`
   );
-  clipLogger.info('rajio will upload audio to an external transcription API.');
-  clipLogger.info(`provider: ${formatProvider(input.runtime)}`);
-  clipLogger.info(`model: ${TRANSCRIPTION_MODEL}`);
-  clipLogger.info('chunk concurrency: 1');
+  input.logger.info('rajio will upload audio to an external transcription API.');
+  input.logger.info(`provider: ${formatProvider(input.runtime)}`);
+  input.logger.info(`model: ${TRANSCRIPTION_MODEL}`);
+  input.logger.info('chunk concurrency: 1');
   for (const [index, chunk] of input.clip.chunks.entries()) {
     const audioPath = fromSessionRelative(input.clipDir, chunk.audio);
     const size = (await stat(audioPath)).size;
-    clipLogger.info(
+    input.logger.info(
       `upload chunk ${index + 1}/${input.clip.chunks.length}: ${formatTimeRange(
         chunk.absolute_start,
         chunk.absolute_end

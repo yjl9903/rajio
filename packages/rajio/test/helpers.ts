@@ -7,9 +7,11 @@ import { afterEach, beforeEach, vi } from 'vitest';
 import { Session } from '../src/index.js';
 import { writeSegmentsFile } from '../src/segments/index.js';
 import { sha256File } from '../src/utils/fs.js';
+import { logger } from '../src/utils/logger.js';
 import type { CliOptions, SegmentsFile, SessionState } from '../src/types.js';
 
 const originalEnv = { ...process.env };
+const originalLoggerLevel = logger.level;
 
 export const baseOptions: CliOptions = {
   continue: 'until-manual',
@@ -21,11 +23,13 @@ export const baseOptions: CliOptions = {
 beforeEach(() => {
   vi.useFakeTimers();
   vi.setSystemTime(new Date('2026-06-06T00:00:00.000Z'));
+  logger.level = Number.NEGATIVE_INFINITY;
 });
 
 afterEach(() => {
   vi.useRealTimers();
   process.env = { ...originalEnv };
+  logger.level = originalLoggerLevel;
 });
 
 export async function tempDir(): Promise<string> {

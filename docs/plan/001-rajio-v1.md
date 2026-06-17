@@ -68,6 +68,9 @@ Options:
 - `--reset <stage>`: regenerate from a stage. Valid stages are `audio`,
   `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
 
+When workflow execution stops before completion, the CLI prints the current stage and the next
+command or manual edit action. Completed export prints `session complete.` instead of a next step.
+
 `rajio check` defaults to concise human output and summarizes repeated issues by file,
 stage, severity, and code. Human and JSON output include the active check scope so agents
 do not mistake the default filtered view for a full-session QA pass. Use

@@ -15,7 +15,6 @@ import { runExportStage } from './stages/export.js';
 import { commitManualStage, runAgentAndCommit, setupManualStage } from './stages/manual.js';
 import { runTranscriptRawStage } from './stages/transcription.js';
 
-const workflowLogger = taggedLogger('workflow');
 const EXPORT_OUTPUT_FIELDS = [
   ['ja srt', 'ja_srt'],
   ['zh srt', 'zh_srt'],
@@ -76,6 +75,7 @@ async function continueAfterAction(
   options: CliOptions,
   deps: WorkflowDeps
 ): Promise<void> {
+  const logger = taggedLogger('workflow');
   const limit = options.continue === 'step' && !options.full ? 1 : Number.POSITIVE_INFINITY;
   let steps = 0;
 
@@ -88,7 +88,7 @@ async function continueAfterAction(
 
     if (stage === 'done') {
       if (session.stage('export').status === 'done') {
-        workflowLogger.success('session is already complete.');
+        logger.success('session is already complete.');
         logExportOutputs(session, deps.outputLogger);
         return;
       }
@@ -98,6 +98,7 @@ async function continueAfterAction(
     if (isManualStage(stage)) {
       await handleManualStage(session, runtime, stage, options);
       if (!options.full || (stage === 'translation_work' && options.agent === false)) {
+        logWorkflowStop(session, logger);
         return;
       }
       steps += 1;
@@ -108,6 +109,7 @@ async function continueAfterAction(
     steps += 1;
 
     if (stage === 'export') {
+      logWorkflowStop(session, logger);
       return;
     }
 
@@ -118,9 +120,12 @@ async function continueAfterAction(
     ) {
       await setupManualStage({ session, stage: session.currentStage });
       taggedLogger(session.currentStage).info(`waiting for manual stage ${session.currentStage}.`);
+      logWorkflowStop(session, logger);
       return;
     }
   }
+
+  logWorkflowStop(session, logger);
 }
 
 function retargetDirtyManualStage(session: Session): boolean {
@@ -146,7 +151,6 @@ async function handleManualStage(
     const stageLogger = taggedLogger(stage);
     if (stage === 'translation_work' && options.agent === false) {
       stageLogger.info('waiting for manual stage translation_work.');
-      stageLogger.info('fill translation/work/segments.toml in this session, then run --commit.');
       return;
     }
     if (options.agent === false) {
@@ -167,7 +171,6 @@ async function handleManualStage(
 
   const stageLogger = taggedLogger(stage);
   stageLogger.info(`waiting for manual stage ${stage}.`);
-  stageLogger.info(`edit ${manualSegmentsPath(stage)} in this session, then run --commit.`);
 }
 
 async function runAutomaticStage(
@@ -213,6 +216,28 @@ async function runAutomaticStage(
   }
 }
 
+function logWorkflowStop(session: Session, logger: ExportOutputLogger): void {
+  if (session.currentStage === 'done') {
+    logger.success('session complete.');
+    return;
+  }
+
+  logger.info(`current stage: ${session.currentStage}.`);
+  logger.info(`next step: ${nextStepMessage(session)}.`);
+}
+
+function nextStepMessage(session: Session): string {
+  const target = formatCommandTarget(session.dir);
+  if (isManualStage(session.currentStage)) {
+    return `edit ${manualSegmentsPath(session.currentStage)}, then run rajio ${target} --commit`;
+  }
+  return `run rajio ${target} --continue=step`;
+}
+
+function formatCommandTarget(target: string): string {
+  return `'${target.replaceAll("'", "'\\''")}'`;
+}
+
 async function advancePastStage(session: Session, stage: StageName): Promise<void> {
   session.currentStage = nextStage(stage);
   await session.save();
@@ -236,7 +261,7 @@ export function exportOutputPaths(session: Session): { label: string; path: stri
 
 export function logExportOutputs(
   session: Session,
-  logger: ExportOutputLogger = workflowLogger
+  logger: ExportOutputLogger = taggedLogger('workflow')
 ): void {
   const outputs = exportOutputPaths(session);
   if (outputs.length === 0) {

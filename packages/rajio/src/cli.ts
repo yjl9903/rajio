@@ -25,9 +25,6 @@ installBrokenPipeHandler();
 wrapConsoleLogger();
 
 const app = breadc('rajio', { version, description });
-const checkLogger = taggedLogger('check');
-const doctorLogger = taggedLogger('doctor');
-const cliLogger = taggedLogger('cli');
 
 app
   .command('<target>', 'Run or resume a rajio subtitle session')
@@ -190,7 +187,7 @@ app
       return;
     }
     if (!options.json) {
-      checkLogger.success('check passed.');
+      taggedLogger('check').success('check passed.');
     }
   });
 
@@ -220,7 +217,7 @@ app
       process.exitCode = 1;
       return;
     }
-    doctorLogger.success('doctor passed.');
+    taggedLogger('doctor').success('doctor passed.');
   });
 
 app.command('clean <target>', 'Clean generated session artifacts').action(async (target) => {
@@ -233,6 +230,6 @@ app.command('clean <target>', 'Clean generated session artifacts').action(async 
 const argv = process.argv.slice(2);
 
 await app.run(argv).catch((error) => {
-  cliLogger.error(formatCliError(error, argv));
+  taggedLogger('cli').error(formatCliError(error, argv));
   process.exitCode = 1;
 });

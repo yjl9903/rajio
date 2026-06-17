@@ -14,7 +14,6 @@ import { taggedLogger } from './utils/logger.js';
 
 const REQUIRED_NODE_MAJOR = 24;
 const CHECK_TIMEOUT_MS = 10000;
-const doctorLogger = taggedLogger('doctor');
 
 export type DoctorStatus = 'pass' | 'warn' | 'fail';
 
@@ -70,18 +69,19 @@ export async function runDoctor(
 }
 
 export function printDoctorChecks(checks: DoctorCheck[]): void {
+  const logger = taggedLogger('doctor');
   for (const check of checks) {
     const message = `${check.name}: ${check.message}`;
     if (check.status === 'pass') {
-      doctorLogger.success(message);
+      logger.success(message);
     } else if (check.status === 'warn') {
-      doctorLogger.warn(message);
+      logger.warn(message);
     } else {
-      doctorLogger.error(message);
+      logger.error(message);
     }
     if (check.detail) {
       for (const line of check.detail.split(/\r?\n/).filter(Boolean)) {
-        doctorLogger.info(`  ${line}`);
+        logger.info(`  ${line}`);
       }
     }
   }

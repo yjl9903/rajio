@@ -23,7 +23,6 @@ import {
 } from '../types.js';
 import { taggedLogger } from '../utils/logger.js';
 
-const checkLogger = taggedLogger('check');
 const VALID_STAGE_STATUSES = new Set(STAGE_STATUSES);
 const AUTOMATIC_STAGES = new Set<StageName>(['audio', 'transcript_raw', 'export']);
 
@@ -152,7 +151,7 @@ export function printCheckIssues(
     return;
   }
 
-  const logger = options.logger ?? checkLogger;
+  const logger = options.logger ?? taggedLogger('check');
   if (options.scope && (issues.length > 0 || options.printScopeWhenEmpty !== false)) {
     logger.info(
       formatCheckScopeMessage(options.scope, options.scopeLabel ?? 'check', options.range)

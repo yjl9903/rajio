@@ -24,7 +24,6 @@ import { MAX_OPENAI_TRANSCRIPTION_SECONDS } from './audio.js';
 
 const TRANSCRIPTION_CHUNK_CONCURRENCY = 5;
 export const TRANSCRIPTION_HEARTBEAT_INTERVAL_MS = 30_000;
-const transcriptionLogger = taggedLogger('transcript_raw');
 
 interface AudioInputChunk {
   index: number;
@@ -50,6 +49,11 @@ interface TranscriptionHeartbeatLogger {
   info(message: string): void;
 }
 
+interface TranscriptionLogger extends TranscriptionHeartbeatLogger {
+  success(message: string): void;
+  error(message: string): void;
+}
+
 export async function runTranscriptRawStage(input: {
   session: Session;
   runtime: RuntimeConfig;
@@ -66,18 +70,20 @@ export async function runTranscriptRawStage(input: {
   const chunkResultsDir = session.artifact('transcript', 'raw', 'chunks');
   const audioInputs = await collectAudioInputChunks(session, audioPath);
   const transcribe = deps.transcribe ?? transcribeWithOpenAI;
+  const logger = taggedLogger('transcript_raw');
 
   await mkdir(chunkResultsDir, { recursive: true });
   if (resetCheckpoints) {
     await clearTranscriptionCheckpointFiles(chunkResultsDir);
   }
-  await printTranscriptionUploadNotice(runtime, audioInputs);
+  await printTranscriptionUploadNotice(runtime, audioInputs, logger);
   const chunks = await transcribeChunks({
     session,
     runtime,
     chunkResultsDir,
     audioInputs,
-    transcribe
+    transcribe,
+    logger
   });
   const segments = mergeTranscriptChunks({
     chunks,
@@ -165,6 +171,7 @@ async function transcribeChunks(input: {
   chunkResultsDir: string;
   audioInputs: AudioInputChunk[];
   transcribe: NonNullable<StageRunnerDeps['transcribe']>;
+  logger: TranscriptionLogger;
 }): Promise<TranscriptChunkResult[]> {
   const queue = newQueue(TRANSCRIPTION_CHUNK_CONCURRENCY);
   const tasks = input.audioInputs.map((chunk) =>
@@ -199,12 +206,13 @@ async function transcribeChunk(input: {
   chunk: AudioInputChunk;
   totalChunks: number;
   transcribe: NonNullable<StageRunnerDeps['transcribe']>;
+  logger: TranscriptionLogger;
 }): Promise<TranscriptChunkResult> {
   const chunkPath = chunkResultPath(input.chunkResultsDir, input.chunk.index);
   const errorPath = chunkErrorPath(input.chunkResultsDir, input.chunk.index);
   if (await pathExists(chunkPath)) {
     const chunkFile = await readRawTranscriptionChunkFile(chunkPath);
-    transcriptionLogger.info(
+    input.logger.info(
       `chunk ${input.chunk.index + 1} resume ${formatTimeRange(
         chunkFile.start,
         chunkFile.end
@@ -221,7 +229,7 @@ async function transcribeChunk(input: {
   }
 
   const startedAt = new Date().toISOString();
-  transcriptionLogger.info(
+  input.logger.info(
     `chunk ${input.chunk.index + 1}/${input.totalChunks} start ${formatTimeRange(
       input.chunk.start,
       input.chunk.end
@@ -232,7 +240,7 @@ async function transcribeChunk(input: {
       chunk: input.chunk,
       totalChunks: input.totalChunks,
       sessionDir: input.session.dir,
-      logger: transcriptionLogger
+      logger: input.logger
     });
     let response: unknown;
     try {
@@ -259,7 +267,7 @@ async function transcribeChunk(input: {
       response: toTomlCompatible(response)
     });
     await unlink(errorPath).catch(() => undefined);
-    transcriptionLogger.success(
+    input.logger.success(
       `chunk ${input.chunk.index + 1} done ${formatTimeRange(
         input.chunk.start,
         input.chunk.end
@@ -276,7 +284,7 @@ async function transcribeChunk(input: {
   } catch (error) {
     const message = formatError(error);
     await writeFileAtomic(errorPath, `${new Date().toISOString()}\n${message}\n`);
-    transcriptionLogger.error(
+    input.logger.error(
       `chunk ${input.chunk.index + 1} failed ${formatTimeRange(
         input.chunk.start,
         input.chunk.end
@@ -338,15 +346,16 @@ async function clearTranscriptionCheckpointFiles(dir: string): Promise<void> {
 
 async function printTranscriptionUploadNotice(
   runtime: RuntimeConfig,
-  audioInputs: AudioInputChunk[]
+  audioInputs: AudioInputChunk[],
+  logger: TranscriptionLogger
 ): Promise<void> {
-  transcriptionLogger.info('rajio will upload audio to an external transcription API.');
-  transcriptionLogger.info(`provider: ${formatProvider(runtime)}`);
-  transcriptionLogger.info(`model: ${TRANSCRIPTION_MODEL}`);
-  transcriptionLogger.info(`chunk concurrency: ${TRANSCRIPTION_CHUNK_CONCURRENCY}`);
+  logger.info('rajio will upload audio to an external transcription API.');
+  logger.info(`provider: ${formatProvider(runtime)}`);
+  logger.info(`model: ${TRANSCRIPTION_MODEL}`);
+  logger.info(`chunk concurrency: ${TRANSCRIPTION_CHUNK_CONCURRENCY}`);
   for (const chunk of audioInputs) {
     const size = (await stat(chunk.audioPath)).size;
-    transcriptionLogger.info(
+    logger.info(
       `upload chunk ${chunk.index + 1}/${audioInputs.length}: ${formatTimeRange(
         chunk.start,
         chunk.end
