@@ -55,15 +55,13 @@ export async function runRajio(
       await runAgentAndCommit({
         session,
         runtime,
-        stage: currentStage,
-        verbose: options.verbose
+        stage: currentStage
       });
       await advancePastStage(session, currentStage);
     } else if (options.commit) {
       await commitManualStage({
         session,
-        stage: currentStage,
-        verbose: options.verbose
+        stage: currentStage
       });
       await advancePastStage(session, currentStage);
     }
@@ -154,15 +152,13 @@ async function handleManualStage(
     if (options.agent === false) {
       await commitManualStage({
         session,
-        stage,
-        verbose: options.verbose
+        stage
       });
     } else {
       await runAgentAndCommit({
         session,
         runtime,
-        stage,
-        verbose: options.verbose
+        stage
       });
     }
     await advancePastStage(session, stage);

@@ -681,7 +681,10 @@ describe('session workflow', () => {
     expect(output).toContain('commit scope: translation_work zh QA.');
     expect(output).toContain('Run rajio check');
     expect(output).toContain('--stage translation --language ja');
+    expect(output).toContain('2 warning issues (zh_terminal_punctuation)');
     expect(output).toContain('zh_terminal_punctuation');
+    expect(output).not.toContain('Use --verbose for details.');
+    expect(output).not.toContain('Segment 2 Chinese line 1 ends with ordinary punctuation.');
     expect(output).not.toContain('translation inherited Japanese QA');
   });
 

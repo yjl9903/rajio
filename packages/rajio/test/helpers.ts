@@ -15,8 +15,7 @@ export const baseOptions: CliOptions = {
   continue: 'until-manual',
   commit: false,
   agent: undefined,
-  full: false,
-  verbose: false
+  full: false
 };
 
 beforeEach(() => {

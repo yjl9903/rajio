@@ -109,7 +109,6 @@ export interface CliOptions {
   agent: 'codex' | false | undefined;
   full: boolean;
   reset?: StageName;
-  verbose: boolean;
   chunking?: AudioChunkOptions;
 }
 

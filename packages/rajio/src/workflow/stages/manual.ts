@@ -75,9 +75,8 @@ export async function setupManualStage(input: {
 export async function commitManualStage(input: {
   session: Session;
   stage: ManualStageName;
-  verbose: boolean;
 }): Promise<void> {
-  const { session, stage, verbose } = input;
+  const { session, stage } = input;
   const state = session.stage(stage);
   if (typeof state.segments !== 'string') {
     throw new Error(`${stage} does not have a work segments path.`);
@@ -97,11 +96,12 @@ export async function commitManualStage(input: {
   });
   const stageLogger = taggedLogger(stage);
   printCheckIssues(checkIssues, {
-    verbose,
+    verbose: false,
     logger: stageLogger,
     scope,
     scopeLabel: 'commit',
-    printScopeWhenEmpty: false
+    printScopeWhenEmpty: false,
+    printDetailHint: false
   });
   if (errors.length > 0) {
     const file = toSessionRelative(session.dir, segmentsPath);
@@ -123,9 +123,8 @@ export async function runAgentAndCommit(input: {
   session: Session;
   runtime: RuntimeConfig;
   stage: ManualStageName;
-  verbose: boolean;
 }): Promise<void> {
-  const { session, runtime, stage, verbose } = input;
+  const { session, runtime, stage } = input;
   if (session.stage(stage).status === 'pending') {
     await setupManualStage({ session, stage });
   }
@@ -141,7 +140,7 @@ export async function runAgentAndCommit(input: {
       description: session.description,
       runtime
     });
-    await commitManualStage({ session, stage, verbose });
+    await commitManualStage({ session, stage });
   } catch (error) {
     session.markFailed(stage, error);
     await session.save();

@@ -134,6 +134,7 @@ export function printCheckIssues(
     json?: boolean;
     sessionDir?: string;
     writer?: { isTTY?: boolean; write(chunk: string): unknown };
+    printDetailHint?: boolean;
   }
 ): void {
   if (options.json) {
@@ -165,7 +166,7 @@ export function printCheckIssues(
   }
 
   for (const summary of summarizeCheckIssues(issues)) {
-    const message = formatCheckSummary(summary);
+    const message = formatCheckSummary(summary, options.printDetailHint !== false);
     if (isBlockingLevel(summary.level)) {
       logger.error(message);
     } else {
@@ -661,7 +662,7 @@ function summarizeCheckIssuesForJson(
   return Array.from(groups.values()).sort(compareJsonSummaries);
 }
 
-function formatCheckSummary(summary: CheckIssueSummary): string {
+function formatCheckSummary(summary: CheckIssueSummary, printDetailHint = true): string {
   const label = summary.count === 1 ? 'issue' : 'issues';
   const stage = summary.stage ? ` [${summary.stage}]` : '';
   const examples = summary.examples
@@ -669,7 +670,8 @@ function formatCheckSummary(summary: CheckIssueSummary): string {
     .filter(Boolean)
     .join('; ');
   const examplesText = examples ? ` Examples: ${examples}.` : '';
-  return `${summary.file}${stage}: ${summary.count} ${summary.level} ${label} (${summary.code}). ${summary.message}${examplesText} Use --verbose for details.`;
+  const hintText = printDetailHint ? ' Use --verbose for details.' : '';
+  return `${summary.file}${stage}: ${summary.count} ${summary.level} ${label} (${summary.code}). ${summary.message}${examplesText}${hintText}`;
 }
 
 function formatIssueExample(issue: CheckIssue): string {

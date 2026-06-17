@@ -72,7 +72,6 @@ app
       }
     }
   )
-  .option('--verbose', 'print every warning instead of summarizing repetitive warnings')
   .option('--chunk-target <seconds>', 'target local audio chunk length in seconds', {
     cast: castNumber
   })
@@ -100,7 +99,6 @@ app
       agent: options.agent,
       full: options.full,
       reset: options.reset,
-      verbose: Boolean(options.verbose),
       chunking
     };
     const session = await Session.loadOrCreate(target, cliOptions.media);

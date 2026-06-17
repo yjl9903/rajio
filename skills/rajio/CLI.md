@@ -112,8 +112,6 @@ Workflow controls:
   by an agent.
 - `--agent codex|false`: batch automation control. `codex` runs the Codex agent for
   the current manual stage and commits it. `false` disables Codex in `--full` mode.
-- `--verbose`: print every validation warning where the command supports verbose
-  output instead of summarized warnings.
 
 Subtitle QA exceptions are recorded per segment in `segments.toml`, not in `session.toml`.
 Before adding a skip annotation, run:

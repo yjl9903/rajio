@@ -133,10 +133,6 @@ These chunk options apply when audio chunks are generated, including first run a
 `--reset transcript_raw` reuses existing `stages.audio.chunks[]` and does not apply new
 chunk options.
 
-Default command logging:
-
-- `--verbose`: print detailed warnings where the command supports verbose output.
-
 ### Segments
 
 Most `rajio segments` commands print affected segment rows. `segments apply` is the
