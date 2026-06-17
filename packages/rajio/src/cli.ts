@@ -114,6 +114,12 @@ app
   .command('check <target>', 'Validate session.toml and segments.toml files')
   .option('--verbose', 'print every issue')
   .option('--json', 'print JSON output')
+  .option('--start <seconds>', 'filter segment QA to segments overlapping this start time', {
+    cast: castNumber
+  })
+  .option('--end <seconds>', 'filter segment QA to segments before this end time', {
+    cast: castNumber
+  })
   .option('--level <level>', 'filter issues by level: fatal, error, or warning', {
     cast: (value) => {
       if (value === undefined) {
@@ -163,11 +169,13 @@ app
   )
   .action(async (target, options) => {
     const session = await Session.load(target);
+    const range = resolveCheckRange(options.start, options.end);
     const result = await checkRajio(session);
     const filterOptions: CheckFilterOptions = {
       level: options.level,
       stage: options.stage,
       language: options.language,
+      range,
       currentStage: session.currentStage
     };
     const scope = resolveCheckScope(filterOptions);
@@ -176,7 +184,8 @@ app
       verbose: Boolean(options.verbose),
       json: Boolean(options.json),
       sessionDir: session.dir,
-      scope
+      scope,
+      range
     });
     if (issues.some((issue) => issue.level === 'fatal' || issue.level === 'error')) {
       process.exitCode = 1;
@@ -186,6 +195,22 @@ app
       checkLogger.success('check passed.');
     }
   });
+
+function resolveCheckRange(
+  start: number | undefined,
+  end: number | undefined
+): { start: number; end: number } | undefined {
+  if (start === undefined && end === undefined) {
+    return undefined;
+  }
+  if (start === undefined || end === undefined) {
+    throw new Error('--start and --end must be provided together.');
+  }
+  if (end <= start) {
+    throw new Error('--end must be greater than --start.');
+  }
+  return { start, end };
+}
 
 app
   .command('doctor <target>', 'Check environment, provider, Codex, ffmpeg, and Node.js')

@@ -214,11 +214,196 @@ describe('cli explicit targets', () => {
       '--json'
     ]);
 
-    expect(JSON.parse(stdout.text())).toEqual({
-      stats: { edits: 1, splits: 0, merges: 0, deletes: 0, total: 1 }
+    expect(JSON.parse(stdout.text())).toMatchObject({
+      apply: {
+        dry_run: true,
+        stats: { edits: 1, splits: 0, merges: 0, deletes: 0, total: 1 }
+      },
+      check: {
+        ok: true,
+        range: { start: 0, end: 1.2 },
+        scope: { languages: ['zh'] },
+        counts: { fatal: 0, error: 0, warning: 0 }
+      }
     });
     expect(await readFile(path.join(dir, 'translation/work/segments.toml'), 'utf8')).not.toContain(
       '您好'
+    );
+  });
+
+  it('prints affected rows with remaining issues for verbose apply', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      [
+        'start = 0',
+        'end = 1.2',
+        '[[operations]]',
+        'op = "edit"',
+        'segment_id = "1"',
+        'zh = "您好。"'
+      ].join('\n')
+    );
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--dry-run',
+      '--verbose',
+      '--json'
+    ]);
+
+    const output = JSON.parse(stdout.text()) as {
+      check: { range: { start: number; end: number } };
+      segments: Array<{ id: string; affected: boolean; issues: Array<{ code: string }> }>;
+    };
+    expect(output.check.range).toEqual({ start: 0, end: 1.2 });
+    expect(output.segments).toEqual([
+      expect.objectContaining({
+        id: '1',
+        affected: true,
+        issues: expect.arrayContaining([
+          expect.objectContaining({ code: 'zh_terminal_punctuation' })
+        ])
+      })
+    ]);
+  });
+
+  it('prints issue columns as CSV for verbose non-TTY apply output', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'zh = "您好。"'].join('\n')
+    );
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--dry-run',
+      '--verbose'
+    ]);
+
+    expect(stdout.text()).toContain('id,start,end,speaker,ja,zh,affected,issues');
+    expect(stdout.text()).toContain('zh_terminal_punctuation');
+  });
+
+  it('includes issue rows not touched by verbose apply output', async () => {
+    const dir = await preparedTranslationSession();
+    const segmentsPath = path.join(dir, 'translation/work/segments.toml');
+    const file = sampleTranslation();
+    file.segments[1]!.zh = '再见。';
+    await writeSegmentsFile(segmentsPath, file, { validate: false });
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      [
+        'start = 0',
+        'end = 3',
+        '[[operations]]',
+        'op = "edit"',
+        'segment_id = "1"',
+        'zh = "你好"'
+      ].join('\n')
+    );
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--dry-run',
+      '--verbose',
+      '--json'
+    ]);
+
+    const output = JSON.parse(stdout.text()) as {
+      segments: Array<{ id: string; affected: boolean; issues: Array<{ code: string }> }>;
+    };
+    expect(output.segments).toEqual([
+      expect.objectContaining({ id: '1', affected: true }),
+      expect.objectContaining({
+        id: '2',
+        affected: false,
+        issues: expect.arrayContaining([
+          expect.objectContaining({ code: 'zh_terminal_punctuation' })
+        ])
+      })
+    ]);
+  });
+
+  it('keeps adjacent issues when apply check range is inferred', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'end = 1.45'].join('\n')
+    );
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--dry-run',
+      '--json'
+    ]);
+
+    const output = JSON.parse(stdout.text()) as {
+      check: { ok: boolean; summary: Array<{ code: string; examples?: Array<{ id: string }> }> };
+    };
+    expect(output.check.ok).toBe(false);
+    expect(output.check.summary).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'subtitle_gap_too_short',
+          examples: expect.arrayContaining([expect.objectContaining({ id: '2' })])
+        })
+      ])
+    );
+  });
+
+  it('does not fail segments apply when post-apply check reports blocking issues', async () => {
+    vi.useRealTimers();
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', `zh = "${'一'.repeat(25)}"`].join('\n')
+    );
+
+    const result = await runCliSideEffect([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--json'
+    ]);
+
+    const output = JSON.parse(result.stdout) as { check: { ok: boolean } };
+    expect(output.check.ok).toBe(false);
+    expect(result.exitCode).toBeUndefined();
+    expect(await readFile(path.join(dir, 'translation/work/segments.toml'), 'utf8')).toContain(
+      '一'.repeat(25)
     );
   });
 
@@ -245,8 +430,15 @@ describe('cli explicit targets', () => {
       restoreStdin();
     }
 
-    expect(JSON.parse(stdout.text())).toEqual({
-      stats: { edits: 1, splits: 0, merges: 0, deletes: 0, total: 1 }
+    expect(JSON.parse(stdout.text())).toMatchObject({
+      apply: {
+        dry_run: true,
+        stats: { edits: 1, splits: 0, merges: 0, deletes: 0, total: 1 }
+      },
+      check: {
+        ok: true,
+        counts: { fatal: 0, error: 0, warning: 0 }
+      }
     });
   });
 
@@ -369,6 +561,48 @@ describe('cli explicit targets', () => {
 
     expect(result.exitCode).toBe(1);
   });
+
+  it('filters check output by time range', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeSegmentsFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      {
+        version: 1,
+        source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+        segments: [
+          { id: 'in-range', start: 0, end: 1, speaker: 'A', ja: 'はい', zh: '是。' },
+          { id: 'out-range', start: 10, end: 11, speaker: 'A', ja: 'はい', zh: '是。' }
+        ]
+      },
+      { validate: false }
+    );
+
+    const result = await runCliSideEffect([
+      'check',
+      dir,
+      '--stage',
+      'translation',
+      '--start',
+      '0',
+      '--end',
+      '2',
+      '--json',
+      '--verbose'
+    ]);
+
+    const output = JSON.parse(result.stdout) as {
+      range: { start: number; end: number };
+      issues: Array<{ segmentId: string }>;
+    };
+    expect(output.range).toEqual({ start: 0, end: 2 });
+    expect(new Set(output.issues.map((issue) => issue.segmentId))).toEqual(new Set(['in-range']));
+  });
 });
 
 function createCommandApp(): ReturnType<typeof breadc> {
@@ -380,11 +614,17 @@ function createCommandApp(): ReturnType<typeof breadc> {
 
 async function runCliSideEffect(argv: string[]): Promise<{
   exitCode: string | number | undefined;
+  stdout: string;
   stderr: string;
 }> {
   const originalArgv = process.argv;
   const originalExitCode = process.exitCode;
   let stderr = '';
+  let stdout = '';
+  vi.spyOn(process.stdout, 'write').mockImplementation(((chunk: string | Uint8Array) => {
+    stdout += chunk.toString();
+    return true;
+  }) as typeof process.stdout.write);
   vi.spyOn(process.stderr, 'write').mockImplementation(((chunk: string | Uint8Array) => {
     stderr += chunk.toString();
     return true;
@@ -397,7 +637,7 @@ async function runCliSideEffect(argv: string[]): Promise<{
   process.exitCode = undefined;
   try {
     await import(/* @vite-ignore */ `${cliUrl}?cli-target-test=${cliImportCounter++}`);
-    return { exitCode: process.exitCode, stderr };
+    return { exitCode: process.exitCode, stdout, stderr };
   } finally {
     process.argv = originalArgv;
     process.exitCode = originalExitCode;

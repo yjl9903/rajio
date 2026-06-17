@@ -139,10 +139,11 @@ Default command logging:
 
 ### Segments
 
-`rajio segments` commands print affected segment rows. Agents should default to `--json`
-for parseable JSON; otherwise output is a human-readable table. Pipe JSON through `jq`
-when you need to extract fields or slice down the output. See
-[CLI.md](CLI.md#segments-commands) for JSON structures.
+Most `rajio segments` commands print affected segment rows. `segments apply` is the
+exception: by default it prints operation counts plus patch-scoped check feedback. Agents
+should default to `--json` for parseable output. When using verbose JSON, pipe the output
+through `jq` to select only the fields you need instead of reading the full raw payload.
+See [CLI.md](CLI.md#segments-commands) for JSON structures.
 
 Segment command examples:
 
@@ -184,12 +185,17 @@ In `segments` commands, pass `/path/to/session` after the segment subcommand. Re
 
 `segments apply <target> [file]` applies an ordered TOML patch as the batch form of `edit`,
 `split`, `merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in
-the same shell command, such as `<<'EOF' ... EOF`. For larger or riskier batches, prefer
-a patch file under a session-local `patches/` directory: run it once with `--dry-run`,
-then apply the same file without `--dry-run`. It prints operation counts by default; use
-`--verbose` when you need affected segment rows in operation order.
+the same shell command, such as `<<'EOF' ... EOF`. For batch work, prefer a patch file
+under a session-local `patches/` directory. Normal apply writes the patched segments, then
+runs patch-scoped check feedback. `--dry-run` validates the patch, previews affected output,
+and runs the same checks without writing changes. Use `--verbose --json` with `jq` when you
+need affected segment rows and their remaining issues.
 
 ```toml
+created_by = "worker-a"
+start = 120.0
+end = 180.0
+
 [[operations]]
 op = "edit"
 segment_id = "12"
@@ -272,9 +278,29 @@ or slice down the output. See [CLI.md](CLI.md#check) for JSON structures.
 - `rajio check /path/to/session --json --stage translation --language ja`: inspect Japanese
   subtitle QA inherited into `translation/work/segments.toml`.
 - Add `--verbose` only when you need full sorted `issues`, such as locating exact
-  segment IDs and issue codes before adding `skip_checks`. For large sessions, pipe
-  verbose JSON through `jq` to inspect a small slice of `issues` at a time instead of
-  reading the full issue list at once.
+  segment IDs and issue codes before adding `skip_checks`. When using verbose JSON, pipe
+  it through `jq` to inspect only the fields you need instead of reading the full raw
+  payload.
+
+## Subtitle QA Rules
+
+These are the subtitle QA thresholds enforced by `rajio check`; severity, stage, and
+language filtering follow the Check section above.
+
+| Rule                 | Warning                                                                                                             | Error                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Japanese line length | `ja` line exceeds 20 visible non-space characters                                                                   | `ja` line exceeds 28 visible non-space characters                          |
+| Chinese line length  | `zh` line exceeds 16 visible non-space characters                                                                   | `zh` line exceeds 24 visible non-space characters                          |
+| Line count           | Japanese or Chinese text has 2 lines                                                                                | Japanese or Chinese text has more than 2 lines                             |
+| Subtitle duration    | shorter than 0.8 seconds or longer than 7 seconds                                                                   | shorter than 0.5 seconds or longer than 10 seconds                         |
+| Reading speed        | Japanese exceeds 15 chars/s; Chinese exceeds 11 chars/s                                                             | Japanese exceeds 20 chars/s; Chinese exceeds 15 chars/s                    |
+| Adjacent gap         | gap is 80-250 ms                                                                                                    | gap is under 80 ms                                                         |
+| Punctuation          | ordinary comma/period punctuation, ordinary sentence-ending punctuation, or two repeated question/exclamation marks | punctuation-only line or more than two repeated question/exclamation marks |
+
+Do not satisfy numeric limits by creating unreadable single-character, single-syllable,
+or isolated filler subtitles. Prefer natural compression, merging with an adjacent segment,
+retiming, or splitting at a semantic pause. Single `？` or `！` is allowed when needed for
+intent, but use it sparingly.
 
 ## Workflow
 
@@ -343,8 +369,19 @@ stops at `transcript_work`.
 If transcription is chunked, wait for chunk success or error logs. Do not restart while
 requests may still be in flight unless there is a clear CLI/provider failure.
 
-Treat automatically created work segments as a draft. Rajio may write suggested patches under
-`transcript/work/suggested-patches/`, but never applies them automatically. Example files:
+Treat automatically created work segments as a draft.
+
+Rajio may write suggested patches under
+`transcript/work/suggested-patches/`, but never applies them automatically. Review them during
+the proofread stage below.
+
+Suggested patch review:
+
+- Review suggested patches in numeric filename order.
+- Treat `confidence = "medium"` patches with extra care and `*-low.*` files as notes.
+- Patch `reason` and `confidence` fields do not change apply behavior.
+
+Example generated files:
 
 ```text
 transcript/work/suggested-patches/
@@ -355,39 +392,25 @@ transcript/work/suggested-patches/
   04-long-segment-candidates-chunk-000-000000s-000600s-low.md
 ```
 
-Before spawning transcript proofread workers, review them in numeric filename order,
-adjust patches if needed, dry-run with
-`rajio segments apply <session> <patch> --stage transcript --dry-run`, then apply the
-safe ones. Treat `confidence = "medium"` patches with extra care and `*-low.*` files as
-notes; `reason` and `confidence` do not change apply behavior.
-
-### Subtitle QA Rules
-
-These are the subtitle QA thresholds enforced by `rajio check`; severity, stage, and
-language filtering follow the Check section above.
-
-| Rule                 | Warning                                                                                                             | Error                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Japanese line length | `ja` line exceeds 20 visible non-space characters                                                                   | `ja` line exceeds 28 visible non-space characters                          |
-| Chinese line length  | `zh` line exceeds 16 visible non-space characters                                                                   | `zh` line exceeds 24 visible non-space characters                          |
-| Line count           | Japanese or Chinese text has 2 lines                                                                                | Japanese or Chinese text has more than 2 lines                             |
-| Subtitle duration    | shorter than 0.8 seconds or longer than 7 seconds                                                                   | shorter than 0.5 seconds or longer than 10 seconds                         |
-| Reading speed        | Japanese exceeds 15 chars/s; Chinese exceeds 11 chars/s                                                             | Japanese exceeds 20 chars/s; Chinese exceeds 15 chars/s                    |
-| Adjacent gap         | gap is 80-250 ms                                                                                                    | gap is under 80 ms                                                         |
-| Punctuation          | ordinary comma/period punctuation, ordinary sentence-ending punctuation, or two repeated question/exclamation marks | punctuation-only line or more than two repeated question/exclamation marks |
-
-Do not satisfy numeric limits by creating unreadable single-character, single-syllable,
-or isolated filler subtitles. Prefer natural compression, merging with an adjacent segment,
-retiming, or splitting at a semantic pause. Single `？` or `！` is allowed when needed for
-intent, but use it sparingly.
-
 ### 2. Proofread And Polish Japanese
 
-Delegate proofread batches to sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Apply
-their returned structured edits to `transcript/work/segments.toml` with the segment tools
-when possible. Do not translate in this stage.
+Proofread flow:
+
+1. Review automatically generated suggested patches under
+   `transcript/work/suggested-patches/`, adjust them if needed, dry-run them with
+   `rajio segments apply <session> <patch> --stage transcript --dry-run`, then apply the
+   accepted safe patches.
+2. Spawn transcript proofread sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Each
+   worker gets a label and assigned source-media `start`/`end` range.
+3. Review each worker patch file and dry-run summary. Apply accepted patches to
+   `transcript/work/segments.toml`.
+4. Perform a whole-transcript review and polish pass for context, terminology, fixed
+   phrases, structure, and readability across batch boundaries.
+5. Commit `transcript_work` only after semantic review and validation are clean, or only
+   intentional subtitle QA exceptions remain with exact `skip_checks`.
 
 Use the segment commands documented in the CLI section with `--stage transcript`.
+Do not translate in this stage.
 
 For complex, noisy, overlapped, or suspicious ASR ranges, the main agent or a sub-agent may
 use `rajio clips transcribe` to retranscribe the original media time range as sidecar
@@ -458,20 +481,28 @@ Expected result: rajio commits `transcript_work`, creates
 
 ### 3. Translate And Polish Chinese
 
-Delegate translation batches to sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Apply
-their returned structured edits to `translation/work/segments.toml` with the segment tools
-when possible, and fill or refine `zh` for every segment.
+Initial translation flow:
 
-Translate and polish in explicit sub-agent batches instead of attempting the whole file in
-one pass. A practical batch is usually 50-100 segments or 5-10 minutes of media, adjusted
-by density. Use the segment editing commands documented in the CLI section with
-`--stage translation`, or apply patches carefully, to fill translated subtitle text into
-`zh`.
+1. Plan explicit translation batches by non-overlapping source-media time ranges instead
+   of attempting the whole file in one pass. Choose range sizes by dialogue density and
+   the active sub-agent concurrency limit.
+2. Spawn translation sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Each worker gets
+   a label and assigned source-media `start`/`end` range.
+3. Review each worker patch file and dry-run summary. Apply accepted patches to
+   `translation/work/segments.toml` so every segment has filled or refined `zh`.
+4. Perform a whole-file first-draft review for terminology, subtitle continuity, missing
+   translations, Japanese corrections made during translation, and cross-batch style
+   consistency.
+5. Commit `translation_work` and export only after every batch has been translated,
+   terminology has been cross-checked, and validation has no blocking `fatal` or Chinese
+   `error` issues except reviewed intentional subtitle QA exceptions.
+
+Use the segment commands documented in the CLI section with `--stage translation`, or
+apply patches carefully, to fill translated subtitle text into `zh`.
 
 During batch work, keep glossary updates and unresolved uncertainty in `description.md`,
 and search earlier completed batches when a new name, phrase, or style decision appears.
-Do not commit `translation_work` until every batch has been translated, terminology has
-been cross-checked, and this command has no blocking `fatal` or Chinese `error` issues:
+Before committing, confirm this command has no blocking `fatal` or Chinese `error` issues:
 
 ```bash
 rajio check /path/to/session --json --stage translation --level error

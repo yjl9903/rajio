@@ -2,8 +2,21 @@ import { readFile } from 'node:fs/promises';
 
 import type { UnknownOptionMiddleware, breadc } from 'breadc';
 
-import type { IssueLevel, Segment } from '../types.js';
-import { applySegmentPatch, parseSegmentPatch, summarizeSegmentPatchResult } from './apply.js';
+import type { IssueLevel, ManualStageName, Segment } from '../types.js';
+import type { CheckIssue, CheckLanguageFilter, CheckRange, CheckScope } from '../session/check.js';
+import {
+  checkSegmentsData,
+  filterCheckIssues,
+  formatCheckJson,
+  printCheckIssues
+} from '../session/check.js';
+import {
+  applySegmentPatch,
+  parseSegmentPatch,
+  summarizeSegmentPatchResult,
+  type SegmentPatch,
+  type SegmentPatchResultStats
+} from './apply.js';
 import {
   deleteSegment,
   editSegment,
@@ -16,7 +29,12 @@ import {
 import { validateSegments } from './index.js';
 import { SEGMENT_ISSUE_FILTERS, listSegments } from './list.js';
 import type { SegmentIssueFilter } from './list.js';
-import { prepareSegmentOutput, printSegmentPatchStats, printSegments } from './output.js';
+import {
+  formatSegments,
+  prepareSegmentOutput,
+  printSegments,
+  type SegmentOutputIssue
+} from './output.js';
 
 type RajioApp = ReturnType<typeof breadc>;
 const segmentIssuesHelp = SEGMENT_ISSUE_FILTERS.join(',');
@@ -96,17 +114,64 @@ export function registerSegmentCommands(app: RajioApp): void {
         stage: options.stage
       });
       const patch = parseSegmentPatch(await readPatchInput(file));
+      const beforeSegments = context.file.segments;
       const result = applySegmentPatch(context.file, patch);
+      const stats = summarizeSegmentPatchResult(patch);
+      const range = resolveApplyCheckRange(patch, result.affected);
+      const languages = resolveApplyCheckLanguages(context.stage, patch);
+      const scope = applyCheckScope(context.stage, languages);
       if (!options.dryRun) {
         await persistSegmentEdit(context);
       }
-      if (!options.verbose) {
-        printSegmentPatchStats(summarizeSegmentPatchResult(patch), output);
-        return;
-      }
-      printSegments(result.affected, output, {
-        totalDuration: getTotalDuration(context.file.segments)
+      const issues = filterApplyCheckIssues({
+        filePath: context.filePath,
+        file: context.file,
+        stage: context.stage,
+        languages,
+        range,
+        includeSegmentIds:
+          patch.start === undefined && patch.end === undefined
+            ? collectApplyCheckSegmentIds(beforeSegments, context.file.segments, result.affected)
+            : undefined
       });
+      const issuesBySegment = groupIssuesBySegment(issues);
+      const affectedSegmentIds = new Set(result.affected.map((segment) => segment.id));
+      const verboseSegments = options.verbose
+        ? collectApplyVerboseSegments(context.file.segments, result.affected, issuesBySegment)
+        : undefined;
+      if (options.json) {
+        printApplyJson({
+          output,
+          dryRun: Boolean(options.dryRun),
+          stats,
+          range,
+          scope,
+          issues,
+          segments: verboseSegments,
+          affectedSegmentIds,
+          issuesBySegment,
+          sessionDir: context.session.dir
+        });
+      } else if (options.verbose) {
+        output.writer.write(
+          `${formatSegments(verboseSegments ?? [], output.format, {
+            totalDuration: getTotalDuration(context.file.segments),
+            issuesBySegment,
+            affectedSegmentIds
+          })}\n`
+        );
+      } else {
+        output.writer.write(`${formatApplySummary(stats, Boolean(options.dryRun))}\n`);
+        printCheckIssues(issues, {
+          verbose: false,
+          logger: outputLogger(output.writer) as never,
+          scope,
+          range
+        });
+        if (!hasBlockingIssues(issues)) {
+          output.writer.write('check passed.\n');
+        }
+      }
     });
 
   app
@@ -230,6 +295,254 @@ export function registerSegmentCommands(app: RajioApp): void {
       await persistUnlessDryRun(context, Boolean(options.dryRun));
       printSegments([segment], output, { totalDuration });
     });
+}
+
+function resolveApplyCheckRange(patch: SegmentPatch, affected: Segment[]): CheckRange {
+  if (patch.start !== undefined && patch.end !== undefined) {
+    return { start: patch.start, end: patch.end };
+  }
+  return {
+    start: Math.min(...affected.map((segment) => segment.start)),
+    end: Math.max(...affected.map((segment) => segment.end))
+  };
+}
+
+function resolveApplyCheckLanguages(
+  stage: ManualStageName,
+  patch: SegmentPatch
+): CheckLanguageFilter[] {
+  if (stage === 'transcript_work') {
+    return ['ja'];
+  }
+
+  const languages = new Set<CheckLanguageFilter>();
+  for (const operation of patch.operations) {
+    if (operation.op === 'edit') {
+      if (operation.ja !== undefined) {
+        languages.add('ja');
+      }
+      if (operation.zh !== undefined) {
+        languages.add('zh');
+      }
+      for (const skip of operation.skip_checks ?? []) {
+        if (skip.code.startsWith('ja_')) {
+          languages.add('ja');
+        } else if (skip.code.startsWith('zh_')) {
+          languages.add('zh');
+        }
+      }
+    } else if (operation.op === 'split') {
+      languages.add('ja');
+      if (operation.replacements.some((segment) => segment.zh !== undefined)) {
+        languages.add('zh');
+      }
+    } else if (operation.op === 'merge') {
+      languages.add('ja');
+      if (operation.zh !== undefined) {
+        languages.add('zh');
+      }
+    }
+  }
+  return languages.size > 0 ? Array.from(languages).sort() : ['zh'];
+}
+
+function filterApplyCheckIssues(input: {
+  filePath: string;
+  file: { source: { kind: 'transcript' | 'translation' }; segments: Segment[] };
+  stage: ManualStageName;
+  languages: CheckLanguageFilter[];
+  range: CheckRange;
+  includeSegmentIds?: Set<string>;
+}): CheckIssue[] {
+  const allIssues = checkSegmentsData(input.filePath, input.file);
+  const issues = input.languages.flatMap((language) =>
+    filterCheckIssues(allIssues, {
+      currentStage: input.stage,
+      language
+    }).filter((issue) => matchesApplyCheckScope(issue, input.range, input.includeSegmentIds))
+  );
+  return dedupeIssues(issues);
+}
+
+function matchesApplyCheckScope(
+  issue: CheckIssue,
+  range: CheckRange,
+  includeSegmentIds: Set<string> | undefined
+): boolean {
+  if (issue.segmentId && includeSegmentIds?.has(issue.segmentId)) {
+    return true;
+  }
+  if (!issue.segment) {
+    return issue.level === 'fatal';
+  }
+  return issue.segment.end > range.start && issue.segment.start < range.end;
+}
+
+function collectApplyCheckSegmentIds(
+  beforeSegments: Segment[],
+  currentSegments: Segment[],
+  affected: Segment[]
+): Set<string> {
+  const ids = new Set(affected.map((segment) => segment.id));
+  addNeighborSegmentIds(ids, beforeSegments);
+  addNeighborSegmentIds(ids, currentSegments);
+  return ids;
+}
+
+function addNeighborSegmentIds(ids: Set<string>, segments: Segment[]): void {
+  const affectedIds = new Set(ids);
+  for (const [index, segment] of segments.entries()) {
+    if (!affectedIds.has(segment.id)) {
+      continue;
+    }
+    const previous = segments[index - 1];
+    const next = segments[index + 1];
+    if (previous) {
+      ids.add(previous.id);
+    }
+    if (next) {
+      ids.add(next.id);
+    }
+  }
+}
+
+function applyCheckScope(stage: ManualStageName, languages: CheckLanguageFilter[]): CheckScope {
+  return {
+    level: 'warning',
+    stage,
+    languages,
+    description: `${stage} ${languages.join('+')} QA`
+  };
+}
+
+function dedupeIssues(issues: CheckIssue[]): CheckIssue[] {
+  const seen = new Set<string>();
+  return issues.filter((issue) => {
+    const key = [
+      issue.file,
+      issue.stage ?? '',
+      issue.level,
+      issue.code ?? '',
+      issue.segmentId ?? '',
+      issue.message
+    ].join('\0');
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
+function groupIssuesBySegment(issues: CheckIssue[]): Map<string, SegmentOutputIssue[]> {
+  const groups = new Map<string, SegmentOutputIssue[]>();
+  for (const issue of issues) {
+    if (!issue.segmentId) {
+      continue;
+    }
+    groups.set(issue.segmentId, [
+      ...(groups.get(issue.segmentId) ?? []),
+      { level: issue.level, code: issue.code, message: issue.message }
+    ]);
+  }
+  return groups;
+}
+
+function collectApplyVerboseSegments(
+  currentSegments: Segment[],
+  affected: Segment[],
+  issuesBySegment: Map<string, SegmentOutputIssue[]>
+): Segment[] {
+  const rows: Segment[] = [];
+  const seen = new Set<string>();
+  const push = (segment: Segment) => {
+    if (!seen.has(segment.id)) {
+      rows.push(segment);
+      seen.add(segment.id);
+    }
+  };
+  affected.forEach(push);
+  currentSegments.filter((segment) => issuesBySegment.has(segment.id)).forEach(push);
+  return rows;
+}
+
+function printApplyJson(input: {
+  output: ReturnType<typeof prepareSegmentOutput>;
+  dryRun: boolean;
+  stats: SegmentPatchResultStats;
+  range: CheckRange;
+  scope: CheckScope;
+  issues: CheckIssue[];
+  segments?: Segment[];
+  affectedSegmentIds: Set<string>;
+  issuesBySegment: Map<string, SegmentOutputIssue[]>;
+  sessionDir: string;
+}): void {
+  const check = JSON.parse(
+    formatCheckJson(input.issues, {
+      verbose: input.segments !== undefined,
+      sessionDir: input.sessionDir,
+      scope: input.scope,
+      range: input.range,
+      pretty: false
+    })
+  ) as Record<string, unknown>;
+  const output = {
+    apply: {
+      dry_run: input.dryRun,
+      stats: input.stats
+    },
+    check,
+    ...(input.segments
+      ? {
+          segments: input.segments.map((segment) =>
+            segmentJson(segment, input.issuesBySegment, input.affectedSegmentIds)
+          )
+        }
+      : {})
+  };
+  input.output.writer.write(`${JSON.stringify(output, null, input.output.jsonPretty ? 2 : 0)}\n`);
+}
+
+function segmentJson(
+  segment: Segment,
+  issuesBySegment: Map<string, SegmentOutputIssue[]>,
+  affectedSegmentIds: Set<string>
+) {
+  return {
+    id: segment.id,
+    start: segment.start,
+    end: segment.end,
+    speaker: segment.speaker,
+    ja: segment.ja,
+    zh: segment.zh ?? '',
+    affected: affectedSegmentIds.has(segment.id),
+    issues: issuesBySegment.get(segment.id) ?? []
+  };
+}
+
+function formatApplySummary(stats: SegmentPatchResultStats, dryRun: boolean): string {
+  const prefix = dryRun ? 'dry-run apply' : 'apply';
+  return `${prefix}: ${stats.edits} ${plural(stats.edits, 'edit')}, ${stats.splits} ${plural(
+    stats.splits,
+    'split'
+  )}, ${stats.merges} ${plural(stats.merges, 'merge')}, ${stats.deletes} ${plural(
+    stats.deletes,
+    'delete'
+  )}.`;
+}
+
+function plural(count: number, word: string): string {
+  return count === 1 ? word : `${word}s`;
+}
+
+function outputLogger(writer: { write(chunk: string): unknown }) {
+  const write = (message: string) => writer.write(`${message}\n`);
+  return { info: write, warn: write, error: write };
+}
+
+function hasBlockingIssues(issues: CheckIssue[]): boolean {
+  return issues.some((issue) => issue.level === 'fatal' || issue.level === 'error');
 }
 
 async function persistUnlessDryRun(

@@ -452,6 +452,8 @@ async function writeOperationPatches(input: {
         name: input.name,
         summary: `${input.summary} ${formatChunkSummary(chunk)}`,
         created_by: 'rajio',
+        start: chunk.start,
+        end: chunk.end,
         operations
       })
     );

@@ -1,6 +1,6 @@
 import { stringWidth } from 'breadc';
 
-import type { Segment } from '../types.js';
+import type { IssueLevel, Segment } from '../types.js';
 import { logger } from '../utils/logger.js';
 
 export type SegmentOutputFormat = 'human' | 'csv' | 'json';
@@ -24,7 +24,15 @@ export interface SegmentOutputOptions {
 export interface SegmentPrintOptions {
   totalDuration?: number;
   stats?: SegmentOutputStats;
+  issuesBySegment?: Map<string, SegmentOutputIssue[]>;
+  affectedSegmentIds?: Set<string>;
   jsonPretty?: boolean;
+}
+
+export interface SegmentOutputIssue {
+  level: IssueLevel;
+  code?: string;
+  message: string;
 }
 
 export interface SegmentOutputStats {
@@ -42,7 +50,9 @@ export interface SegmentPatchOutputStats {
   total: number;
 }
 
-const columns = ['id', 'start', 'end', 'speaker', 'ja', 'zh'] as const;
+const baseColumns = ['id', 'start', 'end', 'speaker', 'ja', 'zh'] as const;
+const affectedColumn = 'affected';
+const issueColumn = 'issues';
 const patchStatColumns = ['edits', 'splits', 'merges', 'deletes', 'total'] as const;
 
 export function prepareSegmentOutput(options: SegmentOutputOptions): SegmentOutput {
@@ -82,7 +92,9 @@ export function formatSegments(
   if (format === 'json') {
     return formatJson(
       {
-        segments: segments.map(toSegmentRow),
+        segments: segments.map((segment) =>
+          toSegmentJsonRow(segment, options.issuesBySegment, options.affectedSegmentIds)
+        ),
         ...(options.stats ? { stats: options.stats } : {})
       },
       options.jsonPretty
@@ -90,9 +102,15 @@ export function formatSegments(
   }
   const usesHours = shouldUseHours(segments, options.totalDuration);
   if (format === 'csv') {
-    return formatCsv(segments);
+    return formatCsv(segments, options.issuesBySegment, options.affectedSegmentIds);
   }
-  return formatHumanTable(segments, usesHours, options.stats);
+  return formatHumanTable(
+    segments,
+    usesHours,
+    options.stats,
+    options.issuesBySegment,
+    options.affectedSegmentIds
+  );
 }
 
 export function formatSegmentPatchStats(
@@ -126,22 +144,61 @@ export function formatSegmentPatchStats(
   return [header, separator, body].join('\n');
 }
 
-function toSegmentRow(segment: Segment): Record<(typeof columns)[number], string | number> {
+function toSegmentRow(
+  segment: Segment,
+  issuesBySegment?: Map<string, SegmentOutputIssue[]>,
+  affectedSegmentIds?: Set<string>
+): Record<string, string | number> {
+  const issues = issuesBySegment?.get(segment.id);
   return {
     id: segment.id,
     start: segment.start,
     end: segment.end,
     speaker: segment.speaker,
     ja: segment.ja,
-    zh: segment.zh ?? ''
+    zh: segment.zh ?? '',
+    ...(affectedSegmentIds
+      ? { affected: affectedSegmentIds.has(segment.id) ? 'true' : 'false' }
+      : {}),
+    ...(issuesBySegment ? { issues: issues ? formatIssueCodes(issues) : '' } : {})
   };
 }
 
-function formatCsv(segments: Segment[]): string {
+function toSegmentJsonRow(
+  segment: Segment,
+  issuesBySegment?: Map<string, SegmentOutputIssue[]>,
+  affectedSegmentIds?: Set<string>
+): Record<(typeof baseColumns)[number], string | number> & {
+  affected?: boolean;
+  issues?: SegmentOutputIssue[];
+} {
+  const issues = issuesBySegment?.get(segment.id);
+  return {
+    id: segment.id,
+    start: segment.start,
+    end: segment.end,
+    speaker: segment.speaker,
+    ja: segment.ja,
+    zh: segment.zh ?? '',
+    ...(affectedSegmentIds ? { affected: affectedSegmentIds.has(segment.id) } : {}),
+    ...(issues ? { issues } : {})
+  };
+}
+
+function formatCsv(
+  segments: Segment[],
+  issuesBySegment?: Map<string, SegmentOutputIssue[]>,
+  affectedSegmentIds?: Set<string>
+): string {
+  const columns = segmentColumns(issuesBySegment, affectedSegmentIds);
   return [
     columns.join(','),
     ...segments.map((segment) =>
-      columns.map((column) => escapeCsvField(toSegmentRow(segment)[column])).join(',')
+      columns
+        .map((column) =>
+          escapeCsvField(toSegmentRow(segment, issuesBySegment, affectedSegmentIds)[column] ?? '')
+        )
+        .join(',')
     )
   ].join('\n');
 }
@@ -157,9 +214,14 @@ function escapeCsvField(value: string | number): string {
 function formatHumanTable(
   segments: Segment[],
   usesHours: boolean,
-  stats: SegmentOutputStats | undefined
+  stats: SegmentOutputStats | undefined,
+  issuesBySegment?: Map<string, SegmentOutputIssue[]>,
+  affectedSegmentIds?: Set<string>
 ): string {
-  const rows = segments.map((segment) => toDisplaySegmentRow(segment, usesHours));
+  const columns = segmentColumns(issuesBySegment, affectedSegmentIds);
+  const rows = segments.map((segment) =>
+    toDisplaySegmentRow(segment, usesHours, issuesBySegment, affectedSegmentIds)
+  );
   const widths = Object.fromEntries(
     columns.map((column) => [
       column,
@@ -182,16 +244,38 @@ function formatHumanTable(
 
 function toDisplaySegmentRow(
   segment: Segment,
-  usesHours: boolean
-): Record<(typeof columns)[number], string> {
+  usesHours: boolean,
+  issuesBySegment?: Map<string, SegmentOutputIssue[]>,
+  affectedSegmentIds?: Set<string>
+): Record<string, string> {
+  const issues = issuesBySegment?.get(segment.id);
   return {
     id: segment.id,
     start: formatTime(segment.start, usesHours),
     end: formatTime(segment.end, usesHours),
     speaker: segment.speaker,
     ja: escapeHumanText(segment.ja),
-    zh: escapeHumanText(segment.zh ?? '')
+    zh: escapeHumanText(segment.zh ?? ''),
+    ...(affectedSegmentIds
+      ? { affected: affectedSegmentIds.has(segment.id) ? 'true' : 'false' }
+      : {}),
+    ...(issuesBySegment ? { issues: issues ? formatIssueCodes(issues) : '' } : {})
   };
+}
+
+function segmentColumns(
+  issuesBySegment?: Map<string, SegmentOutputIssue[]>,
+  affectedSegmentIds?: Set<string>
+): string[] {
+  return [
+    ...baseColumns,
+    ...(affectedSegmentIds ? [affectedColumn] : []),
+    ...(issuesBySegment ? [issueColumn] : [])
+  ];
+}
+
+function formatIssueCodes(issues: SegmentOutputIssue[]): string {
+  return issues.map((issue) => issue.code ?? issue.level).join(',');
 }
 
 function shouldUseHours(segments: Segment[], totalDuration: number | undefined): boolean {

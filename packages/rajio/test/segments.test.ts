@@ -920,7 +920,7 @@ describe('segments validation and subtitle rendering', () => {
     expect(scope).toMatchObject({
       level: 'warning',
       stage: 'translation_work',
-      language: 'zh',
+      languages: ['zh'],
       description: 'translation_work zh QA',
       hint: 'Use --language ja to inspect Japanese QA.'
     });
@@ -933,7 +933,7 @@ describe('segments validation and subtitle rendering', () => {
       scope: {
         level: string;
         stage: string;
-        language: string;
+        languages: string[];
         description: string;
         hint: string;
       };
@@ -975,6 +975,11 @@ describe('segments validation and subtitle rendering', () => {
     const sessionSummary = json.summary.find((summary) => summary.file === 'session.toml');
     expect(sessionSummary).not.toHaveProperty('examples');
     expect(formatCheckJson(issues, { sessionDir, pretty: true })).toContain('\n  "ok"');
+    expect(
+      JSON.parse(formatCheckJson(issues, { sessionDir, scope, range: { start: 3, end: 6 } }))
+    ).toMatchObject({
+      range: { start: 3, end: 6 }
+    });
   });
 
   it('prints check scope before human output when provided', () => {

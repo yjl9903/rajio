@@ -107,9 +107,19 @@ const segmentPatchSchema = z
     name: z.string().trim().min(1).optional(),
     summary: z.string().trim().min(1).optional(),
     created_by: z.string().trim().min(1).optional(),
+    start: z.number().nonnegative().optional(),
+    end: z.number().positive().optional(),
     operations: z.array(segmentPatchOperationSchema).min(1)
   })
-  .strict();
+  .strict()
+  .superRefine((patch, context) => {
+    if (patch.start !== undefined && patch.end !== undefined && patch.end <= patch.start) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'patch end must be greater than start.'
+      });
+    }
+  });
 
 export type SegmentPatch = z.infer<typeof segmentPatchSchema>;
 type SegmentPatchOperation = z.infer<typeof segmentPatchOperationSchema>;

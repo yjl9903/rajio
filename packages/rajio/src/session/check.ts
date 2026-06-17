@@ -65,17 +65,23 @@ export type CheckStageFilter =
   | 'export';
 export type CheckLanguageFilter = 'ja' | 'zh';
 
+export interface CheckRange {
+  start: number;
+  end: number;
+}
+
 export interface CheckFilterOptions {
   level?: CheckIssueLevelFilter;
   stage?: CheckStageFilter;
   language?: CheckLanguageFilter;
+  range?: CheckRange;
   currentStage?: CurrentStageName;
 }
 
 export interface CheckScope {
   level: CheckIssueLevelFilter;
   stage?: StageName;
-  language?: CheckLanguageFilter;
+  languages?: CheckLanguageFilter[];
   description: string;
   hint?: string;
 }
@@ -121,6 +127,7 @@ export function printCheckIssues(
   options: {
     verbose: boolean;
     scope?: CheckScope;
+    range?: CheckRange;
     scopeLabel?: 'check' | 'commit';
     printScopeWhenEmpty?: boolean;
     logger?: ConsolaInstance;
@@ -136,6 +143,7 @@ export function printCheckIssues(
         verbose: options.verbose,
         sessionDir: options.sessionDir,
         scope: options.scope,
+        range: options.range,
         pretty: Boolean((options.writer ?? process.stdout).isTTY)
       },
       options.writer ?? process.stdout
@@ -145,7 +153,9 @@ export function printCheckIssues(
 
   const logger = options.logger ?? checkLogger;
   if (options.scope && (issues.length > 0 || options.printScopeWhenEmpty !== false)) {
-    logger.info(formatCheckScopeMessage(options.scope, options.scopeLabel ?? 'check'));
+    logger.info(
+      formatCheckScopeMessage(options.scope, options.scopeLabel ?? 'check', options.range)
+    );
   }
   if (options.verbose) {
     for (const issue of sortCheckIssues(issues)) {
@@ -174,6 +184,9 @@ export function filterCheckIssues(
     if (!isAtOrAboveLevel(issue.level, level)) {
       return false;
     }
+    if (options.range && !matchesCheckRange(issue, options.range)) {
+      return false;
+    }
     if (issue.level === 'fatal') {
       return true;
     }
@@ -192,7 +205,7 @@ export function resolveCheckScope(
   return {
     level,
     stage: target.stage,
-    language: target.language,
+    languages: target.language ? [target.language] : undefined,
     description,
     hint
   };
@@ -200,10 +213,17 @@ export function resolveCheckScope(
 
 export function formatCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean; sessionDir?: string; scope?: CheckScope; pretty?: boolean } = {}
+  options: {
+    verbose?: boolean;
+    sessionDir?: string;
+    scope?: CheckScope;
+    range?: CheckRange;
+    pretty?: boolean;
+  } = {}
 ): string {
   const output: {
     ok: boolean;
+    range?: CheckRange;
     scope?: CheckScope;
     counts: ReturnType<typeof countIssues>;
     summary: CheckIssueJsonSummary[];
@@ -218,6 +238,7 @@ export function formatCheckJson(
     }>;
   } = {
     ok: !hasBlockingIssue(issues),
+    range: options.range,
     scope: options.scope,
     counts: countIssues(issues),
     summary: summarizeCheckIssuesForJson(issues, options)
@@ -452,6 +473,26 @@ export async function checkSegmentsFile(
 ): Promise<CheckIssue[]> {
   try {
     const file = await readSegmentsFile(filePath);
+    return checkSegmentsData(filePath, file, options);
+  } catch (error) {
+    return [
+      {
+        file: filePath,
+        stage: inferStageFromPath(filePath),
+        level: 'fatal',
+        code: 'segments_parse_error',
+        message: formatError(error)
+      }
+    ];
+  }
+}
+
+export function checkSegmentsData(
+  filePath: string,
+  file: { source: { kind: 'transcript' | 'translation' }; segments: Segment[] },
+  options: SegmentCheckOptions = {}
+): CheckIssue[] {
+  try {
     const stage = inferStageFromPath(filePath);
     const stageOptions = segmentCheckOptionsForStage(stage) ?? {};
     const mergedOptions = { ...stageOptions, ...options };
@@ -652,7 +693,13 @@ function formatIssueContext(issue: CheckIssue): string {
 
 function printCheckJson(
   issues: CheckIssue[],
-  options: { verbose?: boolean; sessionDir?: string; scope?: CheckScope; pretty?: boolean },
+  options: {
+    verbose?: boolean;
+    sessionDir?: string;
+    scope?: CheckScope;
+    range?: CheckRange;
+    pretty?: boolean;
+  },
   writer: { isTTY?: boolean; write(chunk: string): unknown }
 ): void {
   writer.write(`${formatCheckJson(issues, options)}\n`);
@@ -737,10 +784,17 @@ function resolveCheckQaTarget(options: CheckFilterOptions): CheckQaTarget {
   return { stage, language: options.language ?? 'zh' };
 }
 
-function formatCheckScopeMessage(scope: CheckScope, label: 'check' | 'commit'): string {
+function formatCheckScopeMessage(
+  scope: CheckScope,
+  label: 'check' | 'commit',
+  range: CheckRange | undefined
+): string {
   const levelText = scope.level === 'warning' ? '' : `, level ${scope.level}`;
+  const rangeText = range
+    ? `, range ${formatSeconds(range.start)}-${formatSeconds(range.end)}`
+    : '';
   const hintText = scope.hint ? ` ${scope.hint}` : '';
-  return `${label} scope: ${scope.description}${levelText}.${hintText}`;
+  return `${label} scope: ${scope.description}${levelText}${rangeText}.${hintText}`;
 }
 
 function formatCheckScopeDescription(target: CheckQaTarget): string {
@@ -798,6 +852,13 @@ function matchesQaTarget(issue: CheckIssue, target: CheckQaTarget): boolean {
 
 function isLanguageNeutralQaCode(code: string): boolean {
   return code.startsWith('duration_') || code.startsWith('subtitle_gap_');
+}
+
+function matchesCheckRange(issue: CheckIssue, range: CheckRange): boolean {
+  if (!issue.segment) {
+    return issue.level === 'fatal';
+  }
+  return issue.segment.end > range.start && issue.segment.start < range.end;
 }
 
 function compareSegmentContext(

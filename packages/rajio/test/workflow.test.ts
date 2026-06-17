@@ -361,6 +361,8 @@ describe('session workflow', () => {
 
     const punctuationHigh = await readFile(punctuationHighPath, 'utf8');
     const punctuationPatch = parseSegmentPatch(punctuationHigh);
+    expect(punctuationPatch.start).toBe(0);
+    expect(punctuationPatch.end).toBe(20);
     expect(punctuationPatch.operations).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

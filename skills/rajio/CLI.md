@@ -215,14 +215,14 @@ Stage selection:
 
 Output mode:
 
-- TTY without `--json`: human-readable table.
-- Non-TTY without `--json`: CSV.
+- TTY without `--json`: human-readable output.
+- Non-TTY without `--json`: CSV for commands that print segment rows.
 - `--json`: structured JSON. Use shell pipelines with `jq` when you need to extract fields
   or slice down the output.
 
 Segment mutation commands print affected rows, except `segments apply`, which defaults to
-operation counts. `--dry-run` validates and prints the result without writing
-`segments.toml`.
+operation counts plus patch-scoped check feedback. `--dry-run` validates and prints the
+result without writing `segments.toml`.
 
 ### segments list
 
@@ -282,47 +282,12 @@ EOF
 
 `segments apply <target> [file]` applies an ordered TOML patch as the batch form of edit, split,
 merge, and delete operations. Pass a patch file path, or omit `[file]` only when supplying
-TOML on stdin in the same shell command. It prints operation counts by default; add
-`--verbose` to print affected segment rows in operation order.
+TOML on stdin in the same shell command.
 
-In JSON mode, non-verbose apply output is:
-
-```json
-{
-  "stats": { "edits": 1, "splits": 0, "merges": 0, "deletes": 0, "total": 1 }
-}
-```
-
-Patch rules:
-
-- A patch must contain at least one `[[operations]]`.
-- A patch may include top-level `name`, `summary`, and `created_by` metadata.
-- Any operation may include `reason` and `confidence`; `confidence` must be
-  `high`, `medium`, or `low`. These metadata fields are informational and do not
-  change apply behavior.
-- `op = "edit"` requires `segment_id` plus at least one changed field: `start`, `end`, `speaker`,
-  `ja`, `zh`, or `skip_checks`.
-- In an edit operation, missing `skip_checks` preserves existing annotations,
-  `skip_checks = []` clears annotations, and a non-empty array replaces annotations exactly.
-  Each skip requires an allowed `code` and non-empty `reason`.
-- `op = "split"` replaces `source_id` with two or more `[[operations.replacements]]`.
-  `gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
-  Replacement segments use virtual continuous timing: they must cover the original
-  segment continuously with no gaps or overlaps, start at the original `start`, and end
-  at the original `end`. Each internal boundary is treated as the midpoint of the
-  inserted gap, so a boundary at `13.2` with `gap = 0.08` becomes previous
-  `end = 13.16` and next `start = 13.24`.
-- Every generated split segment must remain at least `0.5` seconds long after gap
-  insertion.
-- If a split source has `zh`, every replacement segment must include `zh`.
-- Split replacements do not inherit `skip_checks`; add a later edit operation for each
-  replacement that needs a fresh skip annotation.
-- `op = "merge"` accepts two or more adjacent source ids in `source_ids`; `merged_id` and `ja` are
-  required. If any source has `zh`, merged `zh` is required.
-- Merged segments do not inherit `skip_checks`; add a later edit operation when the merged
-  text still has an intentional QA exception.
-- `op = "delete"` requires only `segment_id`.
-- Current segment ids must be unique after every operation.
+Normal apply writes the patched segments, then runs patch-scoped check feedback. `--dry-run`
+validates the patch, previews affected output, and runs the same checks without writing changes.
+Blocking check issues are reported in the check output but do not change the apply command exit
+code. Normal apply does not roll back already-written changes.
 
 Patch example:
 
@@ -330,6 +295,8 @@ Patch example:
 name = "Translation fixes"
 summary = "Batch edits for the first review pass."
 created_by = "worker-a"
+start = 120.0
+end = 180.0
 
 [[operations]]
 op = "edit"
@@ -380,32 +347,114 @@ op = "delete"
 segment_id = "14"
 ```
 
-For large or risky batches, keep the patch under a session-local `patches/` directory,
-run with `--dry-run`, then apply the same file without `--dry-run`.
+Patch rules:
 
-When transcript work is created, rajio may also generate mechanical suggestions under
-`transcript/work/suggested-patches/`. These are ordinary segment patches or review reports and
-are never applied automatically. File names use:
+- A patch must contain at least one `[[operations]]`.
+- A patch may include top-level `name`, `summary`, `created_by`, `start`, and `end` metadata.
+  `summary` describes the patch content. `start` and `end` are source media seconds for the patch
+  check range. If either is missing, apply checks the min/max time covered by affected segments
+  and keeps their immediate neighbors in scope for boundary QA.
+- Any operation may include `reason` and `confidence`; `confidence` must be
+  `high`, `medium`, or `low`. These metadata fields are informational and do not
+  change apply behavior.
+- `op = "edit"` requires `segment_id` plus at least one changed field: `start`, `end`, `speaker`,
+  `ja`, `zh`, or `skip_checks`.
+- In an edit operation, missing `skip_checks` preserves existing annotations,
+  `skip_checks = []` clears annotations, and a non-empty array replaces annotations exactly.
+  Each skip requires an allowed `code` and non-empty `reason`.
+- `op = "split"` replaces `source_id` with two or more `[[operations.replacements]]`.
+  `gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
+  Replacement segments use virtual continuous timing: they must cover the original
+  segment continuously with no gaps or overlaps, start at the original `start`, and end
+  at the original `end`. Each internal boundary is treated as the midpoint of the
+  inserted gap, so a boundary at `13.2` with `gap = 0.08` becomes previous
+  `end = 13.16` and next `start = 13.24`.
+- Every generated split segment must remain at least `0.5` seconds long after gap
+  insertion.
+- If a split source has `zh`, every replacement segment must include `zh`.
+- Split replacements do not inherit `skip_checks`; add a later edit operation for each
+  replacement that needs a fresh skip annotation.
+- `op = "merge"` accepts two or more adjacent source ids in `source_ids`; `merged_id` and `ja` are
+  required. If any source has `zh`, merged `zh` is required.
+- Merged segments do not inherit `skip_checks`; add a later edit operation when the merged
+  text still has an intentional QA exception.
+- `op = "delete"` requires only `segment_id`.
+- Current segment ids must be unique after every operation.
 
-```text
-<pass>-chunk-<index>-<start>s-<end>s-<confidence>.toml
-<pass>-chunk-<index>-<start>s-<end>s-<confidence>.md
+Output:
+
+- Without `--json`, non-verbose output prints only an apply summary plus grouped check feedback.
+- With `--json`, non-verbose output contains top-level `apply` and `check`.
+- With `--verbose --json`, output also includes top-level `segments`; rows include affected
+  segments plus in-range segments with remaining issues. Each row has `affected` and `issues`.
+- With `--verbose` and no `--json`, apply prints the same rows with `AFFECTED` and `ISSUES`
+  columns.
+
+Non-verbose JSON output:
+
+```json
+{
+  "apply": {
+    "dry_run": true,
+    "stats": { "edits": 1, "splits": 0, "merges": 0, "deletes": 0, "total": 1 }
+  },
+  "check": {
+    "ok": true,
+    "range": { "start": 120, "end": 180 },
+    "scope": {
+      "level": "warning",
+      "stage": "translation_work",
+      "languages": ["zh"],
+      "description": "translation_work zh QA"
+    },
+    "counts": { "fatal": 0, "error": 0, "warning": 0 },
+    "summary": []
+  }
+}
 ```
 
-Example suggested patch files:
+Verbose JSON output:
 
-```text
-transcript/work/suggested-patches/
-  01-punctuation-cleanup-chunk-000-000000s-000600s-high.toml
-  02-fragment-merge-chunk-000-000000s-000600s-high.toml
-  02-fragment-merge-chunk-000-000000s-000600s-medium.toml
-  03-boundary-retime-chunk-000-000000s-000600s-high.toml
-  04-long-segment-candidates-chunk-000-000000s-000600s-low.md
+```json
+{
+  "apply": {
+    "dry_run": true,
+    "stats": { "edits": 1, "splits": 0, "merges": 0, "deletes": 0, "total": 1 }
+  },
+  "check": {
+    "ok": false,
+    "range": { "start": 120, "end": 180 },
+    "scope": {
+      "level": "warning",
+      "stage": "translation_work",
+      "languages": ["zh"],
+      "description": "translation_work zh QA"
+    },
+    "counts": { "fatal": 0, "error": 1, "warning": 0 },
+    "summary": [{ "level": "error", "code": "zh_line_hard_limit", "count": 1 }]
+  },
+  "segments": [
+    {
+      "id": "12",
+      "start": 120,
+      "end": 123,
+      "speaker": "A",
+      "ja": "こんにちは",
+      "zh": "你好",
+      "affected": true,
+      "issues": [{ "level": "error", "code": "zh_line_hard_limit", "message": "..." }]
+    }
+  ]
+}
 ```
 
-Review suggested patches in numeric filename order, make any necessary patch corrections, and
-apply `*.toml` files only after at least a dry run. Review `*-medium.toml` more carefully,
-and treat `*-low.*` files as review notes rather than direct edits.
+When using `--verbose --json`, pipe the output through `jq` to select the fields you need and
+avoid reading overly long raw output:
+
+```bash
+rajio segments apply /path/to/session patch.toml --stage translation --dry-run --verbose --json \
+  | jq '.segments[] | select(.issues | length > 0) | {id, start, end, affected, issues}'
+```
 
 ### segments edit
 
@@ -567,6 +616,7 @@ rajio check /path/to/session --level fatal
 rajio check /path/to/session --stage transcript --language ja
 rajio check /path/to/session --stage translation
 rajio check /path/to/session --stage translation --language ja
+rajio check /path/to/session --stage translation --start 120 --end 180
 rajio check /path/to/session --verbose
 ```
 
@@ -588,6 +638,9 @@ Filters:
   - Translation checks target `translation/work/segments.toml`, default to `zh`, and can
     use `ja` to inspect Japanese subtitle QA left in the translation work file.
   - Duration and adjacent-gap QA are language-neutral and appear in either language view.
+- `--start <seconds> --end <seconds>`: filters segment-level QA to segments overlapping
+  `[start, end)`. Both options are required together. Non-segment `fatal` issues are still
+  shown.
 - Without `--stage`, the target stage comes from `session.current_stage`. `export` and
   `done` default to `translation_work + zh`; `audio` and `transcript_raw` have no subtitle
   QA target and show only global `fatal` issues.
@@ -637,6 +690,13 @@ Compact JSON shape:
 ```json
 {
   "ok": false,
+  "scope": {
+    "level": "warning",
+    "stage": "translation_work",
+    "languages": ["zh"],
+    "description": "translation_work zh QA"
+  },
+  "range": { "start": 120, "end": 180 },
   "counts": { "fatal": 0, "error": 1, "warning": 2 },
   "summary": [
     {
