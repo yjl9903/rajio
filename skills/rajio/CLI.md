@@ -152,6 +152,7 @@ removed.
 Allowed `skip_checks.code` values are:
 
 - `ja_line_hard_limit`, `zh_line_hard_limit`
+- `ja_line_break_can_merge_soft`, `zh_line_break_can_merge_soft`
 - `ja_line_break_hard_limit`, `zh_line_break_hard_limit`
 - `duration_too_short`, `duration_too_long`
 - `ja_reading_speed_limit`, `zh_reading_speed_limit`
@@ -616,20 +617,20 @@ Output:
 codes for segment-scoped issues; add `--level error` when you need only hard matches for
 codes that can be either `warning` or `error`.
 
-| Rule                  | When reported                              | Issue codes                                                                                                    |
-| --------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| Data integrity        | duplicate ids, invalid time, overlap       | `duplicate_id`, `invalid_time`, `overlap`                                                                      |
-| Required text         | required Japanese or Chinese text is empty | `empty_ja`, `empty_zh`                                                                                         |
-| Line length           | line exceeds soft or hard character limit  | `ja_line_soft_limit`, `ja_line_hard_limit`, `zh_line_soft_limit`, `zh_line_hard_limit`                         |
-| Line count            | text has too many lines                    | `ja_line_break_soft_limit`, `ja_line_break_hard_limit`, `zh_line_break_soft_limit`, `zh_line_break_hard_limit` |
-| Subtitle duration     | segment is too short or too long           | `duration_too_short`, `duration_too_long`                                                                      |
-| Reading speed         | text is too dense for the duration         | `ja_reading_speed_limit`, `zh_reading_speed_limit`                                                             |
-| Adjacent gap          | gap from previous segment is too short     | `subtitle_gap_too_short`, `subtitle_gap_short`                                                                 |
-| Common punctuation    | ordinary comma/period punctuation appears  | `ja_common_punctuation`, `zh_common_punctuation`                                                               |
-| Terminal punctuation  | line ends with ordinary sentence mark      | `ja_terminal_punctuation`, `zh_terminal_punctuation`                                                           |
-| Repeated punctuation  | repeated question/exclamation punctuation  | `ja_repeated_punctuation`, `zh_repeated_punctuation`                                                           |
-| Punctuation-only line | a line contains only punctuation           | `ja_punctuation_only_line`, `zh_punctuation_only_line`                                                         |
-| Skip annotations      | stale per-segment skip metadata            | `unused_skip_check`                                                                                            |
+| Rule                  | When reported                                | Issue codes                                                                                                                                                                                                                                    |
+| --------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Data integrity        | duplicate ids, invalid time, overlap         | `duplicate_id`, `invalid_time`, `overlap`                                                                                                                                                                                                      |
+| Required text         | required Japanese or Chinese text is empty   | `empty_ja`, `empty_zh`                                                                                                                                                                                                                         |
+| Line length           | line exceeds soft or hard character limit    | `ja_line_soft_limit`, `ja_line_hard_limit`, `zh_line_soft_limit`, `zh_line_hard_limit`                                                                                                                                                         |
+| Line count            | text has unnecessary or too many line breaks | `ja_line_break_can_merge_soft`, `ja_line_break_can_merge_hard`, `ja_line_break_soft_limit`, `ja_line_break_hard_limit`, `zh_line_break_can_merge_soft`, `zh_line_break_can_merge_hard`, `zh_line_break_soft_limit`, `zh_line_break_hard_limit` |
+| Subtitle duration     | segment is too short or too long             | `duration_too_short`, `duration_too_long`                                                                                                                                                                                                      |
+| Reading speed         | text is too dense for the duration           | `ja_reading_speed_limit`, `zh_reading_speed_limit`                                                                                                                                                                                             |
+| Adjacent gap          | gap from previous segment is too short       | `subtitle_gap_too_short`, `subtitle_gap_short`                                                                                                                                                                                                 |
+| Common punctuation    | ordinary comma/period punctuation appears    | `ja_common_punctuation`, `zh_common_punctuation`                                                                                                                                                                                               |
+| Terminal punctuation  | line ends with ordinary sentence mark        | `ja_terminal_punctuation`, `zh_terminal_punctuation`                                                                                                                                                                                           |
+| Repeated punctuation  | repeated question/exclamation punctuation    | `ja_repeated_punctuation`, `zh_repeated_punctuation`                                                                                                                                                                                           |
+| Punctuation-only line | a line contains only punctuation             | `ja_punctuation_only_line`, `zh_punctuation_only_line`                                                                                                                                                                                         |
+| Skip annotations      | stale per-segment skip metadata              | `unused_skip_check`                                                                                                                                                                                                                            |
 
 Compact JSON shape:
 

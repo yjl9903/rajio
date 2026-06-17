@@ -64,6 +64,7 @@ describe('segments validation and subtitle rendering', () => {
     expect(countSubtitleTextUnits('cafe\u0301')).toBe(1);
     expect(countSubtitleTextUnits('か\u3099')).toBe(1);
     expect(countSubtitleTextUnits('这是 OpenAI 2026 测试')).toBe(6);
+    expect(countSubtitleTextUnits('第一行 第二行')).toBe(countSubtitleTextUnits('第一行第二行'));
     expect(countSubtitleTextUnits(' ,.!?()[]{} ')).toBe(0);
     expect(countSubtitleTextUnits('❤️')).toBe(0);
     expect(countSubtitleTextUnits('👨‍👩‍👧‍👦')).toBe(0);
@@ -210,12 +211,102 @@ describe('segments validation and subtitle rendering', () => {
         expect.objectContaining({ code: 'zh_common_punctuation', level: 'warning' }),
         expect.objectContaining({ code: 'ja_terminal_punctuation', level: 'warning' }),
         expect.objectContaining({ code: 'zh_terminal_punctuation', level: 'warning' }),
-        expect.objectContaining({ code: 'ja_line_break_soft_limit', level: 'warning' }),
-        expect.objectContaining({ code: 'zh_line_break_soft_limit', level: 'warning' }),
+        expect.objectContaining({ code: 'ja_line_break_can_merge_soft', level: 'error' }),
+        expect.objectContaining({ code: 'zh_line_break_can_merge_soft', level: 'error' }),
         expect.objectContaining({ code: 'ja_line_break_hard_limit', level: 'error' }),
         expect.objectContaining({ code: 'zh_line_break_hard_limit', level: 'error' })
       ])
     );
+  });
+
+  it('classifies two-line subtitle breaks by merged text length', () => {
+    const issues = validateSegments(
+      {
+        version: 1,
+        source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+        segments: [
+          {
+            id: 'zh-soft-merge',
+            start: 0,
+            end: 4,
+            speaker: 'A',
+            ja: '短い',
+            zh: `${'一'.repeat(8)}\n${'二'.repeat(8)}`
+          },
+          {
+            id: 'zh-hard-merge',
+            start: 4.3,
+            end: 8.3,
+            speaker: 'A',
+            ja: '短い',
+            zh: `${'一'.repeat(10)}\n${'二'.repeat(10)}`
+          },
+          {
+            id: 'zh-needs-break',
+            start: 8.6,
+            end: 12.6,
+            speaker: 'A',
+            ja: '短い',
+            zh: `${'一'.repeat(17)}\n${'二'.repeat(8)}`
+          },
+          {
+            id: 'ja-soft-merge',
+            start: 12.9,
+            end: 16.9,
+            speaker: 'A',
+            ja: `${'あ'.repeat(10)}\n${'い'.repeat(10)}`,
+            zh: '短句'
+          },
+          {
+            id: 'ja-hard-merge',
+            start: 17.2,
+            end: 21.2,
+            speaker: 'A',
+            ja: `${'あ'.repeat(13)}\n${'い'.repeat(12)}`,
+            zh: '短句'
+          },
+          {
+            id: 'ja-needs-break',
+            start: 21.5,
+            end: 25.5,
+            speaker: 'A',
+            ja: `${'あ'.repeat(15)}\n${'い'.repeat(14)}`,
+            zh: '短句'
+          },
+          {
+            id: 'three-lines',
+            start: 25.8,
+            end: 29.8,
+            speaker: 'A',
+            ja: '一\n二\n三',
+            zh: '一\n二\n三'
+          }
+        ]
+      },
+      { requireZh: true }
+    );
+
+    const codesFor = (segmentId: string) =>
+      issues
+        .filter((issue) => issue.segmentId === segmentId)
+        .map((issue) => `${issue.code}:${issue.level}`);
+
+    expect(codesFor('zh-soft-merge')).toContain('zh_line_break_can_merge_soft:error');
+    expect(codesFor('zh-soft-merge')).not.toContain('zh_line_break_soft_limit:warning');
+    expect(codesFor('zh-hard-merge')).toContain('zh_line_break_can_merge_hard:warning');
+    expect(codesFor('zh-hard-merge')).not.toContain('zh_line_break_soft_limit:warning');
+    expect(codesFor('zh-needs-break')).toContain('zh_line_break_soft_limit:warning');
+    expect(codesFor('zh-needs-break')).not.toContain('zh_line_break_can_merge_hard:warning');
+
+    expect(codesFor('ja-soft-merge')).toContain('ja_line_break_can_merge_soft:error');
+    expect(codesFor('ja-soft-merge')).not.toContain('ja_line_break_soft_limit:warning');
+    expect(codesFor('ja-hard-merge')).toContain('ja_line_break_can_merge_hard:warning');
+    expect(codesFor('ja-hard-merge')).not.toContain('ja_line_break_soft_limit:warning');
+    expect(codesFor('ja-needs-break')).toContain('ja_line_break_soft_limit:warning');
+    expect(codesFor('ja-needs-break')).not.toContain('ja_line_break_can_merge_hard:warning');
+
+    expect(codesFor('three-lines')).toContain('ja_line_break_hard_limit:error');
+    expect(codesFor('three-lines')).toContain('zh_line_break_hard_limit:error');
   });
 
   it('ignores URL and email punctuation in subtitle punctuation QA', () => {
@@ -539,6 +630,31 @@ describe('segments validation and subtitle rendering', () => {
     );
   });
 
+  it('allows skipping mergeable two-line hard QA errors', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: 'title',
+          start: 0,
+          end: 3,
+          speaker: 'A',
+          ja: 'タイトル',
+          zh: '第一行\n第二行',
+          skip_checks: [
+            { code: 'zh_line_break_can_merge_soft', reason: 'Intentional title layout.' }
+          ]
+        }
+      ]
+    });
+
+    expect(issues.map((issue) => issue.code)).not.toContain('zh_line_break_can_merge_soft');
+    expect(issues.some((issue) => issue.level === 'error' || issue.level === 'warning')).toBe(
+      false
+    );
+  });
+
   it('reports stale segment skip checks as fatal issues', () => {
     const issues = validateSegments({
       version: 1,
@@ -562,6 +678,35 @@ describe('segments validation and subtitle rendering', () => {
         level: 'fatal',
         segmentId: 'clean',
         message: expect.stringContaining('zh_line_hard_limit')
+      })
+    );
+  });
+
+  it('reports stale mergeable two-line skip checks as fatal issues', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: 'clean',
+          start: 0,
+          end: 3,
+          speaker: 'A',
+          ja: 'タイトル',
+          zh: '标题',
+          skip_checks: [
+            { code: 'zh_line_break_can_merge_soft', reason: 'Old line break exception.' }
+          ]
+        }
+      ]
+    });
+
+    expect(issues).toContainEqual(
+      expect.objectContaining({
+        code: 'unused_skip_check',
+        level: 'fatal',
+        segmentId: 'clean',
+        message: expect.stringContaining('zh_line_break_can_merge_soft')
       })
     );
   });

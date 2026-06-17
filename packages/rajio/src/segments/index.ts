@@ -22,6 +22,7 @@ export { countSubtitleTextUnits } from './text.js';
 const VALIDATION_SUMMARY_CODE_LIMIT = 5;
 const TRANSLATION_INHERITED_JAPANESE_QA_CODES = new Set([
   'ja_line_hard_limit',
+  'ja_line_break_can_merge_soft',
   'ja_line_break_hard_limit',
   'ja_reading_speed_limit',
   'ja_punctuation_only_line',
@@ -383,6 +384,30 @@ function validateTextLines(
       segmentId: segment.id,
       message: `Segment ${segment.id} ${limits.label} text has ${lines.length} lines; hard limit is ${limits.hardLines}. Split into multiple segments.`
     });
+  } else if (lines.length === 2) {
+    const mergedLength = countSubtitleTextUnits(`${lines[0]!.trim()} ${lines[1]!.trim()}`);
+    if (mergedLength <= limits.soft) {
+      issues.push({
+        level: 'error',
+        code: `${language}_line_break_can_merge_soft`,
+        segmentId: segment.id,
+        message: `Segment ${segment.id} ${limits.label} text has 2 lines but merges to ${mergedLength} chars; soft limit is ${limits.soft}. Use one line.`
+      });
+    } else if (mergedLength <= limits.hard) {
+      issues.push({
+        level: 'warning',
+        code: `${language}_line_break_can_merge_hard`,
+        segmentId: segment.id,
+        message: `Segment ${segment.id} ${limits.label} text has 2 lines but merges to ${mergedLength} chars; hard limit is ${limits.hard}. Prefer one line.`
+      });
+    } else {
+      issues.push({
+        level: 'warning',
+        code: `${language}_line_break_soft_limit`,
+        segmentId: segment.id,
+        message: `Segment ${segment.id} ${limits.label} text has ${lines.length} lines; prefer one line or split into multiple segments.`
+      });
+    }
   } else if (lines.length > limits.softLines) {
     issues.push({
       level: 'warning',

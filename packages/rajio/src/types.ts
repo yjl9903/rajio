@@ -116,6 +116,8 @@ export interface CliOptions {
 export const SKIPPABLE_ISSUE_CODES = [
   'ja_line_hard_limit',
   'zh_line_hard_limit',
+  'ja_line_break_can_merge_soft',
+  'zh_line_break_can_merge_soft',
   'ja_line_break_hard_limit',
   'zh_line_break_hard_limit',
   'duration_too_short',
