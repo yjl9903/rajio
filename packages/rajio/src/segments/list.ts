@@ -31,7 +31,8 @@ export const SEGMENT_ISSUE_FILTERS = [
   'ja_repeated_punctuation',
   'zh_repeated_punctuation',
   'ja_punctuation_only_line',
-  'zh_punctuation_only_line'
+  'zh_punctuation_only_line',
+  'unused_skip_check'
 ] as const;
 
 export type SegmentIssueFilter = (typeof SEGMENT_ISSUE_FILTERS)[number];

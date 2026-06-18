@@ -150,7 +150,7 @@ describe('segments validation and subtitle rendering', () => {
     ).toEqual(['3']);
   });
 
-  it('reports subtitle length limits and punctuation warnings', () => {
+  it('reports subtitle length limits and punctuation errors', () => {
     const issues = validateSegments(
       {
         version: 1,
@@ -207,10 +207,10 @@ describe('segments validation and subtitle rendering', () => {
         expect.objectContaining({ code: 'zh_line_soft_limit', level: 'warning' }),
         expect.objectContaining({ code: 'ja_line_hard_limit', level: 'error' }),
         expect.objectContaining({ code: 'zh_line_hard_limit', level: 'error' }),
-        expect.objectContaining({ code: 'ja_common_punctuation', level: 'warning' }),
-        expect.objectContaining({ code: 'zh_common_punctuation', level: 'warning' }),
-        expect.objectContaining({ code: 'ja_terminal_punctuation', level: 'warning' }),
-        expect.objectContaining({ code: 'zh_terminal_punctuation', level: 'warning' }),
+        expect.objectContaining({ code: 'ja_common_punctuation', level: 'error' }),
+        expect.objectContaining({ code: 'zh_common_punctuation', level: 'error' }),
+        expect.objectContaining({ code: 'ja_terminal_punctuation', level: 'error' }),
+        expect.objectContaining({ code: 'zh_terminal_punctuation', level: 'error' }),
         expect.objectContaining({ code: 'ja_line_break_can_merge_soft', level: 'error' }),
         expect.objectContaining({ code: 'zh_line_break_can_merge_soft', level: 'error' }),
         expect.objectContaining({ code: 'ja_line_break_hard_limit', level: 'error' }),
@@ -571,12 +571,12 @@ describe('segments validation and subtitle rendering', () => {
       expect.arrayContaining([
         expect.objectContaining({
           code: 'ja_repeated_punctuation',
-          level: 'warning',
+          level: 'error',
           segmentId: 'repeat-soft'
         }),
         expect.objectContaining({
           code: 'zh_repeated_punctuation',
-          level: 'warning',
+          level: 'error',
           segmentId: 'repeat-soft'
         }),
         expect.objectContaining({
@@ -614,9 +614,11 @@ describe('segments validation and subtitle rendering', () => {
           end: 3,
           speaker: 'A',
           ja: 'タイトル',
-          zh: `${'你'.repeat(25)}！！！`,
+          zh: `${'你'.repeat(25)}，！！！。`,
           skip_checks: [
             { code: 'zh_line_hard_limit', reason: 'Official title should stay on one line.' },
+            { code: 'zh_common_punctuation', reason: 'Official title punctuation.' },
+            { code: 'zh_terminal_punctuation', reason: 'Official title punctuation.' },
             { code: 'zh_repeated_punctuation', reason: 'Official title spelling.' }
           ]
         }
@@ -624,6 +626,8 @@ describe('segments validation and subtitle rendering', () => {
     });
 
     expect(issues.map((issue) => issue.code)).not.toContain('zh_line_hard_limit');
+    expect(issues.map((issue) => issue.code)).not.toContain('zh_common_punctuation');
+    expect(issues.map((issue) => issue.code)).not.toContain('zh_terminal_punctuation');
     expect(issues.map((issue) => issue.code)).not.toContain('zh_repeated_punctuation');
     expect(issues.some((issue) => issue.level === 'error' || issue.level === 'warning')).toBe(
       false
@@ -839,7 +843,7 @@ describe('segments validation and subtitle rendering', () => {
       {
         file: transcriptFile,
         stage: 'transcript_work' as const,
-        level: 'warning' as const,
+        level: 'error' as const,
         code: 'ja_terminal_punctuation',
         message: 'Segment 2 Japanese line 1 ends with ordinary punctuation.',
         segmentId: '2'
@@ -879,7 +883,7 @@ describe('segments validation and subtitle rendering', () => {
       {
         file: translationFile,
         stage: 'translation_work' as const,
-        level: 'warning' as const,
+        level: 'error' as const,
         code: 'zh_terminal_punctuation',
         message: 'Segment 7 Chinese line 1 ends with ordinary punctuation.',
         segmentId: '7'
@@ -899,7 +903,7 @@ describe('segments validation and subtitle rendering', () => {
       filterCheckIssues(issues, { level: 'error', currentStage: 'translation_work' }).map(
         (issue) => issue.code
       )
-    ).toEqual(['zh_line_hard_limit', 'invalid_schema_version']);
+    ).toEqual(['zh_line_hard_limit', 'zh_terminal_punctuation', 'invalid_schema_version']);
     expect(
       filterCheckIssues(issues, { stage: 'translation', language: 'ja' }).map((issue) => issue.code)
     ).toEqual(['subtitle_gap_short', 'ja_line_hard_limit', 'invalid_schema_version']);
@@ -950,7 +954,7 @@ describe('segments validation and subtitle rendering', () => {
     };
     expect(json.ok).toBe(false);
     expect(json.scope).toEqual(scope);
-    expect(json.counts).toEqual({ fatal: 1, error: 4, warning: 3 });
+    expect(json.counts).toEqual({ fatal: 1, error: 6, warning: 1 });
     expect(json).not.toHaveProperty('issues');
     expect(json.summary.every((summary) => !('stage' in summary))).toBe(true);
 
@@ -987,7 +991,7 @@ describe('segments validation and subtitle rendering', () => {
       {
         file: 'translation/work/segments.toml',
         stage: 'translation_work' as const,
-        level: 'warning' as const,
+        level: 'error' as const,
         code: 'zh_terminal_punctuation',
         message: 'Segment 1 Chinese line 1 ends with ordinary punctuation.',
         segmentId: '1'
@@ -1001,8 +1005,8 @@ describe('segments validation and subtitle rendering', () => {
     expect(logger.info).toHaveBeenCalledWith(
       'check scope: translation_work zh QA. Use --language ja to inspect Japanese QA.'
     );
-    expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining('1 warning issue (zh_terminal_punctuation)')
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining('1 error issue (zh_terminal_punctuation)')
     );
 
     const emptyLogger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
@@ -1066,7 +1070,7 @@ describe('segments validation and subtitle rendering', () => {
       {
         file: 'transcript/work/segments.toml',
         stage: 'transcript_work' as const,
-        level: 'warning' as const,
+        level: 'error' as const,
         code: 'ja_terminal_punctuation',
         message: 'Segment 1 Japanese line 1 ends with punctuation.',
         segmentId: '1'
@@ -1094,8 +1098,8 @@ describe('segments validation and subtitle rendering', () => {
     };
     expect(compactJson).not.toHaveProperty('issues');
     expect(verboseJson.issues.map((issue) => issue.code)).toEqual([
-      'empty_zh',
-      'ja_terminal_punctuation'
+      'ja_terminal_punctuation',
+      'empty_zh'
     ]);
 
     const ttyWriter = { isTTY: true, write: vi.fn() };
@@ -1265,6 +1269,12 @@ describe('segment edit tools', () => {
       segments
     };
     const validationIssues = validateSegments(file, { requireZh: true });
+    validationIssues.push({
+      level: 'fatal',
+      code: 'unused_skip_check',
+      segmentId: 'ok',
+      message: 'Segment ok has a stale skip annotation.'
+    });
     const listByIssues = (issues: SegmentIssueFilter[], level?: 'fatal' | 'error' | 'warning') =>
       listSegments(segments, { issues, level, validationIssues }).map((segment) => segment.id);
 
@@ -1276,6 +1286,7 @@ describe('segment edit tools', () => {
     expect(listByIssues(['subtitle_gap_short'])).toEqual(['gap-short']);
     expect(listByIssues(['ja_punctuation_only_line'])).toEqual(['punctuation-only']);
     expect(listByIssues(['empty_zh'])).toEqual(['missing-zh', 'blank-zh']);
+    expect(listByIssues(['unused_skip_check'], 'fatal')).toEqual(['ok']);
     expect(listByIssues(['ja_line_hard_limit', 'empty_zh'])).toEqual([
       'hard-line',
       'missing-zh',

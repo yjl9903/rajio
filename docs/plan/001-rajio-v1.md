@@ -379,8 +379,10 @@ Subtitle QA hard validation:
 - Japanese reading speed exceeds 20 subtitle text units per second.
 - Chinese reading speed exceeds 15 subtitle text units per second.
 - Gap from the previous subtitle is shorter than 80 ms.
+- Japanese or Chinese subtitle text uses ordinary comma or period punctuation.
+- Japanese or Chinese subtitle line ends with ordinary sentence punctuation.
+- Japanese or Chinese subtitle text contains two or more repeated question/exclamation marks.
 - Japanese or Chinese subtitle line contains only punctuation.
-- Japanese or Chinese subtitle text contains more than two repeated question/exclamation marks.
 
 In `translation_work`, inherited Japanese subtitle QA hard rules are reported as warnings
 instead of blocking `error` issues. They appear in the `--language ja` check view. Data
@@ -395,10 +397,6 @@ Warning validation:
 - Japanese reading speed exceeds 15 subtitle text units per second.
 - Chinese reading speed exceeds 11 subtitle text units per second.
 - Gap from the previous subtitle is 80-250 ms.
-- Japanese or Chinese subtitle text uses ordinary comma or period punctuation; prefer a
-  space, rewrite, or split.
-- Japanese or Chinese subtitle line ends with ordinary sentence punctuation.
-- Japanese or Chinese subtitle text contains two repeated question/exclamation marks.
 - Segment may mix speakers or have unnatural splitting.
 
 Raw transcript files are parsed and schema-checked, but strict timing, text, line-length, and

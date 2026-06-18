@@ -68,8 +68,7 @@ const MAX_FLICKER_CLUSTER_SECONDS = 1.5;
 const MAX_FRAGMENT_CHARS = 28;
 const MAX_FLICKER_CHARS = 18;
 const MIN_RETIME_GAP = -0.12;
-const MAX_RETIME_GAP = GAP_LIMITS.hard;
-const TARGET_RETIME_GAP = GAP_LIMITS.hard;
+const MAX_RETIME_GAP = GAP_LIMITS.soft;
 const ORDINARY_SUBTITLE_PUNCTUATION = /[。．.,，、]+/gu;
 const TERMINAL_SUBTITLE_PUNCTUATION_WITH_CLOSERS = /[。．.,，、;；:：…]+([\s"'”’）)」』】》]*)$/u;
 const INLINE_WHITESPACE = /[^\S\r\n]+/g;
@@ -115,7 +114,7 @@ export async function generateTranscriptWorkSuggestedPatches(input: {
     outputDir,
     pass: BOUNDARY_RETIME_PASS,
     name: 'Boundary retime suggestions',
-    summary: 'Insert 80ms gaps for small subtitle boundary gaps and light overlaps.',
+    summary: 'Prefer 250ms subtitle gaps and fall back to 80ms when needed.',
     chunks,
     groups: boundaryRetimes
   });
@@ -366,36 +365,73 @@ function collectBoundaryRetimeOperations(
       continue;
     }
 
-    const midpoint = (previous.end + segment.start) / 2;
-    const previousEnd = roundSegmentTime(midpoint - TARGET_RETIME_GAP / 2);
-    const segmentStart = roundSegmentTime(midpoint + TARGET_RETIME_GAP / 2);
-    if (
-      previousEnd - previous.start < DURATION_LIMITS.shortHard - TIME_EPSILON ||
-      segment.end - segmentStart < DURATION_LIMITS.shortHard - TIME_EPSILON
-    ) {
+    const retime = chooseBoundaryRetime(previous, segment, gap);
+    if (!retime) {
       continue;
     }
 
-    previous.end = previousEnd;
-    segment.start = segmentStart;
-    const reason = 'Insert an 80ms subtitle gap at a small boundary gap or light overlap.';
+    previous.end = retime.previousEnd;
+    segment.start = retime.segmentStart;
     addOperation(groups, BOUNDARY_RETIME_PASS, 'high', chunk, {
       op: 'edit',
-      reason,
+      reason: retime.reason,
       confidence: 'high',
       segment_id: previous.id,
-      end: previousEnd
+      end: retime.previousEnd
     });
     addOperation(groups, BOUNDARY_RETIME_PASS, 'high', chunk, {
       op: 'edit',
-      reason,
+      reason: retime.reason,
       confidence: 'high',
       segment_id: segment.id,
-      start: segmentStart
+      start: retime.segmentStart
     });
   }
 
   return groups;
+}
+
+function chooseBoundaryRetime(
+  previous: Segment,
+  segment: Segment,
+  gap: number
+): { previousEnd: number; segmentStart: number; reason: string } | undefined {
+  const soft = boundaryRetimeForGap(
+    previous,
+    segment,
+    GAP_LIMITS.soft,
+    'Insert a 250ms subtitle gap at a short boundary.'
+  );
+  if (soft) {
+    return soft;
+  }
+  if (gap >= GAP_LIMITS.hard - TIME_EPSILON) {
+    return undefined;
+  }
+  return boundaryRetimeForGap(
+    previous,
+    segment,
+    GAP_LIMITS.hard,
+    'Insert an 80ms hard-minimum subtitle gap at a tight boundary.'
+  );
+}
+
+function boundaryRetimeForGap(
+  previous: Segment,
+  segment: Segment,
+  targetGap: number,
+  reason: string
+): { previousEnd: number; segmentStart: number; reason: string } | undefined {
+  const midpoint = (previous.end + segment.start) / 2;
+  const previousEnd = roundSegmentTime(midpoint - targetGap / 2);
+  const segmentStart = roundSegmentTime(midpoint + targetGap / 2);
+  if (
+    previousEnd - previous.start < DURATION_LIMITS.shortHard - TIME_EPSILON ||
+    segment.end - segmentStart < DURATION_LIMITS.shortHard - TIME_EPSILON
+  ) {
+    return undefined;
+  }
+  return { previousEnd, segmentStart, reason };
 }
 
 function collectLongSegmentCandidates(

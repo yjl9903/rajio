@@ -34,7 +34,8 @@ applies them automatically.
   - `medium`: speaker-flicker merge for short, rapidly alternating diarization fragments.
   - Emits ordered `merge` operations with `reason` and `confidence`.
 - `03-boundary-retime`
-  - `high`: edit adjacent boundaries with gap in `[-0.12, 0.08)` to create an 80ms gap.
+  - `high`: edit adjacent boundaries with gap in `[-0.12, 0.25)`; prefer a 250ms gap, or fall
+    back to 80ms only when the original gap is below 80ms.
   - Skips invalid durations, large overlaps, segments touched by fragment merge, and edits that
     would make either side shorter than 0.5 seconds.
 - `04-long-segment-candidates`

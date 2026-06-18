@@ -312,7 +312,13 @@ describe('session workflow', () => {
             end: 16,
             speaker: 'A',
             ja: 'これはとても長い字幕候補なので人間が意味を見ながら分割する必要があります'
-          }
+          },
+          { id: 'hard-1', start: 16.2, end: 16.8, speaker: 'A', ja: '硬めの文です' },
+          { id: 'hard-2', start: 16.8, end: 17.4, speaker: 'B', ja: '次の硬め文です' },
+          { id: 'no-shrink-1', start: 17.55, end: 18.1, speaker: 'A', ja: '縮めない文です' },
+          { id: 'no-shrink-2', start: 18.22, end: 18.77, speaker: 'B', ja: '次も縮めません' },
+          { id: 'no-fit-1', start: 18.9, end: 19.42, speaker: 'A', ja: '入らない文です' },
+          { id: 'no-fit-2', start: 19.42, end: 19.94, speaker: 'B', ja: '次も入らないです' }
         ]
       })
     );
@@ -337,6 +343,7 @@ describe('session workflow', () => {
     expect(work.segments.find((segment) => segment.id === 'same-1')?.end).toBe(0.4);
     expect(work.segments.find((segment) => segment.id === 'punctuation-only')).toBeDefined();
     expect(work.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(3);
+    expect(work.segments.find((segment) => segment.id === 'hard-1')?.end).toBe(16.8);
 
     const suggestedPatchDir = path.join(dir, 'transcript/work/suggested-patches');
     const punctuationHighPath = path.join(
@@ -398,20 +405,47 @@ describe('session workflow', () => {
       })
     );
     const retimeHigh = await readFile(retimeHighPath, 'utf8');
+    const retimePatch = parseSegmentPatch(retimeHigh);
     expect(retimeHigh).toContain('segment_id = "retime-1"');
-    expect(retimeHigh).toContain('end = 2.96');
+    expect(retimeHigh).toContain('end = 2.875');
     expect(retimeHigh).toContain('segment_id = "retime-2"');
-    expect(retimeHigh).toContain('start = 3.04');
+    expect(retimeHigh).toContain('start = 3.125');
+    expect(retimePatch.operations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          segment_id: 'hard-1',
+          end: 16.76,
+          reason: 'Insert an 80ms hard-minimum subtitle gap at a tight boundary.'
+        }),
+        expect.objectContaining({
+          segment_id: 'hard-2',
+          start: 16.84,
+          reason: 'Insert an 80ms hard-minimum subtitle gap at a tight boundary.'
+        })
+      ])
+    );
+    expect(retimePatch.operations).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ segment_id: 'no-shrink-1' }),
+        expect.objectContaining({ segment_id: 'no-shrink-2' }),
+        expect.objectContaining({ segment_id: 'no-fit-1' }),
+        expect.objectContaining({ segment_id: 'no-fit-2' })
+      ])
+    );
     await expect(readFile(longReportPath, 'utf8')).resolves.toContain('long');
 
     const patched = structuredClone(work);
     applySegmentPatch(patched, punctuationPatch);
     applySegmentPatch(patched, parseSegmentPatch(fragmentHigh));
-    applySegmentPatch(patched, parseSegmentPatch(retimeHigh));
+    applySegmentPatch(patched, retimePatch);
     expect(patched.segments.find((segment) => segment.id === 'same-1')?.ja).toBe('なんか');
     expect(patched.segments.find((segment) => segment.id === 'punctuation-only')).toBeUndefined();
-    expect(patched.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(2.96);
-    expect(patched.segments.find((segment) => segment.id === 'retime-2')?.start).toBe(3.04);
+    expect(patched.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(2.875);
+    expect(patched.segments.find((segment) => segment.id === 'retime-2')?.start).toBe(3.125);
+    expect(patched.segments.find((segment) => segment.id === 'hard-1')?.end).toBe(16.76);
+    expect(patched.segments.find((segment) => segment.id === 'hard-2')?.start).toBe(16.84);
+    expect(patched.segments.find((segment) => segment.id === 'no-shrink-1')?.end).toBe(18.1);
+    expect(patched.segments.find((segment) => segment.id === 'no-fit-1')?.end).toBe(19.42);
   });
 
   it('copies long raw transcript segments without pre-cutting transcript work', async () => {
@@ -651,7 +685,7 @@ describe('session workflow', () => {
     );
   });
 
-  it('prints translation commit scope and Chinese QA warnings', async () => {
+  it('rejects translation commit for Chinese punctuation QA errors', async () => {
     const dir = await preparedSession('translation_work', {
       translation_work: {
         status: 'waiting',
@@ -670,23 +704,10 @@ describe('session workflow', () => {
       })
     );
 
-    const capture = captureConsoleOutput();
-    try {
-      const session = await Session.loadOrCreate(dir);
-      await runRajio(session, { ...baseOptions, commit: true });
-    } finally {
-      capture.restore();
-    }
-
-    const output = capture.output();
-    expect(output).toContain('commit scope: translation_work zh QA.');
-    expect(output).toContain('Run rajio check');
-    expect(output).toContain('--stage translation --language ja');
-    expect(output).toContain('2 warning issues (zh_terminal_punctuation)');
-    expect(output).toContain('zh_terminal_punctuation');
-    expect(output).not.toContain('Use --verbose for details.');
-    expect(output).not.toContain('Segment 2 Chinese line 1 ends with ordinary punctuation.');
-    expect(output).not.toContain('translation inherited Japanese QA');
+    const session = await Session.loadOrCreate(dir);
+    await expect(runRajio(session, { ...baseOptions, commit: true })).rejects.toThrow(
+      'zh_terminal_punctuation'
+    );
   });
 
   it('prints transcript commit scope and Japanese QA warnings', async () => {

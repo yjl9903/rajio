@@ -31,8 +31,10 @@ skip_checks = [
   `ja_line_hard_limit`, `zh_line_hard_limit`, `ja_line_break_can_merge_soft`,
   `zh_line_break_can_merge_soft`, `ja_line_break_hard_limit`, `zh_line_break_hard_limit`,
   `duration_too_short`, `duration_too_long`, `ja_reading_speed_limit`,
-  `zh_reading_speed_limit`, `subtitle_gap_too_short`, `ja_punctuation_only_line`,
-  `zh_punctuation_only_line`, `ja_repeated_punctuation`, `zh_repeated_punctuation`.
+  `zh_reading_speed_limit`, `subtitle_gap_too_short`, `ja_common_punctuation`,
+  `zh_common_punctuation`, `ja_terminal_punctuation`, `zh_terminal_punctuation`,
+  `ja_punctuation_only_line`, `zh_punctuation_only_line`, `ja_repeated_punctuation`,
+  `zh_repeated_punctuation`.
 - Keep fatal/data integrity issues non-skippable: schema, duplicate IDs, invalid timing,
   overlap, empty required text, missing files, failed stages, and similar workflow issues.
 - When an issue matches the same segment id and code in `skip_checks`, downgrade it to

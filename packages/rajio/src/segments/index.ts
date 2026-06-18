@@ -25,6 +25,8 @@ const TRANSLATION_INHERITED_JAPANESE_QA_CODES = new Set([
   'ja_line_break_can_merge_soft',
   'ja_line_break_hard_limit',
   'ja_reading_speed_limit',
+  'ja_common_punctuation',
+  'ja_terminal_punctuation',
   'ja_punctuation_only_line',
   'ja_repeated_punctuation'
 ]);
@@ -57,7 +59,6 @@ const TEXT_LIMITS = {
 } as const;
 
 const REPEATED_EMPHATIC_PUNCTUATION = /[?!？！]{2,}/;
-const REPEATED_EMPHATIC_PUNCTUATION_HARD = /[?!？！]{3,}/;
 const PUNCTUATION_ONLY_LINE = /^[\s\p{P}\p{S}]+$/u;
 const TRAILING_CLOSERS = /[\s"'”’）)」』】》]+$/;
 
@@ -448,9 +449,8 @@ function validateTextLines(
 
     const repeatedPunctuation = punctuationLine.match(REPEATED_EMPHATIC_PUNCTUATION);
     if (repeatedPunctuation) {
-      const hard = REPEATED_EMPHATIC_PUNCTUATION_HARD.test(repeatedPunctuation[0]);
       issues.push({
-        level: hard ? 'error' : 'warning',
+        level: 'error',
         code: `${language}_repeated_punctuation`,
         segmentId: segment.id,
         message: `Segment ${segment.id} ${limits.label} line ${lineNumber} uses repeated question/exclamation punctuation: ${repeatedPunctuation[0]}.`
@@ -459,7 +459,7 @@ function validateTextLines(
 
     if (limits.warningPunctuation.test(punctuationLine)) {
       issues.push({
-        level: 'warning',
+        level: 'error',
         code: `${language}_common_punctuation`,
         segmentId: segment.id,
         message: `Segment ${segment.id} ${limits.label} line ${lineNumber} uses ordinary comma/period punctuation; prefer a space, rewrite, or split the subtitle.`
@@ -468,7 +468,7 @@ function validateTextLines(
 
     if (limits.terminalPunctuation.test(punctuationLine.trim().replace(TRAILING_CLOSERS, ''))) {
       issues.push({
-        level: 'warning',
+        level: 'error',
         code: `${language}_terminal_punctuation`,
         segmentId: segment.id,
         message: `Segment ${segment.id} ${limits.label} line ${lineNumber} ends with ordinary punctuation; subtitle lines should omit ordinary sentence-ending punctuation.`
