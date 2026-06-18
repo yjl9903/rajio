@@ -591,7 +591,7 @@ describe('session workflow', () => {
     expect(reloaded.stage('transcript_work').status).toBe('waiting');
   });
 
-  it('commits per-segment skipped subtitle QA errors without recording a session marker', async () => {
+  it('commits per-segment skipped subtitle QA errors and carries them into translation work', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
         status: 'done',
@@ -618,6 +618,10 @@ describe('session workflow', () => {
       expect.objectContaining({
         status: 'committed'
       })
+    );
+    const translationDraft = await readSegmentsFile(path.join(dir, 'translation/work/segments.toml'));
+    expect(translationDraft.segments[0]?.skip_checks).toEqual(
+      skippedQaTranscript().segments[0]?.skip_checks
     );
   });
 

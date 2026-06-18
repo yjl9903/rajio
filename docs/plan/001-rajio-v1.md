@@ -332,7 +332,8 @@ Rules:
 4. Transcript proofread and polish: human or Codex edits
    `transcript/work/segments.toml`; `--commit` validates it and records hash.
 5. Translation: create `translation/work/segments.toml` from committed and clean
-   transcript work, then stop for human or Codex to fill `zh`.
+   transcript work, preserving per-segment `skip_checks`, then stop for human or Codex to fill
+   `zh`.
 6. Translation commit: human or Codex edits `translation/work/segments.toml`; `--commit`
    validates it, requires `zh`, and records hash. Remaining intentional subtitle QA
    exceptions must be marked with per-segment `skip_checks`.

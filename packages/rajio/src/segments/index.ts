@@ -338,14 +338,14 @@ export function cloneForTranslation(source: SegmentsFile, generatedAt: string): 
       kind: 'translation',
       generated_at: generatedAt
     },
-    segments: source.segments.map(withoutSkipChecks)
+    segments: source.segments.map((segment) => {
+      const next = { ...segment };
+      if (segment.skip_checks) {
+        next.skip_checks = segment.skip_checks.map((skip) => ({ ...skip }));
+      }
+      return next;
+    })
   };
-}
-
-function withoutSkipChecks(segment: Segment): Segment {
-  const next = { ...segment };
-  delete next.skip_checks;
-  return next;
 }
 
 export function normalizeTranscriptWorkSegments(source: SegmentsFile): SegmentsFile {

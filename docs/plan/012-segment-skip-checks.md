@@ -78,8 +78,8 @@ reason = "Official title spelling."
   `skip_checks = []` clears annotations; present non-empty arrays replace annotations exactly.
 - `segments split` and `segments merge` do not inherit old `skip_checks`; split/merge results
   need fresh explicit annotations via `segments apply`.
-- `cloneForTranslation` drops transcript-stage `skip_checks`; translation-stage exceptions
-  must be marked separately in `translation/work/segments.toml`.
+- `cloneForTranslation` preserves transcript-stage `skip_checks` so Japanese QA exceptions carry
+  into `translation/work/segments.toml`.
 
 ## Tests
 
