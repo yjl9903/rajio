@@ -48,6 +48,25 @@ need the full workflow, validation rules, or command syntax.
   use the check summary to keep improving the patch as much as practical, and report the
   final dry-run summary.
 
+### Worker Manual Review
+
+- Workers must manually review every segment in their assigned range by reading subtitle
+  text in timeline order with enough neighboring context to judge meaning, continuity,
+  terminology, timing, and subtitle comfort.
+- Use `rajio segments list` with explicit `--start/--end`, `--offset/--limit`, `--id
+  --around`, and issue filters as needed to read the actual subtitle text in manageable
+  batches. Do not rely only on `rajio check` summaries, generated patch suggestions, or
+  validation examples.
+- Do not use ad hoc automation scripts to edit `segments.toml`, generate subtitle text,
+  generate proofread/translation patch operations, or add `skip_checks`. Write patch
+  operations from reviewed segment text and validate them with `rajio segments apply
+  --dry-run`.
+- Automation scripts are allowed only for non-editing support such as counting segments,
+  slicing JSON output for inspection, or validating data shape. They must support manual
+  review, not replace reading and judgment.
+- If part of the assigned range was not read segment by segment in context, report that
+  range as unreviewed. Do not call the batch polished or complete.
+
 ### Worker Command Boundaries
 
 Workers may use these commands when needed:
@@ -120,6 +139,11 @@ timing, subtitle-unit structure, and dialogue flow instead of making isolated te
 Work rules:
 - Never edit transcript/raw/segments.toml or transcript/raw/chunks/*.toml.
 - Do not translate in transcript_work.
+- Manually review every segment in the assigned range in timeline order with neighboring
+  context. Use `rajio segments list` range commands to read actual segment text;
+  `rajio check` output and suggested patches are only aids.
+- Do not use ad hoc automation scripts to generate transcript edits, patch operations, or
+  skip annotations. Patch operations must come from reviewed subtitle text.
 - Preserve ids unless a split/merge/delete is genuinely needed.
 - Fix ASR errors, proper nouns, fixed phrases, unreadable fragments, timing overlaps, and
   subtitle-unit structure inside the assigned time range.
@@ -207,6 +231,11 @@ Work rules:
 - Do not use the OpenAI-compatible provider configured in `.env` as a
   machine-translation service.
 - Do not edit transcript/raw/segments.toml or transcript/raw/chunks/*.toml.
+- Manually review every segment in the assigned range in timeline order with neighboring
+  context before writing its `zh`. Use `rajio segments list` range commands to read
+  actual segment text; `rajio check` output is only validation support.
+- Do not use ad hoc automation scripts to generate translations, patch operations, or
+  skip annotations. Patch operations must come from reviewed subtitle text.
 - Preserve id/start/end/speaker unless a structural correction is explicitly assigned.
 - If the assigned time range contains an obvious Japanese typo, wrong name, or fixed phrase
   problem, include the corrected `ja` together with the translated `zh` in the returned

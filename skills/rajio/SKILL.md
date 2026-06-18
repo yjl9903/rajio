@@ -55,6 +55,32 @@ Respect manual-stage ownership:
 - Do not use CLI `--agent=codex` as a substitute for sub-agent batch work unless the user
   explicitly asks for the CLI automation path.
 
+Define manual review strictly:
+
+- Manual review means reading subtitle segment text in timeline order with enough
+  neighboring context to judge meaning, flow, timing, tone, terminology, and subtitle
+  comfort. It does not mean only running `rajio check`, scanning issue summaries, applying
+  generated patches, or spot-checking validation examples.
+- During `transcript_work`, `translation_work`, and final Chinese refinement, agents must
+  use `rajio segments list` with explicit ranges, offsets, IDs, issue filters, and
+  neighboring context to inspect actual subtitle text in batches. Every segment in the
+  assigned or owned scope must be reviewed as text, not only as QA metadata.
+- Batch workers must read every segment in their assigned range plus enough surrounding
+  segments to catch cross-boundary continuity problems. The main agent must review worker
+  patches, batch boundaries, glossary decisions, and at least one continuous full-file
+  Chinese pass after applying first-draft translation patches.
+- `rajio check` is only validation support. Passing checks, clearing warnings, adding
+  `skip_checks`, or applying suggested patches does not count as manual review unless the
+  affected subtitle text has been read in context.
+- Do not use ad hoc automation scripts to edit `segments.toml`, generate subtitle text,
+  generate translation/proofread patch operations, or add `skip_checks`. Write and review
+  subtitle edits through the manual process and `rajio segments` tooling.
+- Automation scripts are allowed only for non-editing support such as collecting counts,
+  slicing check JSON for inspection, comparing statistics, or validating data shape. They
+  must support review, not replace reading and judgment.
+- If a range was not read segment by segment in context, report it as unreviewed. Do not
+  call the stage polished or final.
+
 Respect file boundaries:
 
 - Never edit `transcript/raw/segments.toml` or `transcript/raw/chunks/*.toml`. Raw
@@ -442,13 +468,23 @@ Proofread flow:
    worker gets a label and assigned source-media `start`/`end` range.
 3. Review each worker patch file and dry-run summary. Apply accepted patches to
    `transcript/work/segments.toml`.
-4. Perform a whole-transcript review and polish pass for context, terminology, fixed
-   phrases, structure, and readability across batch boundaries.
+4. Manually perform a whole-transcript review and polish pass for context, terminology,
+   fixed phrases, structure, and readability across batch boundaries.
 5. Commit `transcript_work` only after semantic review and validation are clean, or only
    intentional subtitle QA exceptions remain with exact `skip_checks`.
 
-Use the segment commands documented in the CLI section with `--stage transcript`.
-Do not translate in this stage.
+Transcript review requirements:
+
+- Use the segment commands documented in the CLI section with `--stage transcript` for
+  transcript inspection, patch review, patch application, and validation.
+- Do not translate in this stage; only correct and polish the Japanese transcript.
+- The main agent's proofread and polish pass must be the manual review defined in
+  [Non-Negotiable Rules](#non-negotiable-rules). Use `rajio segments list` to read the
+  actual transcript text in timeline-order batches with neighboring context, review
+  suggested and worker patches against those segments, and inspect batch boundaries.
+- `rajio check`, suggested patches, issue filters, dry-run summaries, or statistics are
+  only supporting evidence. They do not count as transcript proofreading unless the
+  affected subtitle text is read in context.
 
 For complex, noisy, overlapped, or suspicious ASR ranges, the main agent or a sub-agent may
 use `rajio clips transcribe` to retranscribe the original media time range as sidecar
@@ -503,7 +539,7 @@ rajio /path/to/session --commit --continue=until-manual
 If only intentional subtitle QA exceptions remain, inspect them first:
 
 ```bash
-rajio check /path/to/session --json --stage transcript --language ja --level error --verbose
+rajio check /path/to/session --json --stage transcript --language ja --verbose
 ```
 
 If preserving an exception improves accuracy, naturalness, or readability, add
@@ -528,22 +564,33 @@ Initial translation flow:
    a label and assigned source-media `start`/`end` range.
 3. Review each worker patch file and dry-run summary. Apply accepted patches to
    `translation/work/segments.toml` so every segment has filled or refined `zh`.
-4. Perform a whole-file first-draft review for terminology, subtitle continuity, missing
-   translations, Japanese corrections made during translation, and cross-batch style
-   consistency.
+4. Manually perform a whole-file first-draft review for terminology, subtitle continuity,
+   missing translations, Japanese corrections made during translation, and cross-batch
+   style consistency.
 5. Commit `translation_work` and export only after every batch has been translated,
    terminology has been cross-checked, and validation has no blocking `fatal` or Chinese
    `error` issues except reviewed intentional subtitle QA exceptions.
 
-Use the segment commands documented in the CLI section with `--stage translation`, or
-apply patches carefully, to fill translated subtitle text into `zh`.
+Translation review requirements:
+
+- Use the segment commands documented in the CLI section with `--stage translation` for
+  translation inspection, patch review, patch application, and validation.
+- Fill or refine translated subtitle text in `zh`; keep Japanese corrections limited to
+  transcript issues found while translating.
+- The main agent's first-draft translation review must be the manual review defined in
+  [Non-Negotiable Rules](#non-negotiable-rules). Use `rajio segments list` to read
+  translated segments in timeline-order batches with neighboring context, compare `ja` and
+  `zh`, review worker patches against those segments, and inspect batch boundaries.
+- `rajio check`, issue lists, dry-run summaries, or statistics are only supporting
+  evidence. They do not count as translation review unless the subtitle text is read in
+  context.
 
 During batch work, keep glossary updates and unresolved uncertainty in `description.md`,
 and search earlier completed batches when a new name, phrase, or style decision appears.
 Before committing, confirm this command has no blocking `fatal` or Chinese `error` issues:
 
 ```bash
-rajio check /path/to/session --json --stage translation --level error
+rajio check /path/to/session --json --stage translation
 ```
 
 To inspect Japanese QA in the current translation work file, run the same command with
@@ -622,7 +669,7 @@ rajio /path/to/session --commit --continue=until-manual
 If intentional Chinese QA exceptions remain, inspect them first:
 
 ```bash
-rajio check /path/to/session --json --stage translation --level error --verbose
+rajio check /path/to/session --json --stage translation --verbose
 ```
 
 Add `skip_checks` to each affected segment only after manual review confirms every
@@ -665,6 +712,11 @@ Refinement requirements:
   another pass when meaningful improvements are still available.
 - Perform at least two full-file Chinese refinement passes before final verification. A
   pass must make a deliberate full-file check for text quality, not only run `rajio check`.
+- Each refinement pass must satisfy the manual review definition in
+  [Non-Negotiable Rules](#non-negotiable-rules): read the actual `ja`/`zh` segment text in
+  timeline order with neighboring context, using `rajio segments list` windows or ranges
+  to cover the full file. Warning lists, statistics, scripted transformations, and
+  validation output may guide where to look, but they do not count as a refinement pass.
 - Read the Chinese subtitles continuously across adjacent segments, not only segment by
   segment. Repair places where the text reads like isolated translated fragments.
 - Enforce global term consistency for names, programs, corners, events, works, products,
@@ -697,7 +749,7 @@ Refinement requirements:
 During and after refinement, validate with:
 
 ```bash
-rajio check /path/to/session --json --stage translation --language zh --level error
+rajio check /path/to/session --json --stage translation --language zh --level warning
 rajio check /path/to/session --json --stage translation --language ja --level warning
 ```
 
