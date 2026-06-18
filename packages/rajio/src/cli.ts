@@ -175,12 +175,14 @@ app
     };
     const scope = resolveCheckScope(filterOptions);
     const issues = filterCheckIssues(result.issues, filterOptions);
+    const countIssues = filterCheckIssues(result.issues, { ...filterOptions, level: 'warning' });
     printCheckIssues(issues, {
       verbose: Boolean(options.verbose),
       json: Boolean(options.json),
       sessionDir: session.dir,
       scope,
-      range
+      range,
+      countIssues
     });
     if (issues.some((issue) => issue.level === 'fatal' || issue.level === 'error')) {
       process.exitCode = 1;

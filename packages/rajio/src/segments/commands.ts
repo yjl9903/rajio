@@ -484,6 +484,7 @@ function printApplyJson(input: {
       sessionDir: input.sessionDir,
       scope: input.scope,
       range: input.range,
+      countIssues: input.issues,
       pretty: false
     })
   ) as Record<string, unknown>;

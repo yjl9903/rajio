@@ -15,8 +15,8 @@ existing ability to inspect them through `rajio check --stage translation --lang
 
 - `rajio check` human output prints a concise scope line before issue summaries or
   `check passed.`
-- `rajio check --json` includes a top-level `scope` object describing the filtered view behind
-  `counts`, `summary`, and verbose `issues`.
+- `rajio check --json` includes a top-level `scope` object. `counts` reports issues after
+  scope/range filtering but before `--level`; `summary` and verbose `issues` honor `--level`.
 - `rajio <target> --commit` prints summary issue format for the commit scope. Use
   `rajio check --verbose` when full issue details are needed.
 - Commit remains quiet when no issues are printed and does not emit `check passed.`

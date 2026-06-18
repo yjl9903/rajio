@@ -988,6 +988,25 @@ describe('segments validation and subtitle rendering', () => {
     ).toMatchObject({
       range: { start: 3, end: 6 }
     });
+
+    const errorScope = resolveCheckScope({ level: 'error', currentStage: 'translation_work' });
+    const errorIssues = filterCheckIssues(issues, {
+      level: 'error',
+      currentStage: 'translation_work'
+    });
+    const scopedCountIssues = filterCheckIssues(issues, { currentStage: 'translation_work' });
+    const errorJson = JSON.parse(
+      formatCheckJson(errorIssues, {
+        sessionDir,
+        scope: errorScope,
+        countIssues: scopedCountIssues
+      })
+    ) as {
+      counts: { fatal: number; error: number; warning: number };
+      summary: Array<{ level: string }>;
+    };
+    expect(errorJson.counts).toEqual({ fatal: 1, error: 2, warning: 1 });
+    expect(errorJson.summary.some((summary) => summary.level === 'warning')).toBe(false);
   });
 
   it('prints check scope before human output when provided', () => {

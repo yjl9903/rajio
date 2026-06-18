@@ -407,6 +407,25 @@ describe('cli explicit targets', () => {
     );
   });
 
+  it('keeps warning counts in check JSON when level filters warning summaries', async () => {
+    const dir = await preparedTranslationSession();
+    const segmentsPath = path.join(dir, 'translation/work/segments.toml');
+    const file = sampleTranslation();
+    file.segments[0]!.zh = '一'.repeat(25);
+    file.segments[1]!.zh = '二'.repeat(17);
+    await writeSegmentsFile(segmentsPath, file, { validate: false });
+
+    const result = await runCliSideEffect(['check', dir, '--level', 'error', '--json']);
+    const output = JSON.parse(result.stdout) as {
+      counts: { fatal: number; error: number; warning: number };
+      summary: Array<{ level: string }>;
+    };
+
+    expect(result.exitCode).toBe(1);
+    expect(output.counts.warning).toBeGreaterThan(0);
+    expect(output.summary.some((summary) => summary.level === 'warning')).toBe(false);
+  });
+
   it('reads a patch from stdin when no patch path is provided', async () => {
     const dir = await preparedTranslationSession();
     const restoreStdin = replaceStdin(

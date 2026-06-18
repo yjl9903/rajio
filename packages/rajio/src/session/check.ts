@@ -132,6 +132,7 @@ export function printCheckIssues(
     logger?: ConsolaInstance;
     json?: boolean;
     sessionDir?: string;
+    countIssues?: CheckIssue[];
     writer?: { isTTY?: boolean; write(chunk: string): unknown };
     printDetailHint?: boolean;
   }
@@ -144,6 +145,7 @@ export function printCheckIssues(
         sessionDir: options.sessionDir,
         scope: options.scope,
         range: options.range,
+        countIssues: options.countIssues,
         pretty: Boolean((options.writer ?? process.stdout).isTTY)
       },
       options.writer ?? process.stdout
@@ -218,6 +220,7 @@ export function formatCheckJson(
     sessionDir?: string;
     scope?: CheckScope;
     range?: CheckRange;
+    countIssues?: CheckIssue[];
     pretty?: boolean;
   } = {}
 ): string {
@@ -240,7 +243,7 @@ export function formatCheckJson(
     ok: !hasBlockingIssue(issues),
     range: options.range,
     scope: options.scope,
-    counts: countIssues(issues),
+    counts: countIssues(options.countIssues ?? issues),
     summary: summarizeCheckIssuesForJson(issues, options)
   };
 
@@ -699,6 +702,7 @@ function printCheckJson(
     sessionDir?: string;
     scope?: CheckScope;
     range?: CheckRange;
+    countIssues?: CheckIssue[];
     pretty?: boolean;
   },
   writer: { isTTY?: boolean; write(chunk: string): unknown }
