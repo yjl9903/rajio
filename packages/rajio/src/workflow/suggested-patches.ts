@@ -114,7 +114,7 @@ export async function generateTranscriptWorkSuggestedPatches(input: {
     outputDir,
     pass: BOUNDARY_RETIME_PASS,
     name: 'Boundary retime suggestions',
-    summary: 'Prefer 250ms subtitle gaps and fall back to 80ms when needed.',
+    summary: 'Prefer 150ms subtitle gaps and fall back to 50ms when needed.',
     chunks,
     groups: boundaryRetimes
   });
@@ -400,7 +400,7 @@ function chooseBoundaryRetime(
     previous,
     segment,
     GAP_LIMITS.soft,
-    'Insert a 250ms subtitle gap at a short boundary.'
+    'Insert a 150ms subtitle gap at a short boundary.'
   );
   if (soft) {
     return soft;
@@ -412,7 +412,7 @@ function chooseBoundaryRetime(
     previous,
     segment,
     GAP_LIMITS.hard,
-    'Insert an 80ms hard-minimum subtitle gap at a tight boundary.'
+    'Insert a 50ms hard-minimum subtitle gap at a tight boundary.'
   );
 }
 

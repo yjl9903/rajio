@@ -188,7 +188,7 @@ zh = "修正后的中文字幕"
 EOF
 rajio segments edit /path/to/session 12 --json --stage transcript --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
 rajio segments edit /path/to/session 12 --json --stage transcript --ja "修正した日本語" --dry-run
-rajio segments split /path/to/session 12 --json --stage transcript --at 11.8 --gap 0.08 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
+rajio segments split /path/to/session 12 --json --stage transcript --at 11.8 --gap 0.05 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
 rajio segments merge /path/to/session 12.1 12.2 --json --stage transcript --id 12 --ja "結合した日本語" --speaker A,B
 rajio segments delete /path/to/session 13 --json --stage transcript
 ```
@@ -236,7 +236,7 @@ skip_checks = [
 [[operations]]
 op = "split"
 source_id = "long"
-gap = 0.08
+gap = 0.05
 
 [[operations.replacements]]
 segment_id = "long.1"
@@ -326,9 +326,9 @@ language filtering follow the Check section above.
 | Japanese line length | `ja` line exceeds 20 visible non-space characters       | `ja` line exceeds 28 visible non-space characters                                                                                         |
 | Chinese line length  | `zh` line exceeds 16 visible non-space characters       | `zh` line exceeds 24 visible non-space characters                                                                                         |
 | Line breaks          | 2 lines that still need review after merge-length check | More than 2 lines, or 2 lines that merge within the soft length and should be one line                                                    |
-| Subtitle duration    | shorter than 0.8 seconds or longer than 7 seconds       | shorter than 0.5 seconds or longer than 10 seconds                                                                                        |
+| Subtitle duration    | shorter than 0.5 seconds or longer than 7 seconds       | shorter than 0.3 seconds or longer than 10 seconds                                                                                        |
 | Reading speed        | Japanese exceeds 15 chars/s; Chinese exceeds 11 chars/s | Japanese exceeds 20 chars/s; Chinese exceeds 15 chars/s                                                                                   |
-| Adjacent gap         | gap is 80-250 ms                                        | gap is under 80 ms                                                                                                                        |
+| Adjacent gap         | gap is 50-150 ms                                        | gap is under 50 ms                                                                                                                        |
 | Punctuation          | none                                                    | ordinary comma/period punctuation, ordinary sentence-ending punctuation, 2+ repeated question/exclamation marks, or punctuation-only line |
 
 Do not satisfy numeric limits by creating unreadable single-character, single-syllable,

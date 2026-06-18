@@ -393,9 +393,10 @@ describe('segments validation and subtitle rendering', () => {
       version: 1,
       source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
       segments: [
-        { id: 'short-hard', start: 0, end: 0.49, speaker: 'A', ja: 'あ' },
-        { id: 'short-soft', start: 1, end: 1.7, speaker: 'A', ja: 'あ' },
-        { id: 'long-soft', start: 2, end: 9.1, speaker: 'A', ja: 'あ' },
+        { id: 'short-hard', start: 0, end: 0.29, speaker: 'A', ja: 'あ' },
+        { id: 'short-soft', start: 1, end: 1.4, speaker: 'A', ja: 'あ' },
+        { id: 'short-ok', start: 1.7, end: 2.2, speaker: 'A', ja: 'あ' },
+        { id: 'long-soft', start: 2.5, end: 9.6, speaker: 'A', ja: 'あ' },
         { id: 'long-hard', start: 10, end: 20.1, speaker: 'A', ja: 'あ' }
       ]
     });
@@ -424,6 +425,9 @@ describe('segments validation and subtitle rendering', () => {
         })
       ])
     );
+    expect(
+      issues.some((issue) => issue.segmentId === 'short-ok' && issue.code === 'duration_too_short')
+    ).toBe(false);
   });
 
   it('reports language-specific reading speed limits', () => {
@@ -498,9 +502,9 @@ describe('segments validation and subtitle rendering', () => {
       source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
       segments: [
         { id: '1', start: 0, end: 1, speaker: 'A', ja: '一' },
-        { id: '2', start: 1.07, end: 2, speaker: 'A', ja: '二' },
-        { id: '3', start: 2.179, end: 3, speaker: 'A', ja: '三' },
-        { id: '4', start: 3.25, end: 4, speaker: 'A', ja: '四' }
+        { id: '2', start: 1.0259, end: 2, speaker: 'A', ja: '二' },
+        { id: '3', start: 2.1, end: 3, speaker: 'A', ja: '三' },
+        { id: '4', start: 3.15, end: 4, speaker: 'A', ja: '四' }
       ]
     });
 
@@ -529,9 +533,9 @@ describe('segments validation and subtitle rendering', () => {
       source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
       segments: [
         { id: '1', start: 0, end: 1, speaker: 'A', ja: '一' },
-        { id: '2', start: 1.08, end: 2, speaker: 'A', ja: '二' },
-        { id: '3', start: 2.0795, end: 3, speaker: 'A', ja: '三' },
-        { id: '4', start: 3.07, end: 4, speaker: 'A', ja: '四' }
+        { id: '2', start: 1.05, end: 2, speaker: 'A', ja: '二' },
+        { id: '3', start: 2.0491, end: 3, speaker: 'A', ja: '三' },
+        { id: '4', start: 3.04, end: 4, speaker: 'A', ja: '四' }
       ]
     });
 
@@ -869,7 +873,7 @@ describe('segments validation and subtitle rendering', () => {
         stage: 'translation_work' as const,
         level: 'warning' as const,
         code: 'subtitle_gap_short',
-        message: 'Segment 5 starts 0.1s after previous segment 4; recommended gap is 0.25s.',
+        message: 'Segment 5 starts 0.1s after previous segment 4; soft minimum gap is 0.15s.',
         segmentId: '5'
       },
       {
@@ -1440,15 +1444,15 @@ describe('segment edit tools', () => {
     expect(result).toEqual({
       edits: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' }],
       splits: [
-        { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
-        { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' }
+        { id: 'long.1', start: 0, end: 1.975, speaker: 'A', ja: '前半' },
+        { id: 'long.2', start: 2.025, end: 4, speaker: 'A', ja: '後半' }
       ],
       merges: [{ id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }],
       deletes: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' }],
       affected: [
         { id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' },
-        { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
-        { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' },
+        { id: 'long.1', start: 0, end: 1.975, speaker: 'A', ja: '前半' },
+        { id: 'long.2', start: 2.025, end: 4, speaker: 'A', ja: '後半' },
         { id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' },
         { id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' }
       ]
@@ -1461,8 +1465,8 @@ describe('segment edit tools', () => {
       total: 4
     });
     expect(file.segments).toEqual([
-      { id: 'long.1', start: 0, end: 1.96, speaker: 'A', ja: '前半' },
-      { id: 'long.2', start: 2.04, end: 4, speaker: 'A', ja: '後半' },
+      { id: 'long.1', start: 0, end: 1.975, speaker: 'A', ja: '前半' },
+      { id: 'long.2', start: 2.025, end: 4, speaker: 'A', ja: '後半' },
       { id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }
     ]);
   });
@@ -1595,8 +1599,8 @@ describe('segment edit tools', () => {
     });
 
     expect(segments).toEqual([
-      { id: '1.1', start: 0, end: 0.56, speaker: 'A', ja: 'こん' },
-      { id: '1.2', start: 0.64, end: 1.2, speaker: 'A', ja: 'にちは' }
+      { id: '1.1', start: 0, end: 0.575, speaker: 'A', ja: 'こん' },
+      { id: '1.2', start: 0.625, end: 1.2, speaker: 'A', ja: 'にちは' }
     ]);
     expect(validateSegments(file).some((issue) => issue.code === 'subtitle_gap_too_short')).toBe(
       false
@@ -1627,8 +1631,8 @@ describe('segment edit tools', () => {
         ja2: '後半'
       })
     ).toEqual([
-      { id: '1.1', start: 0, end: 0.96, speaker: 'A', ja: '前半' },
-      { id: '1.2', start: 1.04, end: 2, speaker: 'A', ja: '後半' }
+      { id: '1.1', start: 0, end: 0.975, speaker: 'A', ja: '前半' },
+      { id: '1.2', start: 1.025, end: 2, speaker: 'A', ja: '後半' }
     ]);
 
     const mergeFile: SegmentsFile = {
@@ -1679,23 +1683,23 @@ describe('segment edit tools', () => {
     expect(() =>
       splitSegment(file, '1', {
         at: 0.6,
-        gap: 0.079,
+        gap: 0.049,
         id1: '1.1',
         id2: '1.2',
         ja1: 'こん',
         ja2: 'にちは'
       })
-    ).toThrow('must be at least 0.08 seconds');
+    ).toThrow('must be at least 0.05 seconds');
 
     expect(() =>
       splitSegment(file, '1', {
-        at: 0.5,
+        at: 0.25,
         id1: '1.1',
         id2: '1.2',
         ja1: 'こん',
         ja2: 'にちは'
       })
-    ).toThrow('shorter than 0.5 seconds');
+    ).toThrow('shorter than 0.3 seconds');
   });
 
   it('allows small floating point drift in split patch coverage', () => {
@@ -1752,8 +1756,8 @@ describe('segment edit tools', () => {
         ]
       }).splits
     ).toEqual([
-      { id: 'long.1', start: 0, end: 1.16, speaker: 'A', ja: '前半' },
-      { id: 'long.2', start: 1.24, end: 2.5, speaker: 'A', ja: '後半' }
+      { id: 'long.1', start: 0, end: 1.175, speaker: 'A', ja: '前半' },
+      { id: 'long.2', start: 1.225, end: 2.5, speaker: 'A', ja: '後半' }
     ]);
     expect(validateSegments(file).some((issue) => issue.code === 'subtitle_gap_too_short')).toBe(
       false
@@ -1781,9 +1785,9 @@ describe('segment edit tools', () => {
     });
 
     expect(file.segments).toEqual([
-      { id: 'long.1', start: 0, end: 0.96, speaker: 'A', ja: '一' },
-      { id: 'long.2', start: 1.04, end: 1.96, speaker: 'A', ja: '二' },
-      { id: 'long.3', start: 2.04, end: 3, speaker: 'A', ja: '三' }
+      { id: 'long.1', start: 0, end: 0.975, speaker: 'A', ja: '一' },
+      { id: 'long.2', start: 1.025, end: 1.975, speaker: 'A', ja: '二' },
+      { id: 'long.3', start: 2.025, end: 3, speaker: 'A', ja: '三' }
     ]);
   });
 
@@ -1827,8 +1831,8 @@ describe('segment edit tools', () => {
 
     expect(result.affected.map((segment) => segment.id)).toEqual(['1-2', '1a', '2a']);
     expect(file.segments).toEqual([
-      { id: '1a', start: 0, end: 1.16, speaker: 'A', ja: '正しい前半' },
-      { id: '2a', start: 1.24, end: 2.4, speaker: 'B', ja: '正しい後半' }
+      { id: '1a', start: 0, end: 1.175, speaker: 'A', ja: '正しい前半' },
+      { id: '2a', start: 1.225, end: 2.4, speaker: 'B', ja: '正しい後半' }
     ]);
   });
 

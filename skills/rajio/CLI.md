@@ -317,7 +317,7 @@ skip_checks = [
 [[operations]]
 op = "split"
 source_id = "long"
-gap = 0.08
+gap = 0.05
 
 [[operations.replacements]]
 segment_id = "long.1"
@@ -364,12 +364,12 @@ Patch rules:
   `skip_checks = []` clears annotations, and a non-empty array replaces annotations exactly.
   Each skip requires an allowed `code` and non-empty `reason`.
 - `op = "split"` replaces `source_id` with two or more `[[operations.replacements]]`.
-  `gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
+  `gap` is optional and defaults to `0.05`; values below `0.05` are rejected.
   Replacement segments use virtual continuous timing: they must cover the original
   segment continuously with no gaps or overlaps, start at the original `start`, and end
   at the original `end`. Each internal boundary is treated as the midpoint of the
-  inserted gap, so a boundary at `13.2` with `gap = 0.08` becomes previous
-  `end = 13.16` and next `start = 13.24`.
+  inserted gap, so a boundary at `13.2` with `gap = 0.05` becomes previous
+  `end = 13.175` and next `start = 13.225`.
 - Every generated split segment must remain at least `0.5` seconds long after gap
   insertion.
 - If a split source has `zh`, every replacement segment must include `zh`.
@@ -477,7 +477,7 @@ Editable fields are `--start`, `--end`, `--speaker`, `--ja`, and `--zh`. Use
 
 ```bash
 rajio segments split /path/to/session 12 --stage transcript \
-  --at 11.8 --gap 0.08 --id1 12.1 --id2 12.2 \
+  --at 11.8 --gap 0.05 --id1 12.1 --id2 12.2 \
   --ja1 "前半の日本語" --ja2 "後半の日本語" \
   --speaker1 A --speaker2 B
 ```
@@ -488,7 +488,7 @@ gap. Required options are `--at`, `--id1`, `--id2`, `--ja1`, and `--ja2`.
 Rules:
 
 - `--at` is the midpoint of the inserted gap.
-- `--gap` is optional and defaults to `0.08`; values below `0.08` are rejected.
+- `--gap` is optional and defaults to `0.05`; values below `0.05` are rejected.
 - The first segment ends at `--at - --gap / 2`; the second starts at
   `--at + --gap / 2`.
 - Both generated segments must remain at least `0.5` seconds long.

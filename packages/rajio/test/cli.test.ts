@@ -351,7 +351,7 @@ describe('cli explicit targets', () => {
     const patchPath = path.join(dir, 'patch.toml');
     await writeFile(
       patchPath,
-      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'end = 1.45'].join('\n')
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'end = 1.451'].join('\n')
     );
 
     const stdout = mockStdout();

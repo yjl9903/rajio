@@ -407,30 +407,25 @@ describe('session workflow', () => {
     const retimeHigh = await readFile(retimeHighPath, 'utf8');
     const retimePatch = parseSegmentPatch(retimeHigh);
     expect(retimeHigh).toContain('segment_id = "retime-1"');
-    expect(retimeHigh).toContain('end = 2.875');
+    expect(retimeHigh).toContain('end = 2.925');
     expect(retimeHigh).toContain('segment_id = "retime-2"');
-    expect(retimeHigh).toContain('start = 3.125');
+    expect(retimeHigh).toContain('start = 3.075');
     expect(retimePatch.operations).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           segment_id: 'hard-1',
-          end: 16.76,
-          reason: 'Insert an 80ms hard-minimum subtitle gap at a tight boundary.'
+          end: 16.725,
+          reason: 'Insert a 150ms subtitle gap at a short boundary.'
         }),
         expect.objectContaining({
           segment_id: 'hard-2',
-          start: 16.84,
-          reason: 'Insert an 80ms hard-minimum subtitle gap at a tight boundary.'
+          start: 16.875,
+          reason: 'Insert a 150ms subtitle gap at a short boundary.'
         })
       ])
     );
-    expect(retimePatch.operations).not.toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ segment_id: 'no-shrink-1' }),
-        expect.objectContaining({ segment_id: 'no-shrink-2' }),
-        expect.objectContaining({ segment_id: 'no-fit-1' }),
-        expect.objectContaining({ segment_id: 'no-fit-2' })
-      ])
+    expect(retimePatch.operations).toEqual(
+      expect.arrayContaining([expect.objectContaining({ segment_id: 'no-shrink-1' })])
     );
     await expect(readFile(longReportPath, 'utf8')).resolves.toContain('long');
 
@@ -440,12 +435,13 @@ describe('session workflow', () => {
     applySegmentPatch(patched, retimePatch);
     expect(patched.segments.find((segment) => segment.id === 'same-1')?.ja).toBe('なんか');
     expect(patched.segments.find((segment) => segment.id === 'punctuation-only')).toBeUndefined();
-    expect(patched.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(2.875);
-    expect(patched.segments.find((segment) => segment.id === 'retime-2')?.start).toBe(3.125);
-    expect(patched.segments.find((segment) => segment.id === 'hard-1')?.end).toBe(16.76);
-    expect(patched.segments.find((segment) => segment.id === 'hard-2')?.start).toBe(16.84);
-    expect(patched.segments.find((segment) => segment.id === 'no-shrink-1')?.end).toBe(18.1);
-    expect(patched.segments.find((segment) => segment.id === 'no-fit-1')?.end).toBe(19.42);
+    expect(patched.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(2.925);
+    expect(patched.segments.find((segment) => segment.id === 'retime-2')?.start).toBe(3.075);
+    expect(patched.segments.find((segment) => segment.id === 'hard-1')?.end).toBe(16.725);
+    expect(patched.segments.find((segment) => segment.id === 'hard-2')?.start).toBe(16.875);
+    expect(patched.segments.find((segment) => segment.id === 'no-shrink-1')?.end).toBe(18.085);
+    expect(patched.segments.find((segment) => segment.id === 'no-fit-1')?.end).toBe(19.345);
+    expect(patched.segments.find((segment) => segment.id === 'no-fit-2')?.start).toBe(19.495);
   });
 
   it('copies long raw transcript segments without pre-cutting transcript work', async () => {
@@ -619,7 +615,9 @@ describe('session workflow', () => {
         status: 'committed'
       })
     );
-    const translationDraft = await readSegmentsFile(path.join(dir, 'translation/work/segments.toml'));
+    const translationDraft = await readSegmentsFile(
+      path.join(dir, 'translation/work/segments.toml')
+    );
     expect(translationDraft.segments[0]?.skip_checks).toEqual(
       skippedQaTranscript().segments[0]?.skip_checks
     );

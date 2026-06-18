@@ -376,10 +376,10 @@ Subtitle QA hard validation:
 - Japanese subtitle line exceeds 28 subtitle text units.
 - Chinese subtitle line exceeds 24 subtitle text units.
 - Japanese or Chinese subtitle text contains three or more lines.
-- Segment duration is shorter than 0.5 seconds or longer than 10 seconds.
+- Segment duration is shorter than 0.3 seconds or longer than 10 seconds.
 - Japanese reading speed exceeds 20 subtitle text units per second.
 - Chinese reading speed exceeds 15 subtitle text units per second.
-- Gap from the previous subtitle is shorter than 80 ms.
+- Gap from the previous subtitle is shorter than 50 ms.
 - Japanese or Chinese subtitle text uses ordinary comma or period punctuation.
 - Japanese or Chinese subtitle line ends with ordinary sentence punctuation.
 - Japanese or Chinese subtitle text contains two or more repeated question/exclamation marks.
@@ -394,10 +394,10 @@ Warning validation:
 - Japanese subtitle line exceeds 20 subtitle text units.
 - Chinese subtitle line exceeds 16 subtitle text units.
 - Japanese or Chinese subtitle text contains two lines; prefer one line or split segments.
-- Segment duration is shorter than 0.8 seconds or longer than 7 seconds.
+- Segment duration is shorter than 0.5 seconds or longer than 7 seconds.
 - Japanese reading speed exceeds 15 subtitle text units per second.
 - Chinese reading speed exceeds 11 subtitle text units per second.
-- Gap from the previous subtitle is 80-250 ms.
+- Gap from the previous subtitle is 50-150 ms.
 - Segment may mix speakers or have unnatural splitting.
 
 Raw transcript files are parsed and schema-checked, but strict timing, text, line-length, and
