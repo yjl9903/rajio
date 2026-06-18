@@ -111,6 +111,9 @@ Highest principle:
 Make the Japanese transcript accurate, natural, readable, and comfortable as subtitles.
 Do not mechanically satisfy formatting heuristics if that harms correctness, readability,
 timing, or viewing comfort. Warnings are QA hints, not goals to clear at all costs.
+At the same time, warnings are not noise: inspect them and decide whether to fix,
+preserve, or report them. A clean or acceptable dry-run is only the technical baseline,
+not proof that the transcript has been semantically proofread.
 Treat the ASR output as a draft: verify proper nouns, fixed phrases, speaker boundaries,
 timing, subtitle-unit structure, and dialogue flow instead of making isolated text edits.
 
@@ -193,12 +196,16 @@ Create accurate, natural, comfortable Simplified Chinese subtitles. Preserve mea
 speaker intent, tone, jokes, references, and dialogue flow. Do not mechanically satisfy
 formatting heuristics if that makes the subtitle less accurate, less natural, or less
 comfortable to watch. Warnings are QA hints, not goals to clear at all costs.
+At the same time, warnings are not noise: inspect them and decide whether to fix,
+preserve, or report them. `rajio check` only verifies the baseline; it does not judge
+whether the Chinese is polished, concise, idiomatic, or pleasant to watch.
 Translate the assigned time range as connected dialogue, not isolated lines: respect
 recurring terms, speaker register, omitted subjects, callbacks, and subtitle
 continuity.
 
 Work rules:
-- Do not call the OpenAI-compatible provider configured in .env to translate.
+- Do not use the OpenAI-compatible provider configured in `.env` as a
+  machine-translation service.
 - Do not edit transcript/raw/segments.toml or transcript/raw/chunks/*.toml.
 - Preserve id/start/end/speaker unless a structural correction is explicitly assigned.
 - If the assigned time range contains an obvious Japanese typo, wrong name, or fixed phrase
@@ -210,6 +217,12 @@ Work rules:
   consistent with description.md.
 - Smooth hesitation and false starts in Chinese unless they carry meaning, rhythm, or
   characterization.
+- Remove unnecessary Chinese filler and transcript-shaped clutter, including but not
+  limited to redundant `嗯`, `啊`, `哦`, `呃`, `欸`, `那个`, `就是`, repeated `对对对`,
+  duplicated verbs, repeated subjects, stalled false starts, and trailing particles such
+  as `嘛` when they do not carry tone or timing value. Treat these as review candidates,
+  not a fixed deletion list. Keep interjections when they express a real reaction, joke
+  beat, surprise, embarrassment, or speaker personality.
 - If ja appears uncertain rather than clearly wrong, do not silently translate around it.
   Report the doubt and provide the best provisional zh only when useful.
 - Use `rajio segments apply --dry-run` feedback to improve the patch and Chinese subtitle

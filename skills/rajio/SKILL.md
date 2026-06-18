@@ -15,44 +15,72 @@ create polished Chinese subtitles from Japanese audio/video with rajio.
 
 ## Non-Negotiable Rules
 
-- The highest priority is accurate, natural, comfortable subtitles. Do not mechanically
-  satisfy formatting heuristics when doing so would make the transcript or translation less
-  correct, less readable, or less pleasant to watch.
-- Make the privacy boundary explicit before transcription: rajio uploads audio to the
-  configured OpenAI-compatible transcription provider. Start transcription only after the
+Quality comes first:
+
+- The goal is accurate, natural, comfortable subtitles. Correctness, readability, tone,
+  subtitle flow, and viewing comfort outrank mechanical formatting cleanup.
+- `rajio check` is a quality floor, not the definition of finished quality. `fatal` means
+  invalid data or session state, `error` means a problem that seriously hurts readability in
+  ordinary cases, and `warning` means a recommended improvement.
+- Clearing, skipping, or preserving `rajio check` issues only establishes the technical
+  baseline. Manual review and text refinement are still required for ASR mistakes, proper
+  nouns, context, terminology, fixed phrases, translation consistency, concision, tone, and
+  Chinese subtitle polish.
+- Do not satisfy QA heuristics by making subtitles less correct, less natural, or harder to
+  watch. Also do not ignore warnings mechanically: inspect remaining warnings and decide
+  case by case whether to fix, preserve, merge, split, retime, compress, or document the
+  exception.
+
+Respect privacy and provider boundaries:
+
+- Make the privacy boundary explicit before transcription. Rajio uploads audio to the
+  configured OpenAI-compatible transcription provider; start transcription only after the
   user authorizes that upload.
-- `transcript_work` and `translation_work` are manual stages. Always process these stages
-  through sub-agent batches. The main agent orchestrates, merges, validates, and commits;
-  it must not try to proofread or translate the full first-draft stage by itself.
-- The final Chinese refinement pass is the explicit exception to that boundary: after
-  sub-agent translation batches have produced and committed the first draft, the main
-  agent must perform full-file Chinese subtitle refinement as described in
-  [Refine Chinese Subtitles](#4-refine-chinese-subtitles).
+- During `translation_work`, do not use the OpenAI-compatible provider configured in
+  `.env` as a machine-translation service. Sub-agents produce the first-draft batch
+  translations from the provided context; the main agent reviews, merges, validates, and
+  performs the required full-file Chinese refinement.
+
+Respect manual-stage ownership:
+
+- `transcript_work` and `translation_work` are manual stages. Always process first-draft
+  proofreading and translation through sub-agent batches. If sub-agent tooling is
+  unavailable, stop and report that the manual stage cannot be completed under this skill.
+- The main agent owns batch planning, patch review, patch application, glossary decisions,
+  consistency QA, `description.md`, validation, commits, exports, and final reporting.
+- The main agent must not proofread or translate the full first-draft manual stage by
+  itself. The explicit exception is final Chinese refinement: after sub-agent translation
+  batches have produced the first draft, the main agent must perform full-file Chinese
+  subtitle refinement as described in [Refine Chinese Subtitles](#4-refine-chinese-subtitles).
 - Do not use CLI `--agent=codex` as a substitute for sub-agent batch work unless the user
   explicitly asks for the CLI automation path.
-- During `translation_work`, do not call the OpenAI-compatible provider configured in
-  `.env` to translate. Translation is done by sub-agents using the batch context provided
-  by the main agent.
+
+Respect file boundaries:
+
 - Never edit `transcript/raw/segments.toml` or `transcript/raw/chunks/*.toml`. Raw
-  transcript files are references. Edit only `transcript/work/segments.toml`,
-  `translation/work/segments.toml`, and `description.md`.
+  transcript files are references.
+- Edit only the active manual work file, `description.md`, and session-local patch or
+  review artifacts: `transcript/work/segments.toml`, `translation/work/segments.toml`,
+  `description.md`, and files under session-local `patches/` or clip review directories.
 - `description.md` is the source of truth for media metadata, user notes, context,
   glossary, fixed terms, style requirements, and unresolved uncertainty. Keep it current
   throughout the session.
-- Use `rajio check` as documented in the CLI section. It is not a substitute for manual
-  QA of typos, ASR errors, proper nouns, context, terminology, fixed phrases, and
-  translation consistency.
-- Record intentional subtitle QA `error` exceptions with per-segment `skip_checks` in the
-  work-stage `segments.toml`. Every skip must name the exact issue code and include a
-  reason. Never skip `fatal` data/file/schema/timeline issues, unfinished translation, or
-  unreviewed batches. Matched skips are omitted from check output; stale skips still report
-  `fatal unused_skip_check`.
+
+Use rajio tools deliberately:
+
+- Use `rajio check` as documented in the CLI section before commits and final reporting,
+  while remembering it is not a substitute for manual QA.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
   empty filler segments. Shape: `rajio segments <command> <target>`.
 - Use `rajio clips` commands for difficult source-video ranges that need independent
   retranscription for comparison. Clip outputs are sidecar review artifacts only; do not
   treat them as automatic replacements for `transcript/work/segments.toml`.
+- Record intentional subtitle QA `error` exceptions with per-segment `skip_checks` in the
+  work-stage `segments.toml`. Every skip must name the exact issue code and include a
+  reason. Never skip `fatal` data/file/schema/timeline issues, unfinished translation, or
+  unreviewed batches. Matched skips are omitted from check output; stale skips still report
+  `fatal unused_skip_check`.
 
 ## Sub-Agent Batch Contract
 
@@ -259,8 +287,18 @@ human-readable table. See [CLI.md](CLI.md#clips-commands) for JSON structures.
 
 Use `rajio check` before committing manual stages and before final reporting. It validates
 session shape, timeline integrity, required text, and subtitle QA heuristics, but it does
-not replace semantic review for ASR mistakes, names, terms, context, or translation
-quality.
+not replace semantic review for ASR mistakes, names, terms, context, translation quality,
+or editorial polish. Treat the levels as follows:
+
+- `fatal`: invalid data or session state; fix before proceeding.
+- `error`: a problem that seriously hurts subtitle readability in ordinary cases; fix it
+  unless a specific reviewed exception is better for accuracy or viewing comfort.
+- `warning`: a recommendation; inspect it and make a local editorial decision instead of
+  mechanically fixing or mechanically ignoring it.
+
+Passing `rajio check`, including with zero `fatal`/`error` issues, does not mean the
+subtitles are polished. It only means the work has passed the baseline data and subtitle
+heuristic checks.
 
 Use `--json` for machine-readable output; pipe it to `jq` when you need to extract fields
 or slice down the output. See [CLI.md](CLI.md#check) for JSON structures.
@@ -287,7 +325,7 @@ language filtering follow the Check section above.
 | -------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Japanese line length | `ja` line exceeds 20 visible non-space characters       | `ja` line exceeds 28 visible non-space characters                                                                                         |
 | Chinese line length  | `zh` line exceeds 16 visible non-space characters       | `zh` line exceeds 24 visible non-space characters                                                                                         |
-| Line count           | Japanese or Chinese text has 2 lines                    | Japanese or Chinese text has more than 2 lines                                                                                            |
+| Line breaks          | 2 lines that still need review after merge-length check | More than 2 lines, or 2 lines that merge within the soft length and should be one line                                                    |
 | Subtitle duration    | shorter than 0.8 seconds or longer than 7 seconds       | shorter than 0.5 seconds or longer than 10 seconds                                                                                        |
 | Reading speed        | Japanese exceeds 15 chars/s; Chinese exceeds 11 chars/s | Japanese exceeds 20 chars/s; Chinese exceeds 15 chars/s                                                                                   |
 | Adjacent gap         | gap is 80-250 ms                                        | gap is under 80 ms                                                                                                                        |
@@ -297,6 +335,10 @@ Do not satisfy numeric limits by creating unreadable single-character, single-sy
 or isolated filler subtitles. Prefer natural compression, merging with an adjacent segment,
 retiming, or splitting at a semantic pause. Single `？` or `！` is allowed when needed for
 intent, but use it sparingly.
+
+Warnings are still work items. Review them in context and either improve the subtitle or
+keep the current form because it is more accurate, natural, or comfortable than the
+mechanical alternative.
 
 ## Workflow
 
@@ -536,6 +578,12 @@ Acceptance criteria:
   meaning, speaker intent, or timing comprehension.
 - Smooth spoken hesitation, false starts, and harmless repetition in Chinese unless they are
   semantically important, characterize the speaker, or affect the scene's rhythm.
+- Remove unnecessary Chinese filler and transcript-shaped clutter, including but not
+  limited to redundant `嗯`, `啊`, `哦`, `呃`, `欸`, `那个`, `就是`, repeated `对对对`,
+  duplicated verbs, repeated subjects, stalled false starts, and trailing particles such
+  as `嘛` when they do not carry tone or timing value. Treat these as review candidates,
+  not a fixed deletion list. Keep interjections when they express a real reaction, joke
+  beat, surprise, embarrassment, or speaker personality.
 - Keep Chinese renderings globally consistent for people, programs, corners, events,
   hashtags, works, products, honorific decisions, and recurring phrases.
 - Use `description.md` as the glossary and style source. Update it if new confirmed terms
@@ -598,9 +646,9 @@ Expected draft output:
 
 ### 4. Refine Chinese Subtitles
 
-After the first draft export, the main agent must perform at least one full-pass Chinese
-subtitle refinement over `translation/work/segments.toml`, and should iterate through
-multiple refinement passes until the subtitles are genuinely polished. This is not a
+After the first draft export, the main agent must perform at least two full-pass Chinese
+subtitle refinement passes over `translation/work/segments.toml`, and should keep
+iterating while meaningful improvements remain. This is not a
 substitute for the sub-agent batch translation stage: do not use these passes to fill
 large missing sections or redo the whole translation from scratch. Use them to raise the
 already translated draft to final subtitle quality.
@@ -615,6 +663,8 @@ Refinement requirements:
 - Treat refinement as an active, multi-round editorial process. After each pass, inspect
   remaining rough spots, recurring wording problems, and consistency risks, then run
   another pass when meaningful improvements are still available.
+- Perform at least two full-file Chinese refinement passes before final verification. A
+  pass must make a deliberate full-file check for text quality, not only run `rajio check`.
 - Read the Chinese subtitles continuously across adjacent segments, not only segment by
   segment. Repair places where the text reads like isolated translated fragments.
 - Enforce global term consistency for names, programs, corners, events, works, products,
@@ -624,6 +674,12 @@ Refinement requirements:
 - Prefer natural Simplified Chinese subtitle language over literal completeness. Compress
   harmless repetition and spoken clutter when the source meaning, rhythm, and speaker
   personality are preserved.
+- Clean up filler-heavy Chinese, wordiness, and direct translation artifacts, including
+  but not limited to redundant interjections, duplicated words or clauses, repeated
+  subjects, over-explicit pronouns, stalled false starts, stiff connectives, explanatory
+  padding, and literal translations of Japanese hesitation. Treat these as review
+  candidates rather than a fixed deletion list; delete or rewrite them when they only
+  mirror source disfluency or make the subtitle read like prose instead of subtitles.
 - Check pronouns, ellipses, omitted subjects, callbacks, and topic shifts against nearby
   Japanese context so Chinese lines do not become ambiguous or misleading.
 - Smooth sentence flow across subtitle boundaries while keeping each subtitle readable on
@@ -675,16 +731,24 @@ Before reporting completion:
 2. Treat the result as data validation only.
 3. Confirm `session.toml` is not stuck in `failed`, `dirty`, or an unexpected manual stage.
 4. Confirm expected output files exist under `output/`.
-5. Perform manual content QA:
+5. Confirm at least two full-file Chinese refinement passes were performed after the
+   sub-agent translation draft. If refinement changed `translation/work/segments.toml`,
+   recommit and regenerate exports before reporting completion.
+6. Perform manual content QA:
    - proper nouns and fixed terms
    - opening title call and speaker introductions
    - middle section timing and speaker continuity
    - event/work/corner names
    - ending sign-off
    - Chinese readability, subtitle continuity, and terminology consistency
-6. Search final work files for known ASR-confusion variants and glossary terms one last
+   - unnecessary filler words, repeated expressions, false starts, and direct-translation
+     artifacts in Chinese
+7. Search final work files for known ASR-confusion variants and glossary terms one last
    time.
-7. Report output files, remaining warnings, assumptions, content-QA limits, and any spots
+8. Perform at least two final spot-check rounds before reporting. Each round should sample
+   opening, middle, ending, at least one dense dialogue range, and at least one known
+   uncertain range from `description.md`; do not count `rajio check` as a spot-check.
+9. Report output files, remaining warnings, assumptions, content-QA limits, and any spots
    needing user judgment.
 
 ## Failure Handling

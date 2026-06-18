@@ -18,8 +18,9 @@ raw transcript files are read-only references, and clip transcripts are review a
 - Do not edit `transcript/raw/segments.toml` or `transcript/raw/chunks/*.toml`.
 - Use `rajio clips` only to independently retranscribe difficult source-video ranges
   for comparison. Clip output never updates the main transcript automatically.
-- Use `rajio check` to validate file shape and common segment issues. It does not
-  replace manual QA for ASR mistakes, names, terms, context, or translation quality.
+- Use `rajio check` to validate file shape and common segment issues. It is a quality
+  floor, not a finished-quality signal, and does not replace manual QA for ASR mistakes,
+  names, terms, context, translation quality, or editorial polish.
 - Do not use `--agent=codex` for ordinary single-video proofreading or translation
   unless the user explicitly asks for batch or automatic multi-session operation.
 
@@ -155,6 +156,8 @@ Allowed `skip_checks.code` values are:
 - `duration_too_short`, `duration_too_long`
 - `ja_reading_speed_limit`, `zh_reading_speed_limit`
 - `subtitle_gap_too_short`
+- `ja_common_punctuation`, `zh_common_punctuation`
+- `ja_terminal_punctuation`, `zh_terminal_punctuation`
 - `ja_punctuation_only_line`, `zh_punctuation_only_line`
 - `ja_repeated_punctuation`, `zh_repeated_punctuation`
 
@@ -673,7 +676,7 @@ codes that can be either `warning` or `error`.
 | Data integrity        | duplicate ids, invalid time, overlap         | `duplicate_id`, `invalid_time`, `overlap`                                                                                                                                                                                                      |
 | Required text         | required Japanese or Chinese text is empty   | `empty_ja`, `empty_zh`                                                                                                                                                                                                                         |
 | Line length           | line exceeds soft or hard character limit    | `ja_line_soft_limit`, `ja_line_hard_limit`, `zh_line_soft_limit`, `zh_line_hard_limit`                                                                                                                                                         |
-| Line count            | text has unnecessary or too many line breaks | `ja_line_break_can_merge_soft`, `ja_line_break_can_merge_hard`, `ja_line_break_soft_limit`, `ja_line_break_hard_limit`, `zh_line_break_can_merge_soft`, `zh_line_break_can_merge_hard`, `zh_line_break_soft_limit`, `zh_line_break_hard_limit` |
+| Line breaks           | text has unnecessary or too many line breaks | `ja_line_break_can_merge_soft`, `ja_line_break_can_merge_hard`, `ja_line_break_soft_limit`, `ja_line_break_hard_limit`, `zh_line_break_can_merge_soft`, `zh_line_break_can_merge_hard`, `zh_line_break_soft_limit`, `zh_line_break_hard_limit` |
 | Subtitle duration     | segment is too short or too long             | `duration_too_short`, `duration_too_long`                                                                                                                                                                                                      |
 | Reading speed         | text is too dense for the duration           | `ja_reading_speed_limit`, `zh_reading_speed_limit`                                                                                                                                                                                             |
 | Adjacent gap          | gap from previous segment is too short       | `subtitle_gap_too_short`, `subtitle_gap_short`                                                                                                                                                                                                 |
