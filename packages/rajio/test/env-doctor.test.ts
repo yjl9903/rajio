@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
+import { version as packageVersion } from '../package.json' with { type: 'json' };
 import { runDoctor } from '../src/doctor.js';
 import { Session } from '../src/index.js';
 import { readRuntimeConfig } from '../src/utils/env.js';
@@ -56,12 +57,13 @@ describe('doctor', () => {
         })) as never,
         listProviderModels: async () => [TRANSCRIPTION_MODEL],
         createCodex: () => undefined,
+        getLatestRajioVersion: async () => packageVersion,
         nodeVersion: '24.1.0'
       }
     });
 
     expect(result.ok).toBe(true);
-    expect(checkByName(result, '.env')).toMatchObject({ status: 'warn' });
+    expect(result.checks.some((check) => check.message.startsWith('Loaded '))).toBe(false);
     await expect(readFile(path.join(cwd, 'session.toml'), 'utf8')).rejects.toThrow();
   });
 
@@ -105,16 +107,53 @@ describe('doctor', () => {
         createCodex: (runtime) => {
           seenCodexConfigs.push(runtime);
         },
+        getLatestRajioVersion: async () => packageVersion,
         nodeVersion: '24.1.0'
       }
     });
 
     expect(result.ok).toBe(true);
+    expect(result.checks.map((check) => check.name)).toEqual([
+      'rajio',
+      'node',
+      '.env',
+      '.env',
+      '.env',
+      '.env',
+      'provider',
+      'ffmpeg',
+      'ffprobe',
+      'codex'
+    ]);
     expect(execaMock.mock.calls.map((call) => call[0])).toEqual(['session-ffmpeg', 'cwd-ffprobe']);
     expect(seenProviderConfigs[0]?.openaiApiKey).toBe('from-session');
     expect(seenProviderConfigs[0]?.openaiBaseUrl).toBe('https://cwd.example');
     expect(seenCodexConfigs[0]?.openaiApiKey).toBe('from-session');
+    expect(checkByName(result, 'rajio')).toEqual({
+      name: 'rajio',
+      status: 'pass',
+      message: `v${packageVersion} is up to date`
+    });
+    expect(result.checks.filter((check) => check.name === '.env')).toEqual([
+      { name: '.env', status: 'pass', message: `Loaded ${path.join(cwd, '.env')}` },
+      { name: '.env', status: 'pass', message: `Loaded ${path.join(sessionDir, '.env')}` },
+      { name: '.env', status: 'pass', message: 'OPENAI_API_KEY is set' },
+      { name: '.env', status: 'pass', message: 'OPENAI_BASE_URL uses https://cwd.example' }
+    ]);
     expect(checkByName(result, 'provider')).toMatchObject({ status: 'pass' });
+    expect(checkByName(result, 'ffmpeg')).toMatchObject({
+      status: 'pass',
+      message: 'session-ffmpeg version test'
+    });
+    expect(checkByName(result, 'ffprobe')).toMatchObject({
+      status: 'pass',
+      message: 'cwd-ffprobe version test'
+    });
+    expect(checkByName(result, 'codex')).toEqual({
+      name: 'codex',
+      status: 'pass',
+      message: '@openai/codex-sdk is installed and initialized'
+    });
   });
 
   it('fails early-visible checks when credentials and runtime are missing', async () => {
@@ -139,22 +178,84 @@ describe('doctor', () => {
         listProviderModels: async () => {
           throw new Error('must not connect without a key');
         },
+        getLatestRajioVersion: async () => packageVersion,
         nodeVersion: '23.0.0'
       }
     });
 
     expect(result.ok).toBe(false);
-    expect(checkByName(result, '.env')).toMatchObject({ status: 'warn' });
-    expect(checkByName(result, 'OPENAI_API_KEY')).toMatchObject({ status: 'fail' });
+    expect(result.checks.some((check) => check.message.startsWith('Loaded '))).toBe(false);
+    expect(checkByMessage(result, 'OPENAI_API_KEY is not set')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'node')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'provider')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'codex')).toMatchObject({ status: 'fail' });
   });
+
+  it('warns when a newer rajio version is available without failing doctor', async () => {
+    const cwd = await tempDir();
+    process.env.OPENAI_API_KEY = 'from-process';
+    const session = await Session.load(cwd);
+
+    const result = await runDoctor(session, {
+      cwd,
+      deps: {
+        execa: vi.fn(async (command: string) => ({
+          stdout: `${command} version test`
+        })) as never,
+        listProviderModels: async () => [TRANSCRIPTION_MODEL],
+        createCodex: () => undefined,
+        getLatestRajioVersion: async () => '999.0.0',
+        nodeVersion: '24.1.0'
+      }
+    });
+
+    expect(result.ok).toBe(true);
+    expect(checkByName(result, 'rajio')).toEqual({
+      name: 'rajio',
+      status: 'warn',
+      message: `v${packageVersion} is outdated; latest is v999.0.0`
+    });
+  });
+
+  it('warns when rajio update check fails without failing doctor', async () => {
+    const cwd = await tempDir();
+    process.env.OPENAI_API_KEY = 'from-process';
+    const session = await Session.load(cwd);
+
+    const result = await runDoctor(session, {
+      cwd,
+      deps: {
+        execa: vi.fn(async (command: string) => ({
+          stdout: `${command} version test`
+        })) as never,
+        listProviderModels: async () => [TRANSCRIPTION_MODEL],
+        createCodex: () => undefined,
+        getLatestRajioVersion: async () => {
+          throw new Error('network down');
+        },
+        nodeVersion: '24.1.0'
+      }
+    });
+
+    expect(result.ok).toBe(true);
+    expect(checkByName(result, 'rajio')).toEqual({
+      name: 'rajio',
+      status: 'warn',
+      message: `v${packageVersion}; update check failed`,
+      detail: 'network down'
+    });
+  });
 });
 
 function checkByName(result: Awaited<ReturnType<typeof runDoctor>>, name: string) {
   const check = result.checks.find((item) => item.name === name);
+  expect(check).toBeDefined();
+  return check!;
+}
+
+function checkByMessage(result: Awaited<ReturnType<typeof runDoctor>>, message: string) {
+  const check = result.checks.find((item) => item.message === message);
   expect(check).toBeDefined();
   return check!;
 }

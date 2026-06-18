@@ -14,6 +14,7 @@ import { taggedLogger } from './utils/logger.js';
 
 const REQUIRED_NODE_MAJOR = 24;
 const CHECK_TIMEOUT_MS = 10000;
+const NPM_RAJIO_LATEST_URL = 'https://registry.npmjs.org/rajio/latest';
 
 export type DoctorStatus = 'pass' | 'warn' | 'fail';
 
@@ -33,6 +34,7 @@ export interface DoctorDeps {
   execa?: typeof execa;
   listProviderModels?: (runtime: RuntimeConfig) => Promise<string[]>;
   createCodex?: (runtime: RuntimeConfig) => void;
+  getLatestRajioVersion?: () => Promise<string>;
   nodeVersion?: string;
 }
 
@@ -53,13 +55,14 @@ export async function runDoctor(
   const envFiles = await collectEnvFiles(cwd, sessionDir);
   const runtime = await readRuntimeConfig({ cwd, sessionDir });
 
-  checks.push(envFilesCheck(envFiles));
+  checks.push(await cliVersionCheck(deps));
+  checks.push(nodeCheck(deps.nodeVersion ?? process.versions.node));
+  checks.push(...envFilesChecks(envFiles));
   checks.push(apiKeyCheck(runtime));
   checks.push(baseUrlCheck(runtime));
-  checks.push(nodeCheck(deps.nodeVersion ?? process.versions.node));
+  checks.push(await providerCheck(runtime, deps));
   checks.push(await commandVersionCheck('ffmpeg', runtime.ffmpegBin, deps));
   checks.push(await commandVersionCheck('ffprobe', runtime.ffprobeBin, deps));
-  checks.push(await providerCheck(runtime, deps));
   checks.push(codexCheck(runtime, deps));
 
   return {
@@ -103,49 +106,78 @@ async function collectEnvFiles(cwd: string, sessionDir: string): Promise<string[
   return files;
 }
 
-function envFilesCheck(envFiles: string[]): DoctorCheck {
-  if (envFiles.length === 0) {
+async function cliVersionCheck(deps: DoctorDeps): Promise<DoctorCheck> {
+  try {
+    const latestVersion = await (deps.getLatestRajioVersion ?? getLatestRajioVersion)();
+    const comparison = compareSemverCore(packageVersion, latestVersion);
+    if (comparison === undefined) {
+      return {
+        name: 'rajio',
+        status: 'warn',
+        message: `v${packageVersion}; update check failed`,
+        detail: `Invalid version returned by npm registry: ${latestVersion}`
+      };
+    }
+    if (comparison < 0) {
+      return {
+        name: 'rajio',
+        status: 'warn',
+        message: `v${packageVersion} is outdated; latest is v${latestVersion}`
+      };
+    }
     return {
-      name: '.env',
+      name: 'rajio',
+      status: 'pass',
+      message: `v${packageVersion} is up to date`
+    };
+  } catch (error) {
+    return {
+      name: 'rajio',
       status: 'warn',
-      message: 'No .env file found; using process environment only.'
+      message: `v${packageVersion}; update check failed`,
+      detail: formatError(error)
     };
   }
-  return {
+}
+
+function envFilesChecks(envFiles: string[]): DoctorCheck[] {
+  if (envFiles.length === 0) {
+    return [];
+  }
+  return envFiles.map((filePath) => ({
     name: '.env',
     status: 'pass',
-    message: `Loaded ${envFiles.length} .env file${envFiles.length === 1 ? '' : 's'}.`,
-    detail: envFiles.join('\n')
-  };
+    message: `Loaded ${filePath}`
+  }));
 }
 
 function apiKeyCheck(runtime: RuntimeConfig): DoctorCheck {
   if (!runtime.openaiApiKey) {
     return {
-      name: 'OPENAI_API_KEY',
+      name: '.env',
       status: 'fail',
-      message: 'OPENAI_API_KEY is not set.'
+      message: 'OPENAI_API_KEY is not set'
     };
   }
   return {
-    name: 'OPENAI_API_KEY',
+    name: '.env',
     status: 'pass',
-    message: 'OPENAI_API_KEY is set.'
+    message: 'OPENAI_API_KEY is set'
   };
 }
 
 function baseUrlCheck(runtime: RuntimeConfig): DoctorCheck {
   if (!runtime.openaiBaseUrl) {
     return {
-      name: 'OPENAI_BASE_URL',
+      name: '.env',
       status: 'pass',
-      message: 'OPENAI_BASE_URL is not set; using OpenAI default.'
+      message: 'OPENAI_BASE_URL is not set; using OpenAI default'
     };
   }
   return {
-    name: 'OPENAI_BASE_URL',
+    name: '.env',
     status: 'pass',
-    message: `Using ${runtime.openaiBaseUrl}.`
+    message: `OPENAI_BASE_URL uses ${runtime.openaiBaseUrl}`
   };
 }
 
@@ -155,13 +187,13 @@ function nodeCheck(nodeVersion: string): DoctorCheck {
     return {
       name: 'node',
       status: 'fail',
-      message: `Node.js v${nodeVersion} is too old; rajio requires >=${REQUIRED_NODE_MAJOR}.`
+      message: `Node.js v${nodeVersion} is too old; rajio requires >=${REQUIRED_NODE_MAJOR}`
     };
   }
   return {
     name: 'node',
     status: 'pass',
-    message: `Node.js v${nodeVersion} satisfies >=${REQUIRED_NODE_MAJOR}.`
+    message: `Node.js v${nodeVersion} satisfies >=${REQUIRED_NODE_MAJOR}`
   };
 }
 
@@ -180,13 +212,13 @@ async function commandVersionCheck(
     return {
       name,
       status: 'pass',
-      message: firstLine ? `${command}: ${firstLine}` : `${command} is executable.`
+      message: firstLine ? firstLine : `${command} is executable`
     };
   } catch (error) {
     return {
       name,
       status: 'fail',
-      message: `${command} is not usable.`,
+      message: `${command} is not usable`,
       detail: formatError(error)
     };
   }
@@ -197,7 +229,7 @@ async function providerCheck(runtime: RuntimeConfig, deps: DoctorDeps): Promise<
     return {
       name: 'provider',
       status: 'fail',
-      message: 'Skipped provider connectivity check because OPENAI_API_KEY is missing.'
+      message: 'Skipped provider connectivity check because OPENAI_API_KEY is missing'
     };
   }
 
@@ -207,20 +239,20 @@ async function providerCheck(runtime: RuntimeConfig, deps: DoctorDeps): Promise<
       return {
         name: 'provider',
         status: 'pass',
-        message: `Provider is reachable and lists ${TRANSCRIPTION_MODEL}.`
+        message: `Provider is reachable and lists ${TRANSCRIPTION_MODEL}`
       };
     }
     return {
       name: 'provider',
       status: 'warn',
-      message: `Provider is reachable, but ${TRANSCRIPTION_MODEL} was not listed.`,
+      message: `Provider is reachable, but ${TRANSCRIPTION_MODEL} was not listed`,
       detail: models.slice(0, 20).join('\n')
     };
   } catch (error) {
     return {
       name: 'provider',
       status: 'fail',
-      message: 'Provider connectivity check failed.',
+      message: 'Provider connectivity check failed',
       detail: formatError(error)
     };
   }
@@ -231,7 +263,7 @@ function codexCheck(runtime: RuntimeConfig, deps: DoctorDeps): DoctorCheck {
     return {
       name: 'codex',
       status: 'fail',
-      message: 'Skipped Codex check because OPENAI_API_KEY is missing.'
+      message: 'Skipped Codex check because OPENAI_API_KEY is missing'
     };
   }
 
@@ -240,13 +272,13 @@ function codexCheck(runtime: RuntimeConfig, deps: DoctorDeps): DoctorCheck {
     return {
       name: 'codex',
       status: 'pass',
-      message: `@openai/codex-sdk is installed and initialized for rajio ${packageVersion}.`
+      message: '@openai/codex-sdk is installed and initialized'
     };
   } catch (error) {
     return {
       name: 'codex',
       status: 'fail',
-      message: 'Codex SDK check failed.',
+      message: 'Codex SDK check failed',
       detail: formatError(error)
     };
   }
@@ -263,11 +295,48 @@ async function listProviderModels(runtime: RuntimeConfig): Promise<string[]> {
   return page.data.map((model) => model.id);
 }
 
+async function getLatestRajioVersion(): Promise<string> {
+  const response = await fetch(NPM_RAJIO_LATEST_URL, {
+    headers: { accept: 'application/json' },
+    signal: AbortSignal.timeout(CHECK_TIMEOUT_MS)
+  });
+  if (!response.ok) {
+    throw new Error(`npm registry responded with ${response.status} ${response.statusText}`);
+  }
+  const data = (await response.json()) as { version?: unknown };
+  if (typeof data.version !== 'string') {
+    throw new Error('npm registry response is missing version');
+  }
+  return data.version;
+}
+
 function createCodex(runtime: RuntimeConfig): void {
   new Codex({
     apiKey: runtime.openaiApiKey,
     baseUrl: runtime.openaiBaseUrl
   });
+}
+
+function compareSemverCore(left: string, right: string): number | undefined {
+  const leftParts = parseSemverCore(left);
+  const rightParts = parseSemverCore(right);
+  if (!leftParts || !rightParts) {
+    return undefined;
+  }
+  for (let index = 0; index < 3; index += 1) {
+    if (leftParts[index]! !== rightParts[index]!) {
+      return leftParts[index]! - rightParts[index]!;
+    }
+  }
+  return 0;
+}
+
+function parseSemverCore(version: string): [number, number, number] | undefined {
+  const match = /^v?(\d+)\.(\d+)\.(\d+)(?:[-+].*)?$/.exec(version);
+  if (!match) {
+    return undefined;
+  }
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
 }
 
 function formatError(error: unknown): string {
