@@ -43,7 +43,6 @@ single use case, and over-encapsulation that makes the execution path harder to 
 - `pnpm test:ci`: run CI tests.
 - `pnpm typecheck`: run `tsc --noEmit` through Turbo.
 - `pnpm format`: format with Prettier.
-- `pnpm rajio <args>`: run the local CLI through `tsx`.
 
 For package-scoped work, prefer `pnpm --filter rajio test` and `pnpm --filter rajio build`.
 
