@@ -1,10 +1,12 @@
 # Rajio Sub-Agent Batches
 
-Use this document when the main agent needs to spawn sub-agents for `transcript_work` or
+Use this document whenever the main agent spawns sub-agents for `transcript_work` or
 `translation_work`.
 
-These prompts are reference patterns, not fixed templates. The main agent may modify,
-delete, or add sections to fit the session, current tooling, and batch risk.
+The worker prompts below are mandatory templates. The main agent may fill in session
+paths, labels, ranges, known context, and tool-specific delivery details, but must not
+remove or weaken the worker contract, manual-review requirements, dry-run hard gate,
+submission reread loop, command boundaries, or final reporting requirements.
 
 ## Main Agent Rules
 
@@ -33,8 +35,9 @@ Before spawning a worker, provide:
   style, and uncertainty
 - output format expected by the main agent
 
-Workers may read [SKILL.md](SKILL.md) and [CLI.md](CLI.md#rajio-cli-reference) when they
-need the full workflow, validation rules, or command syntax.
+Workers must follow the provided prompt and read referenced [SKILL.md](SKILL.md) and
+[CLI.md](CLI.md#rajio-cli-reference) sections when the prompt names them, or whenever
+validation rules, QA rules, or command syntax are unclear.
 
 ### Worker Output
 
@@ -44,9 +47,14 @@ need the full workflow, validation rules, or command syntax.
 - Name patch files as `<worker-label>-<time-range>.toml`, for example
   `sakura-0000s-0600s.toml` or `a1b2c3-0600s-1214s.toml`. When reporting a patch path,
   use the absolute path.
-- After writing a patch file, workers should run `rajio segments apply --dry-run`,
-  use the check summary to keep improving the patch as much as practical, and report the
-  final dry-run summary.
+- After writing a patch file, workers must run `rajio segments apply --dry-run`,
+  use the check summary to keep improving the patch, and report the final dry-run
+  summary. A worker patch is not ready while the dry-run still reports any
+  `fatal` or `error` issue in the assigned range. If a remaining `fatal`/`error`
+  cannot be fixed by the worker, the worker must submit a blocker report, not a ready
+  patch. The blocker report must list each remaining issue identifier: segment ID plus
+  issue code for segment issues, or file/global issue code for non-segment issues, with
+  the reason it remains.
 
 ### Worker Manual Review
 
@@ -66,6 +74,9 @@ need the full workflow, validation rules, or command syntax.
   review, not replace reading and judgment.
 - If part of the assigned range was not read segment by segment in context, report that
   range as unreviewed. Do not call the batch polished or complete.
+- Search commands such as `rg` may help locate text, but they do not count as reading the
+  assigned subtitles. A worker who substitutes search hits or QA summaries for full
+  segment-by-segment reading has not met the batch contract.
 
 ### Worker Command Boundaries
 
@@ -117,7 +128,7 @@ Read first:
 - <session>/description.md for context, glossary, fixed phrases, style, and uncertainty
 - assigned time-range segments
 
-Read as needed:
+Read before work:
 - [SKILL.md](SKILL.md#2-proofread-and-polish-japanese) for transcript proofread
   requirements and acceptance criteria
 - [SKILL.md](SKILL.md#subtitle-qa-rules) for subtitle QA thresholds and the rule that
@@ -151,6 +162,22 @@ Work rules:
   transcription as reference material only.
 - Use `rajio segments apply --dry-run` feedback to improve the patch and transcript
   polish, not just to report issues.
+- Keep iterating until the transcript dry-run reports `fatal = 0` and `error = 0` for
+  the assigned range. Reduce warnings where that improves correctness, readability,
+  timing, or subtitle comfort. Do not chase a warning by making the transcript worse, but
+  do not use that rule as permission to leave fixable warnings untouched.
+- Before final output, enter submission preparation:
+  1. Run `rajio segments apply <session> <patch> --stage transcript --dry-run --json`
+     and record the explicit `check.counts.fatal`, `check.counts.error`, and
+     `check.counts.warning` counts.
+  2. Read the assigned range again from start to end as subtitle text. For every segment
+     affected by your patch, including edits, splits, merges, deletes, and merge context,
+     reread the final patched text one by one in timeline order. Do not replace this with
+     `rg`, issue summaries, or examples.
+  3. If this final read finds any missed problem, update the patch and return to step 1.
+  4. Submit a ready patch only when no `fatal` or `error` remains. If any `fatal`/`error`
+     remains, do not call the patch ready or complete; submit a blocker report instead,
+     listing each issue identifier and reason.
 - If you discover a glossary or context issue, report it for the main agent.
 
 Command boundaries:
@@ -173,13 +200,19 @@ Inside the patch file, write `[[operations]]` entries. Use `op = "edit"`,
 
 After writing the patch file, run
 `rajio segments apply <session> <patch> --stage transcript --dry-run`. Use the check
-summary to keep improving the patch as much as practical. When you need issue details,
-rerun with `--verbose --json` and pipe it through `jq` to inspect only the fields you
-need. Repeat this loop until you have handled the practical fixes you can make, then
-report the final dry-run summary.
+summary to keep improving the patch until assigned-range `fatal = 0` and `error = 0`.
+When you need issue details, rerun with `--verbose --json` and pipe it through `jq` to
+inspect only the fields you need. Warnings should go down when doing so improves the
+subtitle; remaining warnings are acceptable only after manual review and only when the
+worker can explain why changing them would hurt or not improve the subtitle.
 
-Also report unresolved doubts, proposed glossary updates, and neighboring-batch
-consistency risks.
+Before submitting, run the submission-preparation loop in Work rules. In the final report,
+include the dry-run counts and explicitly confirm both reviews: the full assigned range
+was reread from start to end as subtitle text, and every segment affected by your patch
+was reread one by one in its final patched form. If any `fatal`/`error` remains, label the
+output as a blocker report, not a ready patch, and list each issue identifier and reason.
+Also report unresolved doubts, proposed glossary updates, remaining warning rationale, and
+neighboring-batch consistency risks.
 ```
 
 ## Translation Worker Prompt
@@ -202,7 +235,7 @@ Read first:
 - <session>/description.md for context, glossary, fixed phrases, style, and uncertainty
 - assigned time-range segments
 
-Read as needed:
+Read before work:
 - [SKILL.md](SKILL.md#3-translate-and-polish-chinese) for translation requirements,
   acceptance criteria, and first-draft expectations
 - [SKILL.md](SKILL.md#subtitle-qa-rules) for subtitle QA thresholds and the rule that
@@ -254,6 +287,22 @@ Work rules:
   Report the doubt and provide the best provisional zh only when useful.
 - Use `rajio segments apply --dry-run` feedback to improve the patch and Chinese subtitle
   polish, not just to report issues.
+- Keep iterating until the translation dry-run reports `fatal = 0` and `error = 0` for
+  the assigned range. Reduce warnings where that improves correctness, readability,
+  timing, or subtitle comfort. Do not chase a warning by making the subtitle worse, but
+  do not use that rule as permission to leave fixable warnings untouched.
+- Before final output, enter submission preparation:
+  1. Run `rajio segments apply <session> <patch> --stage translation --dry-run --json`
+     and record the explicit `check.counts.fatal`, `check.counts.error`, and
+     `check.counts.warning` counts.
+  2. Read the assigned range again from start to end as subtitle text. For every segment
+     you translated or otherwise changed, reread the final subtitle text one by one in
+     timeline order with neighboring context. Do not replace this with `rg`, issue
+     summaries, or examples.
+  3. If this final read finds any missed problem, update the patch and return to step 1.
+  4. Submit a ready patch only when no `fatal` or `error` remains. If any `fatal`/`error`
+     remains, do not call the patch ready or complete; submit a blocker report instead,
+     listing each issue identifier and reason.
 - If you discover a glossary or context issue, report it for the main agent.
 
 Command boundaries:
@@ -272,15 +321,24 @@ Write a patch file under `<session>/patches/translation/`. Name it
 `created_by = "<worker label>"`, `start = <assigned start seconds>`, and
 `end = <assigned end seconds>`.
 
-Inside the patch file, write `[[operations]]` entries. For translation, use
-`op = "edit"` with `segment_id` and `zh`.
+Inside the patch file, write `[[operations]]` entries. For translation, use `op = "edit"`
+with `segment_id` and `zh` by default. If the assigned time range contains an obvious
+Japanese typo, wrong name, or fixed phrase problem, include the corrected `ja` in the same
+edit operation and report the decision. If a segment is semantically empty and should be
+removed, use `op = "delete"` and report why.
 
 After writing the patch file, run
 `rajio segments apply <session> <patch> --stage translation --dry-run`. Use the check
-summary to keep improving the patch as much as practical. When you need issue details,
-rerun with `--verbose --json` and pipe it through `jq` to inspect only the fields you
-need. Repeat this loop until you have handled the practical fixes you can make, then
-report the final dry-run summary.
+summary to keep improving the patch until assigned-range `fatal = 0` and `error = 0`.
+When you need issue details, rerun with `--verbose --json` and pipe it through `jq` to
+inspect only the fields you need. Warnings should go down when doing so improves the
+subtitle; remaining warnings are acceptable only after manual review and only when the
+worker can explain why changing them would hurt or not improve the subtitle.
 
-Also report source doubts, glossary proposals, and neighboring-batch consistency risks.
+In the final report, include the dry-run counts and explicitly confirm both reviews: the
+full assigned range was read from start to end as subtitle text, and every segment you
+translated or otherwise changed was reread one by one in its final subtitle form. If any
+`fatal`/`error` remains, label the output as a blocker report, not a ready patch, and list
+each issue identifier and reason. Also report source doubts, glossary proposals, remaining
+warning rationale, and neighboring-batch consistency risks.
 ```

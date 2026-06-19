@@ -117,7 +117,8 @@ Use rajio tools deliberately:
 - Run sub-agent batches within the active concurrency/thread limit, and close or release
   completed workers before spawning more.
 - Read [SUB_AGENTS.md](SUB_AGENTS.md) before spawning sub-agents. Keep this file focused
-  on workflow rules; use that document for batch-worker instructions and prompt patterns.
+  on workflow rules; use that document for mandatory batch-worker templates and
+  instructions.
 - The main agent owns batch planning, patch application, glossary decisions, consistency
   QA, final full-file Chinese refinement, `description.md`, `rajio check`, commits,
   exports, and final reporting.
@@ -446,8 +447,11 @@ the proofread stage below.
 
 Suggested patch review:
 
-- Review suggested patches in numeric filename order.
-- Treat `confidence = "medium"` patches with extra care and `*-low.*` files as notes.
+- Review suggested patches in numeric filename order before spawning transcript workers.
+- Before spawning transcript workers, either apply, manually fold in, or explicitly reject
+  each suggested patch, including `*-low.*` files.
+- Treat `confidence = "medium"` patches with extra care and `*-low.*` files as manual
+  decision candidates, not automatic cleanup or post-worker TODOs.
 - Patch `reason` and `confidence` fields do not change apply behavior.
 
 Example generated files:
@@ -467,12 +471,13 @@ Proofread flow:
 
 1. Review automatically generated suggested patches under
    `transcript/work/suggested-patches/`, adjust them if needed, dry-run them with
-   `rajio segments apply <session> <patch> --stage transcript --dry-run`, then apply the
-   accepted safe patches.
+   `rajio segments apply <session> <patch> --stage transcript --dry-run`, then apply,
+   manually incorporate, or reject them before assigning worker ranges.
 2. Spawn transcript proofread sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Each
    worker gets a label and assigned source-media `start`/`end` range.
-3. Review each worker patch file and dry-run summary. Apply accepted patches to
-   `transcript/work/segments.toml`.
+3. Review each worker patch file, dry-run summary, and final report confirmations. Apply
+   accepted patches to `transcript/work/segments.toml`. A blocker report is not an
+   accepted patch; resolve it or reassign that range before committing.
 4. Manually perform a whole-transcript review and polish pass for context, terminology,
    fixed phrases, structure, and readability across batch boundaries.
 5. Commit `transcript_work` only after semantic review and validation are clean, or only
@@ -567,8 +572,10 @@ Initial translation flow:
    the active sub-agent concurrency limit.
 2. Spawn translation sub-agents following [SUB_AGENTS.md](SUB_AGENTS.md). Each worker gets
    a label and assigned source-media `start`/`end` range.
-3. Review each worker patch file and dry-run summary. Apply accepted patches to
-   `translation/work/segments.toml` so every segment has filled or refined `zh`.
+3. Review each worker patch file, dry-run summary, and final report confirmations. Apply
+   accepted patches to `translation/work/segments.toml` so every segment has filled or
+   refined `zh`. A blocker report is not an accepted patch or a completed batch; resolve
+   it or reassign that range before committing.
 4. Manually perform a whole-file first-draft review for terminology, subtitle continuity,
    missing translations, Japanese corrections made during translation, and cross-batch
    style consistency.
@@ -698,7 +705,7 @@ Expected draft output:
 
 ### 4. Refine Chinese Subtitles
 
-After the first draft export, the main agent must perform at least two full-pass Chinese
+After the first draft export, the main agent must perform at least three full-pass Chinese
 subtitle refinement passes over `translation/work/segments.toml`, and should keep
 iterating while meaningful improvements remain. This is not a
 substitute for the sub-agent batch translation stage: do not use these passes to fill
@@ -710,18 +717,43 @@ readability, or subtitle continuity. Do not break the Subtitle QA Rules, timelin
 integrity, required fields, segment IDs, or transcript alignment. If refinement changes
 the work file after export, recommit `translation_work` and regenerate export output.
 
+Required refinement pass loop:
+
+For each Chinese refinement pass, follow these steps exactly:
+
+1. Read `translation/work/segments.toml` from start to end in timeline order as actual
+   `ja`/`zh` subtitle text, using `rajio segments list` windows or ranges with neighboring
+   context until the full file is covered. This full read is mandatory; do not replace it
+   with `rg`, `rajio check`, issue summaries, issue lists, issue IDs, examples, filters,
+   or statistics.
+2. Edit the Chinese subtitles for style, flow, tone, concision, consistency, and viewing
+   comfort. Update matching `ja`, glossary, or `description.md` entries only when the
+   Chinese review exposes a confirmed source or term problem.
+3. Run the translation checks for `zh` and `ja` only as regression checks. Final
+   refinement starts from a committed draft that should already have no blocking
+   `fatal` or `error` issues; if this pass introduces any new `fatal` or `error`, fix it
+   immediately. Warnings may guide inspection, but this pass is not mechanical warning
+   cleanup.
+4. Reread every segment changed in this pass one by one in its final subtitle form, with
+   neighboring context for boundary flow.
+5. If the reread finds a style, meaning, flow, or consistency problem, fix it. If checks
+   show a new `fatal` or `error`, fix it immediately. Then repeat steps 3-4.
+6. Count the pass complete only after the full-file read, editorial pass, regression
+   checks, and changed-segment reread are all done.
+
 Refinement requirements:
 
-- Treat refinement as an active, multi-round editorial process. After each pass, inspect
-  remaining rough spots, recurring wording problems, and consistency risks, then run
-  another pass when meaningful improvements are still available.
-- Perform at least two full-file Chinese refinement passes before final verification. A
+- Perform at least three full-file Chinese refinement passes before final verification. A
   pass must make a deliberate full-file check for text quality, not only run `rajio check`.
 - Each refinement pass must satisfy the manual review definition in
   [Non-Negotiable Rules](#non-negotiable-rules): read the actual `ja`/`zh` segment text in
   timeline order with neighboring context, using `rajio segments list` windows or ranges
   to cover the full file. Warning lists, statistics, scripted transformations, and
   validation output may guide where to look, but they do not count as a refinement pass.
+- Do not substitute `rg` searches, `rajio check` summaries, `rajio check --verbose` issue
+  lists, issue IDs, examples, or filtered issue views for full-file reading. They are only
+  navigation aids; the pass counts only when the subtitle text itself was read and edited
+  in order.
 - Read the Chinese subtitles continuously across adjacent segments, not only segment by
   segment. Repair places where the text reads like isolated translated fragments.
 - Enforce global term consistency for names, programs, corners, events, works, products,
@@ -788,7 +820,7 @@ Before reporting completion:
 2. Treat the result as data validation only.
 3. Confirm `session.toml` is not stuck in `failed`, `dirty`, or an unexpected manual stage.
 4. Confirm expected output files exist under `output/`.
-5. Confirm at least two full-file Chinese refinement passes were performed after the
+5. Confirm at least three full-file Chinese refinement passes were performed after the
    sub-agent translation draft. If refinement changed `translation/work/segments.toml`,
    recommit and regenerate exports before reporting completion.
 6. Perform manual content QA:
