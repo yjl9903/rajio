@@ -1080,7 +1080,9 @@ describe('segments validation and subtitle rendering', () => {
     });
     expect(emptyLogger.info).toHaveBeenCalledTimes(2);
     expect(emptyLogger.info).toHaveBeenCalledWith('check scope: translation_work zh QA.');
-    expect(emptyLogger.info).toHaveBeenCalledWith('hint: Use --language ja to inspect Japanese QA.');
+    expect(emptyLogger.info).toHaveBeenCalledWith(
+      'hint: Use --language ja to inspect Japanese QA.'
+    );
   });
 
   it('checks a single segments file with inferred stage and segment context', async () => {

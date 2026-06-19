@@ -758,9 +758,7 @@ function compareIssues(a: CheckIssue, b: CheckIssue): number {
 
 function compareSummaries(a: CheckIssueSummary, b: CheckIssueSummary): number {
   return (
-    compareLevel(a.level, b.level) ||
-    a.file.localeCompare(b.file) ||
-    a.code.localeCompare(b.code)
+    compareLevel(a.level, b.level) || a.file.localeCompare(b.file) || a.code.localeCompare(b.code)
   );
 }
 

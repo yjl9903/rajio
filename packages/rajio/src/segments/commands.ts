@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { TextDecoder } from 'node:util';
 
 import type { UnknownOptionMiddleware, breadc } from 'breadc';
 
@@ -38,6 +39,7 @@ import {
 
 type RajioApp = ReturnType<typeof breadc>;
 const segmentIssuesHelp = SEGMENT_ISSUE_FILTERS.join(',');
+const disallowedPatchControlCharacter = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/u;
 const rejectUnknownOption: UnknownOptionMiddleware = (_context, key) => {
   throw new Error(`Unknown option: --${key}`);
 };
@@ -658,16 +660,33 @@ function rejectUnexpectedArguments(options: { '--'?: string[] }): void {
 
 async function readPatchInput(file: string | undefined): Promise<string> {
   if (file) {
-    return readFile(file, 'utf8');
+    return decodePatchInput(await readFile(file), `patch file ${file}`);
   }
-  return readStdin();
+  return decodePatchInput(await readStdinBytes(), 'patch stdin input');
 }
 
-async function readStdin(): Promise<string> {
-  process.stdin.setEncoding('utf8');
-  let input = '';
-  for await (const chunk of process.stdin) {
-    input += chunk;
+function decodePatchInput(input: Uint8Array, source: string): string {
+  let text: string;
+  try {
+    text = new TextDecoder('utf-8', { fatal: true }).decode(input);
+  } catch {
+    throw new Error(`${source} must be valid UTF-8.`);
   }
-  return input;
+  if (text.includes('\uFFFD')) {
+    throw new Error(`${source} contains suspicious replacement character U+FFFD.`);
+  }
+  const match = text.match(disallowedPatchControlCharacter);
+  if (match) {
+    const code = match[0]!.codePointAt(0)!.toString(16).toUpperCase().padStart(4, '0');
+    throw new Error(`${source} contains disallowed control character U+${code}.`);
+  }
+  return text;
+}
+
+async function readStdinBytes(): Promise<Buffer> {
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of process.stdin) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
 }

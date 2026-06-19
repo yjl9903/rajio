@@ -488,6 +488,108 @@ describe('cli explicit targets', () => {
     );
   });
 
+  it('rejects segment patch files that are not valid UTF-8', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(patchPath, Buffer.from([0xff]));
+
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'apply',
+        dir,
+        patchPath,
+        '--stage',
+        'translation',
+        '--dry-run'
+      ])
+    ).rejects.toThrow('must be valid UTF-8');
+  });
+
+  it('rejects segment patch stdin that is not valid UTF-8', async () => {
+    const dir = await preparedTranslationSession();
+    const restoreStdin = replaceStdin(Readable.from([Buffer.from([0xff])]));
+
+    try {
+      await expect(
+        createCommandApp().run(['segments', 'apply', dir, '--stage', 'translation', '--dry-run'])
+      ).rejects.toThrow('patch stdin input must be valid UTF-8');
+    } finally {
+      restoreStdin();
+    }
+  });
+
+  it('rejects suspicious replacement characters in segment patches', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'zh = "�"'].join('\n')
+    );
+
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'apply',
+        dir,
+        patchPath,
+        '--stage',
+        'translation',
+        '--dry-run'
+      ])
+    ).rejects.toThrow('suspicious replacement character U+FFFD');
+  });
+
+  it('rejects disallowed control characters in segment patches', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'zh = "bad\u0000text"'].join('\n')
+    );
+
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'apply',
+        dir,
+        patchPath,
+        '--stage',
+        'translation',
+        '--dry-run'
+      ])
+    ).rejects.toThrow('disallowed control character U+0000');
+  });
+
+  it('accepts valid UTF-8 segment patches with CJK text and regular newlines', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', 'zh = "您好"'].join('\r\n')
+    );
+    const stdout = mockStdout();
+
+    await createCommandApp().run([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--dry-run',
+      '--json'
+    ]);
+
+    expect(JSON.parse(stdout.text())).toMatchObject({
+      apply: {
+        dry_run: true,
+        stats: { edits: 1, splits: 0, merges: 0, deletes: 0, total: 1 }
+      },
+      check: { ok: true }
+    });
+  });
+
   it('keeps warning counts in check JSON when level filters warning summaries', async () => {
     const dir = await preparedTranslationSession();
     const segmentsPath = path.join(dir, 'translation/work/segments.toml');
@@ -533,9 +635,7 @@ describe('cli explicit targets', () => {
     expect(output).not.toContain('Use --verbose for details.');
     expect(output).not.toContain('hard limit is');
 
-    expect(output.indexOf('zh_line_hard_limit')).toBeLessThan(
-      output.indexOf('subtitle_gap_short')
-    );
+    expect(output.indexOf('zh_line_hard_limit')).toBeLessThan(output.indexOf('subtitle_gap_short'));
     expect(output.match(/hint:/g)).toHaveLength(1);
   });
 
