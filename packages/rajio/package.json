@@ -18,7 +18,7 @@
     "url": "git+https://github.com/yjl9903/rajio.git"
   },
   "license": "AGPL-3.0",
-  "author": "XLor",
+  "author": "OneKuma",
   "sideEffects": false,
   "type": "module",
   "exports": {

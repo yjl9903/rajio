@@ -1,6 +1,9 @@
 ---
 name: rajio
 description: Use only when explicitly asked to use rajio for Japanese audio/video subtitle translation.
+metadata:
+  author: OneKuma
+  version: "0.1.0"
 ---
 
 # Rajio
@@ -408,15 +411,15 @@ published_at: 2026-06-06
 - Preserve important names and terminology consistently.
 ```
 
+### 1. Run To Transcript Work
+
 Before automatic stages, run:
 
 ```bash
 rajio doctor /path/to/session
 ```
 
-`rajio doctor` validates runtime configuration and provider access using the target directory for `.env` loading. Do not start transcription until `rajio doctor` passes or the environment issue is resolved.
-
-### 1. Run To Transcript Work
+`rajio doctor` reports the rajio CLI version and update-check result first. Confirm the CLI version matches this SKILL frontmatter `metadata.version`; if they differ, or doctor reports a newer version is available or update checking failed, report that before starting automatic stages. It also validates runtime configuration and provider access using the target directory for `.env` loading. Do not start transcription until `rajio doctor` passes or the environment issue is resolved.
 
 Run:
 

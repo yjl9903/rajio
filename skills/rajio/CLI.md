@@ -722,13 +722,16 @@ Exit behavior:
 rajio doctor /path/to/session
 ```
 
-`rajio doctor` checks session runtime readiness: `.env` loading, API key presence,
-OpenAI-compatible provider reachability, ffmpeg, ffprobe, Codex availability where
-relevant, and Node.js version expectations. The target is required. If any check fails,
-process exit code is `1`.
+`rajio doctor` reports the rajio CLI version and update status, then checks session
+runtime readiness: `.env` loading, API key presence, OpenAI-compatible provider
+reachability, ffmpeg, ffprobe, Codex availability where relevant, and Node.js
+version expectations. The target is required. If any check fails, process exit code
+is `1`.
 
 Run `doctor` before automatic transcription/export stages or when provider, ffmpeg, or
-environment setup looks misconfigured.
+environment setup looks misconfigured. Also compare the reported CLI version with
+the current [SKILL.md](SKILL.md) frontmatter `metadata.version` before automatic
+stages.
 
 ## Clean
 
