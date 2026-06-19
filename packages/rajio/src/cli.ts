@@ -167,7 +167,8 @@ app
       sessionDir: session.dir,
       scope,
       range,
-      countIssues
+      countIssues,
+      target
     });
     if (issues.some((issue) => issue.level === 'fatal' || issue.level === 'error')) {
       process.exitCode = 1;

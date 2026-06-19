@@ -134,7 +134,7 @@ export function printCheckIssues(
     sessionDir?: string;
     countIssues?: CheckIssue[];
     writer?: { isTTY?: boolean; write(chunk: string): unknown };
-    printDetailHint?: boolean;
+    target?: string;
   }
 ): void {
   if (options.json) {
@@ -154,10 +154,18 @@ export function printCheckIssues(
   }
 
   const logger = options.logger ?? taggedLogger('check');
-  if (options.scope && (issues.length > 0 || options.printScopeWhenEmpty !== false)) {
+  const shouldPrintScope = Boolean(
+    options.scope && (issues.length > 0 || options.printScopeWhenEmpty !== false)
+  );
+  if (shouldPrintScope && options.scope) {
     logger.info(
       formatCheckScopeMessage(options.scope, options.scopeLabel ?? 'check', options.range)
     );
+  }
+  const summaries = summarizeCheckIssues(issues);
+  const hint = formatCheckHint(summaries, options.scope, options.target);
+  if (hint && (summaries.length > 0 || shouldPrintScope)) {
+    logger.info(`hint: ${hint}`);
   }
   if (options.verbose) {
     for (const issue of sortCheckIssues(issues)) {
@@ -166,8 +174,8 @@ export function printCheckIssues(
     return;
   }
 
-  for (const summary of summarizeCheckIssues(issues)) {
-    const message = formatCheckSummary(summary, options.printDetailHint !== false);
+  for (const summary of summaries) {
+    const message = formatCheckSummary(summary);
     if (isBlockingLevel(summary.level)) {
       logger.error(message);
     } else {
@@ -596,12 +604,10 @@ function printCheckIssue(issue: CheckIssue, logger: ConsolaInstance): void {
 
 interface CheckIssueSummary {
   file: string;
-  stage?: StageName;
   level: IssueLevel;
   code: string;
   count: number;
-  message: string;
-  examples: CheckIssue[];
+  hasSegmentIssue: boolean;
 }
 
 interface CheckIssueJsonSummary {
@@ -617,20 +623,16 @@ function summarizeCheckIssues(issues: CheckIssue[]): CheckIssueSummary[] {
   const groups = new Map<string, CheckIssueSummary>();
   for (const issue of sortCheckIssues(issues)) {
     const code = issue.code ?? 'uncategorized';
-    const key = `${issue.level}\0${code}\0${issue.file}\0${issue.stage ?? ''}`;
+    const key = `${issue.level}\0${code}\0${issue.file}`;
     const summary = groups.get(key) ?? {
       file: issue.file,
-      stage: issue.stage,
       level: issue.level,
       code,
       count: 0,
-      message: issue.message,
-      examples: []
+      hasSegmentIssue: false
     };
     summary.count += 1;
-    if (summary.examples.length < 5) {
-      summary.examples.push(issue);
-    }
+    summary.hasSegmentIssue ||= Boolean(issue.segmentId || issue.segment);
     groups.set(key, summary);
   }
   return Array.from(groups.values()).sort(compareSummaries);
@@ -664,16 +666,37 @@ function summarizeCheckIssuesForJson(
   return Array.from(groups.values()).sort(compareJsonSummaries);
 }
 
-function formatCheckSummary(summary: CheckIssueSummary, printDetailHint = true): string {
+function formatCheckSummary(summary: CheckIssueSummary): string {
   const label = summary.count === 1 ? 'issue' : 'issues';
-  const stage = summary.stage ? ` [${summary.stage}]` : '';
-  const examples = summary.examples
-    .map((issue) => formatIssueExample(issue))
-    .filter(Boolean)
-    .join('; ');
-  const examplesText = examples ? ` Examples: ${examples}.` : '';
-  const hintText = printDetailHint ? ' Use --verbose for details.' : '';
-  return `${summary.file}${stage}: ${summary.count} ${summary.level} ${label} (${summary.code}). ${summary.message}${examplesText}${hintText}`;
+  return `${summary.file}: ${summary.count} ${summary.level} ${label} (${summary.code}).`;
+}
+
+function formatCheckHint(
+  summaries: CheckIssueSummary[],
+  scope: CheckScope | undefined,
+  target: string | undefined
+): string | undefined {
+  const hints: string[] = [];
+  const stage = scope?.stage ? checkScopeSegmentStage(scope.stage) : undefined;
+  if (target && stage && summaries.some((summary) => summary.hasSegmentIssue)) {
+    hints.push(
+      `Inspect an issue type with rajio segments list ${target} --stage ${stage} --issues <code>.`
+    );
+  }
+  if (scope?.hint) {
+    hints.push(scope.hint);
+  }
+  return hints.length > 0 ? hints.join(' ') : undefined;
+}
+
+function checkScopeSegmentStage(stage: StageName): 'transcript' | 'translation' | undefined {
+  if (stage === 'transcript_work') {
+    return 'transcript';
+  }
+  if (stage === 'translation_work') {
+    return 'translation';
+  }
+  return undefined;
 }
 
 function formatIssueExample(issue: CheckIssue): string {
@@ -737,7 +760,6 @@ function compareSummaries(a: CheckIssueSummary, b: CheckIssueSummary): number {
   return (
     compareLevel(a.level, b.level) ||
     a.file.localeCompare(b.file) ||
-    (a.stage ?? '').localeCompare(b.stage ?? '') ||
     a.code.localeCompare(b.code)
   );
 }
@@ -798,8 +820,7 @@ function formatCheckScopeMessage(
   const rangeText = range
     ? `, range ${formatSeconds(range.start)}-${formatSeconds(range.end)}`
     : '';
-  const hintText = scope.hint ? ` ${scope.hint}` : '';
-  return `${label} scope: ${scope.description}${levelText}${rangeText}.${hintText}`;
+  return `${label} scope: ${scope.description}${levelText}${rangeText}.`;
 }
 
 function formatCheckScopeDescription(target: CheckQaTarget): string {

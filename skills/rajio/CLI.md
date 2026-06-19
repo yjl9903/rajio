@@ -646,8 +646,9 @@ Filters:
 
 Output:
 
-- Default human output groups repeated issues by severity, code, file, and stage, with
-  up to five examples per group.
+- Default human output groups repeated issues by severity, code, and file. Summary lines are
+  compact issue indexes; use the hint's `segments list --issues <code>` command for matching
+  segment rows.
 - `--verbose` prints every issue.
 - `--json` prints compact summary JSON with `counts.fatal`, `counts.error`, and
   `counts.warning`. Pipe it to `jq` when you need to extract fields or slice down the
@@ -693,7 +694,8 @@ Compact JSON shape:
     "level": "warning",
     "stage": "translation_work",
     "languages": ["zh"],
-    "description": "translation_work zh QA"
+    "description": "translation_work zh QA",
+    "hint": "Use --language ja to inspect Japanese QA."
   },
   "range": { "start": 120, "end": 180 },
   "counts": { "fatal": 0, "error": 1, "warning": 2 },

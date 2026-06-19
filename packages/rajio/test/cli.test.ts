@@ -423,6 +423,29 @@ describe('cli explicit targets', () => {
     );
   });
 
+  it('does not print persisted segment-list hints for dry-run apply checks', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', `zh = "${'一'.repeat(25)}"`].join('\n')
+    );
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--dry-run'
+    ]);
+
+    expect(stdout.text()).toContain('zh_line_hard_limit');
+    expect(stdout.text()).not.toContain('segments list');
+  });
+
   it('does not fail segments apply when post-apply check reports blocking issues', async () => {
     vi.useRealTimers();
     const dir = await preparedTranslationSession();
@@ -467,6 +490,38 @@ describe('cli explicit targets', () => {
     expect(result.exitCode).toBe(1);
     expect(output.counts.warning).toBeGreaterThan(0);
     expect(output.summary.some((summary) => summary.level === 'warning')).toBe(false);
+  });
+
+  it('prints compact non-verbose check summaries with a single hint line', async () => {
+    vi.useRealTimers();
+    logger.level = Number.POSITIVE_INFINITY;
+    const dir = await preparedTranslationSession();
+    const segmentsPath = path.join(dir, 'translation/work/segments.toml');
+    const file = sampleTranslation();
+    file.segments[0]!.zh = '一'.repeat(25);
+    file.segments[1]!.start = 1.3;
+    file.segments[1]!.end = 2.5;
+    await writeSegmentsFile(segmentsPath, file, { validate: false });
+
+    const result = await runCliSideEffect(['check', dir]);
+    const output = `${result.stdout}\n${result.stderr}`;
+
+    expect(result.exitCode).toBe(1);
+    expect(output).toContain('check scope: translation_work zh QA.');
+    expect(output).toContain(
+      `hint: Inspect an issue type with rajio segments list ${dir} --stage translation --issues <code>. Use --language ja to inspect Japanese QA.`
+    );
+    expect(output).toContain(`${segmentsPath}: 1 error issue (zh_line_hard_limit).`);
+    expect(output).toContain(`${segmentsPath}: 1 warning issue (subtitle_gap_short).`);
+    expect(output).not.toContain('[translation_work]');
+    expect(output).not.toContain('Examples:');
+    expect(output).not.toContain('Use --verbose for details.');
+    expect(output).not.toContain('hard limit is');
+
+    expect(output.indexOf('zh_line_hard_limit')).toBeLessThan(
+      output.indexOf('subtitle_gap_short')
+    );
+    expect(output.match(/hint:/g)).toHaveLength(1);
   });
 
   it('reads a patch from stdin when no patch path is provided', async () => {

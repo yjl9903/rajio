@@ -17,10 +17,13 @@ existing ability to inspect them through `rajio check --stage translation --lang
   `check passed.`
 - `rajio check --json` includes a top-level `scope` object. `counts` reports issues after
   scope/range filtering but before `--level`; `summary` and verbose `issues` honor `--level`.
-- `rajio <target> --commit` prints summary issue format for the commit scope. Use
-  `rajio check --verbose` when full issue details are needed.
+- `rajio <target> --commit` prints the same compact summary issue format for the commit scope.
+  Segment-level issue hints point to `rajio segments list <target> --stage <stage> --issues <code>`.
+- Commit failure errors use the same `segments list --issues` direction for blocking issue details.
 - Commit remains quiet when no issues are printed and does not emit `check passed.`
-- Commit scope hints point users to `rajio check`; commit does not gain a `--language` option.
+- Translation commit scope hints still point users to `rajio check <target> --stage translation
+  --language ja` for the separate inherited Japanese QA view; commit does not gain a `--language`
+  option.
 
 ## Non-Goals
 

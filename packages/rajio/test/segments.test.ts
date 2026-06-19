@@ -851,7 +851,7 @@ describe('segments validation and subtitle rendering', () => {
     expect(summarizedLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining('2 warning issues (ja_line_soft_limit)')
     );
-    expect(summarizedLogger.warn).toHaveBeenCalledWith(
+    expect(summarizedLogger.warn).not.toHaveBeenCalledWith(
       expect.stringContaining('id=1 time=0s-4s duration=4s chars=ja:21 adjacent=-|2')
     );
     expect(verboseLogger.warn).toHaveBeenCalledTimes(2);
@@ -1056,11 +1056,17 @@ describe('segments validation and subtitle rendering', () => {
 
     printCheckIssues(issues, { verbose: false, logger: logger as never, scope });
 
-    expect(logger.info).toHaveBeenCalledWith(
-      'check scope: translation_work zh QA. Use --language ja to inspect Japanese QA.'
-    );
+    expect(logger.info).toHaveBeenCalledWith('check scope: translation_work zh QA.');
+    expect(logger.info).toHaveBeenCalledWith('hint: Use --language ja to inspect Japanese QA.');
     expect(logger.error).toHaveBeenCalledWith(
       expect.stringContaining('1 error issue (zh_terminal_punctuation)')
+    );
+
+    const verboseLogger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
+    printCheckIssues(issues, { verbose: true, logger: verboseLogger as never, scope });
+    expect(verboseLogger.info).toHaveBeenCalledWith('check scope: translation_work zh QA.');
+    expect(verboseLogger.info).toHaveBeenCalledWith(
+      'hint: Use --language ja to inspect Japanese QA.'
     );
 
     const emptyLogger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
@@ -1072,10 +1078,9 @@ describe('segments validation and subtitle rendering', () => {
       scopeLabel: 'commit',
       printScopeWhenEmpty: false
     });
-    expect(emptyLogger.info).toHaveBeenCalledTimes(1);
-    expect(emptyLogger.info).toHaveBeenCalledWith(
-      'check scope: translation_work zh QA. Use --language ja to inspect Japanese QA.'
-    );
+    expect(emptyLogger.info).toHaveBeenCalledTimes(2);
+    expect(emptyLogger.info).toHaveBeenCalledWith('check scope: translation_work zh QA.');
+    expect(emptyLogger.info).toHaveBeenCalledWith('hint: Use --language ja to inspect Japanese QA.');
   });
 
   it('checks a single segments file with inferred stage and segment context', async () => {

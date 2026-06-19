@@ -101,12 +101,14 @@ export async function commitManualStage(input: {
     scope,
     scopeLabel: 'commit',
     printScopeWhenEmpty: false,
-    printDetailHint: false
+    target: session.dir
   });
   if (errors.length > 0) {
     const file = toSessionRelative(session.dir, segmentsPath);
     throw new Error(
-      `${formatValidationErrorSummary(errors, `${stage} ${file}`)} Run rajio check <session> --stage ${stage} --level error --verbose for details.`
+      `${formatValidationErrorSummary(errors, `${stage} ${file}`)} Run rajio segments list ${
+        session.dir
+      } --stage ${segmentListStage(stage)} --issues ${issueCodes(errors)} for details.`
     );
   }
 
@@ -146,4 +148,12 @@ export async function runAgentAndCommit(input: {
     await session.save();
     throw error;
   }
+}
+
+function segmentListStage(stage: ManualStageName): 'transcript' | 'translation' {
+  return stage === 'transcript_work' ? 'transcript' : 'translation';
+}
+
+function issueCodes(errors: { code: string }[]): string {
+  return Array.from(new Set(errors.map((error) => error.code))).join(',');
 }

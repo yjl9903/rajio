@@ -72,11 +72,12 @@ Options:
 When workflow execution stops before completion, the CLI prints the current stage and the next
 command or manual edit action. Completed export prints `session complete.` instead of a next step.
 
-`rajio check` defaults to concise human output and summarizes repeated issues by file,
-stage, severity, and code. Human and JSON output include the active check scope so agents
-do not mistake the default filtered view for a full-session QA pass. Use
-`rajio check <target> --verbose` to print every issue. Use `rajio check <target> --json`
-for compact summary JSON; full issue details are emitted only with
+`rajio check` defaults to concise human output and summarizes repeated issues by file, severity,
+and code. Human and JSON output include the active check scope so agents do not mistake the default
+filtered view for a full-session QA pass. Human output prints a single hint line when another view
+is useful, such as `rajio segments list <target> --stage <stage> --issues <code>` for segment-level
+issue rows. Use `rajio check <target> --verbose` to print every issue. Use
+`rajio check <target> --json` for compact summary JSON; full issue details are emitted only with
 `rajio check <target> --verbose --json`.
 
 Check filtering:
