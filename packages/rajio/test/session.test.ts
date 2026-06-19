@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Session } from '../src/index.js';
 import { checkRajio } from '../src/session/check.js';
+import { readDescription } from '../src/session/description.js';
 import { preparedSession, tempDir } from './helpers.js';
 
 describe('session target resolution', () => {
@@ -180,5 +181,78 @@ describe('session target resolution', () => {
       })
     ]);
     await expect(readFile(path.join(dir, 'session.toml'), 'utf8')).rejects.toThrow();
+  });
+});
+
+describe('description markdown parsing', () => {
+  it('reads markdown without frontmatter as body', async () => {
+    const dir = await tempDir();
+    const filePath = path.join(dir, 'description.md');
+    await writeFile(filePath, 'plain context');
+
+    await expect(readDescription(filePath)).resolves.toEqual({
+      path: filePath,
+      body: 'plain context',
+      frontmatter: {}
+    });
+  });
+
+  it('supports empty frontmatter', async () => {
+    const dir = await tempDir();
+    const filePath = path.join(dir, 'description.md');
+    await writeFile(filePath, ['---', '---', 'context'].join('\n'));
+
+    const description = await readDescription(filePath);
+
+    expect(description.frontmatter).toEqual({});
+    expect(description.body).toBe('context');
+  });
+
+  it('only uses the opening frontmatter block', async () => {
+    const dir = await tempDir();
+    const filePath = path.join(dir, 'description.md');
+    await writeFile(filePath, ['---', 'title: Example', '---', 'body', '---', 'more'].join('\n'));
+
+    const description = await readDescription(filePath);
+
+    expect(description.frontmatter.title).toBe('Example');
+    expect(description.body).toBe(['body', '---', 'more'].join('\n'));
+  });
+
+  it('normalizes frontmatter values used by sessions', async () => {
+    const dir = await tempDir();
+    const filePath = path.join(dir, 'description.md');
+    await writeFile(
+      filePath,
+      ['---', 'title: 123', 'media: false', 'published_at: 2024-01-02', 'url: [bad]', '---'].join(
+        '\n'
+      )
+    );
+
+    const description = await readDescription(filePath);
+
+    expect(description.frontmatter).toEqual({
+      title: '123',
+      media: 'false',
+      published_at: '2024-01-02'
+    });
+  });
+
+  it('rejects unfinished frontmatter blocks', async () => {
+    const dir = await tempDir();
+    const filePath = path.join(dir, 'description.md');
+    await writeFile(filePath, ['---', 'title: Example'].join('\n'));
+
+    await expect(readDescription(filePath)).rejects.toThrow(
+      `Missing closing frontmatter delimiter in ${filePath}`
+    );
+  });
+
+  it('rejects invalid frontmatter YAML', async () => {
+    const dir = await tempDir();
+    const filePath = path.join(dir, 'description.md');
+    await writeFile(filePath, ['---', 'title: [', '---'].join('\n'));
+
+    await expect(readDescription(filePath)).rejects.toThrow(`Invalid frontmatter in ${filePath}`);
   });
 });

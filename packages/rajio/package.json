@@ -52,9 +52,9 @@
     "consola": "3.4.2",
     "dotenv": "17.4.2",
     "execa": "9.6.1",
-    "gray-matter": "4.0.3",
     "openai": "6.44.0",
     "smol-toml": "1.6.1",
+    "yaml": "2.9.0",
     "zod": "4.4.3"
   },
   "engines": {

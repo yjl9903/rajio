@@ -430,7 +430,7 @@ translation completeness rules are deferred to editable work files.
 - Generic helpers live under `src/utils/`, currently filesystem/path helpers and
   environment-derived runtime configuration.
 - Dependencies:
-  - `gray-matter`: parse markdown frontmatter.
+  - `yaml`: parse description markdown frontmatter.
   - `smol-toml`: read and write `session.toml`.
   - `zod`: validate session and segments schemas.
 - Codex agent invocation:
