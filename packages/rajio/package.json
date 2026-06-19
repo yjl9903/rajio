@@ -42,7 +42,6 @@
   "scripts": {
     "build": "tsdown",
     "prepack": "rm -rf skills && mkdir -p skills && cp -R ../../skills/rajio skills/",
-    "postpack": "rm -rf skills",
     "test": "vitest",
     "test:ci": "vitest --run",
     "typecheck": "tsc --noEmit"
