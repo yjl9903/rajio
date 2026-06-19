@@ -31,7 +31,7 @@ applies them automatically.
     restore punctuation that 01 removes.
 - `02-fragment-merge`
   - `high`: same-speaker short fragment merge.
-  - `medium`: speaker-flicker merge for short, rapidly alternating diarization fragments.
+  - `low`: speaker-flicker merge for short, rapidly alternating diarization fragments.
   - Emits ordered `merge` operations with `reason` and `confidence`.
 - `03-boundary-retime`
   - `high`: edit adjacent boundaries with gap in `[-0.12, 0.25)`; prefer a 250ms gap, or fall

@@ -261,7 +261,7 @@ function findSpeakerFlickerMergeCandidate(
       return false;
     }
     return {
-      confidence: 'medium',
+      confidence: 'low',
       reason:
         'Short adjacent fragments have rapidly changing speakers and look like diarization flicker.'
     };

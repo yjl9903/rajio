@@ -354,9 +354,9 @@ describe('session workflow', () => {
       suggestedPatchDir,
       '02-fragment-merge-chunk-000-000000s-000020s-high.toml'
     );
-    const fragmentMediumPath = path.join(
+    const fragmentLowPath = path.join(
       suggestedPatchDir,
-      '02-fragment-merge-chunk-000-000000s-000020s-medium.toml'
+      '02-fragment-merge-chunk-000-000000s-000020s-low.toml'
     );
     const retimeHighPath = path.join(
       suggestedPatchDir,
@@ -395,12 +395,12 @@ describe('session workflow', () => {
         source_ids: ['same-1', 'same-2']
       })
     );
-    const fragmentMedium = await readFile(fragmentMediumPath, 'utf8');
-    expect(fragmentMedium).toContain('confidence = "medium"');
-    expect(parseSegmentPatch(fragmentMedium).operations[0]).toEqual(
+    const fragmentLow = await readFile(fragmentLowPath, 'utf8');
+    expect(fragmentLow).toContain('confidence = "low"');
+    expect(parseSegmentPatch(fragmentLow).operations[0]).toEqual(
       expect.objectContaining({
         op: 'merge',
-        confidence: 'medium',
+        confidence: 'low',
         source_ids: ['flicker-1', 'flicker-2', 'flicker-3']
       })
     );
