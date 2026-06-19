@@ -26,7 +26,7 @@ cover: "./cover-1280x720.jpg"
 - 夏さく咲く -> 夏樱绽放
 - 第49回 -> 第49回
 - 前橋ウィッチーズ -> 前桥魔女
-- 赤城ユイナ -> 赤城唯奈
+- 赤城ユイナ -> 赤城结奈
 - ドリーミードリーミーフラワー -> Dreamy Dreamy Flower
 - STRAIGHT! REACH!! CHEER!!! -> STRAIGHT! REACH!! CHEER!!!
 - なちゅ -> 乾夏宁昵称；只有在指昵称本身时保留为「なちゅ」。
@@ -34,7 +34,7 @@ cover: "./cover-1280x720.jpg"
 - 魯山人 -> 鲁山人
 - ハッシュタグ夏さく咲く -> 话题标签「夏樱绽放」
 - ゴー☆レボ / ごーれぼ -> Go☆Revo
-- ゴー☆ジャス -> Go☆Jus / ゴー☆ジャス；confirm if mentioned.
+- ゴー☆ジャス / ゴーさん -> ゴー☆ジャス
 - 新宿村LIVE -> 新宿村 LIVE
 - 夏さくプレゼンツ 乾夏寧バースデーイベント2026 -> 夏樱绽放 presents 乾夏宁 Birthday Event 2026
 - 塚田悠衣 -> 塚田悠衣
@@ -73,13 +73,58 @@ cover: "./cover-1280x720.jpg"
 - 花コモ -> 花コモ
 - もこさん / もこちゃん -> もこ
 - 格の違いを見せつけたい -> 「展示格的差距」
-- さくら前線と夏が来る -> 「樱花前线与夏天到来」
-- さくら先生となちゅに聞きました -> 「问了樱花老师与なちゅ」
 - 何の料理か当てましょう！ 即興替え歌クイズチャレンジ -> 「猜猜是什么料理！即兴改词猜谜挑战」
-- てぇてぇちゃんさくら -> 「尊尊酱樱」
-- 悟り転校生なつね -> 「悟道转校生夏宁」
 - 公開ゲネプロ -> 公开彩排
 - 常翔ホール -> 常翔 Hall
+- さくぽん -> 春日さくら昵称；中文按语境用「さくぽん」或春日樱。
+- 真中りお -> 真中りお
+- ひかち -> 月城日花昵称；中文按语境用「ひかち」或月城日花。
+- どんぐりころころ -> 「どんぐりころころ」
+- ジングルベル -> 「铃儿响叮当」
+- 夏の思い出 -> 「夏の思い出」
+- のりの佃煮 -> 海苔佃煮
+- 壁ドン -> 壁咚
+- りょう -> listener name; preserve original form.
+- 隔週配信 -> 隔周更新
+- チャーシュー -> 叉烧
+- プラシーボ -> 安慰剂效应
+- モバイルバッテリー -> 移动电源
+- マイクエコー -> 麦克风回声
+- カラオケのリクエスト -> 卡拉 OK 点歌
+- アフタートーク -> After Talk
+- セトロニン -> 血清宁；保留主持人口误/玩笑时使用。
+- セラトニン -> 血清拉素；保留主持人口误/玩笑时使用。
+- セカショ -> Second Shot 的简称；中文按语境用「Second Shot」或「セカショ」。
+- だい研 -> オムニバス朗読「だい研6」的简称。
+- 謎解きメイツ -> 谜题解谜 mates；先按节目语境保留「謎解きメイツ」。
+- 脱出ゲーム -> 密室逃脱游戏
+- ドッジボール -> 躲避球
+- 内野 / 外野 -> 内场 / 外场
+- 出題者 -> 出题人
+- マカロニ -> 通心粉
+- マーシャル -> possible listener name; preserve original form unless later confirmed.
+- 大阪工業大学梅田キャンパス -> 大阪工业大学梅田校区
+- 新アンセムソング -> 新主题歌
+- バーニャカウダー / バーニャカーラ -> likely ASR variants of バーニャカウダ.
+- 夏のおたまです -> likely ASR confusion for 夏の思い出です in the song/quiz corner.
+- ダヤ顔 -> likely ASR confusion for ドヤ顔.
+- 先行花火 -> likely ASR confusion for 線香花火.
+- 同心アクスタ -> likely ASR confusion for 等身アクスタ.
+- 速強 / かゆ歌 -> likely ASR confusion for 即興替え歌.
+- ロシアンカボチャ / ひたくち / ごじろ / ゆい -> listener names; preserve original form.
+- 夏さく前線 / 桜前線 -> corner/bridge phrase; likely translate as 夏樱前线 when context fits.
+- 悟り転校生夏寧 -> corner/topic name; keep Japanese if exact meaning remains uncertain.
+- 公開ギネプラ -> likely ASR confusion for 公開ゲネプロ.
+- 各州配信 -> likely ASR confusion for 隔週配信.
+- クラウチャウダー -> likely ASR confusion for クラムチャウダー.
+
+## Transcript Uncertainty Notes
+
+- Around 258s, `1-seg_107` remains semantically odd after clip review; translate cautiously.
+- Around 602-620s, `2-seg_2*` wording about praise for さくぽん's live performance remains awkward.
+- Around 811s, `2-seg_71` event/work title `夕焼バンティ` is uncertain; preserve source wording unless later confirmed.
+- Around 1087-1096s, `2-seg_166*` echo joke wording is structurally readable but exact phrasing is uncertain.
+- Around 4-seg_121, the mini-corner wording, especially `てってぃちゃん桜に語ってもらいたいテーマ`, is medium confidence.
 
 ## Fixed Subtitle Phrases
 
@@ -116,20 +161,3 @@ cover: "./cover-1280x720.jpg"
 - Keep names and title terminology consistent with confirmed glossary entries.
 - Prefer concise subtitle phrasing over literal word-by-word translation.
 - Do not use Chinese book-title brackets `《》`; use Japanese-style corner brackets `「」` for titles and quoted named items.
-
-## Transcript Review Notes
-
-- Several fast or overlapped ranges remain audio-check candidates:
-  47.572-49.122, 104.212-132.580, 178.914-192.938, 506.838-514.438,
-  602.290-610.850, 673.722-695.036, 998.558-999.928, 1147.952-1149.702,
-  1248.700-1270.206, 1298.908-1300.208, 1643.068-1644.868,
-  1838.676-1839.976, 1954.634-1955.984, 2182.901-2187.646,
-  2207.801-2210.994, 2258.948-2260.468, and 2300.401-2305.730.
-- Public-reference checks used during transcript review confirmed likely terms including
-  前橋ウィッチーズ, STRAIGHT! REACH!! CHEER!!!, and related event names.
-- Transcript work was force-committed after manual review on 2026-06-09 with remaining
-  Japanese QA exceptions limited to line length and reading speed. No data integrity,
-  empty text, invalid timing, overlap, duplicate ID, hard duration, or hard gap errors
-  remained. Most retained exceptions are dense official titles, announcements, fixed
-  program phrases, or rapid short dialogue where further splitting/retiming would hurt
-  subtitle continuity without audio review.

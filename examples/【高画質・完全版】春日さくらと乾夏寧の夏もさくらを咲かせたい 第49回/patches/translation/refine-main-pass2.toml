@@ -1,0 +1,18 @@
+created_by = "main-pass2"
+start = 0
+end = 2397
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_191"
+zh = "对 所以就是睡眠和散步之类的吧"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_193"
+zh = "散步很好 总之"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_96"
+zh = "预备 「想让你见识格的差距」"

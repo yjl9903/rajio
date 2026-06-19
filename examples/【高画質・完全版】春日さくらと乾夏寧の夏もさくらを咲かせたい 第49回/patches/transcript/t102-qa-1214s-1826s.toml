@@ -1,0 +1,232 @@
+created_by = "t102"
+start = 1214.248333
+end = 1826.325552
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_32", "3-seg_33"]
+merged_id = "3-seg_32"
+speaker = "B,C"
+ja = "ちょっとちょっと欲しいな 確かにな"
+zh = ""
+reason = "Merge a short agreement into the prior figure discussion line."
+confidence = "high"
+
+[[operations]]
+op = "delete"
+segment_id = "3-seg_35"
+reason = "Remove an isolated ASR fragment between complete figure discussion lines."
+confidence = "medium"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_42", "3-seg_43"]
+merged_id = "3-seg_42"
+speaker = "B,C"
+ja = "さっき紹介しているんですが本当に いいっす"
+zh = ""
+reason = "Merge the brief reaction into the product comment."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_44.1"
+start = 1330.748333
+reason = "Restore minimum subtitle gap after merging the preceding reaction."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_44.6", "3-seg_45"]
+merged_id = "3-seg_44.6"
+speaker = "B,C"
+ja = "だから充電してるだけで貯まるの そんなすげー ね"
+zh = ""
+reason = "Merge a one-mora agreement into the charging explanation."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_46"
+start = 1346.598333
+reason = "Restore minimum subtitle gap after merging the preceding agreement."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_47.2"
+end = 1352.444333
+reason = "Restore minimum subtitle gap before the following merged response."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_48", "3-seg_49"]
+merged_id = "3-seg_48"
+speaker = "B,C"
+ja = "うん 3回なくしたの"
+zh = ""
+reason = "Merge a short acknowledgement with the lost-count answer."
+confidence = "medium"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_53", "3-seg_54", "3-seg_55", "3-seg_56"]
+merged_id = "3-seg_53"
+speaker = "B,C"
+ja = "結構する そうね めっちゃ迷ったけど毎回買ってる"
+zh = ""
+reason = "Merge short acknowledgements into the mobile-battery price comment."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_58", "3-seg_59", "3-seg_60"]
+merged_id = "3-seg_58"
+speaker = "B,C"
+ja = "すごい! あと3人買ってます? 結構だ!"
+zh = ""
+reason = "Merge fast back-and-forth reactions into one readable subtitle."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_58"
+end = 1383.154333
+reason = "Restore minimum subtitle gap before the following merged count phrase."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_61", "3-seg_62", "3-seg_63", "3-seg_64", "3-seg_65"]
+merged_id = "3-seg_61"
+speaker = "B,C"
+ja = "あと半分以上が買えば"
+zh = ""
+reason = "Merge fragmented count phrase before 制覇できる."
+confidence = "medium"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_67", "3-seg_68"]
+merged_id = "3-seg_67"
+speaker = "B,C"
+ja = "え? ちょっとあともう1個聞いていい?"
+zh = ""
+reason = "Merge the short reaction into the next question prompt."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_74"
+start = 1414.136333
+end = 1414.661333
+reason = "Give the short callback enough subtitle duration without touching adjacent text."
+confidence = "high"
+
+[[operations]]
+op = "delete"
+segment_id = "3-seg_77"
+reason = "Remove an isolated ASR fragment inside the fireworks explanation."
+confidence = "medium"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_91", "3-seg_92", "3-seg_93", "3-seg_94"]
+merged_id = "3-seg_91"
+speaker = "B,C"
+ja = "打ち上げ花火が ね うん そうねそうそうそうそう"
+zh = ""
+reason = "Merge short acknowledgements in the fireworks transition."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_86"
+end = 1440.036333
+reason = "Restore minimum subtitle gap before the following line."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_101", "3-seg_102", "3-seg_103"]
+merged_id = "3-seg_101"
+speaker = "A,B"
+ja = "なんか20代になったのちょっと前 そんな気がする"
+zh = ""
+reason = "Merge fragmented aside about reaching the twenties rank."
+confidence = "medium"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_104", "3-seg_105", "3-seg_106", "3-seg_107"]
+merged_id = "3-seg_104"
+speaker = "A,B"
+ja = "あんまり上がったり減ったり"
+zh = ""
+reason = "Merge fragmented rank-change phrase into a readable subtitle."
+confidence = "medium"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_108", "3-seg_109", "3-seg_110", "3-seg_111"]
+merged_id = "3-seg_108"
+speaker = "A,B"
+ja = "増えたり減ったりしたのはないよ普通"
+zh = ""
+reason = "Merge fragmented rank-change follow-up into a readable subtitle."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_104"
+end = 1477.984333
+reason = "Restore minimum subtitle gap between merged rank-change subtitles."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_141", "3-seg_142"]
+merged_id = "3-seg_141"
+speaker = "B"
+ja = "米も入ってるでしょ OKですでは\nはいはい何のことを歌っていたでしょうか?"
+zh = ""
+reason = "Merge the short curry clue tail into the quiz prompt while preserving line length."
+confidence = "medium"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_145", "3-seg_146", "3-seg_147"]
+merged_id = "3-seg_145"
+speaker = "B,C"
+ja = "カレーライスです よし!"
+zh = ""
+reason = "Merge the curry answer and immediate confirmation."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_150", "3-seg_151", "3-seg_152", "3-seg_153"]
+merged_id = "3-seg_150"
+speaker = "A,C"
+ja = "これが原曲の ご カレー 飯でかかった"
+zh = ""
+reason = "Merge fragmented overlapping curry-comment words without guessing new lyric text."
+confidence = "low"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_186"
+end = 1734.886333
+reason = "Restore minimum subtitle gap before the following reaction."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_181", "3-seg_182"]
+merged_id = "3-seg_181"
+speaker = "B,C"
+ja = "もう答えてますよ はい!"
+zh = ""
+reason = "Merge the short response into the surrounding croquette exchange."
+confidence = "high"

@@ -1,0 +1,517 @@
+created_by = "t000"
+start = 0
+end = 600
+
+[[operations]]
+op = "edit"
+reason = "Correct program title from ASR confusion."
+confidence = "high"
+segment_id = "1-seg_0"
+ja = "春日さくらと乾夏寧の夏もさくらを咲かせたい"
+
+[[operations]]
+op = "edit"
+reason = "Match fixed opening phrase and remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_1"
+ja = "みなさーん咲いてますか"
+
+[[operations]]
+op = "edit"
+reason = "Correct host self-introduction."
+confidence = "high"
+segment_id = "1-seg_3"
+ja = "こんばんは春日さくらです"
+
+[[operations]]
+op = "merge"
+reason = "Overlapping ASR fragments form one host self-introduction."
+confidence = "high"
+source_ids = ["1-seg_4", "1-seg_5"]
+merged_id = "1-seg_4"
+speaker = "B"
+ja = "こんばんは乾夏寧です"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong program intro into readable subtitle units and correct fixed wording."
+confidence = "high"
+source_id = "1-seg_6"
+gap = 0.05
+
+[[operations.replacements]]
+segment_id = "1-seg_6.1"
+start = 27.526
+end = 32.5
+speaker = "A"
+ja = "この番組は季節を名前に持つ私たち二人が"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_6.2"
+start = 32.5
+end = 35.6
+speaker = "A"
+ja = "夏に吹く爽やかな風と春のような柔らかい空気を"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_6.3"
+start = 35.6
+end = 38.8
+speaker = "A"
+ja = "少しでもお届けできたらいいなという番組です"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_6.4"
+start = 38.8
+end = 41.2
+speaker = "A"
+ja = "ということで早速ですが皆さん何かお気づきですか"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_6.5"
+start = 41.2
+end = 42.8
+speaker = "A"
+ja = "お気づきですか"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_6.6"
+start = 42.8
+end = 45.326
+speaker = "A"
+ja = "まあわかるよね わかりやすいよね"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary repeated subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_7"
+ja = "出てきちゃった 出てきちゃったね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_8"
+ja = "ちょっと"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_9"
+ja = "なんか髪がなんかなんかなんかなんかさらさらじゃない"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_10"
+ja = "なんかさらさらかも"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_11"
+ja = "ちょっと"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_12"
+ja = "どうしてどうして"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_13"
+ja = "なんかいつもと違くない"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_14"
+ja = "なんかいつもと違う もう言っちゃったけどね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_15"
+ja = "さらさらだよね"
+
+[[operations]]
+op = "merge"
+reason = "Adjacent fragments form one sentence about hair treatment."
+confidence = "high"
+source_ids = ["1-seg_16", "1-seg_17"]
+merged_id = "1-seg_16"
+speaker = "C"
+ja = "そうなの 髪質改善をしました"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Trim ASR sentence-final artifact."
+confidence = "medium"
+segment_id = "1-seg_18"
+ja = "お店 美容院でなんかやってもらったらさらさらになったの"
+
+[[operations]]
+op = "edit"
+reason = "Correct obvious phrasing from context."
+confidence = "medium"
+segment_id = "1-seg_23"
+ja = "憧れ いいことだよね"
+
+[[operations]]
+op = "split"
+reason = "Correct ASR confusion for rainy-season topic and split long subtitle."
+confidence = "medium"
+source_id = "1-seg_26"
+gap = 0.05
+
+[[operations.replacements]]
+segment_id = "1-seg_26.1"
+start = 87.167
+end = 89.3
+speaker = "C"
+ja = "そう梅雨じゃんと思って"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_26.2"
+start = 89.3
+end = 91.817
+speaker = "C"
+ja = "もう仕方なかったけど雨降らないといいなあれ"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Remove duplicated ASR fragment and split long subtitle."
+confidence = "high"
+source_id = "1-seg_29"
+gap = 0.05
+
+[[operations.replacements]]
+segment_id = "1-seg_29.1"
+start = 96.767
+end = 99.0
+speaker = "A"
+ja = "こうなっちゃうのやったことあるよ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_29.2"
+start = 99.0
+end = 101.567
+speaker = "A"
+ja = "1年に1回ぐらい梅雨前に当てるから"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Complete truncated word."
+confidence = "high"
+segment_id = "1-seg_33"
+ja = "いや まだまだまだこれから当てる これから当てる"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary subtitle punctuation."
+confidence = "high"
+segment_id = "1-seg_57"
+ja = "どうだった"
+
+[[operations]]
+op = "delete"
+reason = "Zero-duration filler duplicated by surrounding context."
+confidence = "high"
+segment_id = "1-seg_52"
+
+[[operations]]
+op = "edit"
+reason = "Correct obvious ASR confusion in natto anecdote."
+confidence = "high"
+segment_id = "1-seg_46"
+ja = "私あの話をして家に帰って納豆があったからめっちゃやってみたんですよ 40回くらい混ぜてみた"
+
+[[operations]]
+op = "edit"
+reason = "Correct listener name and mail-introduction phrase from glossary."
+confidence = "high"
+segment_id = "1-seg_74"
+ja = "納豆のメールもほっぺまーさんからいただきました ありがとうございます"
+
+[[operations]]
+op = "edit"
+reason = "Match fixed listener greeting."
+confidence = "high"
+segment_id = "1-seg_76"
+ja = "春日さん 乾さん 咲いてますか"
+
+[[operations]]
+op = "merge"
+reason = "Mail text was split through からし; merge and correct obvious ASR damage."
+confidence = "medium"
+source_ids = ["1-seg_78", "1-seg_79", "1-seg_80"]
+merged_id = "1-seg_78"
+speaker = "A"
+ja = "第48回の配信で納豆を何回かき混ぜればいいか議論の波紋を広げていましたが 自分も10回くらいです 混ぜる前にからしを入れて 混ぜた後から納豆のタレまたは醤油を入れますね ただ"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Keep the corrected mail text readable after merging through からし."
+confidence = "medium"
+source_id = "1-seg_78"
+gap = 0.05
+
+[[operations.replacements]]
+segment_id = "1-seg_78.1"
+start = 194.388
+end = 199.5
+speaker = "A"
+ja = "第48回の配信で納豆を何回かき混ぜればいいか"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_78.2"
+start = 199.5
+end = 204.6
+speaker = "A"
+ja = "議論の波紋を広げていましたが 自分も10回くらいです"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_78.3"
+start = 204.6
+end = 207.4
+speaker = "A"
+ja = "混ぜる前にからしを入れて"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_78.4"
+start = 207.4
+end = 209.988
+speaker = "A"
+ja = "混ぜた後から納豆のタレまたは醤油を入れますね ただ"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Correct proper noun 魯山人 from glossary."
+confidence = "high"
+segment_id = "1-seg_81"
+ja = "この有名な魯山人は最低でも400回かき混ぜると美味しくなると言ったとされています"
+
+[[operations]]
+op = "edit"
+reason = "Naturalize mail-read sentence ending."
+confidence = "medium"
+segment_id = "1-seg_83"
+ja = "試しにやったら確かに美味しいんですよ"
+
+[[operations]]
+op = "merge"
+reason = "Adjacent fragments form one short reaction."
+confidence = "high"
+source_ids = ["1-seg_84", "1-seg_85", "1-seg_86", "1-seg_87"]
+merged_id = "1-seg_84"
+speaker = "A,C"
+ja = "400回やったんです"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Adjacent ASR fragments form one readable natto reaction and fix overlap."
+confidence = "medium"
+source_ids = ["1-seg_110", "1-seg_111", "1-seg_112", "1-seg_113", "1-seg_114"]
+merged_id = "1-seg_110"
+speaker = "A,C"
+ja = "毎回400回混ぜるのはきついかも えー面白いね納豆って"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Correct obvious ASR substitution in ramen topic."
+confidence = "high"
+segment_id = "1-seg_119"
+ja = "なんかそのラーメンの海苔いつ食べるみたいな"
+
+[[operations]]
+op = "edit"
+reason = "Correct verb for soaking nori and clarify 家系 phrasing."
+confidence = "medium"
+segment_id = "1-seg_122"
+ja = "びちょびちょじゃない ちょっと浸してお米と一緒に食べるのが好きなの 家系とかのお米つけれるとこ"
+
+[[operations]]
+op = "split"
+reason = "Split overlong ramen-nori segment into readable units."
+confidence = "high"
+source_id = "1-seg_127"
+gap = 0.05
+
+[[operations.replacements]]
+segment_id = "1-seg_127.1"
+start = 302.113
+end = 305.0
+speaker = "A"
+ja = "美味しい美味しいね 絶対それは"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_127.2"
+start = 305.0
+end = 309.0
+speaker = "A"
+ja = "私はだいたいパリパリのままで食べたいなっていう気持ちで"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_127.3"
+start = 309.0
+end = 311.6
+speaker = "A"
+ja = "今日食べようと思うんだけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_127.4"
+start = 311.6
+end = 314.038
+speaker = "A"
+ja = "気づいたら沈んでて一番最後になっちゃう"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR filler in sentence lead-in."
+confidence = "medium"
+segment_id = "1-seg_128"
+ja = "でもさなんか多分 特にこれは女子だけの話かもしれないですけど お腹がいっぱいになっちゃう問題 卵"
+
+[[operations]]
+op = "edit"
+reason = "Correct obvious ASR confusion from context."
+confidence = "medium"
+segment_id = "1-seg_133"
+ja = "マジだよね 私たち毎回思ってさ チャーシュー残しちゃって最後まで"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR confusion from context."
+confidence = "high"
+segment_id = "1-seg_135"
+ja = "最初に食べちゃえばなんか麺は意外とツルって入ったりするんだよね"
+
+[[operations]]
+op = "edit"
+reason = "Correct hashtag fixed term from glossary."
+confidence = "high"
+segment_id = "1-seg_156"
+ja = "ということで今日もハッシュタグ夏さく咲くで盛り上げていただけると嬉しいです それでは最後までよろしくお願いします"
+
+[[operations]]
+op = "edit"
+reason = "Correct host name from ASR confusion."
+confidence = "high"
+segment_id = "1-seg_157"
+ja = "春日さくらでーす"
+
+[[operations]]
+op = "edit"
+reason = "Correct host name from ASR confusion."
+confidence = "high"
+segment_id = "1-seg_159"
+ja = "乾夏寧でーす"
+
+[[operations]]
+op = "edit"
+reason = "Correct official live title from glossary."
+confidence = "high"
+segment_id = "1-seg_160"
+ja = "えー私はですね先日渋谷のライブ STRAIGHT! REACH!! CHEER!!! をやりました やりました"
+skip_checks = [
+  { code = "ja_repeated_punctuation", reason = "Official live title spelling uses repeated exclamation marks." }
+]
+
+[[operations]]
+op = "edit"
+reason = "Correct nickname from ASR confusion."
+confidence = "medium"
+segment_id = "1-seg_163"
+ja = "なちゅね"
+
+[[operations]]
+op = "edit"
+reason = "Correct 夏さくネーム fixed term."
+confidence = "high"
+segment_id = "1-seg_172"
+ja = "はい夏さくネームゆいさんからいただきました ありがとうございます"
+
+[[operations]]
+op = "edit"
+reason = "Correct nickname greeting from ASR confusion."
+confidence = "medium"
+segment_id = "1-seg_173"
+ja = "さくぽん なちゅ 咲いてますか"
+
+[[operations]]
+op = "edit"
+reason = "Correct title from glossary."
+confidence = "high"
+segment_id = "1-seg_174"
+ja = "前橋ウィッチーズライブ"
+
+[[operations]]
+op = "edit"
+reason = "Correct official live title and 公演."
+confidence = "high"
+segment_id = "1-seg_175"
+ja = "STRAIGHT! REACH!! CHEER!!! 東京公演 現地で参加させていただきました"
+skip_checks = [
+  { code = "ja_repeated_punctuation", reason = "Official live title spelling uses repeated exclamation marks." }
+]
+
+[[operations]]
+op = "edit"
+reason = "Correct glossary-backed names and title in listener mail."
+confidence = "medium"
+segment_id = "1-seg_177"
+ja = "今回のライブ前のインタビューでさくぽんは私たちの成長を見せなければいけないライブとおっしゃっていましたが それを実感できるとても素晴らしいライブでした ユイナを楽しく可愛く表現するさくぽんのパフォーマンスはみんなの心のお花を咲かせたと思います 今回ステージに立ったさくぽんとドリーミードリーミーフラワーの一人のお客さんとして参加したなちゅの今回のライブの感想をお聞きしたいです"
+
+[[operations]]
+op = "edit"
+reason = "Correct sentence ending."
+confidence = "high"
+segment_id = "1-seg_195"
+ja = "なんか全員でのパフォーマンスもマジでなんか本当にアイドルってぐらいなんか踊り揃っててめちゃくちゃかっこよかったし"
+
+[[operations]]
+op = "edit"
+reason = "Correct obvious ASR confusion around singing quality."
+confidence = "medium"
+segment_id = "1-seg_196"
+ja = "なんか生歌とは思えなかった みんなマジ歌うますぎてマジですごかった"
+
+[[operations]]
+op = "edit"
+reason = "Correct obvious ASR confusion in MC discussion."
+confidence = "high"
+segment_id = "1-seg_201"
+ja = "あのMCとかつなぎというか場の煽りとか全部は"

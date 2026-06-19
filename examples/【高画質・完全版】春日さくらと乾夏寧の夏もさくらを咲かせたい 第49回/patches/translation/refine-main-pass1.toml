@@ -1,0 +1,48 @@
+created_by = "main-pass1"
+start = 0
+end = 2397
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_4"
+zh = "晚上好 我是乾夏宁"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_160"
+zh = "我前几天在涩谷办了那场 STRAIGHT REACH CHEER Live"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_16"
+zh = "不是告知"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_18c"
+zh = "已经确定了"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_50"
+zh = "有来信 我来读一下 夏樱名ロシアンカボチャ的来信"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_64c"
+zh = "一直都想和她变得更熟"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_42"
+zh = "是吗 完全不懂 既然不是汤 可能也没什么配料"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_47"
+zh = "不过它在我喜欢的食物排行里挺靠前"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_121.4"
+zh = "也大募集想让てってぃ酱和樱聊的主题\n以及「悟り転校生夏寧」的问题咨询"

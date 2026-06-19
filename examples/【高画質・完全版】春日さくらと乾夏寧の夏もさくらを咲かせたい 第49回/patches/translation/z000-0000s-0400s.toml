@@ -1,0 +1,809 @@
+created_by = "z000"
+start = 0
+end = 400
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_0"
+zh = "春日樱与乾夏宁的「也想让夏天绽放樱花」"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_1"
+zh = "大家开花了吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_2"
+zh = "嗯"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_3"
+zh = "晚上好 我是春日樱"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_4"
+zh = "晚上好 乾夏宁"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_6.1"
+zh = "这个节目是名字里带有季节的我们两个人"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_6.2"
+zh = "希望能把夏日吹来的清爽微风"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_6.3"
+zh = "和春天般柔和的空气稍微传达给大家"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_6.4"
+zh = "那么马上进入正题 大家有没有注意到什么"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_6.5"
+zh = "注意到了吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_6.6"
+zh = "应该看得出来吧 很明显吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_7"
+zh = "露出来了 露出来了呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_8"
+zh = "头发是不是有点顺滑"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_10"
+zh = "好像是挺顺的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_11"
+zh = "等一下 为什么为什么"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_13"
+zh = "是不是和平时不太一样"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_14"
+zh = "好像和平时不一样 虽然已经说出来了"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_15"
+zh = "很顺吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_16"
+zh = "是的 我做了发质改善"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_18"
+zh = "去美容院让店里帮我弄了一下 就变顺了"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_19"
+zh = "照片里也看得出来 但现场看更明显"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_20"
+zh = "好顺 好开心"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_21"
+zh = "好厉害 真的早上起来也是这样 我超开心的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_23"
+zh = "好羡慕 是件好事呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_24"
+zh = "轻松 嗯我懂 真好 接下来就是梅雨季了"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_26.1"
+zh = "对 我想着这不是梅雨季嘛"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_26.2"
+zh = "也没办法 但希望别下雨啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_27"
+zh = "没事啦 我最近里面那层很夸张 可能根本不能给你看"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_28"
+zh = "那就会变成这样 我也做过"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_29.2"
+zh = "我大概一年一次 梅雨前会去烫一下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_30"
+zh = "那就没问题了吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_31"
+zh = "我以前做过啊 咦 能撑住吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_32"
+zh = "不是吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_33"
+zh = "不不还早 接下来才要去烫 接下来才烫"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_34.1"
+zh = "OK OK 好 那么还有啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_34.2"
+zh = "大家有在吃纳豆吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_34.3"
+zh = "每天早上搅 拌得越多"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_34.4"
+zh = "纳豆的营养会不会变化 其实好像没什么变化"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_36"
+zh = "咦"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_37"
+zh = "这是怎么回事"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_38"
+zh = "那总之先说"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_39.1"
+zh = "对吧 会变难懂的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_39.2"
+zh = "但也有人就是喜欢那样"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_39.3"
+zh = "觉得好吃才吃的嘛"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_43"
+zh = "是吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_44"
+zh = "就是黏黏黏的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_45.1"
+zh = "我听完那件事回家之后"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_45.2"
+zh = "家里刚好有纳豆 就认真试了一下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_45.3"
+zh = "我试着搅了大概40下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_47"
+zh = "嗯嗯 那倒也是"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_48"
+zh = "感觉自己变健康了 真的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_49"
+zh = "你吃下去了啊 能吃下去很棒"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_50"
+zh = "嗯 很棒呢 纳豆那个"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_53"
+zh = "那个 我还试着把调味料放到最后加"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_54"
+zh = "啊 咦"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_55"
+zh = "然后再稍微搅一下 对"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_57"
+zh = "怎么样"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_58"
+zh = "感觉先放进去更好"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_59"
+zh = "感觉是吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_61"
+zh = "肯定好吃 不过那样对健康更好吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_62"
+zh = "是这样吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_63"
+zh = "哎 真的不知道 但总觉得好难啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_66"
+zh = "对吧 到底对健康好吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_67"
+zh = "不过安慰剂效应也挺好吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_68"
+zh = "这样啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_69"
+zh = "感觉是好的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_70"
+zh = "不过我不会搅哦 有一点那个纳豆"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_71"
+zh = "因为收到了这方面的来信 谢谢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_72"
+zh = "啊 对"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_73"
+zh = "关于纳豆 关于纳豆"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_74.1"
+zh = "关于纳豆的来信也来自ほっぺまー"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_74.2"
+zh = "我们收到了 谢谢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_75"
+zh = "又来了"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_76"
+zh = "春日樱 乾夏宁 开花了吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_77"
+zh = "嗯"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_78.1"
+zh = "第48回的节目里讨论了纳豆到底要搅多少次"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_78.2"
+zh = "引起了一阵讨论 不过我自己也是搅大概10下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_78.3"
+zh = "搅之前先放芥末"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_78.4"
+zh = "搅完之后再放纳豆酱汁或酱油 不过"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_81.1"
+zh = "据说著名的鲁山人认为"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_81.2"
+zh = "至少搅400下会变好吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_82.1"
+zh = "咦 试着做一下确实很好吃哦"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_82.2"
+zh = "你搅了400下吗 做了啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_89"
+zh = "咦 好厉害"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_90"
+zh = "好吃吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_91"
+zh = "咦 为什么越搅越好吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_92.1"
+zh = "不过怎么说呢 我也不太懂"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_92.2"
+zh = "做点心的时候也是会哗地搅拌"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_92.3"
+zh = "泡沫会一下膨起来又消下去吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_93"
+zh = "确实确实"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_94"
+zh = "会哗地变得蓬蓬松松 然后又稳定下来"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_95.1"
+zh = "确实 要是搅400下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_95.2"
+zh = "反而可能不会那么蓬松"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_97"
+zh = "咦 泡沫会没了吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_98"
+zh = "反过来 反过来"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_99"
+zh = "什么时候试试看呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_100"
+zh = "下次试试吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_101"
+zh = "试吗 要试吗 在这里"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_102"
+zh = "在这里带个搅拌机器来"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_103"
+zh = "要验证一下吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_104"
+zh = "让录音棚满是纳豆味再回去吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_105"
+ja = "100回200回300回400回でさ4つぐらい用意したやつ"
+zh = "准备大概四份 分别搅100下200下300下400下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_106"
+zh = "不错啊 来做吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_107"
+zh = "挺好啊 要是再放一段时间 说不定会变成零倍呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_108"
+zh = "确实呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_109"
+zh = "只是没做过"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_110"
+zh = "每次都搅400下可能有点累 纳豆真有意思啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_115"
+zh = "真是很深奥呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_116"
+zh = "还有别的吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_117"
+zh = "类似这种的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_118"
+zh = "咦"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_119"
+zh = "比如拉面里的海苔什么时候吃之类的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_120"
+zh = "会犹豫呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_121"
+zh = "我也有自己的吃法 会把拉面的海苔稍微泡进汤里"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_122.1"
+zh = "不是泡到湿透 是稍微泡一下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_122.2"
+zh = "我喜欢和米饭一起吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_122.3"
+zh = "像家系拉面那种可以配米饭的店"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_123"
+zh = "听起来好好吃 肯定好吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_124.1"
+zh = "真的 不过我在拉面店啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_124.2"
+zh = "还没点过拉面配白米饭"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_126"
+zh = "真的吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_127.1"
+zh = "很好吃 很好吃的 那绝对好吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_127.2"
+zh = "我一般是想着想趁脆脆的时候吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_127.3"
+zh = "想着今天就吃掉吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_127.4"
+zh = "结果一回神已经沉下去了 最后才吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_128.1"
+zh = "不过怎么说呢 大概"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_128.2"
+zh = "可能尤其只是女生会这样"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_128.3"
+zh = "就是肚子会饱的问题 蛋也是"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_129"
+zh = "真的会这样吗"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_130"
+zh = "还有叉烧 不早点解决掉后面会很辛苦"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_131"
+zh = "对 最后叉烧就吃不下了"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_132"
+zh = "吃不下 真的 蛋也吃不下"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_133.1"
+zh = "真的 我们每次都会这么想"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_133.2"
+zh = "把叉烧留到了最后"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_134"
+zh = "对 然后一边呜哇一边吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_135.1"
+zh = "要是最先吃掉的话"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_135.2"
+zh = "面倒是意外地能顺顺地吃下去"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_136"
+zh = "就是这样"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_137"
+zh = "不过拉面本身其实挺容易一下吃完的吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_138"
+zh = "没关系吗 大家觉得呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_139"
+zh = "大家觉得呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_140"
+zh = "原来没关系啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_141"
+zh = "没吧"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_142"
+zh = "好像没关系 女生也一样呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_143"
+zh = "这样啊 得先吃掉呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_144"
+zh = "不过真的 先吃掉就完全没问题"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_145"
+zh = "是啊"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_146.1"
+zh = "果然鸡蛋会占不少胃容量"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_146.2"
+zh = "感觉会占地方 所以总是往后放"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_147"
+zh = "挺有分量的呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_148"
+zh = "挺有分量 好吃"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_149"
+zh = "是啊 这个话题很有意思 挺想继续聊的"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_150.1"
+zh = "对了 我想知道大家对鸡蛋拌饭有什么讲究"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_150.2"
+zh = "我算是喜欢各种改良食谱那派"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_151"
+zh = "这样啊 想听"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_152"
+zh = "我喜欢很多不同做法呢"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_153"
+zh = "想听"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_154"
+zh = "请大家务必寄来 拜托了"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_156.1"
+zh = "那么今天也希望大家用话题标签「夏樱绽放」"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_156.2"
+zh = "一起让节目热闹起来"
+
+[[operations]]
+op = "edit"
+segment_id = "1-seg_156.3"
+zh = "那么请大家陪我们到最后"

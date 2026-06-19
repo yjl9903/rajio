@@ -2,4306 +2,5929 @@ version = 1
 
 [source]
 kind = "transcript"
-generated_at = "2026-06-09T05:57:01.728Z"
+generated_at = "2026-06-18T20:04:19.521Z"
 
 [[segments]]
 id = "1-seg_0"
-start = 1.504
-end = 6.353999999999999
+start = 1.754
+end = 6.303999999999999
 speaker = "A"
 ja = "春日さくらと乾夏寧の夏もさくらを咲かせたい"
 
 [[segments]]
-id = "1-seg_3"
-start = 18.404
-end = 20.754
+id = "1-seg_1"
+start = 19.904000000000003
+end = 22.304000000000002
 speaker = "A"
-ja = "皆さん、咲いてますか？"
+ja = "みなさーん咲いてますか"
+
+[[segments]]
+id = "1-seg_2"
+start = 23.004
+end = 23.704
+speaker = "B"
+ja = "うーん"
+
+[[segments]]
+id = "1-seg_3"
+start = 24.554000000000002
+end = 26.404000000000003
+speaker = "A"
+ja = "こんばんは春日さくらです"
 
 [[segments]]
 id = "1-seg_4"
-start = 23.804000000000002
-end = 24.974
-speaker = "A"
-ja = "こんばんは、春日さくらです。"
-
-[[segments]]
-id = "1-seg_5"
-start = 25.054
-end = 27.96
+start = 26.604000000000003
+end = 27.325999999999997
 speaker = "B"
-ja = "こんばんは、乾夏寧です。"
+ja = "こんばんは乾夏寧です"
+zh = ""
 
 [[segments]]
-id = "1-seg_6"
-start = 28.04
-end = 36.876
+id = "1-seg_6.1"
+start = 27.526
+end = 32.475
 speaker = "A"
-ja = "この番組は季節を名前に持つ私たち二人が、\n夏のような爽やかな風と春のような柔らかい空気を少しでもお届けできたらいいなという番組です。"
+ja = "この番組は季節を名前に持つ私たち二人が"
+zh = ""
+
+[[segments]]
+id = "1-seg_6.2"
+start = 32.525
+end = 35.575
+speaker = "A"
+ja = "夏に吹く爽やかな風と春のような柔らかい空気を"
+zh = ""
+
+[[segments]]
+id = "1-seg_6.3"
+start = 35.625
+end = 38.775
+speaker = "A"
+ja = "少しでもお届けできたらいいなという番組です"
+zh = ""
+
+[[segments]]
+id = "1-seg_6.4"
+start = 38.825
+end = 41.175
+speaker = "A"
+ja = "ということで早速ですが皆さん何かお気づきですか"
+zh = ""
+
+[[segments]]
+id = "1-seg_6.5"
+start = 41.225
+end = 42.775
+speaker = "A"
+ja = "お気づきですか"
+zh = ""
+
+[[segments]]
+id = "1-seg_6.6"
+start = 42.825
+end = 45.326
+speaker = "A"
+ja = "まあわかるよね わかりやすいよね"
+zh = ""
 
 [[segments]]
 id = "1-seg_7"
-start = 37.676
-end = 41.236
-speaker = "C"
-ja = "ということで早速ですが皆さん何かお気づきですか?"
+start = 47.572
+end = 48.672000000000004
+speaker = "A"
+ja = "出てきちゃった 出てきちゃったね"
 
 [[segments]]
 id = "1-seg_8"
-start = 41.316
-end = 42.226
-speaker = "A"
-ja = "お気づきですか?"
-
-[[segments]]
-id = "1-seg_9"
-start = 42.576
-end = 43.826
-speaker = "A"
-ja = "まぁ分かるよね?"
+start = 48.732
+end = 53.697
+speaker = "C"
+ja = "ちょっと髪がさらさらじゃない"
+zh = ""
 
 [[segments]]
 id = "1-seg_10"
-start = 44.126000000000005
-end = 45.275999999999996
-speaker = "A"
-ja = "分かりやすいよね?"
-
-[[segments]]
-id = "1-seg_11"
-start = 47.572
-end = 51.082
-speaker = "A,C"
-ja = "どこが変わった？そう！なんだ？\n実はなんか髪が"
-
-[[segments]]
-id = "1-seg_17"
-start = 51.162
-end = 53.832
-speaker = "A,C"
-ja = "なんかなんか、なんかさらさらじゃない？"
-
-[[segments]]
-id = "1-seg_19"
-start = 53.912
-end = 54.972
+start = 53.847
+end = 55.022
 speaker = "A"
 ja = "なんかさらさらかも"
 
 [[segments]]
-id = "1-seg_21"
-start = 55.122
-end = 56.382
-speaker = "A"
-ja = "どうしてどうして?"
+id = "1-seg_11"
+start = 55.072
+end = 56.297
+speaker = "C,A"
+ja = "ちょっと どうしてどうして"
+zh = ""
 
 [[segments]]
-id = "1-seg_22"
-start = 56.462
-end = 57.482
+id = "1-seg_13"
+start = 56.447
+end = 57.447
 speaker = "C"
-ja = "なんかいつもと違くない?"
+ja = "なんかいつもと違くない"
 
 [[segments]]
-id = "1-seg_23"
-start = 57.562
-end = 59.822
+id = "1-seg_14"
+start = 57.597
+end = 59.872
 speaker = "A"
-ja = "なんかいつもと違うもう言っちゃったけどね"
+ja = "なんかいつもと違う もう言っちゃったけどね"
 
 [[segments]]
-id = "1-seg_24"
-start = 61.22200000000001
-end = 62.422000000000004
+id = "1-seg_15"
+start = 61.322
+end = 62.347
 speaker = "A"
-ja = "さらさらだよね?"
+ja = "さらさらだよね"
 
 [[segments]]
-id = "1-seg_25"
-start = 62.622
-end = 65.47200000000001
+id = "1-seg_16"
+start = 62.497
+end = 65.572
 speaker = "C"
-ja = "そうなの!髪質改善をしました"
+ja = "そうなの 髪質改善をしました"
+zh = ""
 
 [[segments]]
-id = "1-seg_26"
-start = 68.172
-end = 72.47200000000001
+id = "1-seg_18"
+start = 68.27199999999999
+end = 72.697
 speaker = "C"
-ja = "お店の美容院でなんかやってもらったらさらさらになったの"
+ja = "お店 美容院でなんかやってもらったらさらさらになったの"
 
 [[segments]]
-id = "1-seg_27"
-start = 72.772
+id = "1-seg_19"
+start = 72.847
 end = 76.672
 speaker = "A"
 ja = "なんか写真でも伝わってきたけど生だとより?"
 
 [[segments]]
-id = "1-seg_28"
+id = "1-seg_20"
 start = 77.492
-end = 81.552
-speaker = "C,D"
-ja = "さらさら嬉しい！すごい！\nマジで朝起きてもこれだからめっちゃ嬉しいんだ！"
+end = 78.542
+speaker = "C"
+ja = "さらさら嬉しい"
+
+[[segments]]
+id = "1-seg_21"
+start = 78.602
+end = 81.367
+speaker = "A,C"
+ja = "すごい マジで朝起きてもこれだからめっちゃ嬉しいんだ"
+zh = ""
+
+[[segments]]
+id = "1-seg_23"
+start = 81.517
+end = 82.69200000000001
+speaker = "A"
+ja = "憧れ いいことだよね"
+
+[[segments]]
+id = "1-seg_24"
+start = 82.752
+end = 87.017
+speaker = "C,A"
+ja = "楽うん わかるいいな梅雨の時期だからこれから"
+zh = ""
+
+[[segments]]
+id = "1-seg_26.1"
+start = 87.167
+end = 89.275
+speaker = "C"
+ja = "そう梅雨じゃんと思って"
+zh = ""
+
+[[segments]]
+id = "1-seg_26.2"
+start = 89.325
+end = 91.817
+speaker = "C"
+ja = "もう仕方なかったけど雨降らないといいなあれ"
+zh = ""
+
+[[segments]]
+id = "1-seg_27"
+start = 91.967
+end = 96.367
+speaker = "A"
+ja = "大丈夫だよ私最近もう内側すごいよ見せらんない多分全部"
+
+[[segments]]
+id = "1-seg_28"
+start = 96.417
+end = 98.975
+speaker = "C,A"
+ja = "じゃあ こうなっちゃうのやったことあるよ"
+zh = ""
+
+[[segments]]
+id = "1-seg_29.2"
+start = 99.025
+end = 101.567
+speaker = "A"
+ja = "1年に1回ぐらい梅雨前に当てるから"
+zh = ""
+
+[[segments]]
+id = "1-seg_30"
+start = 101.717
+end = 102.84200000000001
+speaker = "C"
+ja = "それ大丈夫なんだじゃあ"
 
 [[segments]]
 id = "1-seg_31"
-start = 81.632
-end = 83.89200000000001
-speaker = "C,D"
-ja = "これがいいとこだよね？うん！わかる！"
+start = 104.212
+end = 106.162
+speaker = "A"
+ja = "前にやってるよえ?え 持つ?"
 
 [[segments]]
-id = "1-seg_34"
-start = 84.14200000000001
-end = 91.452
-speaker = "C,D"
-ja = "いいなぁ！梅雨の時期だからこれから！そう！\n雨降っちゃ嫌と思って！湿気てほしくなかったけど！うねらないといいな！"
+id = "1-seg_32"
+start = 106.61200000000001
+end = 107.162
+speaker = "C"
+ja = "じゃない?"
 
 [[segments]]
-id = "1-seg_39"
-start = 91.532
-end = 98.34200000000001
-speaker = "C,D"
-ja = "大丈夫だよ！私最近もううねりがすごいよ！見せらんない、多分！\n梅雨、めっちゃ全部こうなっちゃうの！やったことある？"
+id = "1-seg_33"
+start = 107.61200000000001
+end = 111.812
+speaker = "A"
+ja = "いや まだまだまだこれから当てる これから当てる"
 
 [[segments]]
-id = "1-seg_42"
-start = 98.542
-end = 101.402
-speaker = "D"
-ja = "あるよ！1年に1回ぐらい！梅雨前に当てるから！"
+id = "1-seg_34.1"
+start = 111.872
+end = 115.175
+speaker = "C,A"
+ja = "オッケーオッケー はいということであとね"
+zh = ""
+
+[[segments]]
+id = "1-seg_34.2"
+start = 115.225
+end = 119.175
+speaker = "A"
+ja = "納豆 食べてんのみんな"
+zh = ""
+
+[[segments]]
+id = "1-seg_34.3"
+start = 119.225
+end = 123.275
+speaker = "A"
+ja = "毎朝回す 回せば回すほど"
+zh = ""
+
+[[segments]]
+id = "1-seg_34.4"
+start = 123.325
+end = 127.187
+speaker = "A"
+ja = "納豆の栄養が変化するのかって 変化ないらしいよ別に"
+zh = ""
+
+[[segments]]
+id = "1-seg_36"
+start = 127.237
+end = 127.537
+speaker = "C"
+ja = "え?"
+
+[[segments]]
+id = "1-seg_37"
+start = 127.687
+end = 128.937
+speaker = "C"
+ja = "なんなんですか?"
+
+[[segments]]
+id = "1-seg_38"
+start = 129.087
+end = 130.512
+speaker = "A"
+ja = "なんかじゃあまず"
+
+[[segments]]
+id = "1-seg_39.1"
+start = 131.22
+end = 133.275
+speaker = "C,A"
+ja = "よね むずくなっちゃうよ"
+zh = ""
+
+[[segments]]
+id = "1-seg_39.2"
+start = 133.325
+end = 134.875
+speaker = "A"
+ja = "でもそれが好きで美味しいから"
+zh = ""
+
+[[segments]]
+id = "1-seg_39.3"
+start = 134.925
+end = 136.445
+speaker = "A"
+ja = "食べてる人もいるんだもんね"
+zh = ""
 
 [[segments]]
 id = "1-seg_43"
-start = 101.482
-end = 102.492
+start = 136.595
+end = 136.895
 speaker = "C"
-ja = "それ大丈夫なんだ!"
+ja = "いうこと?"
 
 [[segments]]
-id = "1-seg_44.1"
-start = 104.212
-end = 108.16
-speaker = "D"
-ja = "癖になってるよ。え、もう今日じゃない？"
+id = "1-seg_44"
+start = 136.945
+end = 137.52
+speaker = "A"
+ja = "なんかバネバネバ"
 
 [[segments]]
-id = "1-seg_44.2"
-start = 108.24
-end = 112.76
-speaker = "D"
-ja = "いや、まだまだ。これから当てる、これから当てる。"
+id = "1-seg_45.1"
+start = 137.58
+end = 140.375
+speaker = "C,A"
+ja = "え 私あの話をして家に帰って"
+zh = ""
 
 [[segments]]
-id = "1-seg_44.3"
-start = 112.84
-end = 116.46
-speaker = "D"
-ja = "はい、ということで。あとね、納豆。"
+id = "1-seg_45.2"
+start = 140.425
+end = 142.775
+speaker = "A"
+ja = "納豆があったからめっちゃやってみたんですよ"
+zh = ""
 
 [[segments]]
-id = "1-seg_44.4"
-start = 116.54
-end = 121.76
-speaker = "D"
-ja = "納豆食べてんのみんな。混ぜれば混ぜるほどさ、"
-
-[[segments]]
-id = "1-seg_44.5"
-start = 121.84
-end = 126.56
-speaker = "D"
-ja = "納豆の栄養がなんちゃらって言ったりするじゃん。"
-
-[[segments]]
-id = "1-seg_44.6"
-start = 126.64
-end = 130.362
-speaker = "D"
-ja = "変化ないらしいよ、別に。え、なんなんですか。"
-
-[[segments]]
-id = "1-seg_45"
-start = 131.22
-end = 132.58
-speaker = "C,D"
-ja = "ちょ、まず粘り気がね、なくなっちゃう。"
+id = "1-seg_45.3"
+start = 142.825
+end = 145.52
+speaker = "A"
+ja = "40回くらい混ぜてみた"
+zh = ""
 
 [[segments]]
 id = "1-seg_47"
-start = 132.66
-end = 136.23
-speaker = "D"
-ja = "え、でもそれが好きでおいしいから、\nあと食べてる人もいるんだもんね。"
+start = 148.97
+end = 150.345
+speaker = "C"
+ja = "まあまあまあそりゃね"
 
 [[segments]]
 id = "1-seg_48"
-start = 136.31
-end = 136.83
-speaker = "C"
-ja = "そういうこと?"
+start = 150.495
+end = 152.52
+speaker = "A"
+ja = "健康になった気がした本当?"
 
 [[segments]]
 id = "1-seg_49"
-start = 136.91
-end = 143.44
-speaker = "D"
-ja = "あ、そういえば私、あの話をして\n家に帰って納豆があったから、めっちゃやってみたんです。"
+start = 152.67
+end = 154.52
+speaker = "C"
+ja = "食べれたんだ食べれたえらい"
 
 [[segments]]
 id = "1-seg_50"
-start = 143.52
-end = 145.57
-speaker = "C,D"
-ja = "え、嘘嘘。40回くらい混ぜてみた。"
-
-[[segments]]
-id = "1-seg_52"
-start = 145.65
-end = 146.15
-speaker = "C"
-ja = "どう?"
+start = 154.58
+end = 157.12
+speaker = "A,C"
+ja = "うん えらいね納豆のね"
+zh = ""
 
 [[segments]]
 id = "1-seg_53"
-start = 148.22
-end = 149.73
-speaker = "C"
-ja = "まあまあまあ"
+start = 157.524
+end = 159.374
+speaker = "A"
+ja = "あの あれも最後にしてみた調味料を"
 
 [[segments]]
 id = "1-seg_54"
-start = 149.81
-end = 151.98
-speaker = "D"
-ja = "でも健康になった気がした"
+start = 159.924
+end = 160.424
+speaker = "A"
+ja = "あ え"
 
 [[segments]]
 id = "1-seg_55"
-start = 152.06
-end = 153.48
-speaker = "C"
-ja = "本当?食べれたんだ?"
-
-[[segments]]
-id = "1-seg_56"
-start = 153.56
-end = 154.13
-speaker = "D"
-ja = "食べれた"
+start = 160.574
+end = 162.374
+speaker = "A,C"
+ja = "で またちょっと混ぜてみたいな そう"
+zh = ""
 
 [[segments]]
 id = "1-seg_57"
-start = 154.21
-end = 159.424
-speaker = "C,D"
-ja = "偉いね。なんか納豆の、\nあのあれも最後にしてみた？調味料を。"
+start = 162.674
+end = 163.474
+speaker = "A"
+ja = "どうだった"
 
 [[segments]]
-id = "1-seg_60"
-start = 160.024
-end = 162.374
-speaker = "C,D"
-ja = "え？で、またちょっと混ぜてみたいな？そう。"
+id = "1-seg_58"
+start = 163.624
+end = 164.974
+speaker = "C"
+ja = "最初に入れたほうが"
+
+[[segments]]
+id = "1-seg_59"
+start = 166.274
+end = 166.699
+speaker = "A,C"
+ja = "いや 気がする"
+zh = ""
+
+[[segments]]
+id = "1-seg_61"
+start = 166.849
+end = 169.524
+speaker = "A"
+ja = "絶対おいしいけど でも健康にはいいんだもんね"
 
 [[segments]]
 id = "1-seg_62"
-start = 162.774
-end = 163.524
-speaker = "D"
-ja = "どうだった?"
+start = 169.824
+end = 170.424
+speaker = "A"
+ja = "そうなの?"
 
 [[segments]]
 id = "1-seg_63"
-start = 163.624
-end = 165.224
-speaker = "C"
-ja = "最初に入れた方が良かった"
+start = 170.484
+end = 172.799
+speaker = "C,A"
+ja = "いや 本当に わかんない でもなんか難しいですね"
+zh = ""
 
 [[segments]]
-id = "1-seg_65"
-start = 166.374
-end = 172.834
-speaker = "C,D"
-ja = "やっぱ美味しいけどでも健康にはいいんだもんね。そうなの？\nいや、本当に分かんない。でもなんか難しいですね。"
+id = "1-seg_66"
+start = 172.949
+end = 174.224
+speaker = "A"
+ja = "ね 健康にいいのか?"
+
+[[segments]]
+id = "1-seg_67"
+start = 174.424
+end = 175.624
+speaker = "A"
+ja = "プラシーボでいいんじゃない?でも"
+
+[[segments]]
+id = "1-seg_68"
+start = 177.874
+end = 178.199
+speaker = "A"
+ja = "そっか"
+
+[[segments]]
+id = "1-seg_69"
+start = 178.249
+end = 178.799
+speaker = "C"
+ja = "いい気がする"
 
 [[segments]]
 id = "1-seg_70"
-start = 172.914
-end = 178.834
-speaker = "C,D"
-ja = "ね、健康にいいのか？プラシーボ。でも健康にいいんじゃない？\nプラスプラス？正解。そっか。いい気がする。"
+start = 178.949
+end = 182.324
+speaker = "A"
+ja = "え でも私は混ぜないですよ?ちょっとあの納豆に"
 
 [[segments]]
-id = "1-seg_77.1"
-start = 178.914
-end = 183.36
-speaker = "D"
-ja = "でも私は混ぜないですよ、ちょっと。\nあの納豆に砂糖を入れて、"
+id = "1-seg_71"
+start = 182.788
+end = 184.313
+speaker = "A"
+ja = "いただいてるからありがとう"
 
 [[segments]]
-id = "1-seg_77.2"
-start = 183.44
-end = 187.76
-speaker = "D"
-ja = "ということで、夏について！夏について！"
+id = "1-seg_72"
+start = 184.463
+end = 185.163
+speaker = "C"
+ja = "あーね"
 
 [[segments]]
-id = "1-seg_77.3"
-start = 187.84
-end = 192.938
-speaker = "D"
-ja = "納豆こねも、ほっぺまーさんからいただきました。\nありがとうございます。春日さん、乾さん、咲いてますか？"
+id = "1-seg_73"
+start = 185.313
+end = 187.038
+speaker = "A"
+ja = "納豆について納豆について"
 
 [[segments]]
-id = "1-seg_85.1"
-start = 194.088
-end = 200.36
-speaker = "D"
-ja = "第48回の配信で、納豆を何回かき混ぜればいいか\n議論の波紋を広げていましたね。"
+id = "1-seg_74.1"
+start = 187.188
+end = 188.775
+speaker = "A"
+ja = "納豆のメールもほっぺまーさんから"
+zh = ""
 
 [[segments]]
-id = "1-seg_85.2"
-start = 200.44
-end = 210.038
-speaker = "D"
-ja = "自分も10回くらいです。混ぜる前にからしを入れて、\n混ぜた後から納豆のタレまたは醤油を入れますね。ただ、"
+id = "1-seg_74.2"
+start = 188.825
+end = 190.163
+speaker = "A"
+ja = "いただきました ありがとうございます"
+zh = ""
 
 [[segments]]
-id = "1-seg_88"
+id = "1-seg_75"
+start = 190.313
+end = 190.913
+speaker = "C"
+ja = "また山"
+
+[[segments]]
+id = "1-seg_76"
+start = 191.063
+end = 192.988
+speaker = "A"
+ja = "春日さん 乾さん 咲いてますか"
+
+[[segments]]
+id = "1-seg_77"
+start = 193.338
+end = 193.788
+speaker = "C"
+ja = "うーん"
+
+[[segments]]
+id = "1-seg_78.1"
+start = 194.388
+end = 199.475
+speaker = "A"
+ja = "第48回の配信で納豆を何回かき混ぜればいいか"
+zh = ""
+
+[[segments]]
+id = "1-seg_78.2"
+start = 199.525
+end = 204.575
+speaker = "A"
+ja = "議論の波紋を広げていましたが 自分も10回くらいです"
+zh = ""
+
+[[segments]]
+id = "1-seg_78.3"
+start = 204.625
+end = 207.375
+speaker = "A"
+ja = "混ぜる前にからしを入れて"
+zh = ""
+
+[[segments]]
+id = "1-seg_78.4"
+start = 207.425
+end = 209.988
+speaker = "A"
+ja = "混ぜた後から納豆のタレまたは醤油を入れますね ただ"
+zh = ""
+
+[[segments]]
+id = "1-seg_81.1"
 start = 210.74
-end = 217.65
-speaker = "D"
-ja = "あの有名な魯山人は、最低でも400回かき混ぜると\n美味しくなると言ったとされています。試しにやったら、"
+end = 213.675
+speaker = "A"
+ja = "この有名な魯山人は最低でも400回かき混ぜると"
+zh = ""
+
+[[segments]]
+id = "1-seg_81.2"
+start = 213.725
+end = 216.49
+speaker = "A"
+ja = "美味しくなると言ったとされています"
+zh = ""
+
+[[segments]]
+id = "1-seg_82.1"
+start = 216.55
+end = 219.115
+speaker = "C,A"
+ja = "えー 試しにやったら確かに美味しいんですよ"
+zh = ""
+
+[[segments]]
+id = "1-seg_82.2"
+start = 219.165
+end = 220.69
+speaker = "A,C"
+ja = "400回やったんです やったの"
+zh = ""
 
 [[segments]]
 id = "1-seg_89"
-start = 217.73
-end = 220.55
-speaker = "A"
-ja = "確かに美味しいのですよ。400回やったの？"
+start = 220.99
+end = 221.665
+speaker = "C"
+ja = "え?すごい"
 
 [[segments]]
 id = "1-seg_90"
-start = 220.63
+start = 221.815
 end = 222.49
-speaker = "D"
+speaker = "A"
 ja = "美味しいの?"
 
 [[segments]]
 id = "1-seg_91"
 start = 222.64000000000001
-end = 225.1
-speaker = "D"
+end = 225.115
+speaker = "A"
 ja = "え?なんで混ぜれば混ぜるほど美味しいの?"
 
 [[segments]]
-id = "1-seg_92"
-start = 225.18
-end = 231.65
-speaker = "A"
-ja = "でもなんかさ、分かんないけど、お菓子作りとかでも\n泡立てたらバーって膨らんで減ったりするじゃん、泡。"
+id = "1-seg_92.1"
+start = 225.265
+end = 227.975
+speaker = "C"
+ja = "でもなんかさ 分かんないけど"
+zh = ""
+
+[[segments]]
+id = "1-seg_92.2"
+start = 228.025
+end = 230.075
+speaker = "C"
+ja = "お菓子作りとかでもバーって混ぜて"
+zh = ""
+
+[[segments]]
+id = "1-seg_92.3"
+start = 230.125
+end = 231.865
+speaker = "C"
+ja = "バーって膨らんで減ったりするじゃん 泡"
+zh = ""
 
 [[segments]]
 id = "1-seg_93"
-start = 231.73
-end = 232.75
-speaker = "D"
+start = 232.015
+end = 232.94000000000003
+speaker = "A"
 ja = "確かに確かに"
 
 [[segments]]
 id = "1-seg_94"
-start = 232.83
-end = 233.84
-speaker = "A"
-ja = "あのなんか"
+start = 234.87199999999999
+end = 237.072
+speaker = "C"
+ja = "うわーってもこもこもこってなって落ち着いたりするから"
 
 [[segments]]
-id = "1-seg_95"
-start = 234.772
-end = 243.932
-speaker = "C,D"
-ja = "うわーってもこもこもこってなって落ち着いたりするから、確かに。\n400回混ぜたら逆にもこもこじゃなくなる可能性ある。逆に、逆に今度、"
+id = "1-seg_95.1"
+start = 237.132
+end = 238.575
+speaker = "A,C"
+ja = "確かに 400回混ぜたら"
+zh = ""
+
+[[segments]]
+id = "1-seg_95.2"
+start = 238.625
+end = 240.122
+speaker = "C"
+ja = "逆にもこもこじゃない可能性"
+zh = ""
+
+[[segments]]
+id = "1-seg_97"
+start = 240.822
+end = 242.147
+speaker = "A"
+ja = "え泡なくなる?"
+
+[[segments]]
+id = "1-seg_98"
+start = 242.297
+end = 243.897
+speaker = "C"
+ja = "逆に逆に"
+
+[[segments]]
+id = "1-seg_99"
+start = 244.047
+end = 245.62199999999999
+speaker = "A"
+ja = "いつやってみようかな"
 
 [[segments]]
 id = "1-seg_100"
-start = 244.012
-end = 251.282
-speaker = "C,D"
-ja = "え、ちょっとやってみよっかな？やるか。やるか？\nえ、やる？ここで。持ってくる？持ってくる？実証する？"
+start = 245.87199999999999
+end = 246.747
+speaker = "C"
+ja = "今度やるか"
+
+[[segments]]
+id = "1-seg_101"
+start = 246.897
+end = 248.547
+speaker = "A"
+ja = "やるか?やる?ここ"
+
+[[segments]]
+id = "1-seg_102"
+start = 248.697
+end = 250.072
+speaker = "C"
+ja = "ここで持ってくる混ぜる機械"
+
+[[segments]]
+id = "1-seg_103"
+start = 250.222
+end = 251.397
+speaker = "A"
+ja = "実証する?"
+
+[[segments]]
+id = "1-seg_104"
+start = 251.547
+end = 253.097
+speaker = "C"
+ja = "スタジオ納豆の匂いにして帰ろ"
 
 [[segments]]
 id = "1-seg_105"
-start = 251.362
-end = 253.082
-speaker = "C"
-ja = "スタジオ納豆の匂いにして帰ろ?"
+start = 253.247
+end = 257.147
+speaker = "A"
+ja = "100回200回300回400回でさ4つぐらい吸収したやつ"
 
 [[segments]]
 id = "1-seg_106"
-start = 253.162
-end = 258.17199999999997
-speaker = "C,D"
-ja = "100回、200回、300回、400回でさ、\n4つぐらい検証したいっすね？いいんじゃん、やろう。いいよね？"
-
-[[segments]]
-id = "1-seg_112"
-start = 258.522
-end = 267.418
-speaker = "C,D"
-ja = "もしハマったらマジで廃人になるかもしんないしね。\n確かにね。そう。やったことないんだけど。毎回400回混ぜたらこの辺きつい。なんかちょっと。"
-
-[[segments]]
-id = "1-seg_119"
-start = 267.498
-end = 268.978
+start = 257.297
+end = 258.097
 speaker = "C"
-ja = "面白いね納豆って"
+ja = "いいじゃんやろうよ"
 
 [[segments]]
-id = "1-seg_120"
-start = 269.058
-end = 270.428
-speaker = "D"
-ja = "奥が深いですね。"
+id = "1-seg_107"
+start = 258.247
+end = 261.647
+speaker = "A"
+ja = "いいよね もう一期間あったら0倍になるかもしんないしね"
 
 [[segments]]
-id = "1-seg_121"
-start = 270.508
+id = "1-seg_108"
+start = 261.797
+end = 262.272
+speaker = "C"
+ja = "確かにね"
+
+[[segments]]
+id = "1-seg_109"
+start = 262.422
+end = 263.197
+speaker = "A"
+ja = "そうやったことないだけ"
+
+[[segments]]
+id = "1-seg_110"
+start = 263.347
+end = 269.043
+speaker = "A,C"
+ja = "毎回400回混ぜるのはきついかも えー面白いね納豆って"
+zh = ""
+
+[[segments]]
+id = "1-seg_115"
+start = 269.193
+end = 270.443
+speaker = "C"
+ja = "奥が深いですね"
+
+[[segments]]
+id = "1-seg_116"
+start = 270.593
+end = 272.418
+speaker = "A"
+ja = "ねなんか他ある?"
+
+[[segments]]
+id = "1-seg_117"
+start = 272.568
 end = 273.668
-speaker = "C"
-ja = "ねなんか他あるなんかそういうやつ"
+speaker = "A"
+ja = "なんかそういうやつ"
 
 [[segments]]
-id = "1-seg_122"
-start = 275.51800000000003
-end = 276.01800000000003
-speaker = "D"
+id = "1-seg_118"
+start = 275.56800000000004
+end = 276.06800000000004
+speaker = "A"
 ja = "え?"
 
 [[segments]]
-id = "1-seg_123"
-start = 276.51800000000003
-end = 280.528
-speaker = "D"
-ja = "なんかその、ラーメンの海苔いつ食べるみたいな。"
+id = "1-seg_119"
+start = 276.618
+end = 280.693
+speaker = "A"
+ja = "なんかそのラーメンの海苔いつ食べるみたいな"
 
 [[segments]]
-id = "1-seg_124"
-start = 280.608
-end = 287.468
+id = "1-seg_120"
+start = 280.843
+end = 281.593
 speaker = "C"
-ja = "迷うよね。私も食べ方があって、\nラーメンの海苔をちょっとスープに浸して、"
+ja = "迷うよね"
 
 [[segments]]
-id = "1-seg_125"
+id = "1-seg_121"
+start = 281.743
+end = 287.468
+speaker = "A"
+ja = "私も食べ方があってラーメンの海苔をちょっとスープに浸して"
+
+[[segments]]
+id = "1-seg_122.1"
 start = 287.988
-end = 293.96
-speaker = "C,D"
-ja = "べちゃべちゃじゃない、ちょっと浸して、\nはい、お米と一緒に食べるのが好きなの。"
+end = 290.375
+speaker = "C"
+ja = "びちょびちょじゃない ちょっと浸して"
+zh = ""
+
+[[segments]]
+id = "1-seg_122.2"
+start = 290.425
+end = 292.475
+speaker = "C"
+ja = "お米と一緒に食べるのが好きなの"
+zh = ""
+
+[[segments]]
+id = "1-seg_122.3"
+start = 292.525
+end = 294.463
+speaker = "C"
+ja = "家系とかのお米つけれるとこ"
+zh = ""
+
+[[segments]]
+id = "1-seg_123"
+start = 294.613
+end = 295.888
+speaker = "A"
+ja = "美味しそううまい"
+
+[[segments]]
+id = "1-seg_124.1"
+start = 295.948
+end = 298.175
+speaker = "C,A"
+ja = "本当 でも私ラーメン屋さんでさ"
+zh = ""
+
+[[segments]]
+id = "1-seg_124.2"
+start = 298.225
+end = 301.138
+speaker = "A"
+ja = "ラーメンと一緒に白米まだ頼んだことなくて"
+zh = ""
+
+[[segments]]
+id = "1-seg_126"
+start = 301.488
+end = 301.963
+speaker = "C"
+ja = "ほんとに?"
+
+[[segments]]
+id = "1-seg_127.1"
+start = 302.113
+end = 304.975
+speaker = "A"
+ja = "美味しい美味しいね 絶対それは"
+zh = ""
 
 [[segments]]
 id = "1-seg_127.2"
-start = 294.04
-end = 296.96
-speaker = "D"
-ja = "家系とかでお米つけられるとこ、美味しそう。"
+start = 305.025
+end = 308.975
+speaker = "A"
+ja = "私はだいたいパリパリのままで食べたいなっていう気持ちで"
+zh = ""
 
 [[segments]]
 id = "1-seg_127.3"
-start = 297.04
-end = 301.248
-speaker = "D"
-ja = "うまい。でも私ラーメン屋さんで、\nラーメンと一緒に白米まだ頼んだことなくて。"
+start = 309.025
+end = 311.575
+speaker = "A"
+ja = "今日食べようと思うんだけど"
+zh = ""
 
 [[segments]]
-id = "1-seg_128"
-start = 301.328
-end = 302.098
+id = "1-seg_127.4"
+start = 311.625
+end = 314.038
+speaker = "A"
+ja = "気づいたら沈んでて一番最後になっちゃう"
+zh = ""
+
+[[segments]]
+id = "1-seg_128.1"
+start = 315.22
+end = 317.475
 speaker = "C"
-ja = "本当に?"
+ja = "でもさなんか多分"
+zh = ""
 
 [[segments]]
-id = "1-seg_129.1"
-start = 302.178
-end = 305.16
-speaker = "D"
-ja = "美味しいよ。美味しいね、絶対それは。"
+id = "1-seg_128.2"
+start = 317.525
+end = 319.475
+speaker = "C"
+ja = "特にこれは女子だけの話かもしれないですけど"
+zh = ""
 
 [[segments]]
-id = "1-seg_129.2"
-start = 305.24
-end = 308.96
-speaker = "D"
-ja = "私はだいたいパリパリのままで食べたいなっていう気持ちで、"
+id = "1-seg_128.3"
+start = 319.525
+end = 321.295
+speaker = "C"
+ja = "お腹がいっぱいになっちゃう問題 卵"
+zh = ""
 
 [[segments]]
-id = "1-seg_129.3"
-start = 309.04
-end = 312.938
-speaker = "D"
-ja = "今日食べようと思うんだけど、気づいたら沈んでて一番下。"
+id = "1-seg_129"
+start = 321.445
+end = 322.245
+speaker = "A"
+ja = "マジでそうなの?"
 
 [[segments]]
 id = "1-seg_130"
-start = 315.22
-end = 321.02000000000004
-speaker = "D"
-ja = "でもさ、なんか具材、特にこれは女子だけの話かもしれないですけど、\nお腹がいっぱいになっちゃう問題。"
+start = 322.395
+end = 327.445
+speaker = "C"
+ja = "とチャーシューを早めにクリアしないと後がきつい"
 
 [[segments]]
 id = "1-seg_131"
-start = 321.12
-end = 322.03
-speaker = "C"
-ja = "マジでそうなの?"
-
-[[segments]]
-id = "1-seg_132"
-start = 322.11
-end = 325.68
-speaker = "D"
-ja = "卵とチャーシューを早めにクリアしないと、後"
-
-[[segments]]
-id = "1-seg_133"
-start = 325.76
-end = 326.68
-speaker = "C"
-ja = "マジでそうなの?"
-
-[[segments]]
-id = "1-seg_134"
-start = 326.76
-end = 327.58
-speaker = "D"
-ja = "がきつい。"
-
-[[segments]]
-id = "1-seg_135"
-start = 327.66
-end = 329.68
-speaker = "C"
+start = 327.595
+end = 329.695
+speaker = "A"
 ja = "そうチャーシュー入んないの最後に"
 
 [[segments]]
+id = "1-seg_132"
+start = 329.845
+end = 331.395
+speaker = "C"
+ja = "入んないほんと卵も入んない"
+
+[[segments]]
+id = "1-seg_133.1"
+start = 331.545
+end = 333.675
+speaker = "A"
+ja = "マジだよね 私たち毎回思ってさ"
+zh = ""
+
+[[segments]]
+id = "1-seg_133.2"
+start = 333.725
+end = 335.745
+speaker = "A"
+ja = "チャーシュー残しちゃって最後まで"
+zh = ""
+
+[[segments]]
+id = "1-seg_134"
+start = 335.895
+end = 338.82000000000005
+speaker = "C"
+ja = "そうこううわっていながら食べてたから"
+
+[[segments]]
+id = "1-seg_135.1"
+start = 341.396
+end = 342.975
+speaker = "A"
+ja = "最初に食べちゃえば"
+zh = ""
+
+[[segments]]
+id = "1-seg_135.2"
+start = 343.025
+end = 344.571
+speaker = "A"
+ja = "麺は意外とツルって入ったりするんだよね"
+zh = ""
+
+[[segments]]
 id = "1-seg_136"
-start = 329.76
-end = 331.33
-speaker = "D"
-ja = "んない本当卵も入んない"
+start = 344.721
+end = 345.596
+speaker = "C"
+ja = "そうなんですよ"
 
 [[segments]]
 id = "1-seg_137"
-start = 331.41
-end = 335.62
+start = 345.796
+end = 348.371
 speaker = "C"
-ja = "なんだよね。私何回も言ってさ、\nチャーシュー残しちゃってさ、最後まで。"
+ja = "まあそうでもラーメンは結構ペロリなのかな"
 
 [[segments]]
 id = "1-seg_138"
-start = 336.07000000000005
-end = 338.43
-speaker = "D"
-ja = "なんかこうやって食べてたから"
+start = 348.521
+end = 349.871
+speaker = "A"
+ja = "関係ないのかどうですか?"
 
 [[segments]]
 id = "1-seg_139"
-start = 338.51
-end = 339.32000000000005
+start = 350.021
+end = 350.74600000000004
 speaker = "C"
-ja = "おかしいよー。"
+ja = "どうですか?"
 
 [[segments]]
 id = "1-seg_140"
-start = 341.396
-end = 344.556
-speaker = "C"
-ja = "スッとポチャっと食べちゃえば\nなんか麺は意外とツルッと入ったりするんだよね"
+start = 351.096
+end = 352.371
+speaker = "A"
+ja = "関係ないんだ"
 
 [[segments]]
 id = "1-seg_141"
-start = 344.636
-end = 350.796
-speaker = "C,D"
-ja = "男性は結構もうペロリなのかな。\nこれね、関係ないのか。どうですか？どうですか？"
+start = 352.521
+end = 352.846
+speaker = "C"
+ja = "なさそう"
 
 [[segments]]
-id = "1-seg_146"
-start = 351.196
-end = 358.556
-speaker = "C,D"
-ja = "あ、なさそう。関係ないんだ。\n関係なさそう。女子はね、そうかね、最初にね食べとかないと。"
+id = "1-seg_142"
+start = 353.696
+end = 355.521
+speaker = "A"
+ja = "関係なさそう女子はね"
 
 [[segments]]
-id = "1-seg_150"
-start = 358.636
-end = 362.04600000000005
-speaker = "C,D"
-ja = "でもね、ほんと最初に食べたら全然余裕だった。そうだよね、やっぱ。"
+id = "1-seg_143"
+start = 355.671
+end = 358.421
+speaker = "C"
+ja = "そっかね最初にね食べとかないと"
+
+[[segments]]
+id = "1-seg_144"
+start = 358.571
+end = 360.721
+speaker = "A"
+ja = "でもねほんと最初に食べたら全然余裕だった"
+
+[[segments]]
+id = "1-seg_145"
+start = 360.871
+end = 361.471
+speaker = "C"
+ja = "そうだね"
+
+[[segments]]
+id = "1-seg_146.1"
+start = 361.621
+end = 363.775
+speaker = "A"
+ja = "やっぱ卵結構胃の容量"
+zh = ""
+
+[[segments]]
+id = "1-seg_146.2"
+start = 363.825
+end = 365.946
+speaker = "A"
+ja = "持ってかれそうで後回ししちゃうんだよな"
+zh = ""
+
+[[segments]]
+id = "1-seg_147"
+start = 367.316
+end = 367.941
+speaker = "D"
+ja = "結構来るよね"
+
+[[segments]]
+id = "1-seg_148"
+start = 368.091
+end = 369.391
+speaker = "A"
+ja = "結構くる美味しい"
+
+[[segments]]
+id = "1-seg_149"
+start = 369.541
+end = 371.641
+speaker = "D"
+ja = "ですね 面白いこの話結構やりたいね"
+
+[[segments]]
+id = "1-seg_150.1"
+start = 371.791
+end = 374.975
+speaker = "A"
+ja = "ね私さ みんなの卵かけご飯のこだわり知りたい"
+zh = ""
+
+[[segments]]
+id = "1-seg_150.2"
+start = 375.025
+end = 379.091
+speaker = "A"
+ja = "私結構アレンジレシピ派でさ 色々"
+zh = ""
+
+[[segments]]
+id = "1-seg_151"
+start = 379.241
+end = 379.941
+speaker = "D"
+ja = "そうなんだ 聞"
 
 [[segments]]
 id = "1-seg_152"
-start = 362.446
-end = 365.99600000000004
-speaker = "C"
-ja = "卵結構胃の容量持ってかれそうで、後回しちゃったんだよな。"
+start = 380.091
+end = 381.891
+speaker = "A"
+ja = "なんか色んなのが好きなんだけど ね"
 
 [[segments]]
 id = "1-seg_153"
-start = 367.316
-end = 371.96599999999995
-speaker = "C,D"
-ja = "結構くるよね。結構くる。美味しい。\n面白いですね。この話結構やりたいね。"
+start = 382.041
+end = 382.416
+speaker = "D"
+ja = "きたい皆"
+
+[[segments]]
+id = "1-seg_154"
+start = 382.476
+end = 384.491
+speaker = "A,D"
+ja = "え ぜひ送ってください お願いします"
+zh = ""
+
+[[segments]]
+id = "1-seg_156.1"
+start = 384.641
+end = 386.975
+speaker = "A"
+ja = "ということで今日もハッシュタグ夏さく咲くで"
+zh = ""
+
+[[segments]]
+id = "1-seg_156.2"
+start = 387.025
+end = 389.275
+speaker = "A"
+ja = "盛り上げていただけると嬉しいです"
+zh = ""
+
+[[segments]]
+id = "1-seg_156.3"
+start = 389.325
+end = 391.716
+speaker = "A"
+ja = "それでは最後までよろしくお願いします"
+zh = ""
+
+[[segments]]
+id = "1-seg_157"
+start = 401.94
+end = 402.565
+speaker = "D"
+ja = "春日さくらでーす"
 
 [[segments]]
 id = "1-seg_158"
-start = 372.066
-end = 376.01599999999996
-speaker = "C,D"
-ja = "ね！私さ、みんなの卵かけご飯のこだわり知りたい。知りたい！"
+start = 402.715
+end = 403.015
+speaker = "C"
+ja = "はい"
 
 [[segments]]
-id = "1-seg_162"
-start = 376.116
-end = 384.316
-speaker = "C,D"
-ja = "私結構アレンジレシピ派でさ、いろいろ。\nそうなんだ。なんかいろんなのが好きなんだけど。聞きたいね！ね！みんなぜひ送ってください。お願いします。"
+id = "1-seg_159"
+start = 403.165
+end = 404.09
+speaker = "D"
+ja = "乾夏寧でーす"
+
+[[segments]]
+id = "1-seg_160"
+start = 404.24
+end = 412.84
+speaker = "D"
+ja = "えー私はですね先日渋谷のライブ\nSTRAIGHT! REACH!! CHEER!!! をやりました やりました"
+
+[[segments.skip_checks]]
+code = "ja_repeated_punctuation"
+reason = "Official live title spelling uses repeated exclamation marks."
+
+[[segments]]
+id = "1-seg_161"
+start = 415.09
+end = 415.915
+speaker = "C"
+ja = "おめでとう!"
+
+[[segments]]
+id = "1-seg_162.1"
+start = 416.065
+end = 419.175
+speaker = "D"
+ja = "東京公演で現時点でまだね"
+zh = ""
+
+[[segments]]
+id = "1-seg_162.2"
+start = 419.225
+end = 422.175
+speaker = "D"
+ja = "大阪公演は終わってないんですけど"
+zh = ""
+
+[[segments]]
+id = "1-seg_162.3"
+start = 422.225
+end = 425.59
+speaker = "D"
+ja = "大阪公演もそろそろやると思う 放送時には終わってるっていう"
+zh = ""
+
+[[segments]]
+id = "1-seg_163"
+start = 426.64
+end = 426.99
+speaker = "C"
+ja = "なちゅね"
+
+[[segments]]
+id = "1-seg_164"
+start = 431.476
+end = 434.601
+speaker = "D,C"
+ja = "んだけど 嬉しい 本当にすごかった"
+zh = ""
+
+[[segments]]
+id = "1-seg_167"
+start = 434.751
+end = 435.301
+speaker = "C"
+ja = "マジ?"
+
+[[segments]]
+id = "1-seg_168"
+start = 435.451
+end = 438.601
+speaker = "D"
+ja = "曲数がマジで増えすぎなのと"
 
 [[segments]]
 id = "1-seg_169"
-start = 384.396
-end = 385.416
-speaker = "D"
-ja = "はい!ということで"
+start = 438.751
+end = 439.301
+speaker = "C"
+ja = "多かったね"
 
 [[segments]]
-id = "1-seg_170"
-start = 385.866
-end = 391.866
-speaker = "C,D"
-ja = "今日もハッシュタグ夏さく咲くで盛り上げていただけると嬉しいです。\nです！それでは最後までよろしくお願いします。"
+id = "1-seg_170.1"
+start = 439.451
+end = 442.175
+speaker = "D"
+ja = "そう衣装が私新衣装生で見るの初めてだったから"
+zh = ""
+
+[[segments]]
+id = "1-seg_170.2"
+start = 442.225
+end = 445.251
+speaker = "D"
+ja = "めちゃくちゃ可愛いね"
+zh = ""
+
+[[segments]]
+id = "1-seg_171"
+start = 445.401
+end = 448.926
+speaker = "C"
+ja = "そうなのよね私オタエルも初めて見たので"
+
+[[segments]]
+id = "1-seg_172.1"
+start = 449.076
+end = 450.575
+speaker = "D"
+ja = "はい夏さくネームゆいさんから"
+zh = ""
+
+[[segments]]
+id = "1-seg_172.2"
+start = 450.625
+end = 451.776
+speaker = "D"
+ja = "いただきました ありがとうございます"
+zh = ""
 
 [[segments]]
 id = "1-seg_173"
-start = 401.94
-end = 403.79
-speaker = "C,D"
-ja = "春日さくらです。乾夏寧です。"
+start = 452.476
+end = 454.476
+speaker = "D"
+ja = "さくぽん なちゅ 咲いてますか"
+
+[[segments]]
+id = "1-seg_174"
+start = 456.226
+end = 457.976
+speaker = "D"
+ja = "前橋ウィッチーズライブ"
+
+[[segments]]
+id = "1-seg_175"
+start = 458.932
+end = 462.407
+speaker = "A"
+ja = "STRAIGHT! REACH!! CHEER!!! 東京公演 現地で参加させていただきました"
+
+[[segments.skip_checks]]
+code = "ja_repeated_punctuation"
+reason = "Official live title spelling uses repeated exclamation marks."
 
 [[segments]]
 id = "1-seg_176"
-start = 404.14
-end = 405.79
-speaker = "D"
-ja = "えー私はですね"
+start = 462.557
+end = 463.03200000000004
+speaker = "C"
+ja = "ありがとう"
 
 [[segments]]
-id = "1-seg_177"
-start = 406.29
-end = 411.59
-speaker = "D"
-ja = "先日、前橋ウィッチーズのライブ、\nSTRAIGHT! REACH!! CHEER!!! をやりました。"
+id = "1-seg_177.1"
+start = 463.482
+end = 465.975
+speaker = "A"
+ja = "今回のライブ前のインタビューでさくぽんは"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.2"
+start = 466.025
+end = 468.975
+speaker = "A"
+ja = "私たちの成長を見せなければいけないライブと"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.3"
+start = 469.025
+end = 471.975
+speaker = "A"
+ja = "おっしゃっていましたが それを実感できる"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.4"
+start = 472.025
+end = 474.975
+speaker = "A"
+ja = "とても素晴らしいライブでした ユイナを楽しく"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.5"
+start = 475.025
+end = 477.975
+speaker = "A"
+ja = "可愛く表現するさくぽんのパフォーマンスは"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.6"
+start = 478.025
+end = 480.975
+speaker = "A"
+ja = "みんなの心のお花を咲かせたと思います"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.7"
+start = 481.025
+end = 482.975
+speaker = "A"
+ja = "今回ステージに立ったさくぽんと"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.8"
+start = 483.025
+end = 484.975
+speaker = "A"
+ja = "ドリーミードリーミーフラワーの一人の"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.9"
+start = 485.025
+end = 486.375
+speaker = "A"
+ja = "お客さんとして参加したなちゅの"
+zh = ""
+
+[[segments]]
+id = "1-seg_177.10"
+start = 486.425
+end = 487.782
+speaker = "A"
+ja = "今回のライブの感想をお聞きしたいです"
+zh = ""
 
 [[segments]]
 id = "1-seg_178"
-start = 414.99
-end = 415.85
-speaker = "C"
-ja = "お疲れ様"
+start = 488.638
+end = 489.563
+speaker = "D"
+ja = "いやいやいや"
 
 [[segments]]
 id = "1-seg_179"
-start = 415.93
-end = 425.34000000000003
-speaker = "C,D"
-ja = "東京公演で、現時点でまだね大阪公演は終わってないんですけど、\n大阪公演も放送の時には終わってるっていう。"
-
-[[segments]]
-id = "1-seg_182"
-start = 425.94
-end = 428.42
-speaker = "D"
-ja = "なっちゅんはね、東京公演来てくれたんだけど。"
-
-[[segments]]
-id = "1-seg_183"
-start = 431.476
-end = 438.586
-speaker = "C,D"
-ja = "なんだけど、あれ本当にすごかった。\n曲数がマジで増えすぎなのと、"
-
-[[segments]]
-id = "1-seg_186"
-start = 438.666
-end = 445.226
-speaker = "C,D"
-ja = "すごかったね。衣装が、私新衣装を生で見るの初めてだったから、\nめちゃくちゃ可愛いね。"
-
-[[segments]]
-id = "1-seg_188"
-start = 445.326
-end = 445.911
-speaker = "D"
-ja = "そうなのよ"
-
-[[segments]]
-id = "1-seg_189"
-start = 445.991
-end = 451.726
-speaker = "C,D"
-ja = "私お便りを忘れてた。そうだ、書いて。\n夏さくネームゆいさんからいただきました。ありがとうございます。"
-
-[[segments]]
-id = "1-seg_195"
-start = 452.676
-end = 454.565
-speaker = "D"
-ja = "さくらさん、なちゅ、咲いてますか？"
-
-[[segments]]
-id = "1-seg_196"
-start = 456.676
-end = 458.01
-speaker = "D"
-ja = "前橋ウィッチーズライブ、"
-
-[[segments]]
-id = "1-seg_197"
-start = 458.932
-end = 462.452
+start = 489.713
+end = 490.813
 speaker = "C"
-ja = "STRAIGHT! REACH!! CHEER!!! 東京公演、\n現地で参加させていただきました。"
-
-[[segments]]
-id = "1-seg_199.1"
-start = 462.532
-end = 466.06
-speaker = "C"
-ja = "今回のライブ前のインタビューでさくらさんは、\n私たちの"
-
-[[segments]]
-id = "1-seg_199.2"
-start = 466.14
-end = 469.76
-speaker = "C"
-ja = "成長を見せなければいけないライブと\nおっしゃっていましたが、"
-
-[[segments]]
-id = "1-seg_199.3"
-start = 469.84
-end = 472.982
-speaker = "C"
-ja = "それは実感できるとても素晴らしいライブでした。"
-
-[[segments]]
-id = "1-seg_200"
-start = 473.332
-end = 479.132
-speaker = "C"
-ja = "赤城ユイナを楽しく可愛く表現するさくらさんのパフォーマンスは、\nみんなの心のお花を咲かせたと思います。"
-
-[[segments]]
-id = "1-seg_201"
-start = 479.582
-end = 487.732
-speaker = "C"
-ja = "今回ステージに立ったさくらさんと、\nドリーミードリーミーフラワーの一人のお客さんとして参加したなちゅの、今回のライブの感想をお聞きしたいです。"
-
-[[segments]]
-id = "1-seg_202"
-start = 487.988
-end = 488.648
-speaker = "D"
-ja = "うわあ"
-
-[[segments]]
-id = "1-seg_203"
-start = 488.728
-end = 489.798
-speaker = "C"
-ja = "いやいやいやいや"
-
-[[segments]]
-id = "1-seg_204"
-start = 489.878
-end = 490.823
-speaker = "D"
 ja = "どうでしたか"
 
 [[segments]]
-id = "1-seg_205"
-start = 490.903
-end = 492.898
+id = "1-seg_180"
+start = 490.963
+end = 492.913
 speaker = "D"
-ja = "ああ本当に感動した"
+ja = "あ〜本当に感動した"
 
 [[segments]]
-id = "1-seg_206"
-start = 492.978
-end = 493.598
+id = "1-seg_181"
+start = 493.063
+end = 493.613
 speaker = "C"
 ja = "マジ"
 
 [[segments]]
-id = "1-seg_207"
-start = 493.678
-end = 495.938
+id = "1-seg_182"
+start = 493.763
+end = 495.888
 speaker = "D"
 ja = "なんか今回ソロ曲もあったじゃん全員"
 
 [[segments]]
-id = "1-seg_209"
-start = 497.038
-end = 505.638
-speaker = "D"
-ja = "前にもう一個のソロ曲は生で聞いたことあるんだけど、\n初めて聞くソロ曲だったからめちゃくちゃ感動した。可愛かった。"
-
-[[segments]]
-id = "1-seg_210"
-start = 506.238
-end = 506.758
-speaker = "D"
-ja = "すごい"
-
-[[segments]]
-id = "1-seg_211"
-start = 506.838
-end = 514.438
+id = "1-seg_183.1"
+start = 495.938
+end = 498.975
 speaker = "C,D"
-ja = "刺さってくれ。でも、そう、なんか、あの、なんだろう、\n歌詞がすごい頑張るって感じのやつ。"
+ja = "あー 前にもう一個のソロ曲は"
+zh = ""
 
 [[segments]]
-id = "1-seg_215"
+id = "1-seg_183.2"
+start = 499.025
+end = 501.975
+speaker = "D"
+ja = "生で聴いたことあるんだけど"
+zh = ""
+
+[[segments]]
+id = "1-seg_183.3"
+start = 502.025
+end = 504.375
+speaker = "D"
+ja = "初めて聴くソロ曲だったから"
+zh = ""
+
+[[segments]]
+id = "1-seg_183.4"
+start = 504.425
+end = 506.838
+speaker = "D"
+ja = "めちゃくちゃ感動した 可愛かったすごい"
+zh = ""
+
+[[segments]]
+id = "1-seg_185.1"
+start = 506.898
+end = 510.575
+speaker = "D"
+ja = "よ そうなんかあのなんだろう"
+zh = ""
+
+[[segments]]
+id = "1-seg_185.2"
+start = 510.625
+end = 514.338
+speaker = "D"
+ja = "歌詞がすごい頑張るって感じのやつじゃん"
+zh = ""
+
+[[segments]]
+id = "1-seg_191.1"
 start = 526.58
-end = 530.29
-speaker = "C"
-ja = "ステージ立ってるの見ると、\nなんかめちゃくちゃ懐かしみになった感。"
-
-[[segments]]
-id = "1-seg_216"
-start = 530.37
-end = 530.88
+end = 528.175
 speaker = "D"
-ja = "マジー?"
+ja = "ステージで立ってるの見ると"
+zh = ""
 
 [[segments]]
-id = "1-seg_218"
+id = "1-seg_191.2"
+start = 528.225
+end = 529.905
+speaker = "D"
+ja = "めちゃくちゃ懐かみになった"
+zh = ""
+
+[[segments]]
+id = "1-seg_192"
+start = 530.055
+end = 530.73
+speaker = "C"
+ja = "マジ?"
+
+[[segments]]
+id = "1-seg_193"
 start = 531.1800000000001
-end = 531.6800000000001
+end = 531.9300000000001
 speaker = "D"
-ja = "楽しい"
+ja = "めちゃくちゃ"
 
 [[segments]]
-id = "1-seg_219"
-start = 531.76
-end = 535.98
-speaker = "C"
-ja = "感動して。なんか全員でのパフォーマンスもマジでなんか、"
-
-[[segments]]
-id = "1-seg_220"
-start = 536.5300000000001
-end = 538.58
-speaker = "C"
-ja = "本当にアイドルってくらい"
-
-[[segments]]
-id = "1-seg_221"
-start = 538.88
-end = 542.15
-speaker = "C"
-ja = "なんか踊り揃っててめちゃくちゃかっこよかった"
-
-[[segments]]
-id = "1-seg_222"
-start = 542.23
-end = 549.04
+id = "1-seg_194.1"
+start = 531.99
+end = 534.975
 speaker = "C,D"
-ja = "嬉しい。し、なんか生歌とは思えなかった。\nみんなマジうますぎて、マジですごかった。"
+ja = "懐かしかった 全員でのパフォーマンスも"
+zh = ""
 
 [[segments]]
-id = "1-seg_226"
-start = 549.12
-end = 551.5300000000001
+id = "1-seg_194.2"
+start = 535.025
+end = 538.475
 speaker = "D"
-ja = "いやでもなんか自分もやってて"
+ja = "本当にアイドルってぐらい踊り揃ってて"
+zh = ""
 
 [[segments]]
-id = "1-seg_227.1"
+id = "1-seg_194.3"
+start = 538.525
+end = 543.13
+speaker = "D"
+ja = "めちゃくちゃかっこよかったし"
+zh = ""
+
+[[segments]]
+id = "1-seg_196.1"
+start = 543.28
+end = 546.275
+speaker = "D"
+ja = "生歌とは思えなかった"
+zh = ""
+
+[[segments]]
+id = "1-seg_196.2"
+start = 546.325
+end = 549.255
+speaker = "D"
+ja = "みんなマジ歌うますぎてすごかった"
+zh = ""
+
+[[segments]]
+id = "1-seg_197"
+start = 549.405
+end = 551.58
+speaker = "C"
+ja = "でもなんか自分もやってて"
+
+[[segments]]
+id = "1-seg_198.1"
 start = 552.66
-end = 558.76
-speaker = "D"
-ja = "まあ日々見てるからあんま気づかないけど、\nこの前のライブはすごいみんなの成長を感じた。"
+end = 555.975
+speaker = "C"
+ja = "まあ日々見てるからあんま気づかないけど"
+zh = ""
 
 [[segments]]
-id = "1-seg_227.2"
-start = 558.84
-end = 564.46
-speaker = "D"
-ja = "自分も含めかもしれないけど、\nなんか安定してきたなって、歌とか。"
+id = "1-seg_198.2"
+start = 556.025
+end = 558.975
+speaker = "C"
+ja = "この前のライブはすごいみんなの成長を感じた"
+zh = ""
 
 [[segments]]
-id = "1-seg_227.3"
-start = 564.54
-end = 569.81
-speaker = "D"
-ja = "嬉しい。あとMCがめちゃくちゃ上がった。"
+id = "1-seg_198.3"
+start = 559.025
+end = 562.175
+speaker = "C"
+ja = "自分も含めかもしれないけど"
+zh = ""
 
 [[segments]]
-id = "1-seg_228.1"
+id = "1-seg_198.4"
+start = 562.225
+end = 565.935
+speaker = "C"
+ja = "安定してきたなって 歌とか"
+zh = ""
+
+[[segments]]
+id = "1-seg_199"
+start = 566.085
+end = 569.76
+speaker = "D"
+ja = "マジでねあとMCがめちゃくちゃ上手かった"
+
+[[segments]]
+id = "1-seg_200"
 start = 570.36
-end = 579.16
+end = 570.685
+speaker = "C"
+ja = "嬉しい"
+
+[[segments]]
+id = "1-seg_201"
+start = 570.835
+end = 576.86
 speaker = "D"
-ja = "なんかMCとかつなぎというか、場の煽りとか全部さ、"
+ja = "あのMCとかつなぎというか場の煽りとか全部は"
 
 [[segments]]
-id = "1-seg_228.2"
-start = 579.24
-end = 585.96
-speaker = "C"
-ja = "怖くない？今回はMCの数を減らしたんですよ。"
+id = "1-seg_202"
+start = 579.188
+end = 579.9879999999999
+speaker = "C,D"
+ja = "ちょっとあるね うん"
+zh = ""
 
 [[segments]]
-id = "1-seg_228.3"
-start = 586.04
-end = 592.96
-speaker = "C"
-ja = "曲数を増やした分MC減らして、\nだから体力も課題だったの。続けてやるみたいな。"
+id = "1-seg_207.1"
+start = 580.048
+end = 582.675
+speaker = "D"
+ja = "すごいよね 今回はMCの数を減らしたんですよ"
+zh = ""
 
 [[segments]]
-id = "1-seg_228.4"
-start = 593.04
-end = 599.788
+id = "1-seg_207.2"
+start = 582.725
+end = 585.913
+speaker = "D"
+ja = "曲数を増やした分 MC"
+zh = ""
+
+[[segments]]
+id = "1-seg_208"
+start = 586.063
+end = 586.613
 speaker = "C"
-ja = "けどMC減らした分、今までは分散してたんだけど、\nMC自分に結構固まってたから、頑張ろう"
+ja = "減らして"
+
+[[segments]]
+id = "1-seg_209.1"
+start = 586.763
+end = 589.975
+speaker = "D"
+ja = "減らして その体力も課題だったの"
+zh = ""
+
+[[segments]]
+id = "1-seg_209.2"
+start = 590.025
+end = 593.175
+speaker = "D"
+ja = "続けてやるみたいな けど"
+zh = ""
+
+[[segments]]
+id = "1-seg_209.3"
+start = 593.225
+end = 596.475
+speaker = "D"
+ja = "MC減らした分 今までは分散してたんだけど"
+zh = ""
+
+[[segments]]
+id = "1-seg_209.4"
+start = 596.525
+end = 599.838
+speaker = "D"
+ja = "MC自分に結構固まってたから 頑張らなきゃ"
+zh = ""
 
 [[segments]]
 id = "2-seg_0"
 start = 600
-end = 601.4
+end = 601.425
 speaker = "A"
-ja = "と思ってやっぱすごかった"
+ja = "と思ってすごかった"
 
 [[segments]]
 id = "2-seg_1"
-start = 601.55
-end = 602.21
+start = 601.575
+end = 602.375
 speaker = "B"
-ja = "嬉しい"
+ja = "うれしい"
 
 [[segments]]
-id = "2-seg_2.1"
-start = 602.29
-end = 606.66
+id = "2-seg_2a"
+start = 602.525
+end = 605.363
 speaker = "A"
-ja = "いや、なんかさくら、そっちの方が結構言うタイプって\n言ってたけど、"
-zh = ""
+ja = "なんかさくらそっちの方で結構"
 
 [[segments]]
-id = "2-seg_2.2"
-start = 606.74
-end = 610.77
+id = "2-seg_2b"
+start = 605.413
+end = 608.225
 speaker = "A"
-ja = "なんかあまりにも「つまらない」って言葉が\n出てきすぎて、"
-zh = ""
+ja = "ああいうタイプっての知ってたけど"
 
 [[segments]]
-id = "2-seg_3"
-start = 610.85
-end = 617.035
-speaker = "B,A"
-ja = "なんか え? なんかすごい、さくらすごいと思った。"
-zh = ""
+id = "2-seg_2c"
+start = 608.275
+end = 611.088
+speaker = "A"
+ja = "なんかあまりにもつまらない言葉が"
+
+[[segments]]
+id = "2-seg_2d"
+start = 611.138
+end = 613.95
+speaker = "A"
+ja = "つまらないってあの表現するの出てきすぎてて"
+
+[[segments]]
+id = "2-seg_2e"
+start = 614
+end = 616.813
+speaker = "A"
+ja = "なんかすごいさくらすごいって思った"
+
+[[segments]]
+id = "2-seg_2f"
+start = 616.863
+end = 619.7
+speaker = "A"
+ja = "めっちゃ可愛かったしすごかった"
+
+[[segments]]
+id = "2-seg_3a"
+start = 620.55
+end = 623.175
+speaker = "B"
+ja = "なんか褒められたの"
+
+[[segments]]
+id = "2-seg_3b"
+start = 623.225
+end = 625.825
+speaker = "B"
+ja = "チームウィッチーズのみんなに"
+
+[[segments]]
+id = "2-seg_3c"
+start = 625.875
+end = 628.5
+speaker = "B"
+ja = "煽りうまくなったねって褒めてもらった"
+
+[[segments]]
+id = "2-seg_4"
+start = 629.364
+end = 633.164
+speaker = "A"
+ja = "よねうますぎたもん私も客席側でみんなと話してた"
 
 [[segments]]
 id = "2-seg_5"
-start = 617.115
-end = 617.65
-speaker = "B"
-ja = "やった"
+start = 633.4639999999999
+end = 634.514
+speaker = "A"
+ja = "さくらやばいね"
 
 [[segments]]
 id = "2-seg_6"
-start = 617.73
-end = 619.75
-speaker = "A"
-ja = "喋ったかわいかったすごかった"
-
-[[segments]]
-id = "2-seg_7.1"
-start = 620.5
-end = 624.56
-speaker = "A"
-ja = "褒められたの。チームみっちーズのみんなに、"
-zh = ""
-
-[[segments]]
-id = "2-seg_7.2"
-start = 624.64
-end = 628.6
-speaker = "A"
-ja = "「煽りうまくなったね」って褒めてもらえた。"
-zh = ""
-
-[[segments]]
-id = "2-seg_10"
-start = 629.364
-end = 634.414
-speaker = "A,C"
-ja = "もうすごすぎたもん。\n私は客席側でみんなと話してて、さくらやばいねって。"
-zh = ""
-
-[[segments]]
-id = "2-seg_11"
-start = 634.814
-end = 635.384
-speaker = "C"
+start = 635.764
+end = 636.189
+speaker = "B"
 ja = "照れちゃう"
 
 [[segments]]
+id = "2-seg_7"
+start = 636.339
+end = 638.9639999999999
+speaker = "A,B"
+ja = "そうあのね私の同期と一緒に見に来てくれたの"
+zh = ""
+
+[[segments]]
 id = "2-seg_12"
-start = 635.814
-end = 638.774
-speaker = "A"
-ja = "そうあのね私の同期と一緒に見に来てくれてたの"
+start = 639.064
+end = 640.289
+speaker = "B"
+ja = "真中りおちゃんってことで"
 
 [[segments]]
-id = "2-seg_13"
-start = 638.854
-end = 640.374
-speaker = "C"
-ja = "そう、真中リオちゃんね"
-zh = ""
+id = "2-seg_13a"
+start = 640.439
+end = 642.899
+speaker = "A,B"
+ja = "だい研 今度一緒にやるだい研の"
 
 [[segments]]
-id = "2-seg_14"
-start = 640.454
-end = 642.484
-speaker = "A"
-ja = "だい研、今度一緒にやるだい研の。"
+id = "2-seg_13b"
+start = 642.949
+end = 645.384
+speaker = "A,B"
+ja = "仲良っぴ同期なんだけどその子と見に行ってね"
 
 [[segments]]
-id = "2-seg_15"
-start = 642.564
-end = 647.86
-speaker = "C,A"
-ja = "なんかそうそうそう。ゆっぴ同期なんだけど、\nその子がめっちゃ声出すタイプの子だったから、"
-zh = ""
+id = "2-seg_13c"
+start = 645.434
+end = 647.869
+speaker = "A,B"
+ja = "その子がめっちゃ声出すタイプの子だったから"
 
 [[segments]]
-id = "2-seg_16.2"
-start = 647.94
+id = "2-seg_13d"
+start = 647.919
+end = 650.354
+speaker = "A,B"
+ja = "一人で行った時は出せないんだけど"
+
+[[segments]]
+id = "2-seg_13e"
+start = 650.404
 end = 652.864
+speaker = "A,B"
+ja = "その子がいたからめっちゃ掛け声やったよ"
+
+[[segments]]
+id = "2-seg_16"
+start = 664.372
+end = 664.747
 speaker = "A"
-ja = "私一人で行った時は出せないんだけど、\nその子がいたからめっちゃ掛け声やったよ。"
-zh = ""
+ja = "告知じゃない"
 
 [[segments]]
 id = "2-seg_17"
-start = 664.372
-end = 669.26
-speaker = "A,C"
-ja = "でパジャマね。そうなんですよ。\n私、8月2日、新宿村LIVEにて、"
-zh = ""
+start = 664.897
+end = 666.022
+speaker = "B"
+ja = "そうなんですよ!"
 
 [[segments]]
-id = "2-seg_18.2"
-start = 669.34
-end = 673.642
-speaker = "C"
-ja = "Go☆Revoの番組イベントにゲストとして\n出演することが決定しました。"
-zh = ""
+id = "2-seg_18a"
+start = 666.172
+end = 669.047
+speaker = "B"
+ja = "あのね 私8月2日新宿村LIVEにて"
+
+[[segments]]
+id = "2-seg_18b"
+start = 669.097
+end = 671.947
+speaker = "B"
+ja = "ゴーレボの番組イベントにゲストとして"
+
+[[segments]]
+id = "2-seg_18c"
+start = 671.997
+end = 674.872
+speaker = "B"
+ja = "出演させていただくことが決定しました"
 
 [[segments]]
 id = "2-seg_19"
-start = 673.722
-end = 680.732
-speaker = "C"
-ja = "しかも、こもちとミライちゃんと、\n花コモから一人ずつ出ます。"
+start = 675.272
+end = 677.022
+speaker = "A"
+ja = "しかもコモチーと そう"
 zh = ""
 
 [[segments]]
-id = "2-seg_23.1"
-start = 680.812
-end = 684.16
-speaker = "A,C"
-ja = "すごい新鮮な組み合わせでさ。\n言ってもそうだよね。"
-zh = ""
+id = "2-seg_21"
+start = 677.372
+end = 679.922
+speaker = "B"
+ja = "夏さくと花コモから1人ずつ"
 
 [[segments]]
-id = "2-seg_23.2"
-start = 684.24
-end = 687.86
-speaker = "A,C"
-ja = "花ちゃんもいないから、\nこもちとさくら見たすぎ。"
-zh = ""
+id = "2-seg_22"
+start = 680.172
+end = 680.547
+speaker = "A"
+ja = "え"
 
 [[segments]]
-id = "2-seg_23.3"
-start = 687.94
-end = 691.446
-speaker = "A,C"
-ja = "私見たいんだけど、どうなる？ どうなる？"
-zh = ""
+id = "2-seg_23"
+start = 680.697
+end = 682.822
+speaker = "A"
+ja = "すごい新鮮な組み合わせでさ"
+
+[[segments]]
+id = "2-seg_25a"
+start = 682.872
+end = 685.072
+speaker = "A"
+ja = "ってもそうだよねなんか花ちゃんもいないから"
+
+[[segments]]
+id = "2-seg_25b"
+start = 685.122
+end = 687.322
+speaker = "A"
+ja = "そうコモチーとサクラ"
+
+[[segments]]
+id = "2-seg_26"
+start = 687.872
+end = 689.904
+speaker = "A"
+ja = "見たすぎ私見たいんだけど"
+
+[[segments]]
+id = "2-seg_27"
+start = 690.054
+end = 690.761
+speaker = "A"
+ja = "そうなる?"
+
+[[segments]]
+id = "2-seg_28"
+start = 690.911
+end = 695.086
+speaker = "B"
+ja = "そうなる?なんかもこさんってツッコミ感じですか?"
+
+[[segments]]
+id = "2-seg_29"
+start = 695.5360000000001
+end = 699.661
+speaker = "B"
+ja = "ゴーさんがいるからゴーさんがいるから大丈夫?"
+
+[[segments]]
+id = "2-seg_30"
+start = 699.811
+end = 700.761
+speaker = "A"
+ja = "ゴージャスさんがいるから大丈夫?"
 
 [[segments]]
 id = "2-seg_31"
-start = 691.526
-end = 697.346
-speaker = "A,C"
-ja = "なんか、もこさんってツッコむ感じですか？\nゴー☆ジャスさんがいるから。そうなんだ。"
+start = 700.911
+end = 701.236
+speaker = "B"
+ja = "そうだよね?"
+
+[[segments]]
+id = "2-seg_32"
+start = 701.386
+end = 703.086
+speaker = "A,B"
+ja = "もかちゃんってどっちなんだろう?ね?"
 zh = ""
+
+[[segments]]
+id = "2-seg_34"
+start = 703.886
+end = 708.236
+speaker = "B"
+ja = "わかんないなんか私とさこもちだけだったらさ"
 
 [[segments]]
 id = "2-seg_35"
-start = 697.426
-end = 702.7860000000001
-speaker = "A,C"
-ja = "ゴー☆ジャスさんがいるから大丈夫。\nもこちゃんってどっちなんだろう。"
+start = 708.986
+end = 710.711
+speaker = "B"
+ja = "ボケの大渋滞になっちゃう"
+
+[[segments]]
+id = "2-seg_36"
+start = 710.861
+end = 712.111
+speaker = "A"
+ja = "ボケの大渋滞になっちゃう"
+
+[[segments]]
+id = "2-seg_37"
+start = 712.261
+end = 715.211
+speaker = "A,B"
+ja = "大渋滞になっちゃいそうだけど\n確かにね すごいめっちゃ楽しみ"
 zh = ""
-
-[[segments]]
-id = "2-seg_39"
-start = 703.386
-end = 708.086
-speaker = "A"
-ja = "分かんないなんか私とさコモチだけだったらさ"
-
-[[segments]]
-id = "2-seg_40"
-start = 708.836
-end = 710.346
-speaker = "A"
-ja = "収集つかん。"
 
 [[segments]]
 id = "2-seg_41"
-start = 710.426
-end = 712.046
-speaker = "C"
-ja = "おっきな大渋滞になっちゃう"
+start = 715.361
+end = 717.5360000000001
+speaker = "B"
+ja = "楽しみ皆さんお越しお待ちしております"
 
 [[segments]]
 id = "2-seg_42"
-start = 712.126
-end = 713.646
+start = 720.372
+end = 722.847
 speaker = "A"
-ja = "大渋滞になっちゃいそう"
-zh = ""
+ja = "先日のゴーレボに月城日花ちゃんがね"
 
 [[segments]]
 id = "2-seg_43"
-start = 713.726
-end = 715.396
-speaker = "C"
-ja = "すごいめっちゃ楽しみ"
+start = 722.997
+end = 723.497
+speaker = "B"
+ja = "そうなんですよ"
 
 [[segments]]
 id = "2-seg_44"
-start = 715.476
-end = 717.78
+start = 723.647
+end = 725.672
 speaker = "A"
-ja = "楽しみ。皆さんお越しをお待ちしております"
-zh = ""
+ja = "司会として出てたみたいなんですけど"
 
 [[segments]]
-id = "2-seg_45.1"
-start = 720.372
-end = 726.46
+id = "2-seg_45a"
+start = 725.822
+end = 728.797
 speaker = "A"
-ja = "昨日のGo☆Revoに月城日花ちゃんが\n来てたみたいなんですけど、"
-zh = ""
+ja = "実はね 8月9日に開催する"
 
 [[segments]]
-id = "2-seg_45.2"
-start = 726.54
-end = 731.96
+id = "2-seg_45b"
+start = 728.847
+end = 731.797
 speaker = "A"
-ja = "実はね、8月9日に開催する\n夏さくプレゼンツ 乾夏寧バースデーイベント2026、"
-zh = ""
+ja = "夏さくプレゼンツ乾夏寧バースデーイベント2026"
 
 [[segments]]
-id = "2-seg_45.3"
-start = 732.04
-end = 737.972
+id = "2-seg_45c"
+start = 731.847
+end = 734.797
 speaker = "A"
-ja = "昼の部のゲストに塚田悠衣ちゃんと\n月城日花ちゃんが来てくれることになりました。"
-zh = ""
+ja = "昼の部のゲストに塚田悠衣ちゃんと"
+
+[[segments]]
+id = "2-seg_45d"
+start = 734.847
+end = 737.822
+speaker = "A"
+ja = "月城日花ちゃんが来てくれることになりました"
 
 [[segments]]
 id = "2-seg_46"
 start = 742.548
-end = 744.858
-speaker = "C,@"
-ja = "2人はね、うちらと謎解きメイツという。"
+end = 745.923
+speaker = "A,B"
+ja = "ひかちはねうちらと謎解きメイツという そうなんですよ"
 zh = ""
-
-[[segments]]
-id = "2-seg_49"
-start = 744.938
-end = 745.758
-speaker = "A"
-ja = "そうなんですよ"
 
 [[segments]]
 id = "2-seg_50"
-start = 745.838
+start = 746.073
 end = 750.748
-speaker = "C,A"
-ja = "お便りを読んでみますね。\n夏さくネーム、ロシアンカボチャさんからいただきました。"
+speaker = "A,B"
+ja = "お便りがありますので読みますね お願いします\n夏さくネームロシアンカボチャさんからいただきました"
 zh = ""
 
 [[segments]]
-id = "2-seg_54"
-start = 751.2
-end = 753.048
-speaker = "C"
-ja = "さくぽん、なちゅ、咲いてますか？"
+id = "2-seg_53"
+start = 750.798
+end = 753.198
+speaker = "A,B"
+ja = "ありがとうございます さくぽん なちゅ 咲いてますか"
+zh = ""
+
+[[segments]]
+id = "2-seg_55a"
+start = 753.898
+end = 756.535
+speaker = "A"
+ja = "夏寧のバースデーイベント昼の部のゲストが決まりましたね"
+
+[[segments]]
+id = "2-seg_55b"
+start = 756.585
+end = 759.198
+speaker = "A"
+ja = "塚田さんは分かるんですが"
+
+[[segments]]
+id = "2-seg_55c"
+start = 759.248
+end = 761.86
+speaker = "A"
+ja = "月城さんはどんな繋がりだろうと思っていたら"
+
+[[segments]]
+id = "2-seg_55d"
+start = 761.91
+end = 764.548
+speaker = "A"
+ja = "ゴーレボに出た時に脱出ゲームがきっかけと話していました"
 
 [[segments]]
 id = "2-seg_56"
-start = 753.348
-end = 756.948
-speaker = "C"
-ja = "なちゅのバースデーイベント昼の部のゲストが\n決まりましたね。"
-zh = ""
+start = 765.098
+end = 768.49
+speaker = "A"
+ja = "なるほどゴーレボのトークの感じからバースデーイベントで"
 
 [[segments]]
-id = "2-seg_57.1"
-start = 757.148
-end = 761.26
-speaker = "C"
-ja = "塚田さんはわかるんですが、\n月城さんはどんなつながりだろうと思ったら、"
-zh = ""
+id = "2-seg_57a"
+start = 768.64
+end = 770.536
+speaker = "A"
+ja = "グッと距離が縮まる2人が見られそうで"
 
 [[segments]]
-id = "2-seg_57.2"
-start = 761.34
-end = 764.248
-speaker = "C"
-ja = "Go☆Revoで脱出ゲームがきっかけと\n話してました。"
-zh = ""
+id = "2-seg_57b"
+start = 770.586
+end = 772.482
+speaker = "A"
+ja = "今から期待していますよ"
 
 [[segments]]
-id = "2-seg_58"
-start = 764.848
-end = 768.248
-speaker = "C"
-ja = "なるほど。Go☆Revoのトークから\nバースデーイベントで、"
-zh = ""
-
-[[segments]]
-id = "2-seg_59"
-start = 768.532
-end = 772.432
-speaker = "C"
-ja = "グッと距離が縮まる二人が見られそうで\n今から期待していますよ"
-zh = ""
-
-[[segments]]
-id = "2-seg_60"
+id = "2-seg_58a"
 start = 773.876
-end = 775.746
+end = 776.232
+speaker = "A,B"
+ja = "そうなんですよ実はね確かに謎解きメイツ"
+
+[[segments]]
+id = "2-seg_58b"
+start = 776.282
+end = 778.614
+speaker = "A,B"
+ja = "そう謎解きメイツなんかあんまり夏さくでは"
+
+[[segments]]
+id = "2-seg_58c"
+start = 778.664
+end = 780.995
+speaker = "A,B"
+ja = "ひかちの話まだしてなかったから とかなんだけど"
+
+[[segments]]
+id = "2-seg_58d"
+start = 781.045
+end = 783.401
+speaker = "A,B"
+ja = "たまにね一緒に行ってね"
+
+[[segments]]
+id = "2-seg_61a"
+start = 783.551
+end = 787.276
+speaker = "B"
+ja = "なんか少人数でいる時にひかちがいるって感じだったんだよね"
+
+[[segments]]
+id = "2-seg_61b"
+start = 787.326
+end = 791.051
+speaker = "B"
+ja = "だからまだここ3人とかで遊んだことなくて"
+
+[[segments]]
+id = "2-seg_62"
+start = 791.201
+end = 792.551
 speaker = "A"
-ja = "そうなんですよ実はね確かに"
+ja = "2人きりもなくて"
 
 [[segments]]
-id = "2-seg_61"
-start = 775.826
-end = 776.936
-speaker = "C,A"
-ja = "謎解きフレンズ。"
-zh = ""
-
-[[segments]]
-id = "2-seg_64.1"
-start = 777.016
-end = 781.06
-speaker = "A"
-ja = "そう、謎解きフレンズ。\n夏さくでは日花ちゃんの話まだしてなかったけど、"
-zh = ""
-
-[[segments]]
-id = "2-seg_64.2"
-start = 781.14
-end = 783.536
-speaker = "A"
-ja = "たまにね、一緒に行くね。"
-zh = ""
-
-[[segments]]
-id = "2-seg_65.1"
-start = 783.616
-end = 787.56
-speaker = "C"
-ja = "なんか複数人でいる時に\n日花ちゃんがいるって感じだったんだよね。"
-zh = ""
-
-[[segments]]
-id = "2-seg_65.2"
-start = 787.64
-end = 791.486
-speaker = "C"
-ja = "まだ私たちここの3人とかで\n遊んだことはなくて。"
-zh = ""
-
-[[segments]]
-id = "2-seg_66"
-start = 791.566
-end = 792.636
-speaker = "A"
-ja = "二人きりもなくて"
-
-[[segments]]
-id = "2-seg_67"
-start = 792.716
-end = 793.336
-speaker = "C"
+id = "2-seg_63"
+start = 792.701
+end = 793.251
+speaker = "B"
 ja = "そうないの"
 
 [[segments]]
-id = "2-seg_68"
-start = 793.416
-end = 799.626
-speaker = "A"
-ja = "現場とかでもたまにお会いするけど、\nまだね、めちゃくちゃ仲良くなり、"
-zh = ""
+id = "2-seg_64a"
+start = 793.401
+end = 796.387
+speaker = "A,B"
+ja = "現場とかでもたまにお話しするけど"
+
+[[segments]]
+id = "2-seg_64b"
+start = 796.437
+end = 799.399
+speaker = "A,B"
+ja = "まだねめちゃくちゃ仲良くなりたいって"
+
+[[segments]]
+id = "2-seg_64c"
+start = 799.449
+end = 802.435
+speaker = "A,B"
+ja = "前から仲良くなりたいと思って"
+
+[[segments]]
+id = "2-seg_68a"
+start = 802.585
+end = 804.927
+speaker = "B"
+ja = "ねえそうなの 塚田さんは私前の"
+
+[[segments]]
+id = "2-seg_68b"
+start = 804.977
+end = 807.294
+speaker = "B"
+ja = "なんかセカショさんのなんかのイベントで"
+
+[[segments]]
+id = "2-seg_68c"
+start = 807.344
+end = 809.685
+speaker = "B"
+ja = "裏でお会いしたじゃない"
 
 [[segments]]
 id = "2-seg_69"
-start = 799.86
-end = 803.57
+start = 809.835
+end = 810.185
 speaker = "A"
-ja = "結構前から仲良くなりたいと思って。そうなの。"
+ja = "本当に"
 
 [[segments]]
 id = "2-seg_70"
-start = 803.65
-end = 811.51
-speaker = "C"
-ja = "塚田さん、私、前のセカショさんの何かのイベントで\n裏でお会いしたぐらい。なんか前後が。"
-zh = ""
+start = 810.335
+end = 811.235
+speaker = "B"
+ja = "なんか前後が"
 
 [[segments]]
 id = "2-seg_71"
-start = 811.71
-end = 816.67
-speaker = "A,C"
-ja = "そうだそうだ、えっとなんだっけ。\nバースデーだ。それでそれでそれで。"
-zh = ""
+start = 811.385
+end = 815.485
+speaker = "A"
+ja = "そうだそうだえっとなんだっけあ夕焼バンティだ"
+
+[[segments]]
+id = "2-seg_72"
+start = 815.635
+end = 816.435
+speaker = "B"
+ja = "それですそれですね"
+
+[[segments]]
+id = "2-seg_73"
+start = 816.585
+end = 819.085
+speaker = "A"
+ja = "そうだゆいちゃんねお腹触らせてくるんだよ"
 
 [[segments]]
 id = "2-seg_74"
-start = 816.75
-end = 819.22
-speaker = "A"
-ja = "悠衣ちゃんね、お腹触らせてくれるんだよ。"
+start = 819.235
+end = 820.21
+speaker = "B"
+ja = "え触りたい"
 
 [[segments]]
 id = "2-seg_75"
-start = 819.3
-end = 820.26
-speaker = "C"
-ja = "触りたい"
-
-[[segments]]
-id = "2-seg_76"
-start = 821.01
-end = 824.1600000000001
+start = 820.9100000000001
+end = 824.21
 speaker = "A"
 ja = "きっと触らせてくれるこうやってこうやって"
 
 [[segments]]
-id = "2-seg_77"
+id = "2-seg_76"
 start = 826.6759999999999
-end = 828.246
+end = 828.076
 speaker = "A"
-ja = "なんか柔らかいらしい。"
+ja = "ってなったっけ?なんか柔らかいらしい!"
 
 [[segments]]
-id = "2-seg_78"
-start = 828.326
-end = 830.986
-speaker = "C,A"
-ja = "え? 柔らかかった。触りたい。"
+id = "2-seg_77"
+start = 828.226
+end = 829.101
+speaker = "A,B"
+ja = "あ えぇー!"
 zh = ""
+
+[[segments]]
+id = "2-seg_79"
+start = 829.251
+end = 830.201
+speaker = "A"
+ja = "柔らかかった!"
 
 [[segments]]
 id = "2-seg_80"
-start = 831.066
-end = 833.226
-speaker = "C"
-ja = "触ってやりましょう、一緒に。"
+start = 830.351
+end = 831.276
+speaker = "B"
+ja = "えー触りたい!"
 
 [[segments]]
-id = "2-seg_81.1"
-start = 833.476
-end = 837.66
-speaker = "A"
-ja = "そう、夜の部のゲストには\n花谷麻妃ちゃんと小森結梨ちゃんが来ますので、"
-zh = ""
-
-[[segments]]
-id = "2-seg_81.2"
-start = 837.74
-end = 841.476
-speaker = "A"
-ja = "ぜひ皆さん遊びに来てください。\nお願いします。"
-zh = ""
+id = "2-seg_81"
+start = 831.426
+end = 831.851
+speaker = "B"
+ja = "触りたい!"
 
 [[segments]]
 id = "2-seg_82"
-start = 842.776
-end = 845.976
+start = 832.001
+end = 833.1759999999999
 speaker = "A"
-ja = "はいそれではテーマメールに移りましょうか"
+ja = "触りましょう一緒に"
 
 [[segments]]
 id = "2-seg_83"
-start = 846.4259999999999
-end = 850.326
-speaker = "C"
-ja = "今回のテーマは、自分の機嫌の取り方について。"
+start = 833.4259999999999
+end = 833.826
+speaker = "A"
+ja = "そう!"
 
 [[segments]]
-id = "2-seg_84"
+id = "2-seg_84a"
+start = 833.976
+end = 836.218
+speaker = "A"
+ja = "あのね 夜の部のゲストには"
+
+[[segments]]
+id = "2-seg_84b"
+start = 836.268
+end = 838.485
+speaker = "A"
+ja = "花谷麻妃ちゃんと小森結梨ちゃんが来てくれるので"
+
+[[segments]]
+id = "2-seg_84c"
+start = 838.535
+end = 840.776
+speaker = "A"
+ja = "ぜひぜひ皆さん遊びに来てください"
+
+[[segments]]
+id = "2-seg_85"
+start = 840.976
+end = 841.776
+speaker = "B"
+ja = "お待ちしてます!"
+
+[[segments]]
+id = "2-seg_86"
+start = 842.726
+end = 845.976
+speaker = "A"
+ja = "はいはいそれではテーマメールに移りましょうか"
+
+[[segments]]
+id = "2-seg_87"
+start = 846.376
+end = 850.4259999999999
+speaker = "B"
+ja = "今回のテーマは自分の機嫌の取り方について"
+
+[[segments]]
+id = "2-seg_88"
 start = 851.06
-end = 852.11
+end = 852.06
 speaker = "A"
 ja = "みんなどうなの?"
 
 [[segments]]
-id = "2-seg_85"
-start = 852.23
-end = 852.82
-speaker = "C"
+id = "2-seg_89"
+start = 852.26
+end = 852.785
+speaker = "B"
 ja = "どうなの?"
 
 [[segments]]
-id = "2-seg_86"
-start = 852.9
-end = 856.71
+id = "2-seg_90a"
+start = 852.935
+end = 854.318
 speaker = "A"
-ja = "ではでは、夏さくネーム、ひたくちさんからいただきました。"
-zh = ""
+ja = "どうなの?ではでは早速"
 
 [[segments]]
-id = "2-seg_89"
-start = 858.36
-end = 866.47
+id = "2-seg_90b"
+start = 854.368
+end = 855.727
 speaker = "A"
-ja = "僕は仕事が忙しくて疲れた時や機嫌が作れない時は、\nX等のSNSでハムスターの動画を見ています。"
-zh = ""
+ja = "夏さくネームひたくちさんからいただきました"
 
 [[segments]]
-id = "2-seg_90"
-start = 866.55
-end = 867.56
-speaker = "C"
-ja = "やだかわいい"
+id = "2-seg_90c"
+start = 855.777
+end = 857.16
+speaker = "A"
+ja = "ありがとうございます"
 
 [[segments]]
-id = "2-seg_91.1"
-start = 869.492
-end = 875.76
+id = "2-seg_91a"
+start = 858.21
+end = 862.248
 speaker = "A"
-ja = "回し車をして遊んでいたり、\n丸くてモフモフしたハムちゃんたちが、"
-zh = ""
+ja = "僕は仕事が忙しくて疲れた時や機嫌が作れない時は"
 
 [[segments]]
-id = "2-seg_91.2a"
-start = 875.84
-end = 879.66
+id = "2-seg_91b"
+start = 862.298
+end = 866.335
 speaker = "A"
-ja = "ちょこちょこと動き回っている\n可愛い姿を見ると、"
-zh = ""
-
-[[segments]]
-id = "2-seg_91.2b"
-start = 879.74
-end = 882.96
-speaker = "A"
-ja = "自然と心が癒されて、\n気持ちもリセットされる気がします。"
-zh = ""
-
-[[segments]]
-id = "2-seg_91.3"
-start = 883.04
-end = 889.102
-speaker = "A"
-ja = "ハムスターの可愛さからしか得られない栄養素、\nぜひ皆さんにも知っていただきたいです。可愛い。"
-zh = ""
+ja = "X等のSNSでハムスターの動画を見ています"
 
 [[segments]]
 id = "2-seg_92"
-start = 889.182
-end = 892.8420000000001
-speaker = "C"
-ja = "ハムスターね。\n確かにYouTubeショートとかじゃないのね。"
-zh = ""
+start = 866.485
+end = 867.4100000000001
+speaker = "B"
+ja = "やだかわいい"
 
 [[segments]]
-id = "2-seg_93"
-start = 899.892
-end = 904.252
-speaker = "C"
-ja = "動物見るの結構わかるかも。\n猫ちゃんのショート動画とかめっちゃ見る。"
-zh = ""
+id = "2-seg_93a"
+start = 869.492
+end = 872.198
+speaker = "A"
+ja = "回し車をして遊んでいたりと"
+
+[[segments]]
+id = "2-seg_93b"
+start = 872.248
+end = 874.93
+speaker = "A"
+ja = "丸くてもふもふしたハムちゃんたちが"
+
+[[segments]]
+id = "2-seg_93c"
+start = 874.98
+end = 877.661
+speaker = "A"
+ja = "ちょこちょこと動き回っている可愛い姿を見ると"
+
+[[segments]]
+id = "2-seg_93d"
+start = 877.711
+end = 880.417
+speaker = "A"
+ja = "自然と心が癒されて自分の気持ちもリセットされる気がします"
 
 [[segments]]
 id = "2-seg_94"
-start = 904.332
-end = 906.652
-speaker = "A"
-ja = "めちゃくちゃわかる。無心で見られるよね"
-zh = ""
+start = 880.55
+end = 880.867
+speaker = "B"
+ja = "へえ"
 
 [[segments]]
-id = "2-seg_95"
-start = 906.732
-end = 910.352
-speaker = "C"
-ja = "わかる私のXのおすすめ欄ほぼほぼ犬猫だもん"
+id = "2-seg_95a"
+start = 880.917
+end = 884.242
+speaker = "A"
+ja = "ハムスターの可愛さからしか得られない栄養素を"
+
+[[segments]]
+id = "2-seg_95b"
+start = 884.292
+end = 887.617
+speaker = "A"
+ja = "ぜひ皆さんにも知っていただきたいです可愛い"
 
 [[segments]]
 id = "2-seg_96"
-start = 910.432
-end = 914.242
-speaker = "A"
-ja = "マジで出てくるよねあそっか出てくるよね"
+start = 887.767
+end = 888.167
+speaker = "B"
+ja = "かわいい"
 
 [[segments]]
 id = "2-seg_97"
-start = 914.742
-end = 918.092
-speaker = "C"
-ja = "夏さくネーム、みっちーさんからいただきました。"
+start = 888.317
+end = 889.567
+speaker = "A"
+ja = "Xなんだ"
 
 [[segments]]
-id = "2-seg_99.1"
-start = 918.992
-end = 922.56
-speaker = "C"
-ja = "春日さん、乾さん、こんばんは、咲いてますか？"
-zh = ""
+id = "2-seg_98"
+start = 889.717
+end = 892.692
+speaker = "B"
+ja = "ハムスター確かにYouTubeショートとかじゃないのね"
 
 [[segments]]
-id = "2-seg_99.2"
-start = 922.64
-end = 927.892
-speaker = "C"
-ja = "私が普段している自分のご機嫌な取り方は、\n月に一度チートデーを設けることです。"
-zh = ""
+id = "2-seg_99"
+start = 899.892
+end = 903.642
+speaker = "B"
+ja = "動物を見るの結構わかるかも猫ちゃんのショート動画とか"
 
 [[segments]]
-id = "2-seg_100.1"
-start = 929.332
-end = 934.96
-speaker = "C"
-ja = "今日は体のために我慢、\nお菓子はやめておこうと、それなりに節制しているのですが、"
-zh = ""
-
-[[segments]]
-id = "2-seg_100.2"
-start = 935.04
-end = 940.76
-speaker = "C"
-ja = "それの反動なのか、チートデーになると\n欲望のタガが外れます。"
-zh = ""
-
-[[segments]]
-id = "2-seg_100.3a"
-start = 940.84
-end = 944.16
-speaker = "C"
-ja = "今日は食べまくるぞというマインドで\nコンビニに入り、"
-zh = ""
-
-[[segments]]
-id = "2-seg_100.3b"
-start = 944.24
-end = 947.36
-speaker = "C"
-ja = "ポテチや唐揚げ、アイス、炭酸飲料を\n買って帰ります。"
-zh = ""
-
-[[segments]]
-id = "2-seg_100.4"
-start = 947.44
-end = 951.56
-speaker = "C"
-ja = "そして背徳感や後ろめたさを忘れて、\n好きなものを好きなだけ食べます。"
-zh = ""
-
-[[segments]]
-id = "2-seg_100.5"
-start = 951.64
-end = 956.1
-speaker = "C"
-ja = "最終的に締めにカップ麺か何かとなり、\n胃袋がパンパンのフェス状態になります。"
-zh = ""
-
-[[segments]]
-id = "2-seg_101.1"
-start = 956.18
-end = 960.06
-speaker = "C"
-ja = "そういう日があるからこそ\nまた明日から頑張ろうと思えるので、"
-zh = ""
-
-[[segments]]
-id = "2-seg_101.2"
-start = 960.14
-end = 963.88
-speaker = "C"
-ja = "自分にとっては大事な\nリセット方法なのかもしれません。"
+id = "2-seg_100"
+start = 903.692
+end = 904.267
+speaker = "A,B"
+ja = "めっちゃ めっちゃ見る"
 zh = ""
 
 [[segments]]
 id = "2-seg_102"
-start = 964.13
-end = 972.19
-speaker = "A,C"
-ja = "わーいいなー。えらい。偉い。\nチートデー以外はちゃんと節制してるんだ。"
-zh = ""
+start = 904.417
+end = 906.717
+speaker = "A"
+ja = "くちゃわかるめっちゃ無心で見られるよね"
 
 [[segments]]
-id = "2-seg_105"
-start = 972.27
-end = 973.73
-speaker = "C"
-ja = "お菓子はやめておこう"
+id = "2-seg_103"
+start = 906.867
+end = 910.567
+speaker = "B"
+ja = "わかる私のXのおすすめ欄ほぼほぼ犬猫なの"
+
+[[segments]]
+id = "2-seg_104"
+start = 910.717
+end = 911.0419999999999
+speaker = "A"
+ja = "マジで?"
 
 [[segments]]
 id = "2-seg_106"
-start = 974.1800000000001
-end = 976.54
-speaker = "A"
-ja = "えらすぎるよでも"
+start = 911.592
+end = 914.192
+speaker = "A,B"
+ja = "出てくるよね あそっか出てくるよね"
+zh = ""
 
 [[segments]]
-id = "2-seg_107"
-start = 976.62
-end = 978.84
-speaker = "C"
-ja = "でもね、大事って言うよね、チートデー。"
+id = "2-seg_109a"
+start = 915.092
+end = 916.817
+speaker = "A,B"
+ja = "続いて夏さくネームりょうさんからいただきました"
 
 [[segments]]
-id = "2-seg_108"
-start = 978.92
-end = 979.94
-speaker = "A"
-ja = "チートデー大事よ"
-
-[[segments]]
-id = "2-seg_109"
-start = 980.02
-end = 982.38
-speaker = "C"
-ja = "ダイエットには必要って、チートデーがさ。"
-
-[[segments]]
-id = "2-seg_110"
-start = 983.248
-end = 985.028
-speaker = "A"
-ja = "ないとストレスたまっちゃうからね"
+id = "2-seg_109b"
+start = 916.867
+end = 918.592
+speaker = "A,B"
+ja = "ありがとうございます"
 
 [[segments]]
 id = "2-seg_111"
-start = 985.108
-end = 985.778
-speaker = "C"
-ja = "そうだよね"
+start = 918.842
+end = 922.342
+speaker = "B"
+ja = "春日さん 乾さん こんばんは 咲いてますか"
 
 [[segments]]
-id = "2-seg_112"
-start = 985.858
-end = 990.628
+id = "2-seg_112a"
+start = 922.542
+end = 925.792
+speaker = "B"
+ja = "私が普段している自分のご機嫌の取り方は"
+
+[[segments]]
+id = "2-seg_112b"
+start = 925.842
+end = 929.092
+speaker = "B"
+ja = "月に一度チートデーを設けることです 普段"
+
+[[segments]]
+id = "2-seg_113a"
+start = 929.332
+end = 931.657
 speaker = "A"
-ja = "そこでね、我慢せずにいっぱい食べておくことで、\nその後ね、欲が抑えられるから。"
-zh = ""
+ja = "今日はサラダで我慢 お菓子はやめておこうと"
 
 [[segments]]
-id = "2-seg_113"
-start = 990.708
-end = 992.178
-speaker = "D"
-ja = "確かにすごいよ"
-
-[[segments]]
-id = "2-seg_114"
-start = 992.258
-end = 994.6179999999999
+id = "2-seg_113b"
+start = 931.707
+end = 934.032
 speaker = "A"
-ja = "いいなチートデイしたくなってきた"
+ja = "それなりに節制しているのですが えらい"
 
 [[segments]]
-id = "2-seg_115"
-start = 994.7180000000001
-end = 997.688
-speaker = "D"
-ja = "チートデーしたいね。毎日がチートデーかも。"
+id = "2-seg_114a"
+start = 934.582
+end = 937.507
+speaker = "A"
+ja = "それの反動なのかチートデーになると"
+
+[[segments]]
+id = "2-seg_114b"
+start = 937.557
+end = 940.457
+speaker = "A"
+ja = "欲望のタガが外れます"
+
+[[segments]]
+id = "2-seg_114c"
+start = 940.507
+end = 943.039
+speaker = "A"
+ja = "今日は食べまくるぞというマインドでコンビニに入り"
+
+[[segments]]
+id = "2-seg_114d"
+start = 943.089
+end = 945.621
+speaker = "A"
+ja = "ポテチなどのお菓子や唐揚げアイス炭酸飲料を"
+
+[[segments]]
+id = "2-seg_114e"
+start = 945.671
+end = 948.203
+speaker = "A"
+ja = "これでもかと買って帰ります"
+
+[[segments]]
+id = "2-seg_114f"
+start = 948.253
+end = 950.785
+speaker = "A"
+ja = "そして背徳感や後ろめたさを忘れて"
+
+[[segments]]
+id = "2-seg_114g"
+start = 950.835
+end = 952.256
+speaker = "A"
+ja = "好きなものを好きなだけ食べます"
+
+[[segments]]
+id = "2-seg_114h"
+start = 952.306
+end = 953.732
+speaker = "A"
+ja = "最終的に締めにカップ麺かとなり"
+
+[[segments]]
+id = "2-seg_114i"
+start = 953.782
+end = 955.232
+speaker = "A"
+ja = "胃袋がパンパンのフェス状態になります"
+
+[[segments]]
+id = "2-seg_115a"
+start = 956.18
+end = 958.83
+speaker = "B"
+ja = "ただ不思議とそういう日があるからこそ"
+
+[[segments]]
+id = "2-seg_115b"
+start = 958.88
+end = 960.613
+speaker = "B"
+ja = "また明日から頑張ろうと思えるので"
+
+[[segments]]
+id = "2-seg_115c"
+start = 960.663
+end = 962.397
+speaker = "B"
+ja = "自分にとってはこれがかなり大事な"
+
+[[segments]]
+id = "2-seg_115d"
+start = 962.447
+end = 964.205
+speaker = "B"
+ja = "リセット方法なのかもしれません"
 
 [[segments]]
 id = "2-seg_116"
-start = 997.768
-end = 999.928
-speaker = "A,D"
-ja = "確か。やばい。\nさっき食べちゃった。"
-zh = ""
+start = 964.355
+end = 966.255
+speaker = "A"
+ja = "わーいいなー うらやましい"
 
 [[segments]]
-id = "2-seg_119"
-start = 1000.008
-end = 1002.7180000000001
-speaker = "D"
-ja = "昨日私ラーメン食べちゃった"
+id = "2-seg_117"
+start = 966.405
+end = 967.755
+speaker = "B"
+ja = "いや"
+
+[[segments]]
+id = "2-seg_118"
+start = 967.905
+end = 972.255
+speaker = "A"
+ja = "チートデイ以外そんなちゃんとやってるんだ サラダで我慢とか"
+
+[[segments]]
+id = "2-seg_119a"
+start = 972.405
+end = 975.43
+speaker = "B"
+ja = "お菓子はやめておこう偉いよ"
+
+[[segments]]
+id = "2-seg_119b"
+start = 975.48
+end = 978.505
+speaker = "B"
+ja = "いやでもね大事って言うよねちょっと"
 
 [[segments]]
 id = "2-seg_120"
-start = 1003.1179999999999
-end = 1005.1179999999999
+start = 978.655
+end = 980.205
 speaker = "A"
-ja = "好きでも食べてこう"
+ja = "チートデイは大事じゃん"
 
 [[segments]]
 id = "2-seg_121"
-start = 1005.788
-end = 1007.028
-speaker = "D"
-ja = "ありがとうございました"
+start = 980.355
+end = 982.5799999999999
+speaker = "B"
+ja = "ダイエットに必要ってチートデイがさ"
 
 [[segments]]
 id = "2-seg_122"
-start = 1007.108
-end = 1007.918
+start = 983.668
+end = 984.993
 speaker = "A"
-ja = "偉いね"
+ja = "ないとストレス溜まっちゃうからね"
 
 [[segments]]
-id = "2-seg_123"
-start = 1008.168
-end = 1008.668
+id = "2-seg_123a"
+start = 985.143
+end = 987.535
+speaker = "A,B"
+ja = "そうだよね そこでね 確かに"
+
+[[segments]]
+id = "2-seg_123b"
+start = 987.585
+end = 989.951
+speaker = "A,B"
+ja = "でね我慢せずにいっぱい食べとくことで"
+
+[[segments]]
+id = "2-seg_123c"
+start = 990.001
+end = 992.393
+speaker = "A,B"
+ja = "その後欲が抑えられるから 確かにすごいよ"
+
+[[segments]]
+id = "2-seg_130"
+start = 992.543
+end = 994.7180000000001
+speaker = "A"
+ja = "いいなぁチートデイしたくなってきた"
+
+[[segments]]
+id = "2-seg_131"
+start = 995.2180000000001
+end = 997.768
+speaker = "B"
+ja = "チートデイしたいね毎日がチートデイかも"
+
+[[segments]]
+id = "2-seg_132"
+start = 997.818
+end = 998.393
+speaker = "A,B"
+ja = "確かに やばい"
+zh = ""
+
+[[segments]]
+id = "2-seg_134"
+start = 998.543
+end = 999.743
+speaker = "A"
+ja = "さっきラーメン食べちゃった"
+
+[[segments]]
+id = "2-seg_135"
+start = 999.893
+end = 1002.643
+speaker = "B"
+ja = "やばい昨日私ラーメン食べちゃった"
+
+[[segments]]
+id = "2-seg_136"
+start = 1002.793
+end = 1004.993
+speaker = "A"
+ja = "ほんと好きなもん食べてこう"
+
+[[segments]]
+id = "2-seg_137"
+start = 1005.143
+end = 1006.443
+speaker = "B"
+ja = "ありがとうございます"
+
+[[segments]]
+id = "2-seg_138"
+start = 1006.593
+end = 1007.9680000000001
+speaker = "A"
+ja = "好きなものを食べてね"
+
+[[segments]]
+id = "2-seg_139"
+start = 1008.3679999999999
+end = 1008.7180000000001
 speaker = "A"
 ja = "次"
 
 [[segments]]
-id = "2-seg_124"
-start = 1009.56
-end = 1012.45
-speaker = "A"
-ja = "早速ね、夏さくネーム、ごじろさんからいただきました。"
+id = "2-seg_140a"
+start = 1010.1
+end = 1012.025
+speaker = "A,B"
+ja = "夏さくネームごじろさんからいただきました"
 
 [[segments]]
-id = "2-seg_126"
-start = 1014
+id = "2-seg_140b"
+start = 1012.075
+end = 1013.975
+speaker = "A,B"
+ja = "ありがとうございます ありがとうございます"
+
+[[segments]]
+id = "2-seg_140c"
+start = 1014.025
 end = 1015.95
-speaker = "A"
-ja = "春日さん、乾さん、咲いてますか？"
+speaker = "A,B"
+ja = "春日さん 乾さん 咲いてますか"
 
 [[segments]]
-id = "2-seg_127"
+id = "2-seg_143"
 start = 1018.004
-end = 1020.954
-speaker = "C"
+end = 1020.929
+speaker = "A"
 ja = "私の自分の機嫌の取り方はお風呂に入ることです"
 
 [[segments]]
-id = "2-seg_129"
-start = 1021.254
-end = 1025.604
-speaker = "C"
-ja = "嫌なことがあった日や、\nなんとなく気持ちがモヤモヤしている日でも、お風呂に"
-zh = ""
+id = "2-seg_144a"
+start = 1020.979
+end = 1023.16
+speaker = "A,B"
+ja = "お 嫌なことがあった日や"
 
 [[segments]]
-id = "2-seg_131.1"
-start = 1025.704
-end = 1031.46
-speaker = "C"
-ja = "入ると、とりあえず今日のいろいろを流せたなという\n気持ちになります。"
-zh = ""
+id = "2-seg_144b"
+start = 1023.21
+end = 1025.367
+speaker = "A,B"
+ja = "なんとなく気持ちがモヤモヤしている日でも"
 
 [[segments]]
-id = "2-seg_131.2"
-start = 1031.54
-end = 1036.76
-speaker = "C"
-ja = "物理的に体がさっぱりするのはもちろんですが、\n気持ちの面でも少しリセットされる感じがあります。"
-zh = ""
+id = "2-seg_144c"
+start = 1025.417
+end = 1027.573
+speaker = "A,B"
+ja = "お風呂に入るととりあえず"
 
 [[segments]]
-id = "2-seg_131.3a"
-start = 1036.84
-end = 1039.96
-speaker = "C"
-ja = "誰にも聞かれていないことを\n祈りながら、"
-zh = ""
+id = "2-seg_144d"
+start = 1027.623
+end = 1029.804
+speaker = "A,B"
+ja = "今日のいろいろを一回流せたなという気持ちになります"
 
 [[segments]]
-id = "2-seg_131.3b"
-start = 1040.04
-end = 1043.849
-speaker = "C"
-ja = "お風呂で思いっきり歌を歌ってしまうこともあります。\nいいよね。"
-zh = ""
+id = "2-seg_146a"
+start = 1030.104
+end = 1033.5
+speaker = "A"
+ja = "物理的に体がさっぱりするのはもちろんですが"
 
 [[segments]]
-id = "2-seg_132.1"
-start = 1043.929
-end = 1049.56
-speaker = "C"
-ja = "お風呂場の中だとなぜか少し歌が上手くなった気がしますし、"
-zh = ""
+id = "2-seg_146b"
+start = 1033.55
+end = 1036.922
+speaker = "A"
+ja = "気持ちの面でも少しリセットされる感じがあります"
 
 [[segments]]
-id = "2-seg_132.2a"
-start = 1049.64
-end = 1052.56
-speaker = "C"
-ja = "大きい声を出すことで\nストレス発散にもなっています。"
-zh = ""
+id = "2-seg_146c"
+start = 1036.972
+end = 1040.343
+speaker = "A"
+ja = "そして誰にも聞かれていないことを祈りながら"
 
 [[segments]]
-id = "2-seg_132.2b"
-start = 1052.64
-end = 1054.96
-speaker = "C"
-ja = "すっきりしたい時は、\n入浴剤を使います。"
-zh = ""
-
-[[segments]]
-id = "2-seg_132.3"
-start = 1055.04
-end = 1060.934
-speaker = "C"
-ja = "お風呂が私にとっての一番手軽な\n自分の機嫌の取り方かもしれませんね。"
-zh = ""
-
-[[segments]]
-id = "2-seg_133"
-start = 1061.014
-end = 1062.144
-speaker = "D"
-ja = "めっちゃいいなぁ。"
-
-[[segments]]
-id = "2-seg_134"
-start = 1062.224
-end = 1063.324
-speaker = "D"
-ja = "うわぁいいなぁ"
-
-[[segments]]
-id = "2-seg_135"
-start = 1063.924
-end = 1065.794
-speaker = "D"
-ja = "うわぁお風呂っていい"
-
-[[segments]]
-id = "2-seg_136"
-start = 1065.874
-end = 1066.884
-speaker = "C,D"
-ja = "分かるよね。"
-zh = ""
-
-[[segments]]
-id = "2-seg_139"
-start = 1066.964
-end = 1068.974
-speaker = "D"
-ja = "めっちゃ好きだわお風呂"
-
-[[segments]]
-id = "2-seg_140"
-start = 1070.036
-end = 1072.246
-speaker = "C"
-ja = "お風呂で歌うと本当に上手く感じるよね"
-
-[[segments]]
-id = "2-seg_141"
-start = 1072.326
-end = 1074.346
-speaker = "D"
-ja = "エコーがねかかるよね"
-
-[[segments]]
-id = "2-seg_142"
-start = 1074.426
-end = 1076.046
-speaker = "C,D"
-ja = "なんでだろうね。なんだろう。"
-zh = ""
-
-[[segments]]
-id = "2-seg_144"
-start = 1076.126
-end = 1081.996
-speaker = "C,D"
-ja = "エコーってなんで上手く聞こえるんだろう。\nカラオケでも、マイクエコー上げると上手く聞こえる。"
-zh = ""
-
-[[segments]]
-id = "2-seg_146.1"
-start = 1082.076
-end = 1086.46
-speaker = "C"
-ja = "めちゃくちゃわかる。\nエコーずっとついてればいいのにって思う、自分の声に。"
-zh = ""
-
-[[segments]]
-id = "2-seg_146.2"
-start = 1086.54
-end = 1091.36
-speaker = "C"
-ja = "なんかもし普通の喋ってる声にエコーがついてたらさ、\n超なんか説得力増さない？"
-zh = ""
-
-[[segments]]
-id = "2-seg_146.3"
-start = 1091.44
-end = 1096.086
-speaker = "C"
-ja = "なんかウグイス嬢さんみたいな感じ。"
-zh = ""
+id = "2-seg_146d"
+start = 1040.393
+end = 1043.789
+speaker = "A"
+ja = "お風呂で思いっきり歌を歌ってしまうこともあります いいよね"
 
 [[segments]]
 id = "2-seg_147"
-start = 1096.4859999999999
-end = 1097.7359999999999
-speaker = "D"
-ja = "でもさちょっとやだ"
-
-[[segments]]
-id = "2-seg_148"
-start = 1098
-end = 1100.454
-speaker = "D"
-ja = "エコーついてるんだよって、ちょっとやだよね。"
+start = 1043.939
+end = 1046.474
+speaker = "A"
+ja = "お風呂場の中だとなぜか少し歌が"
 
 [[segments]]
 id = "2-seg_149"
-start = 1100.534
-end = 1102.444
-speaker = "C,D"
-ja = "私だけ? うちらだけ? 私らだけ?"
-zh = ""
+start = 1046.624
+end = 1048.674
+speaker = "A"
+ja = "上手くなった気がしますし本当に"
+
+[[segments]]
+id = "2-seg_150a"
+start = 1048.824
+end = 1051.855
+speaker = "A"
+ja = "声を出すことでストレス発散にもなっています"
+
+[[segments]]
+id = "2-seg_150b"
+start = 1051.905
+end = 1054.912
+speaker = "A"
+ja = "さらにスッキリしたい時は"
+
+[[segments]]
+id = "2-seg_150c"
+start = 1054.962
+end = 1057.357
+speaker = "A"
+ja = "プレゼントでもらった入浴剤を使います"
+
+[[segments]]
+id = "2-seg_150d"
+start = 1057.407
+end = 1059.191
+speaker = "A"
+ja = "お風呂が私にとっての一番手軽な"
+
+[[segments]]
+id = "2-seg_150e"
+start = 1059.241
+end = 1061.049
+speaker = "A"
+ja = "自分の機嫌の取り方かもしれませんね"
+
+[[segments]]
+id = "2-seg_151"
+start = 1061.199
+end = 1065.374
+speaker = "B"
+ja = "めっちゃいいなぁいいな わぁお風呂"
 
 [[segments]]
 id = "2-seg_152"
-start = 1102.594
-end = 1105.704
-speaker = "D"
-ja = "それならいいや確かにエコー好きだわ私"
+start = 1065.524
+end = 1066.999
+speaker = "B"
+ja = "っていいよねわかる"
 
 [[segments]]
 id = "2-seg_153"
-start = 1105.784
-end = 1106.944
-speaker = "C"
-ja = "ねえ、あ、"
+start = 1067.149
+end = 1069.074
+speaker = "A"
+ja = "めっちゃ好きだわお風呂"
 
 [[segments]]
 id = "2-seg_154"
-start = 1107.0439999999999
-end = 1108.394
-speaker = "C"
-ja = "二人の機嫌の取り方は？"
+start = 1070.036
+end = 1072.211
+speaker = "B"
+ja = "お風呂で歌うと本当に上手く感じるよね"
 
 [[segments]]
 id = "2-seg_155"
-start = 1108.4940000000001
-end = 1112.944
-speaker = "D,C"
-ja = "え? なんかある? な? 機嫌の取り方?\nでもそれこそ爆食?"
-zh = ""
+start = 1072.361
+end = 1074.461
+speaker = "A"
+ja = "エコーがねかかるよね"
+
+[[segments]]
+id = "2-seg_156"
+start = 1074.611
+end = 1075.461
+speaker = "B"
+ja = "なんでだろうね"
+
+[[segments]]
+id = "2-seg_157"
+start = 1075.611
+end = 1076.061
+speaker = "A"
+ja = "なんでなんだろう"
 
 [[segments]]
 id = "2-seg_158"
-start = 1113.2440000000001
-end = 1115.944
-speaker = "D"
-ja = "コンビニでめちゃくちゃ買って食べるか"
-
-[[segments]]
-id = "2-seg_159"
-start = 1118.644
-end = 1119.144
-speaker = "D"
-ja = "え?"
-
-[[segments]]
-id = "2-seg_160"
-start = 1119.2939999999999
-end = 1123.704
-speaker = "D,C"
-ja = "機嫌の取り方? うん。\nいやでも私爆食だな"
+start = 1076.211
+end = 1078.136
+speaker = "B"
+ja = "エコーってなんで上手く聞こえるんだ"
 zh = ""
 
 [[segments]]
-id = "2-seg_163"
-start = 1123.784
-end = 1124.454
-speaker = "C"
-ja = "爆食か"
-
-[[segments]]
-id = "2-seg_164"
-start = 1124.534
-end = 1126.094
-speaker = "D"
-ja = "コーラ飲めばだいたい機嫌治る"
-
-[[segments]]
-id = "2-seg_165"
-start = 1126.844
-end = 1127.344
-speaker = "C"
-ja = "いいね"
-
-[[segments]]
-id = "2-seg_166.1"
-start = 1128.052
-end = 1133.16
+id = "2-seg_161a"
+start = 1078.186
+end = 1079.999
 speaker = "A"
-ja = "マジで。だから、オーディション前とかに緊張するじゃん。"
-zh = ""
+ja = "本当にカラオケとかでも"
 
 [[segments]]
-id = "2-seg_166.2"
-start = 1133.24
-end = 1137.46
+id = "2-seg_161b"
+start = 1080.049
+end = 1081.861
 speaker = "A"
-ja = "緊張するって思いながら、カラオケに歌いに、\n声出しに行くんだけど、"
-zh = ""
+ja = "マイクエコー上げるとちょっとうまく聞こえる"
 
 [[segments]]
-id = "2-seg_166.3"
-start = 1137.54
-end = 1142.002
+id = "2-seg_162"
+start = 1082.011
+end = 1082.836
+speaker = "B"
+ja = "めちゃくちゃわかる"
+
+[[segments]]
+id = "2-seg_163a"
+start = 1082.986
+end = 1084.999
 speaker = "A"
-ja = "本当は収録とかのこと、収録っていうか声使うから、"
-zh = ""
+ja = "ねエコーずっとついてればいいのにって思う"
+
+[[segments]]
+id = "2-seg_163b"
+start = 1085.049
+end = 1087.061
+speaker = "A"
+ja = "自分の声にエコーが"
+
+[[segments]]
+id = "2-seg_166a"
+start = 1087.211
+end = 1090.161
+speaker = "B"
+ja = "なんかもし普通の喋ってる声に"
+
+[[segments]]
+id = "2-seg_166b"
+start = 1090.211
+end = 1093.136
+speaker = "B"
+ja = "エコーがついてたらさ超なんか"
+
+[[segments]]
+id = "2-seg_166c"
+start = 1093.186
+end = 1096.136
+speaker = "B"
+ja = "説得力悪くない なんか占い師さんみたいな感じ"
 
 [[segments]]
 id = "2-seg_167"
-start = 1142.452
-end = 1147.212
+start = 1096.436
+end = 1097.7359999999999
 speaker = "A"
-ja = "炭酸飲まない方がいいなとか思うんだけど、\nギリギリまで私はもうコーラめっちゃ飲んでる。"
-zh = ""
+ja = "でもさちょっと嫌だよね"
 
 [[segments]]
 id = "2-seg_168"
-start = 1147.292
-end = 1153.5520000000001
-speaker = "C,A"
-ja = "そうなんだ! コーラしかなくね。好きだもんね。\n水だけで抑えようって思う時があるの。でも、"
+start = 1098.644
+end = 1100.469
+speaker = "A,B"
+ja = "全員ついてるんだよ ちょっとやだよね"
 zh = ""
+
+[[segments]]
+id = "2-seg_171"
+start = 1100.619
+end = 1101.719
+speaker = "B"
+ja = "私だけ うちらだけ"
+
+[[segments]]
+id = "2-seg_172"
+start = 1101.869
+end = 1102.444
+speaker = "A"
+ja = "うちらだけ?"
+
+[[segments]]
+id = "2-seg_173"
+start = 1102.594
+end = 1105.769
+speaker = "A"
+ja = "それならいいや確かにエコー好きだわ私"
+
+[[segments]]
+id = "2-seg_174"
+start = 1105.919
+end = 1108.2440000000001
+speaker = "B"
+ja = "ねえ2人の機嫌の取り方は"
+
+[[segments]]
+id = "2-seg_175"
+start = 1108.444
+end = 1108.944
+speaker = "A"
+ja = "え?"
 
 [[segments]]
 id = "2-seg_176"
-start = 1154.548
-end = 1158.8980000000001
+start = 1109.144
+end = 1109.7440000000001
 speaker = "A"
-ja = "なんかね落ち着かなくなっちゃうんだよね。\nだからやっぱり最近ずっとコーラ飲んでる"
-zh = ""
+ja = "なんかある?"
 
 [[segments]]
 id = "2-seg_177"
-start = 1159.498
-end = 1163.548
-speaker = "C"
-ja = "なんか機嫌が下がることがあんまりなくて"
+start = 1109.944
+end = 1111.269
+speaker = "B"
+ja = "機嫌の取り方?"
 
 [[segments]]
 id = "2-seg_178"
-start = 1163.9479999999999
-end = 1165.608
+start = 1111.419
+end = 1112.944
+speaker = "A"
+ja = "でもそれこそ爆食?"
+
+[[segments]]
+id = "2-seg_179"
+start = 1113.2440000000001
+end = 1116.0439999999999
+speaker = "A"
+ja = "コンビニでめちゃくちゃ買って食べるか"
+
+[[segments]]
+id = "2-seg_180"
+start = 1118.644
+end = 1120.444
+speaker = "A"
+ja = "え?機嫌の取り方?"
+
+[[segments]]
+id = "2-seg_181"
+start = 1120.944
+end = 1126.0439999999999
+speaker = "A"
+ja = "いやでも私爆食だな コーラ飲めば大体機嫌治る"
+
+[[segments]]
+id = "2-seg_182a"
+start = 1128.052
+end = 1131.862
+speaker = "A"
+ja = "まじでだからオーディション前とかになんか緊張するじゃん"
+
+[[segments]]
+id = "2-seg_182b"
+start = 1131.912
+end = 1135.697
+speaker = "A"
+ja = "緊張するって思いながらカラオケに歌 声出していくんだけど"
+
+[[segments]]
+id = "2-seg_182c"
+start = 1135.747
+end = 1138.254
+speaker = "A"
+ja = "本当は収録とかのこと"
+
+[[segments]]
+id = "2-seg_182d"
+start = 1138.304
+end = 1140.811
+speaker = "A"
+ja = "収録っていうか声使うから"
+
+[[segments]]
+id = "2-seg_182e"
+start = 1140.861
+end = 1143.367
+speaker = "A"
+ja = "炭酸飲まない方がいいなとか思うんだけど"
+
+[[segments]]
+id = "2-seg_182f"
+start = 1143.417
+end = 1147.227
+speaker = "A"
+ja = "ギリギリまで私はコーラめっちゃ飲んでる"
+
+[[segments]]
+id = "2-seg_183"
+start = 1147.377
+end = 1149.777
+speaker = "B"
+ja = "そうなんだ好きだもんねコーラ"
+
+[[segments]]
+id = "2-seg_184"
+start = 1149.927
+end = 1153.652
+speaker = "A"
+ja = "水だけで抑えようって思う時があるの でも"
+
+[[segments]]
+id = "2-seg_185"
+start = 1154.548
+end = 1156.248
+speaker = "A"
+ja = "なんかね落ち着かなくなっちゃうんだよね"
+
+[[segments]]
+id = "2-seg_186"
+start = 1156.4479999999999
+end = 1158.8980000000001
+speaker = "A"
+ja = "だからやっぱり最近ずっとコーラ飲んでる"
+
+[[segments]]
+id = "2-seg_187"
+start = 1159.6480000000001
+end = 1163.548
+speaker = "B"
+ja = "なんか機嫌が下がることがあんまりなくて"
+
+[[segments]]
+id = "2-seg_188"
+start = 1164.048
+end = 1165.723
 speaker = "A"
 ja = "なんか前も言ってたねそれ"
 
 [[segments]]
-id = "2-seg_179"
-start = 1165.688
-end = 1170.708
-speaker = "C"
-ja = "そうなの。すごいいいことだね。忘れるのすぐ。\n普通に歩いてたら忘れるからさ。"
-zh = ""
+id = "2-seg_189a"
+start = 1165.873
+end = 1168.248
+speaker = "B"
+ja = "そうなのすごいいいことだね"
 
 [[segments]]
-id = "2-seg_180"
-start = 1170.788
-end = 1176.058
-speaker = "A,C"
-ja = "すごい、あと寝たら忘れるんでしょ。そう。\nそう。だから睡眠と散歩。わかんないけど、散歩。"
-zh = ""
-
-[[segments]]
-id = "2-seg_184"
-start = 1176.138
-end = 1177.058
-speaker = "A"
-ja = "マジでいいと思う"
-
-[[segments]]
-id = "2-seg_185"
-start = 1177.138
-end = 1178.1979999999999
-speaker = "C"
-ja = "いいとにかく"
-
-[[segments]]
-id = "2-seg_186.1"
-start = 1178.532
-end = 1182.56
-speaker = "C"
-ja = "なんか、まあめっちゃ落ち込む時とか、\n普通に音楽聴きながら散歩とかすると、"
-zh = ""
-
-[[segments]]
-id = "2-seg_186.2"
-start = 1182.64
-end = 1186.622
-speaker = "C"
-ja = "結構気分爽快になっちゃう。めちゃくちゃいい。"
-zh = ""
-
-[[segments]]
-id = "2-seg_187"
-start = 1186.702
-end = 1192.172
-speaker = "D"
-ja = "歩くと結構忘れられるし人と喋りながら歩くのも好き私"
-
-[[segments]]
-id = "2-seg_188"
-start = 1192.252
-end = 1194.432
-speaker = "C"
-ja = "わかるぜひ散歩してみてください皆さん"
-
-[[segments]]
-id = "2-seg_189"
-start = 1194.512
-end = 1197.512
-speaker = "C"
-ja = "セロトニンだっけ、セトロニン？ セロトニン。"
+id = "2-seg_189b"
+start = 1168.298
+end = 1170.673
+speaker = "B"
+ja = "いやでも忘れるのすぐ普通に歩いてたら忘れるからさ"
 
 [[segments]]
 id = "2-seg_190"
-start = 1200.02
-end = 1201.52
-speaker = "C,A"
-ja = "体内に分泌したらね。"
-zh = ""
-
-[[segments]]
-id = "2-seg_194"
-start = 1201.92
-end = 1203.88
+start = 1170.823
+end = 1172.423
 speaker = "A"
-ja = "なんか気持ちも上がるらしいですよ。"
+ja = "すごいあと寝たら忘れるんでしょ"
 
 [[segments]]
-id = "2-seg_195"
-start = 1203.96
-end = 1205.54
-speaker = "C"
-ja = "ぜひぜひ試してみてください"
+id = "2-seg_191"
+start = 1172.573
+end = 1175.573
+speaker = "B"
+ja = "そうだから睡眠と散歩 わかんないけど散"
+
+[[segments]]
+id = "2-seg_192"
+start = 1175.723
+end = 1176.923
+speaker = "A"
+ja = "でも散歩マジでいいと思う"
+
+[[segments]]
+id = "2-seg_193"
+start = 1177.073
+end = 1178.1979999999999
+speaker = "B"
+ja = "歩いい とにかく"
+
+[[segments]]
+id = "2-seg_194a"
+start = 1178.612
+end = 1181.329
+speaker = "B"
+ja = "なんかまあめっちゃ落ち込む時とか"
+
+[[segments]]
+id = "2-seg_194b"
+start = 1181.379
+end = 1184.071
+speaker = "B"
+ja = "普通に音楽聴きながら散歩とかすると"
+
+[[segments]]
+id = "2-seg_194c"
+start = 1184.121
+end = 1186.837
+speaker = "B"
+ja = "結構気分爽快になっちゃう めちゃくちゃいい"
+
+[[segments]]
+id = "2-seg_195a"
+start = 1186.987
+end = 1189.562
+speaker = "A"
+ja = "よね歩くとね結構忘れられるし"
+
+[[segments]]
+id = "2-seg_195b"
+start = 1189.612
+end = 1192.187
+speaker = "A"
+ja = "人と喋りながら歩くのも好きだったりする"
 
 [[segments]]
 id = "2-seg_196"
-start = 1205.62
-end = 1206.12
-speaker = "A"
-ja = "お疲れ様"
+start = 1192.337
+end = 1194.087
+speaker = "B"
+ja = "わかるぜひ散歩してみてください 皆さん"
 
 [[segments]]
 id = "2-seg_197"
-start = 1206.22
-end = 1210.53
-speaker = "C"
-ja = "皆さんありがとうございました。\nこれからもお便りお待ちしております。"
-zh = ""
+start = 1194.22
+end = 1194.537
+speaker = "A"
+ja = "え"
+
+[[segments]]
+id = "2-seg_198"
+start = 1194.587
+end = 1198.512
+speaker = "B"
+ja = "セロトニンだっけ セトロニン セロトニン セロトニン"
 
 [[segments]]
 id = "2-seg_199"
-start = 1211.21
-end = 1213.11
-speaker = "C"
-ja = "宛先はエンディングでご案内します。"
+start = 1200.02
+end = 1203.845
+speaker = "B"
+ja = "体に分泌したらねなんか気持ちも上がるらしいですよ"
+zh = ""
+
+[[segments]]
+id = "2-seg_203"
+start = 1203.995
+end = 1206.245
+speaker = "A,B"
+ja = "ぜひぜひ試してみてください よろしくお願いします"
+zh = ""
+
+[[segments]]
+id = "2-seg_205a"
+start = 1206.395
+end = 1208.528
+speaker = "A,B"
+ja = "はいということで皆さんありがとうございました"
+
+[[segments]]
+id = "2-seg_205b"
+start = 1208.578
+end = 1210.687
+speaker = "A,B"
+ja = "これからもお便りたくさんお待ちしております 待ってます"
+
+[[segments]]
+id = "2-seg_205c"
+start = 1210.737
+end = 1212.87
+speaker = "A,B"
+ja = "はい宛先はエンディングでお知らせします"
 
 [[segments]]
 id = "3-seg_0"
-start = 1214.816333
-end = 1218.166333
+start = 1214.716333
+end = 1218.066333
 speaker = "A"
-ja = "さくら先生、買うか買わないかで一番悩んだものは？"
+ja = "夏さく前線 買うか買わないかで一番悩んだものは"
 
 [[segments]]
 id = "3-seg_1"
-start = 1220.000333
-end = 1222.426333
+start = 1220.116333
+end = 1222.291333
 speaker = "B"
 ja = "3回なくしたお気に入りのモバイルバッテリー"
 
 [[segments]]
 id = "3-seg_2"
-start = 1222.506333
-end = 1225.900333
+start = 1222.441333
+end = 1225.066333
 speaker = "A"
-ja = "もし自分のフィギュアが出るとしたらどんなポーズがいい？"
+ja = "もし自分のフィギュアが出るとしたらどんなポーズがいい"
 
 [[segments]]
 id = "3-seg_3"
-start = 1227.116333
-end = 1228.726333
+start = 1226.866333
+end = 1228.591333
 speaker = "B"
-ja = "やだやだ、フィギュア"
+ja = "やってやってフィギュア"
 
 [[segments]]
-id = "3-seg_4.1"
-start = 1228.806333
-end = 1229.96
-speaker = "B"
-ja = "フィギュアかわいい"
-
-[[segments]]
-id = "3-seg_4.2"
-start = 1230.04
-end = 1232.716333
+id = "3-seg_4"
+start = 1228.741333
+end = 1232.516333
 speaker = "A"
-ja = "ドッジボールは内野と外野どっちが得意？"
+ja = "フィギュア あかわいい ドッジボールは内野と外野どっちが得意"
 
 [[segments]]
-id = "3-seg_5.1"
-start = 1233.466333
-end = 1234.81
+id = "3-seg_5"
+start = 1233.066333
+end = 1235.241333
 speaker = "B"
-ja = "内野、圧倒的に"
+ja = "内野 圧倒的に"
 
 [[segments]]
-id = "3-seg_5.2"
-start = 1234.89
-end = 1237.666333
-speaker = "B"
-ja = "打ち上げ花火と線香花火、好きなのはどっち？"
-
-[[segments]]
-id = "3-seg_6.1"
-start = 1248.700333
-end = 1253.21
+id = "3-seg_6"
+start = 1235.391333
+end = 1237.516333
 speaker = "A"
-ja = "ミニコーナー「さくら先生となちゅに聞きました」を\nご覧いただきました"
-
-[[segments]]
-id = "3-seg_6.2"
-start = 1253.29
-end = 1257.300333
-speaker = "A"
-ja = "皆さんからの質問に一問一答形式で答えるコーナーです\nということで"
+ja = "打ち上げ花火と線香花火 好きなのはどっち"
 
 [[segments]]
 id = "3-seg_7.1"
-start = 1257.900333
-end = 1259.48
-speaker = "A,B"
-ja = "どうでした？ 何聞こうかな"
-
-[[segments]]
-id = "3-seg_8.1"
-start = 1259.56
-end = 1262.560333
+start = 1248.700333
+end = 1251.875333
 speaker = "A"
-ja = "自分のフィギュアが出るとしたら\nどんなポーズがいい？"
+ja = "ブリッジコーナー 夏さく前線をご覧いただきました"
+zh = ""
 
 [[segments]]
-id = "3-seg_9"
-start = 1262.640333
-end = 1264.210333
+id = "3-seg_7.2"
+start = 1251.925333
+end = 1255.475333
+speaker = "A"
+ja = "皆さんからの質問に一問一答形式で答えるコーナーです"
+zh = ""
+
+[[segments]]
+id = "3-seg_7.3"
+start = 1255.525333
+end = 1257.250333
+speaker = "A"
+ja = "ということで"
+zh = ""
+
+[[segments]]
+id = "3-seg_8"
+start = 1257.850333
+end = 1258.275333
 speaker = "B"
-ja = "私のフィギュアいらんよ"
+ja = "どうやら"
+
+[[segments]]
+id = "3-seg_9.1"
+start = 1258.425333
+end = 1259.400333
+speaker = "A"
+ja = "何聞こうかな"
+zh = ""
+
+[[segments]]
+id = "3-seg_9.2"
+start = 1259.450333
+end = 1261.600333
+speaker = "A"
+ja = "自分のフィギュアが出るとしたらどんなポーズがいい?"
+zh = ""
+
+[[segments]]
+id = "3-seg_9.3"
+start = 1261.650333
+end = 1262.425333
+speaker = "A"
+ja = "どんなんだっけ?"
+zh = ""
 
 [[segments]]
 id = "3-seg_10"
-start = 1264.290333
-end = 1268.950333
+start = 1262.575333
+end = 1264.175333
+speaker = "B"
+ja = "自分のフィギュア要らんよ"
+
+[[segments]]
+id = "3-seg_11"
+start = 1264.325333
+end = 1265.400333
 speaker = "A"
-ja = "え、欲しいよ。私が欲しい。なんかこんなんや"
+ja = "え?欲しいよ!"
 
 [[segments]]
 id = "3-seg_12"
-start = 1269.596333
-end = 1270.206333
+start = 1265.800333
+end = 1267.050333
 speaker = "A"
-ja = "チラするね"
+ja = "うちが欲しい"
 
 [[segments]]
 id = "3-seg_13"
-start = 1270.286333
-end = 1272.746333
-speaker = "B"
-ja = "かも。なんか動きある方がフィギュアってかわいいよね"
+start = 1267.200333
+end = 1268.100333
+speaker = "A"
+ja = "どんなポーズ?"
 
 [[segments]]
 id = "3-seg_14"
-start = 1272.846333
-end = 1276.656333
+start = 1268.250333
+end = 1268.750333
 speaker = "A"
-ja = "なんか手とかさ、上に出てさ\n曲げてたりした方がかわいいかなって"
+ja = "こんなの?"
 
 [[segments]]
 id = "3-seg_15"
-start = 1276.736333
-end = 1278.206333
-speaker = "B"
-ja = "あと髪なびいててほしいな、ちょっと"
+start = 1269.596333
+end = 1270.571333
+speaker = "C"
+ja = "え それいいかも"
 
 [[segments]]
 id = "3-seg_16"
-start = 1278.286333
-end = 1280.156333
-speaker = "A"
-ja = "分かる？ちょっと。でもボブだからむずいかな"
+start = 1270.721333
+end = 1272.621333
+speaker = "B"
+ja = "いいなんか動きある方がフィギュアって可愛いよね"
 
 [[segments]]
-id = "3-seg_17"
-start = 1280.236333
-end = 1280.966333
+id = "3-seg_17.1"
+start = 1272.771333
+end = 1274.746333
+speaker = "C"
+ja = "ね なんか手とかさ上行ってたりさ"
+zh = ""
+
+[[segments]]
+id = "3-seg_17.2"
+start = 1274.796333
+end = 1276.571333
+speaker = "C"
+ja = "巻いてたりした方が可愛いかなって"
+zh = ""
+
+[[segments]]
+id = "3-seg_18"
+start = 1276.721333
+end = 1278.071333
+speaker = "B"
+ja = "あと髪なびいててほしいなちょっと"
+
+[[segments]]
+id = "3-seg_19"
+start = 1278.221333
+end = 1280.071333
+speaker = "C"
+ja = "わかる ちょっとでもボブだからむずいかな"
+
+[[segments]]
+id = "3-seg_20"
+start = 1280.221333
+end = 1280.846333
 speaker = "B"
 ja = "いけるいける"
 
 [[segments]]
-id = "3-seg_18"
-start = 1281.046333
-end = 1284.256333
+id = "3-seg_21"
+start = 1281.196333
+end = 1284.171333
 speaker = "B"
-ja = "うわ、作りてえ。さくらのフィギュア欲しい、私"
+ja = "うわ 作りてぇ さくらのフィギュア欲しい私"
 
 [[segments]]
-id = "3-seg_19"
-start = 1284.336333
+id = "3-seg_22"
+start = 1284.321333
+end = 1284.946333
+speaker = "C"
+ja = "アクスタで"
+
+[[segments]]
+id = "3-seg_23"
+start = 1285.146333
 end = 1285.996333
-speaker = "A"
-ja = "アクスタね、いいよ"
+speaker = "B"
+ja = "いいよ"
 
 [[segments]]
-id = "3-seg_20"
-start = 1286.396333
-end = 1288.246333
+id = "3-seg_24"
+start = 1286.346333
+end = 1288.146333
 speaker = "B"
 ja = "じゃあ等身アクスタとか"
 
 [[segments]]
-id = "3-seg_21"
-start = 1288.796333
-end = 1289.906333
+id = "3-seg_25"
+start = 1288.696333
+end = 1289.721333
+speaker = "C"
+ja = "等身アクスタ?"
+
+[[segments]]
+id = "3-seg_26"
+start = 1289.871333
+end = 1290.571333
 speaker = "B"
 ja = "等身アクスタ"
 
 [[segments]]
-id = "3-seg_22"
-start = 1289.986333
-end = 1293.746333
-speaker = "A"
-ja = "等身アクスタか。それは別に"
-
-[[segments]]
-id = "3-seg_23"
-start = 1295.346333
-end = 1297.546333
-speaker = "B"
-ja = "等身アクスタやばいか。でかいか"
-
-[[segments]]
-id = "3-seg_24"
-start = 1298.908333
-end = 1300.208333
-speaker = "A"
-ja = "でか。それはでかすぎた"
-
-[[segments]]
-id = "3-seg_25"
-start = 1300.458333
-end = 1302.468333
-speaker = "B"
-ja = "あ、4分の1系だ"
-
-[[segments]]
-id = "3-seg_26"
-start = 1302.548333
-end = 1303.658333
-speaker = "A"
-ja = "それそれそれそれ"
-
-[[segments]]
 id = "3-seg_27"
-start = 1304.258333
-end = 1305.618333
-speaker = "A"
-ja = "ちょっと欲しいな"
+start = 1290.721333
+end = 1293.646333
+speaker = "C"
+ja = "等身アクスタか それは別に"
 
 [[segments]]
 id = "3-seg_28"
-start = 1305.698333
-end = 1306.258333
+start = 1295.246333
+end = 1297.496333
 speaker = "B"
-ja = "確かになぁ"
+ja = "等身アクスタか デカいか デカい"
+
+[[segments]]
+id = "3-seg_29"
+start = 1298.908333
+end = 1300.208333
+speaker = "B"
+ja = "かえじゃこんぐらいなくした"
 
 [[segments]]
 id = "3-seg_30"
-start = 1306.608333
-end = 1307.328333
-speaker = "A"
-ja = "いいね、それ"
+start = 1300.408333
+end = 1302.483333
+speaker = "C"
+ja = "あ 4分の1スケール"
+
+[[segments]]
+id = "3-seg_31"
+start = 1302.633333
+end = 1304.008333
+speaker = "B"
+ja = "それそれそれそれ"
 
 [[segments]]
 id = "3-seg_32"
-start = 1307.408333
-end = 1308.808333
-speaker = "A"
-ja = "なくしたら悲しそう"
-
-[[segments]]
-id = "3-seg_33"
-start = 1309.308333
-end = 1314.408333
-speaker = "A"
-ja = "あとは、買うか買わないかで一番悩んだもの"
+start = 1304.308333
+end = 1305.983333
+speaker = "B,C"
+ja = "ちょっとちょっと欲しいな 確かにな"
+zh = ""
 
 [[segments]]
 id = "3-seg_34"
-start = 1315.058333
-end = 1318.708333
+start = 1306.033333
+end = 1307.408333
 speaker = "B"
-ja = "なんて答えたっけ、買うか買わないか"
+ja = "えいいね"
 
 [[segments]]
-id = "3-seg_35"
-start = 1321.148333
-end = 1329.398333
+id = "3-seg_36"
+start = 1307.558333
+end = 1308.858333
 speaker = "B"
-ja = "あの、そう。Ankerさんの\nコンセント差すところがついているモバイルバッテリー"
+ja = "それなら叶いそう"
 
 [[segments]]
 id = "3-seg_37"
-start = 1329.478333
-end = 1333.648333
+start = 1309.558333
+end = 1315.033333
 speaker = "B"
-ja = "それを紹介しているんです。本当にいいんです"
+ja = "あとは買うか買わないかで一番悩んだもの"
 
 [[segments]]
-id = "3-seg_38.1"
-start = 1334.198333
-end = 1338.21
+id = "3-seg_38"
+start = 1315.183333
+end = 1318.708333
+speaker = "C"
+ja = "なんて答えたっけ 買うか買わないか"
+
+[[segments]]
+id = "3-seg_39"
+start = 1319.058333
+end = 1319.558333
 speaker = "B"
-ja = "私、モバイルバッテリーというものを充電できないたちで"
+ja = "バナナ"
 
 [[segments]]
-id = "3-seg_38.2"
-start = 1338.29
-end = 1342.31
-speaker = "B"
-ja = "なぜかというとコードに差すのが本当に嫌で\nなんかできなくて"
+id = "3-seg_40.1"
+start = 1321.148333
+end = 1324.123333
+speaker = "C"
+ja = "あのそう Ankerさんの"
+zh = ""
 
 [[segments]]
-id = "3-seg_38.3"
-start = 1342.39
-end = 1345.718333
-speaker = "B"
-ja = "こいつを充電器として使えるの\nだから充電してるだけでたまるの"
+id = "3-seg_40.2"
+start = 1324.173333
+end = 1328.398333
+speaker = "C"
+ja = "コンセント差すところがついてるモバイルバッテリー"
+zh = ""
 
 [[segments]]
-id = "3-seg_40_42"
-start = 1345.798333
-end = 1347.548333
-speaker = "A,B"
-ja = "そう。じゃあうれしいね。だから"
+id = "3-seg_42"
+start = 1328.448333
+end = 1330.698333
+speaker = "B,C"
+ja = "さっき紹介しているんですが本当に いいっす"
+zh = ""
 
 [[segments]]
-id = "3-seg_43"
-start = 1348.444333
-end = 1354.254333
-speaker = "A,B"
-ja = "充電してたらたまってるって持ってけばいいだけだから\nよかったんだけど、2回？ 3回なくしたの、そう"
+id = "3-seg_44.1"
+start = 1330.748333
+end = 1333.373333
+speaker = "C"
+ja = "私モバイルバッテリーというものを充電できないたちで"
+zh = ""
+
+[[segments]]
+id = "3-seg_44.2"
+start = 1333.423333
+end = 1336.473333
+speaker = "C"
+ja = "なぜかというとコードに差すのが本当に嫌で"
+zh = ""
+
+[[segments]]
+id = "3-seg_44.3"
+start = 1336.523333
+end = 1339.173333
+speaker = "C"
+ja = "なんかできなくて"
+zh = ""
+
+[[segments]]
+id = "3-seg_44.4"
+start = 1339.223333
+end = 1341.973333
+speaker = "C"
+ja = "そいつを普通にモバイルバッテリーとしてじゃなくて"
+zh = ""
+
+[[segments]]
+id = "3-seg_44.5"
+start = 1342.023333
+end = 1344.173333
+speaker = "C"
+ja = "充電器のコードとして使えるの"
+zh = ""
+
+[[segments]]
+id = "3-seg_44.6"
+start = 1344.223333
+end = 1346.548333
+speaker = "B,C"
+ja = "だから充電してるだけで貯まるの そんなすげー ね"
+zh = ""
 
 [[segments]]
 id = "3-seg_46"
-start = 1354.334333
-end = 1355.104333
-speaker = "A"
-ja = "やばいな"
+start = 1346.598333
+end = 1347.598333
+speaker = "C"
+ja = "そうだから"
 
 [[segments]]
-id = "3-seg_47"
-start = 1355.184333
-end = 1361.694333
+id = "3-seg_47.1"
+start = 1348.444333
+end = 1350.669333
 speaker = "B"
-ja = "でも欲しくて何回も買ったんだけど\nちっちゃいのと大きいのがあって"
+ja = "充電してたら溜まったやつ持ってけばいいだけだから"
+zh = ""
 
 [[segments]]
-id = "3-seg_49"
-start = 1361.794333
-end = 1367.654333
+id = "3-seg_47.2"
+start = 1350.719333
+end = 1352.444333
 speaker = "B"
-ja = "ちっちゃいのはフル充電1回分で6000とか\nフル充電2回分の大きいのが8000とかなんだけど"
+ja = "よかったんだけど 2回なくして"
+zh = ""
+
+[[segments]]
+id = "3-seg_48"
+start = 1352.494333
+end = 1354.094333
+speaker = "B,C"
+ja = "うん 3回なくしたの"
+zh = ""
 
 [[segments]]
 id = "3-seg_50"
-start = 1367.734333
-end = 1370.964333
-speaker = "A"
-ja = "あ、そっか。結構する"
+start = 1354.244333
+end = 1354.669333
+speaker = "C"
+ja = "あやばい"
 
 [[segments]]
-id = "3-seg_51"
-start = 1371.044333
+id = "3-seg_51.1"
+start = 1354.819333
+end = 1357.694333
+speaker = "B"
+ja = "そうでもでも欲しくて何回も買ったんだけど"
+zh = ""
+
+[[segments]]
+id = "3-seg_51.2"
+start = 1357.744333
+end = 1360.194333
+speaker = "B"
+ja = "ちっちゃいのと大きいのがあって"
+zh = ""
+
+[[segments]]
+id = "3-seg_51.3"
+start = 1360.244333
+end = 1363.894333
+speaker = "B"
+ja = "ちっちゃいのはフル充電1回分で6000とかで"
+zh = ""
+
+[[segments]]
+id = "3-seg_51.4"
+start = 1363.944333
+end = 1367.844333
+speaker = "B"
+ja = "フル充電2回分の大きいやつが8000とかなんだけど"
+zh = ""
+
+[[segments]]
+id = "3-seg_52"
+start = 1368.694333
+end = 1370.244333
+speaker = "C"
+ja = "うわーそっか結構"
+
+[[segments]]
+id = "3-seg_53"
+start = 1370.644333
 end = 1373.294333
+speaker = "B,C"
+ja = "結構する そうね めっちゃ迷ったけど毎回買ってる"
+zh = ""
+
+[[segments]]
+id = "3-seg_57.1"
+start = 1376.604333
+end = 1377.979333
 speaker = "B"
-ja = "めっちゃ迷ったけど毎回買ってる"
+ja = "私もめっちゃいいの!おすすめ"
+zh = ""
 
 [[segments]]
-id = "3-seg_54"
-start = 1375.900333
-end = 1380.774333
+id = "3-seg_57.2"
+start = 1378.029333
+end = 1379.279333
 speaker = "B"
-ja = "私もめっちゃいいよ、おすすめとしてそれを布教してます\nウィッチーズは2人買ってますから"
+ja = "それを布教してもらい"
+zh = ""
 
 [[segments]]
-id = "3-seg_55.1"
-start = 1380.854333
-end = 1382.76
-speaker = "A,B"
-ja = "すごい。あと3人買ってます"
-
-[[segments]]
-id = "3-seg_56.1"
-start = 1382.84
-end = 1386.704333
-speaker = "A,B"
-ja = "あともう一人が買えば制覇できる\n結構だ、半分以上買う。すごいね"
-
-[[segments]]
-id = "3-seg_63"
-start = 1386.784333
-end = 1388.674333
+id = "3-seg_57.3"
+start = 1379.329333
+end = 1380.954333
 speaker = "B"
-ja = "ちょっとあともう一個聞いていい?"
+ja = "もしみちーさん2人買ってますか?"
+zh = ""
 
 [[segments]]
-id = "3-seg_64"
-start = 1388.754333
-end = 1390.914333
-speaker = "B"
-ja = "打ち上げ花火と線香花火、好きなのどっち？"
+id = "3-seg_58"
+start = 1381.004333
+end = 1383.154333
+speaker = "B,C"
+ja = "すごい! あと3人買ってます? 結構だ!"
+zh = ""
 
 [[segments]]
-id = "3-seg_65"
-start = 1390.994333
-end = 1392.414333
-speaker = "A"
-ja = "打ち上げ花火だよ"
+id = "3-seg_61"
+start = 1383.204333
+end = 1384.404333
+speaker = "B,C"
+ja = "あと半分以上が買えば"
+zh = ""
 
 [[segments]]
 id = "3-seg_66"
-start = 1392.494333
-end = 1396.904333
-speaker = "B"
-ja = "なんかみんな、ここにいらっしゃるみんな線香花火派だったの"
+start = 1385.004333
+end = 1386.904333
+speaker = "C"
+ja = "制覇できる!すごいね!"
 
 [[segments]]
 id = "3-seg_67"
-start = 1397.204333
-end = 1398.154333
-speaker = "A"
-ja = "線香花火ですか？"
+start = 1387.104333
+end = 1388.729333
+speaker = "B,C"
+ja = "え? ちょっとあともう1個聞いていい?"
+zh = ""
 
 [[segments]]
-id = "3-seg_68"
-start = 1398.254333
-end = 1398.904333
-speaker = "A"
+id = "3-seg_69"
+start = 1388.879333
+end = 1390.979333
+speaker = "B"
+ja = "打ち上げ花火と線香花火好きなのどっち?"
+
+[[segments]]
+id = "3-seg_70"
+start = 1391.129333
+end = 1392.329333
+speaker = "C"
+ja = "え?打ち上げ花火だよ!"
+
+[[segments]]
+id = "3-seg_71"
+start = 1392.479333
+end = 1396.679333
+speaker = "B"
+ja = "え?なんかさ ここにいらっしゃるみんな線香花火派だったの?"
+
+[[segments]]
+id = "3-seg_72"
+start = 1396.829333
+end = 1398.054333
+speaker = "C"
+ja = "全然打ち上げ花火ですか?"
+
+[[segments]]
+id = "3-seg_73"
+start = 1398.204333
+end = 1398.804333
+speaker = "C"
 ja = "線香花火"
 
 [[segments]]
-id = "3-seg_69_72"
-start = 1414.236333
-end = 1416.696333
-speaker = "A,B"
-ja = "言ってきたんだよ。そう。なんか、線香花火"
-
-[[segments]]
-id = "3-seg_73.1"
-start = 1416.776333
-end = 1419.76
+id = "3-seg_74"
+start = 1414.136333
+end = 1414.661333
 speaker = "B"
-ja = "とか持ってる時に肩が触れたりして、近いみたいな"
+ja = "できたんだよね"
 
 [[segments]]
-id = "3-seg_74.1a"
-start = 1419.84
-end = 1423.66
-speaker = "A"
-ja = "なんか打ち上げ花火とかは告白イベントとかあるじゃん"
+id = "3-seg_75.1"
+start = 1414.711333
+end = 1416.886333
+speaker = "C"
+ja = "そうそうなんかあの線香花火を持ってる間に"
+zh = ""
 
 [[segments]]
-id = "3-seg_74.2a"
-start = 1423.74
-end = 1428.736333
-speaker = "A"
-ja = "聞こえないじゃんって言ったら、アニメの話だよ\n絶対聞こえるよね"
+id = "3-seg_75.2"
+start = 1416.936333
+end = 1418.986333
+speaker = "C"
+ja = "肩が触れたりしていいなみたいな"
+zh = ""
 
 [[segments]]
-id = "3-seg_75"
-start = 1429.586333
-end = 1430.356333
+id = "3-seg_76"
+start = 1419.286333
+end = 1421.086333
 speaker = "B"
-ja = "いや嘘でしょ"
-
-[[segments]]
-id = "3-seg_76_77"
-start = 1430.436333
-end = 1432.596333
-speaker = "A,B"
-ja = "なんだ。ねえ、みんな打ち上げ花火じゃん"
+ja = "そうなんか打ち上げ花火とか"
 
 [[segments]]
 id = "3-seg_78"
-start = 1432.676333
-end = 1435.156333
-speaker = "A"
-ja = "なんだ、何だったって、さっきのディベート"
+start = 1421.386333
+end = 1423.536333
+speaker = "B"
+ja = "告白イベントとかあるじゃんって言ったら"
 
 [[segments]]
 id = "3-seg_79"
-start = 1435.236333
-end = 1435.986333
+start = 1423.686333
+end = 1424.636333
 speaker = "B"
-ja = "何なの"
+ja = "聞こえないじゃんって"
 
 [[segments]]
 id = "3-seg_80"
-start = 1436.386333
-end = 1436.956333
+start = 1425.886333
+end = 1430.761333
 speaker = "B"
-ja = "いやまぁ"
+ja = "アニメの話だよ絶対聞こえるよねえ嘘でしょ"
 
 [[segments]]
-id = "3-seg_81_82"
-start = 1437.036333
-end = 1439.246333
-speaker = "A,B"
-ja = "ね。線香花火ももちろん素敵ですよ、また"
+id = "3-seg_81"
+start = 1430.911333
+end = 1432.761333
+speaker = "C"
+ja = "なんだみんな打ち上げ花火じゃん"
 
 [[segments]]
-id = "3-seg_83_85"
-start = 1439.326333
-end = 1442.486333
-speaker = "A,B"
-ja = "素敵。全然ね。別の良さがありますね。なんかねあの"
-
-[[segments]]
-id = "3-seg_86_87"
-start = 1444.500333
-end = 1446.796333
-speaker = "A,B"
-ja = "ぶっちゃけ話が。えそうねそうそうそうそう"
-
-[[segments]]
-id = "3-seg_88.1"
-start = 1446.876333
-end = 1450.66
+id = "3-seg_82"
+start = 1432.911333
+end = 1434.836333
 speaker = "B"
-ja = "ということで、これからコーナーに行きたいと思います"
+ja = "なんだなんだったさっきのディベート"
 
 [[segments]]
-id = "3-seg_88.2"
-start = 1450.74
-end = 1454.786333
-speaker = "B"
-ja = "せーの、「格の違いを見せつけたい」"
+id = "3-seg_83"
+start = 1435.336333
+end = 1436.286333
+speaker = "C"
+ja = "なんなの?"
 
 [[segments]]
-id = "3-seg_89.1"
-start = 1455.686333
-end = 1460.46
+id = "3-seg_84"
+start = 1436.586333
+end = 1437.211333
 speaker = "B"
-ja = "2人で協力して様々な課題クリアを目指すコーナーです"
+ja = "いやまあ"
 
 [[segments]]
-id = "3-seg_89.2"
-start = 1460.54
-end = 1465.66
-speaker = "B"
-ja = "毎回スタッフさんが設定した基準レベルを\n超えることができれば格が一段昇格"
+id = "3-seg_85"
+start = 1437.361333
+end = 1439.311333
+speaker = "C"
+ja = "いや線香花火ももちろん素敵ですよ"
 
 [[segments]]
-id = "3-seg_89.3"
-start = 1465.74
-end = 1469.986333
+id = "3-seg_86"
+start = 1439.461333
+end = 1440.036333
 speaker = "B"
-ja = "最上段まで登り詰めることができた暁には\nご褒美がもらえるということです"
+ja = "素敵素敵 全然"
+
+[[segments]]
+id = "3-seg_87"
+start = 1440.086333
+end = 1441.211333
+speaker = "C"
+ja = "また別の良さがありますから"
+zh = ""
 
 [[segments]]
 id = "3-seg_90"
+start = 1441.361333
+end = 1442.636333
+speaker = "B"
+ja = "そうなんかねあの"
+
+[[segments]]
+id = "3-seg_91"
+start = 1444.636333
+end = 1446.661333
+speaker = "B,C"
+ja = "打ち上げ花火が ね うん そうねそうそうそうそう"
+zh = ""
+
+[[segments]]
+id = "3-seg_95"
+start = 1446.811333
+end = 1451.386333
+speaker = "B"
+ja = "はいということでそろそろねコーナーに行きたいと思います"
+
+[[segments]]
+id = "3-seg_96"
+start = 1451.786333
+end = 1454.836333
+speaker = "B"
+ja = "せーの格の違いを見せつけたい"
+
+[[segments]]
+id = "3-seg_97.1"
+start = 1455.736333
+end = 1459.511333
+speaker = "B"
+ja = "2人で協力して様々な課題クリアを目指すコーナーです"
+zh = ""
+
+[[segments]]
+id = "3-seg_97.2"
+start = 1459.561333
+end = 1461.911333
+speaker = "B"
+ja = "毎回スタッフさんが設定した基準レベルを"
+zh = ""
+
+[[segments]]
+id = "3-seg_97.3"
+start = 1461.961333
+end = 1464.411333
+speaker = "B"
+ja = "超えることができれば格が一段昇格"
+zh = ""
+
+[[segments]]
+id = "3-seg_97.4"
+start = 1464.461333
+end = 1466.686333
+speaker = "B"
+ja = "最上段まで登り詰めることが"
+zh = ""
+
+[[segments]]
+id = "3-seg_99"
+start = 1466.836333
+end = 1470.036333
+speaker = "B"
+ja = "できた暁にはご褒美がもらえるということです"
+
+[[segments]]
+id = "3-seg_100"
 start = 1471.4843329999999
-end = 1473.544333
+end = 1473.459333
 speaker = "A"
 ja = "現在の段位は21段です"
 
 [[segments]]
-id = "3-seg_91"
-start = 1473.624333
-end = 1476.944333
-speaker = "A,B"
-ja = "なんか20段になったのちょっと前な気がする。そんなのよ"
-
-[[segments]]
-id = "3-seg_95.1"
-start = 1477.024333
-end = 1481.36
-speaker = "A,B"
-ja = "あんまり上がってない\n減ったり増えたり、減ったり増えたり"
-
-[[segments]]
-id = "3-seg_99.1"
-start = 1481.44
-end = 1485.644333
-speaker = "B"
-ja = "減ったり減ったりした。減ったりしただよ\nないよ普通。びっくりした"
-
-[[segments]]
-id = "3-seg_100"
-start = 1485.724333
-end = 1486.394333
-speaker = "A"
-ja = "そうなのよ"
-
-[[segments]]
 id = "3-seg_101"
-start = 1486.474333
-end = 1488.534333
-speaker = "B"
-ja = "はいということで今回の課題はこちら"
-
-[[segments]]
-id = "3-seg_102"
-start = 1489.034333
-end = 1492.584333
-speaker = "B"
-ja = "何の料理か当てましょう！ 即興替え歌クイズチャレンジ"
-
-[[segments]]
-id = "3-seg_103"
-start = 1494.384333
-end = 1496.204333
-speaker = "B"
-ja = "さあルールは簡単でございます"
-
-[[segments]]
-id = "3-seg_104_105"
-start = 1496.284333
-end = 1497.516333
+start = 1473.609333
+end = 1476.109333
 speaker = "A,B"
-ja = "はい。では、1、2、3"
+ja = "なんか20代になったのちょっと前 そんな気がする"
+zh = ""
 
 [[segments]]
-id = "3-seg_106.1"
-start = 1497.596333
-end = 1500.96
+id = "3-seg_104"
+start = 1476.259333
+end = 1477.984333
+speaker = "A,B"
+ja = "あんまり上がったり減ったり"
+zh = ""
+
+[[segments]]
+id = "3-seg_108"
+start = 1478.034333
+end = 1483.559333
+speaker = "A,B"
+ja = "増えたり減ったりしたのはないよ普通"
+zh = ""
+
+[[segments]]
+id = "3-seg_112"
+start = 1483.709333
+end = 1485.459333
+speaker = "A"
+ja = "びっくりした減ったりした"
+
+[[segments]]
+id = "3-seg_113"
+start = 1485.609333
+end = 1488.384333
 speaker = "B"
-ja = "歌い手がお題の料理を即興の替え歌で歌い"
+ja = "そうなのよはいということで今回の課題はこちら"
 
 [[segments]]
-id = "3-seg_106.2"
-start = 1501.04
-end = 1504.1463330000001
+id = "3-seg_114"
+start = 1488.934333
+end = 1492.434333
+speaker = "B"
+ja = "何の料理か当てましょう即興替え歌クイズチャレンジ"
+
+[[segments]]
+id = "3-seg_115"
+start = 1494.184333
+end = 1497.384333
+speaker = "B"
+ja = "はいルールは簡単でございますよ"
+
+[[segments]]
+id = "3-seg_116.1"
+start = 1497.596333
+end = 1500.471333
+speaker = "B"
+ja = "お題の料理を即興の替え歌で歌い"
+zh = ""
+
+[[segments]]
+id = "3-seg_116.2"
+start = 1500.521333
+end = 1503.671333
 speaker = "B"
 ja = "相方がそれを聞いて何のことを歌っているのか当てるだけ"
+zh = ""
 
 [[segments]]
-id = "3-seg_107_108"
-start = 1504.296333
-end = 1508.996333
-speaker = "A,B"
-ja = "うん! 役割を入れ替えて\n4問行い2問正解できれば課題クリアです"
-
-[[segments]]
-id = "3-seg_109.1"
-start = 1509.1463330000001
-end = 1512.71
+id = "3-seg_116.3"
+start = 1503.721333
+end = 1506.671333
 speaker = "B"
-ja = "ガチな昇格となります。なお歌詞は即興で考えますが"
+ja = "役割を入れ替えて4問行い"
+zh = ""
 
 [[segments]]
-id = "3-seg_109.2"
-start = 1512.79
-end = 1516.556333
+id = "3-seg_116.4"
+start = 1506.721333
+end = 1509.571333
+speaker = "B"
+ja = "2問正解できれば課題クリアです"
+zh = ""
+
+[[segments]]
+id = "3-seg_116.5"
+start = 1509.621333
+end = 1511.571333
+speaker = "B"
+ja = "一段昇格となります"
+zh = ""
+
+[[segments]]
+id = "3-seg_116.6"
+start = 1511.621333
+end = 1513.771333
+speaker = "B"
+ja = "なお歌詞は即興で考えますが"
+zh = ""
+
+[[segments]]
+id = "3-seg_116.7"
+start = 1513.821333
+end = 1516.671333
 speaker = "B"
 ja = "メロディは既存の曲で指定されるとのことですよ"
+zh = ""
 
 [[segments]]
-id = "3-seg_110"
-start = 1516.636333
-end = 1517.506333
-speaker = "A"
-ja = "なるほどね!"
+id = "3-seg_117"
+start = 1516.821333
+end = 1517.721333
+speaker = "C"
+ja = "なるほどね"
 
 [[segments]]
-id = "3-seg_111"
-start = 1517.586333
-end = 1519.306333
+id = "3-seg_118"
+start = 1517.871333
+end = 1519.321333
 speaker = "B"
 ja = "早速じゃあやっていきましょう"
 
 [[segments]]
-id = "3-seg_112_113"
-start = 1519.386333
-end = 1521.816333
-speaker = "A,B"
-ja = "いきましょうか。どちらが歌いますか?"
+id = "3-seg_119"
+start = 1519.471333
+end = 1520.221333
+speaker = "C"
+ja = "いきましょうか"
 
 [[segments]]
-id = "3-seg_114"
-start = 1521.8963330000001
-end = 1523.200333
-speaker = "A"
-ja = "じゃあじゃんけんで勝った方が歌いましょう"
-
-[[segments]]
-id = "3-seg_115_116"
-start = 1523.280333
-end = 1525.366333
-speaker = "A,B"
-ja = "せーの。最初はグー、じゃんけんほい！"
-
-[[segments]]
-id = "3-seg_117"
-start = 1525.446333
-end = 1526.1463330000001
-speaker = "A"
-ja = "やばい"
-
-[[segments]]
-id = "3-seg_118_120"
-start = 1526.226333
-end = 1530.484333
-speaker = "A,B"
-ja = "はい、ということで勝っちゃったので\nまず私が最初に歌います。ではでは"
+id = "3-seg_120"
+start = 1520.371333
+end = 1521.921333
+speaker = "B"
+ja = "どちらが歌いますかじゃ"
 
 [[segments]]
 id = "3-seg_121"
-start = 1530.564333
-end = 1532.064333
-speaker = "B"
-ja = "それではお題はこちら!"
+start = 1522.071333
+end = 1523.696333
+speaker = "C"
+ja = "じゃあじゃんけんで勝った方が歌いましょう"
 
 [[segments]]
 id = "3-seg_122"
-start = 1532.564333
-end = 1534.799333
-speaker = "B"
-ja = "あ、これは、あ、そうだそうだそうだ"
-
-[[segments]]
-id = "3-seg_123"
-start = 1534.879333
-end = 1535.484333
-speaker = "B"
-ja = "はい、で、"
+start = 1523.946333
+end = 1524.946333
+speaker = "B,C"
+ja = "最初はグー じゃんけんぽい"
+zh = ""
 
 [[segments]]
 id = "3-seg_124"
-start = 1535.564333
-end = 1536.614333
+start = 1525.1463330000001
+end = 1526.196333
 speaker = "B"
-ja = "歌う曲は?"
+ja = "おーやばい"
 
 [[segments]]
 id = "3-seg_125"
-start = 1536.864333
-end = 1538.664333
-speaker = "A"
-ja = "あ、どんぐりころころ"
+start = 1526.364333
+end = 1528.964333
+speaker = "B,C"
+ja = "はいということで勝っちゃった 私が最初に歌います"
+zh = ""
 
 [[segments]]
-id = "3-seg_126_132"
-start = 1539.164333
-end = 1543.864333
-speaker = "A,B"
-ja = "あ、はいはいはい、この。なんだろう\nで、今のお題文ですね。OK? ちょっと。もういい?"
+id = "3-seg_128"
+start = 1529.264333
+end = 1530.264333
+speaker = "C"
+ja = "うんではでは"
+
+[[segments]]
+id = "3-seg_129"
+start = 1530.464333
+end = 1532.114333
+speaker = "B"
+ja = "それではお題はこちら"
+
+[[segments]]
+id = "3-seg_130"
+start = 1532.564333
+end = 1534.664333
+speaker = "B"
+ja = "ああこれは歌そうだそうだ"
+
+[[segments]]
+id = "3-seg_131"
+start = 1534.864333
+end = 1536.664333
+speaker = "B"
+ja = "はいで歌う曲は"
+
+[[segments]]
+id = "3-seg_132"
+start = 1537.014333
+end = 1538.664333
+speaker = "C"
+ja = "あどんぐりころころ"
 
 [[segments]]
 id = "3-seg_133"
-start = 1544.814333
-end = 1547.214333
-speaker = "B"
-ja = "待ってね。難しいな。はい、OKです"
+start = 1539.014333
+end = 1539.939333
+speaker = "C"
+ja = "うんオッケー"
 
 [[segments]]
 id = "3-seg_134"
-start = 1547.314333
-end = 1548.914333
-speaker = "A"
-ja = "ではお願いします"
+start = 1540.089333
+end = 1542.514333
+speaker = "B"
+ja = "はいこれね今の歌えばいいですね"
 
 [[segments]]
 id = "3-seg_135"
-start = 1551.612333
-end = 1557.612333
-speaker = "B"
-ja = "うますぎ給食メニュー。人参入って、お米もある"
+start = 1543.364333
+end = 1543.914333
+speaker = "C"
+ja = "もういい?"
 
 [[segments]]
 id = "3-seg_136"
-start = 1559.012333
-end = 1563.012333
+start = 1544.264333
+end = 1545.964333
 speaker = "B"
-ja = "匂いがちょっとクセ強い"
+ja = "ちょっと待ってね難しいな"
 
 [[segments]]
 id = "3-seg_137"
-start = 1584.034333
-end = 1584.954333
-speaker = "B"
-ja = "ってことでしょ？"
+start = 1546.164333
+end = 1547.264333
+speaker = "C"
+ja = "はいOKです"
 
 [[segments]]
 id = "3-seg_138"
-start = 1585.034333
-end = 1585.7343329999999
-speaker = "B"
-ja = "OKです!"
+start = 1547.564333
+end = 1548.914333
+speaker = "C"
+ja = "ではお願いします"
 
 [[segments]]
 id = "3-seg_139"
-start = 1585.934333
-end = 1586.434333
-speaker = "B"
-ja = "では"
+start = 1551.612333
+end = 1557.662333
+speaker = "C"
+ja = "みんなが大好き給食メニュー にんじん入ってお米もある"
 
 [[segments]]
 id = "3-seg_140"
-start = 1587.684333
-end = 1591.334333
-speaker = "B"
-ja = "はい、何のことを歌っていたでしょうか？"
+start = 1558.862333
+end = 1562.862333
+speaker = "C"
+ja = "え匂いがちょっとクセ強い"
 
 [[segments]]
 id = "3-seg_141"
-start = 1592.2343329999999
-end = 1592.9843329999999
-speaker = "A"
-ja = "カレー！"
-
-[[segments]]
-id = "3-seg_142"
-start = 1596.4843329999999
-end = 1601.684333
+start = 1584.284333
+end = 1591.184333
 speaker = "B"
-ja = "今びっくりした。バツの方でピンポン鳴らされたから\nバツなのかと思った。カレーライス！"
+ja = "米も入ってるでしょ OKですでは\nはいはい何のことを歌っていたでしょうか?"
+zh = ""
 
 [[segments]]
 id = "3-seg_143"
-start = 1601.934333
-end = 1602.534333
+start = 1594.334333
+end = 1595.2343329999999
 speaker = "B"
-ja = "よっしゃ!"
+ja = "やったー!"
 
 [[segments]]
-id = "3-seg_144"
+id = "3-seg_144.1"
+start = 1596.584333
+end = 1598.859333
+speaker = "B"
+ja = "今びっくりした ブースの方でピンポーン鳴ったから"
+zh = ""
+
+[[segments]]
+id = "3-seg_144.2"
+start = 1598.909333
+end = 1600.759333
+speaker = "B"
+ja = "バツなのかと思った"
+zh = ""
+
+[[segments]]
+id = "3-seg_145"
+start = 1600.909333
+end = 1601.884333
+speaker = "B,C"
+ja = "カレーライスです よし!"
+zh = ""
+
+[[segments]]
+id = "3-seg_149.1"
 start = 1602.884333
-end = 1607.9843329999999
-speaker = "A"
-ja = "いや、なんかさ、色々巡ったけど、ご飯入ってたらカレーか"
-
-[[segments]]
-id = "3-seg_145_147"
-start = 1608.084333
-end = 1611.656333
-speaker = "A,B"
-ja = "そうそうそう。そうだよねなんか。結局みんな大好きだね"
-
-[[segments]]
-id = "3-seg_148"
-start = 1611.736333
-end = 1612.468333
-speaker = "A"
-ja = "給食とかね"
-
-[[segments]]
-id = "3-seg_149"
-start = 1612.548333
-end = 1613.358333
+end = 1605.859333
 speaker = "B"
-ja = "ご飯でかかった"
+ja = "いやなんかさ 色々巡ったけど"
+zh = ""
+
+[[segments]]
+id = "3-seg_149.2"
+start = 1605.909333
+end = 1608.859333
+speaker = "B"
+ja = "ご飯入ってたらカレーか そうだよね"
+zh = ""
+
+[[segments]]
+id = "3-seg_149.3"
+start = 1608.909333
+end = 1611.434333
+speaker = "B"
+ja = "なんか そうだよね"
+zh = ""
 
 [[segments]]
 id = "3-seg_150"
-start = 1614.4083329999999
-end = 1617.808333
-speaker = "B"
-ja = "具でぐるぐる、人参、ジャガイモとか言うかなって思ったら"
-
-[[segments]]
-id = "3-seg_151"
-start = 1618.258333
-end = 1619.608333
-speaker = "B"
-ja = "人参だけかと思った"
-
-[[segments]]
-id = "3-seg_152"
-start = 1621.4083329999999
-end = 1623.018333
-speaker = "B"
-ja = "でも人参しか浮かばなかった"
-
-[[segments]]
-id = "3-seg_153"
-start = 1623.098333
-end = 1625.508333
-speaker = "A"
-ja = "そっかみんな好きですよねカレーはね"
+start = 1611.708333
+end = 1613.283333
+speaker = "A,C"
+ja = "これが原曲の ご カレー 飯でかかった"
+zh = ""
 
 [[segments]]
 id = "3-seg_154"
-start = 1625.758333
-end = 1627.693333
+start = 1613.433333
+end = 1614.033333
 speaker = "A"
-ja = "あ分かりやすい"
+ja = "よかった"
 
 [[segments]]
 id = "3-seg_155"
-start = 1627.773333
-end = 1631.208333
-speaker = "B"
-ja = "やった、よかった。じゃあ次はなっちゃんの番ですよ"
+start = 1614.183333
+end = 1617.708333
+speaker = "C"
+ja = "グルでグルさえ人参じゃがいもとか言うかなって思ったら"
 
 [[segments]]
 id = "3-seg_156"
-start = 1631.508333
-end = 1632.6583329999999
-speaker = "A"
-ja = "ではそれでは"
+start = 1618.008333
+end = 1620.108333
+speaker = "C"
+ja = "人参だけかと思ったんな"
 
 [[segments]]
 id = "3-seg_157"
-start = 1643.068333
-end = 1644.868333
-speaker = "B"
-ja = "その曲まで失礼"
+start = 1621.258333
+end = 1621.833333
+speaker = "A"
+ja = "でもでも"
 
 [[segments]]
 id = "3-seg_158"
-start = 1683.516333
-end = 1685.9663329999998
-speaker = "B"
-ja = "何の料理かお答えください。グラタン"
+start = 1621.983333
+end = 1622.983333
+speaker = "C"
+ja = "人参しか浮かばなかった"
 
 [[segments]]
-id = "3-seg_159_161"
-start = 1689.316333
-end = 1694.516333
-speaker = "A,B"
-ja = "上手。マジで上手。よかった。マジでよかった\n中身出てた。よかったよかった。白くてマカロニ"
+id = "3-seg_159"
+start = 1623.133333
+end = 1625.458333
+speaker = "A"
+ja = "そっかでもみんな好きですよねカレーはね"
+
+[[segments]]
+id = "3-seg_160"
+start = 1625.608333
+end = 1627.458333
+speaker = "A"
+ja = "あ 分かりやすい"
+
+[[segments]]
+id = "3-seg_161"
+start = 1627.758333
+end = 1631.208333
+speaker = "B"
+ja = "やったーよかった じゃあ次はなちゅの番ですよ"
 
 [[segments]]
 id = "3-seg_162"
-start = 1694.616333
-end = 1696.866333
+start = 1631.558333
+end = 1632.558333
+speaker = "A"
+ja = "じゃあそれではお題はこちら"
+
+[[segments]]
+id = "3-seg_163"
+start = 1643.068333
+end = 1645.168333
+speaker = "B"
+ja = "うちの曲まで失礼した"
+
+[[segments]]
+id = "3-seg_164"
+start = 1683.516333
+end = 1684.766333
+speaker = "B"
+ja = "何のことかお答えください"
+
+[[segments]]
+id = "3-seg_165"
+start = 1685.116333
+end = 1685.866333
+speaker = "B"
+ja = "グラタン"
+
+[[segments]]
+id = "3-seg_166"
+start = 1687.116333
+end = 1687.591333
+speaker = "B"
+ja = "やったー"
+
+[[segments]]
+id = "3-seg_167"
+start = 1687.741333
+end = 1688.741333
+speaker = "C"
+ja = "やったーすごい"
+
+[[segments]]
+id = "3-seg_168"
+start = 1688.891333
+end = 1690.416333
+speaker = "B"
+ja = "上手 上手マジで上手いや"
+
+[[segments]]
+id = "3-seg_169"
+start = 1690.7163329999998
+end = 1691.391333
+speaker = "B"
+ja = "良かった"
+
+[[segments]]
+id = "3-seg_170"
+start = 1691.541333
+end = 1692.791333
+speaker = "C"
+ja = "マカロニで分かった よかった"
+
+[[segments]]
+id = "3-seg_171"
+start = 1692.941333
+end = 1694.316333
+speaker = "C"
+ja = "よかった 白くてマカロニ"
+
+[[segments]]
+id = "3-seg_172"
+start = 1694.516333
+end = 1695.9663329999998
 speaker = "B"
 ja = "マカロニは別にセーフですよね"
 
 [[segments]]
-id = "3-seg_163_164"
-start = 1696.9663329999998
-end = 1701.116333
-speaker = "A,B"
-ja = "よかった。うんうんうんうん\nよかったよかった。はい、結構いけんじゃない？"
-
-[[segments]]
-id = "3-seg_165.1"
-start = 1701.2163329999998
-end = 1704.31
-speaker = "B"
-ja = "あともう2問失敗しても"
-
-[[segments]]
-id = "3-seg_165.2_165.3"
-start = 1704.39
-end = 1710.066333
-speaker = "B"
-ja = "はい、じゃあ次のお題は。目つぶっててください\nこちら。はいはいはい、ジングルベル"
-
-[[segments]]
-id = "3-seg_166"
-start = 1719.036333
-end = 1720.136333
-speaker = "A"
-ja = "揚げたやつ"
-
-[[segments]]
-id = "3-seg_167"
-start = 1724.136333
-end = 1725.200333
-speaker = "A"
-ja = "いいんじゃない?"
-
-[[segments]]
-id = "3-seg_168"
-start = 1725.280333
-end = 1726.296333
-speaker = "A"
-ja = "いいんじゃない?"
-
-[[segments]]
-id = "3-seg_169"
-start = 1726.376333
-end = 1727.596333
-speaker = "B"
-ja = "もう答えますよ、はい"
-
-[[segments]]
-id = "3-seg_170"
-start = 1727.676333
-end = 1729.086333
-speaker = "A"
-ja = "はい!せーの!"
-
-[[segments]]
-id = "3-seg_171"
-start = 1729.336333
-end = 1730.000333
-speaker = "A"
-ja = "コロッケ!"
-
-[[segments]]
-id = "3-seg_172"
-start = 1732.136333
-end = 1732.936333
-speaker = "A"
-ja = "すごいすごい!"
-
-[[segments]]
 id = "3-seg_173"
-start = 1733.436333
-end = 1734.996333
+start = 1696.7163329999998
+end = 1699.366333
 speaker = "B"
-ja = "あ、すごい！ もう、もうね！"
+ja = "良かった良かった良かった"
 
 [[segments]]
 id = "3-seg_174"
-start = 1735.076333
-end = 1736.046333
-speaker = "A"
-ja = "いいじゃんいいじゃんいいじゃん"
+start = 1699.616333
+end = 1702.4663329999998
+speaker = "C"
+ja = "はい結構いけんじゃないだってもう2問正解してるもん"
 
 [[segments]]
 id = "3-seg_175"
-start = 1736.126333
-end = 1736.796333
+start = 1702.816333
+end = 1704.266333
 speaker = "B"
-ja = "分かりやすいよ"
+ja = "はいじゃあ次のお題は"
 
 [[segments]]
-id = "3-seg_176.1"
-start = 1736.876333
-end = 1741.66
-speaker = "A"
-ja = "いいじゃん、いいね。すっごい\nこれ簡単か難しいかやってみないと分かんないってなって"
-
-[[segments]]
-id = "3-seg_176.2"
-start = 1741.74
-end = 1746.886333
-speaker = "A"
-ja = "最初4問中3問か4問中2問かで迷ってたんですよ"
-
-[[segments]]
-id = "3-seg_177_179"
-start = 1747.700333
-end = 1752.600333
-speaker = "A,B"
-ja = "全然どっちだって大丈夫だった。いけた\n4問とかでもいけたかもね。どっちでも大丈夫だった"
-
-[[segments]]
-id = "3-seg_180.1"
-start = 1752.868333
-end = 1755.91
-speaker = "A"
-ja = "違う違う違う違う違う ごめんなさいごめんなさい"
-
-[[segments]]
-id = "3-seg_181.1"
-start = 1755.99
-end = 1757.51
-speaker = "A,B"
-ja = "ねえ違う違う。違う違う違う"
-
-[[segments]]
-id = "3-seg_183.1"
-start = 1757.59
-end = 1759.668333
+id = "3-seg_176"
+start = 1704.4663329999998
+end = 1705.9663329999998
 speaker = "B"
-ja = "違う。一応ね、やりましょう。一応ね"
+ja = "目つぶっててください こちら"
+
+[[segments]]
+id = "3-seg_177"
+start = 1707.316333
+end = 1709.916333
+speaker = "B"
+ja = "はいはいはい ジングルベル"
+
+[[segments]]
+id = "3-seg_178"
+start = 1719.036333
+end = 1723.936333
+speaker = "C"
+ja = "衣サクサク揚げ物だ 中はジャガイモ潰したやつ"
+
+[[segments]]
+id = "3-seg_179"
+start = 1724.486333
+end = 1724.936333
+speaker = "C"
+ja = "いいんじゃない?"
+
+[[segments]]
+id = "3-seg_180"
+start = 1725.936333
+end = 1726.511333
+speaker = "C"
+ja = "いいじゃない?"
+
+[[segments]]
+id = "3-seg_181"
+start = 1726.661333
+end = 1727.736333
+speaker = "B,C"
+ja = "もう答えてますよ はい!"
+zh = ""
+
+[[segments]]
+id = "3-seg_183"
+start = 1728.136333
+end = 1729.086333
+speaker = "C"
+ja = "せーの!"
 
 [[segments]]
 id = "3-seg_184"
-start = 1760.268333
-end = 1761.418333
-speaker = "B"
-ja = "はいではお願いします"
+start = 1731.986333
+end = 1732.936333
+speaker = "C"
+ja = "すごいすごい!"
 
 [[segments]]
 id = "3-seg_185"
-start = 1764.018333
-end = 1764.618333
-speaker = "A"
-ja = "うわ"
+start = 1733.686333
+end = 1734.386333
+speaker = "B"
+ja = "あ すごい!"
 
 [[segments]]
 id = "3-seg_186"
-start = 1766.118333
-end = 1767.8183330000002
+start = 1734.436333
+end = 1734.886333
 speaker = "B"
-ja = "うわ、難しいの来たんじゃない？"
+ja = "もうもうね!"
 
 [[segments]]
 id = "3-seg_187"
-start = 1768.368333
-end = 1769.868333
-speaker = "A"
-ja = "何入ってんの?"
+start = 1734.936333
+end = 1735.711333
+speaker = "C"
+ja = "いいじゃんいいじゃん!"
 
 [[segments]]
 id = "3-seg_188"
-start = 1770.118333
-end = 1771.718333
-speaker = "A"
-ja = "私、さっきと同じ答え"
+start = 1735.861333
+end = 1736.811333
+speaker = "B"
+ja = "わかりやすいよ!"
 
 [[segments]]
 id = "3-seg_189"
-start = 1781.180333
-end = 1782.2803330000002
+start = 1736.961333
+end = 1737.311333
+speaker = "C"
+ja = "いいじゃん!"
+
+[[segments]]
+id = "3-seg_190"
+start = 1737.461333
+end = 1737.811333
 speaker = "B"
+ja = "いいね!"
+
+[[segments]]
+id = "3-seg_191"
+start = 1737.961333
+end = 1738.961333
+speaker = "C"
+ja = "いいじゃん!いいじゃん!"
+
+[[segments]]
+id = "3-seg_192"
+start = 1739.111333
+end = 1739.786333
+speaker = "B"
+ja = "いいスモール!"
+
+[[segments]]
+id = "3-seg_193.1"
+start = 1739.986333
+end = 1742.061333
+speaker = "C"
+ja = "これなんか簡単か難しいか"
+zh = ""
+
+[[segments]]
+id = "3-seg_193.2"
+start = 1742.111333
+end = 1744.211333
+speaker = "C"
+ja = "やってみないと分かんないってなって"
+zh = ""
+
+[[segments]]
+id = "3-seg_193.3"
+start = 1744.261333
+end = 1746.736333
+speaker = "C"
+ja = "最初4問中3問か4問中2問かで迷ってたんですよ"
+zh = ""
+
+[[segments]]
+id = "3-seg_194"
+start = 1747.868333
+end = 1749.093333
+speaker = "A"
+ja = "あんまり全然違ってないじゃん"
+
+[[segments]]
+id = "3-seg_195"
+start = 1749.243333
+end = 1750.943333
+speaker = "B"
+ja = "いけた 4問とかでもいけたかも"
+
+[[segments]]
+id = "3-seg_196"
+start = 1751.093333
+end = 1752.3183330000002
+speaker = "A"
+ja = "普通にいけたかもね"
+
+[[segments]]
+id = "3-seg_197"
+start = 1753.268333
+end = 1754.918333
+speaker = "A"
+ja = "いや ちょちょちょ すいません ごめんなさい"
+
+[[segments]]
+id = "3-seg_198"
+start = 1756.268333
+end = 1758.118333
+speaker = "C"
+ja = "一応ね"
+
+[[segments]]
+id = "3-seg_199"
+start = 1758.268333
+end = 1759.018333
+speaker = "C"
+ja = "やりましょう 一応ね"
+
+[[segments]]
+id = "3-seg_200"
+start = 1760.268333
+end = 1761.268333
+speaker = "B"
+ja = "はい ではお願いします"
+
+[[segments]]
+id = "3-seg_201"
+start = 1763.868333
+end = 1764.418333
+speaker = "B"
+ja = "うわ"
+
+[[segments]]
+id = "3-seg_202"
+start = 1765.868333
+end = 1767.718333
+speaker = "B"
+ja = "なんか難しいのきたんじゃない?"
+
+[[segments]]
+id = "3-seg_203"
+start = 1768.418333
+end = 1769.768333
+speaker = "C"
+ja = "何入ってんの?"
+
+[[segments]]
+id = "3-seg_204"
+start = 1770.018333
+end = 1771.868333
+speaker = "C"
+ja = "私もさっきと同じことじゃない?"
+
+[[segments]]
+id = "3-seg_205"
+start = 1781.180333
+end = 1782.180333
+speaker = "C"
 ja = "夏の思い出です"
 
 [[segments]]
 id = "4-seg_0"
 start = 1826.325552
-end = 1830.325552
+end = 1830.375552
 speaker = "A"
-ja = "白いスープ、おしゃれな名前、一個しかないよ。"
+ja = "白いスープおしゃれな名前 1個しかないよ"
 
 [[segments]]
 id = "4-seg_1"
-start = 1831.075552
-end = 1832.735552
+start = 1831.125552
+end = 1832.750552
 speaker = "B"
 ja = "白いスープって何?"
 
 [[segments]]
 id = "4-seg_2"
-start = 1832.815552
-end = 1833.675552
+start = 1832.900552
+end = 1833.725552
 speaker = "A"
-ja = "たぶん白いよ。"
+ja = "多分白いよ"
 
 [[segments]]
 id = "4-seg_3"
-start = 1833.975552
-end = 1835.825552
+start = 1834.225552
+end = 1835.875552
 speaker = "B"
 ja = "シチューってスープじゃないよね"
 
 [[segments]]
 id = "4-seg_4"
-start = 1836.125552
-end = 1837.125552
+start = 1836.225552
+end = 1837.900552
 speaker = "A"
-ja = "あ、まあ近いな。"
+ja = "あんま近いな いい"
 
 [[segments]]
 id = "4-seg_5"
-start = 1838.675552
-end = 1841.125552
-speaker = "B,C"
-ja = "ヒントだ。何? な、何?"
+start = 1838.050552
+end = 1839.850552
+speaker = "C"
+ja = "いやいやいや ヒントがない"
 
 [[segments]]
-id = "4-seg_9"
-start = 1841.475552
-end = 1842.975552
+id = "4-seg_6"
+start = 1840.000552
+end = 1841.225552
 speaker = "B"
-ja = "本当にわかんない何?"
+ja = "何?何?"
 
 [[segments]]
-id = "4-seg_10"
-start = 1843.225552
-end = 1844.625552
+id = "4-seg_7"
+start = 1841.675552
+end = 1843.075552
+speaker = "B"
+ja = "本当に分かんない 何?"
+
+[[segments]]
+id = "4-seg_8"
+start = 1843.325552
+end = 1844.675552
 speaker = "B"
 ja = "白いスープ?"
 
 [[segments]]
-id = "4-seg_11"
-start = 1845.975552
-end = 1851.025552
+id = "4-seg_9"
+start = 1846.325552
+end = 1848.475552
 speaker = "A"
-ja = "絶対名前は知ってるはず。あれか、いきます？書いてみます。"
+ja = "絶対名前は知ってるはず あれか"
 
 [[segments]]
-id = "4-seg_12"
+id = "4-seg_10"
+start = 1849.675552
+end = 1851.025552
+speaker = "A"
+ja = "いきますか?立ててみる"
+
+[[segments]]
+id = "4-seg_11"
 start = 1852.553552
 end = 1853.053552
 speaker = "B"
-ja = "クラムチャウダー？"
+ja = "クラムチャウダー?"
+
+[[segments]]
+id = "4-seg_12"
+start = 1856.0035520000001
+end = 1857.0035520000001
+speaker = "B"
+ja = "違ったの?何?"
 
 [[segments]]
 id = "4-seg_13"
-start = 1853.2535520000001
-end = 1855.103552
+start = 1858.5035520000001
+end = 1859.478552
 speaker = "A"
-ja = "わああああああああああああ"
-
-[[segments]]
-id = "4-seg_14"
-start = 1855.853552
-end = 1857.603552
-speaker = "B"
-ja = "違った!?何!?何!?"
+ja = "何だと思う?"
 
 [[segments]]
 id = "4-seg_15"
-start = 1858.603552
-end = 1859.5035520000001
-speaker = "A"
-ja = "なんだと思う"
+start = 1859.628552
+end = 1860.903552
+speaker = "B,A"
+ja = "もう一回言っていい? うん"
 
 [[segments]]
 id = "4-seg_16"
-start = 1859.703552
-end = 1860.513552
+start = 1861.903552
+end = 1865.653552
 speaker = "B"
-ja = "もう一回言っていい?"
+ja = "でもね他に知らないな クラムチャウダーじゃないとなると"
 
 [[segments]]
 id = "4-seg_17"
-start = 1860.593552
-end = 1865.653552
-speaker = "A"
-ja = "うん。でもね、他に知らないな。\nクラムチャウダーじゃないとなると。"
-
-[[segments]]
-id = "4-seg_18"
-start = 1866.653552
-end = 1867.653552
+start = 1866.853552
+end = 1867.703552
 speaker = "B"
 ja = "白?"
 
 [[segments]]
-id = "4-seg_19"
-start = 1868.553552
-end = 1870.153552
+id = "4-seg_18"
+start = 1868.653552
+end = 1870.053552
 speaker = "B"
-ja = "えッ白いですかこれ?"
+ja = "白いですかこれ?"
 
 [[segments]]
-id = "4-seg_20"
-start = 1871.403552
-end = 1872.338552
-speaker = "A"
+id = "4-seg_19"
+start = 1871.653552
+end = 1872.328552
+speaker = "B"
 ja = "白い"
 
 [[segments]]
 id = "4-seg_21"
-start = 1872.418552
-end = 1873.353552
-speaker = "D"
-ja = "白くないのかな"
+start = 1872.478552
+end = 1874.053552
+speaker = "C,B"
+ja = "白くないのがある ん?"
 
 [[segments]]
 id = "4-seg_22"
-start = 1873.703552
-end = 1874.273552
-speaker = "B"
-ja = "あ、"
+start = 1874.653552
+end = 1878.5035520000001
+speaker = "A"
+ja = "え でもガチなんか分かる もうクラムチャウダーでもいいもん"
 
 [[segments]]
 id = "4-seg_23"
-start = 1874.353552
-end = 1878.653552
-speaker = "A"
-ja = "え、でもガチなんかわかる。\nもうクラムチャウダーでもいいもん。"
-
-[[segments]]
-id = "4-seg_24.1"
 start = 1879.625552
-end = 1884.710552
+end = 1882.875552
 speaker = "B"
-ja = "なんだろう、なんだろう。\nえ、なんだろう。"
+ja = "なんだろうなんだろうえなんだろう"
 
 [[segments]]
-id = "4-seg_24.2"
-start = 1884.790552
-end = 1889.775552
+id = "4-seg_24"
+start = 1883.675552
+end = 1884.875552
 speaker = "B"
-ja = "じゃあ一文字。\nあ、もう、バ、バ、バ。"
+ja = "期待者の人文字"
 
 [[segments]]
 id = "4-seg_25"
-start = 1890.925552
-end = 1893.135552
-speaker = "B"
-ja = "バ、ああ、ニャみたいな感じ。"
+start = 1885.975552
+end = 1887.275552
+speaker = "A"
+ja = "あもうバ"
 
 [[segments]]
 id = "4-seg_26"
-start = 1893.215552
-end = 1894.475552
-speaker = "A"
-ja = "ば あはははは"
+start = 1887.875552
+end = 1888.325552
+speaker = "B"
+ja = "バ?"
 
 [[segments]]
 id = "4-seg_27"
-start = 1894.975552
-end = 1895.825552
-speaker = "A"
-ja = "ば あはははは"
+start = 1889.275552
+end = 1889.675552
+speaker = "B"
+ja = "バ?"
 
 [[segments]]
 id = "4-seg_28"
-start = 1898.425552
-end = 1900.685552
-speaker = "B"
-ja = "バーニャカウダ。スープじゃなくない？バ"
+start = 1891.525552
+end = 1893.175552
+speaker = "A"
+ja = "バーニャみたいな感じ"
 
 [[segments]]
 id = "4-seg_29"
-start = 1900.765552
-end = 1901.535552
-speaker = "E"
-ja = "ソースだソース"
+start = 1894.475552
+end = 1900.350552
+speaker = "B"
+ja = "バーニャカウダ! バーニャカウダってスープじゃなくない?"
 
 [[segments]]
 id = "4-seg_30"
-start = 1901.615552
-end = 1906.000552
-speaker = "B"
-ja = "ニャカウダのバーニャカウダって、\n野菜をディップして食べるやつですよね。"
+start = 1900.500552
+end = 1901.400552
+speaker = "C"
+ja = "ソースソースソースソース"
 
 [[segments]]
 id = "4-seg_31"
-start = 1925.641552
-end = 1930.7915520000001
-speaker = "A,B"
-ja = "だったけど、まあちょっと、だから難しいの出してきます。\nそうだね。なんだろう、アンチョビとかじゃない？なんかに入ってんのは。"
+start = 1901.550552
+end = 1903.200552
+speaker = "A"
+ja = "ソースなの バーニャカウダって?"
 
 [[segments]]
-id = "4-seg_33"
-start = 1930.941552
-end = 1934.701552
+id = "4-seg_32"
+start = 1903.350552
+end = 1905.175552
+speaker = "B"
+ja = "野菜をディップして食べるやつですよね"
+
+[[segments]]
+id = "4-seg_34"
+start = 1925.641552
+end = 1927.741552
 speaker = "A,B"
-ja = "あ、そうなの？もう全然わかんない。\nスープじゃないから、具材とかないかも、あんまり。"
+ja = "来たかな まぁちょっとだから珍しいの出してきました"
+
+[[segments]]
+id = "4-seg_36"
+start = 1927.7915520000001
+end = 1929.766552
+speaker = "A,B"
+ja = "そうだね なんだろうアンチョビとかじゃない?"
 
 [[segments]]
 id = "4-seg_37"
-start = 1934.781552
-end = 1937.801552
-speaker = "A"
-ja = "そっか。もう何も想像しているのと違ったわ、でも。"
-
-[[segments]]
-id = "4-seg_38"
-start = 1937.881552
-end = 1940.7915520000001
+start = 1929.916552
+end = 1930.716552
 speaker = "B"
-ja = "でも難しい。バーニャカウダ、\nきっと食べたことない人もいる。"
-
-[[segments]]
-id = "4-seg_39"
-start = 1940.991552
-end = 1943.141552
-speaker = "A"
-ja = "そうだよね。まあ、おまけでした。はい!"
-
-[[segments]]
-id = "4-seg_41"
-start = 1943.5415520000001
-end = 1947.701552
-speaker = "B"
-ja = "でもそれでも結構、食べ物好物ランキングに入ります。"
+ja = "中に入ってるのは"
 
 [[segments]]
 id = "4-seg_42"
-start = 1947.781552
-end = 1948.2915520000001
-speaker = "A"
-ja = "あマジで?"
+start = 1930.866552
+end = 1935.091552
+speaker = "A,B"
+ja = "そうなの? 全然わかんない じゃそっか\nスープないから具材とかないかもあんまり"
 
 [[segments]]
 id = "4-seg_44"
-start = 1948.391552
-end = 1949.191552
-speaker = "A"
-ja = "そうなの?"
+start = 1935.141552
+end = 1937.591552
+speaker = "B,A"
+ja = "うん 何も想像してるのと違ったわ"
 
 [[segments]]
 id = "4-seg_45"
-start = 1949.491552
-end = 1951.991552
-speaker = "A"
-ja = "そっか。白いスープとか言って。"
+start = 1937.941552
+end = 1940.766552
+speaker = "B"
+ja = "でも珍しい バーニャカウダきっと食べたことない人もいる"
 
 [[segments]]
 id = "4-seg_46"
-start = 1954.633552
-end = 1955.193552
-speaker = "B"
-ja = "結構好き。"
+start = 1940.916552
+end = 1942.741552
+speaker = "A"
+ja = "そうだよねまぁおまけでした"
 
 [[segments]]
 id = "4-seg_47"
-start = 1955.273552
-end = 1955.983552
+start = 1942.941552
+end = 1947.766552
+speaker = "B"
+ja = "はい私でも結構食べ物コーボランキングに入ります"
+
+[[segments]]
+id = "4-seg_48"
+start = 1947.916552
+end = 1948.341552
 speaker = "A"
-ja = "あ、そうなんだ。"
+ja = "マジで?"
 
 [[segments]]
 id = "4-seg_49"
-start = 1956.133552
-end = 1957.153552
+start = 1948.491552
+end = 1949.241552
 speaker = "A"
-ja = "よかったじゃあ。"
+ja = "そうなんだ"
 
 [[segments]]
 id = "4-seg_50"
-start = 1957.233552
-end = 1961.183552
-speaker = "A,B"
-ja = "よし、ということで。\nはい、ということで。でも一段昇格だしね、別に。"
+start = 1949.5415520000001
+end = 1952.141552
+speaker = "A"
+ja = "そっかこの白スープとか言って"
+
+[[segments]]
+id = "4-seg_51"
+start = 1954.633552
+end = 1955.258552
+speaker = "B"
+ja = "で イグレスキー"
+
+[[segments]]
+id = "4-seg_52"
+start = 1955.408552
+end = 1956.033552
+speaker = "A"
+ja = "あ そうなんだ"
 
 [[segments]]
 id = "4-seg_53"
-start = 1963.533552
-end = 1964.043552
+start = 1956.183552
+end = 1956.933552
 speaker = "A"
-ja = "嬉しい!"
+ja = "よかったじゃん"
 
 [[segments]]
 id = "4-seg_54"
-start = 1964.123552
-end = 1965.343552
+start = 1957.283552
+end = 1957.833552
 speaker = "B"
-ja = "結構成功しましたね"
-
-[[segments]]
-id = "4-seg_55"
-start = 1965.423552
-end = 1966.893552
-speaker = "A"
-ja = "全然成功しました。"
+ja = "よし"
 
 [[segments]]
 id = "4-seg_56"
-start = 1966.973552
-end = 1967.743552
-speaker = "B"
-ja = "イエーイ"
+start = 1958.033552
+end = 1958.458552
+speaker = "B,C"
+ja = "はい おめでとう"
 
 [[segments]]
 id = "4-seg_57"
-start = 1967.823552
-end = 1969.803552
-speaker = "A"
-ja = "ということでチャレンジ成功!"
+start = 1958.608552
+end = 1961.283552
+speaker = "B"
+ja = "ということででも一段昇格ですね別に"
 
 [[segments]]
 id = "4-seg_58"
-start = 1969.883552
-end = 1971.933552
+start = 1963.183552
+end = 1964.108552
 speaker = "A"
-ja = "以上！格の違いを見せつけたいでした！"
+ja = "嬉しい"
 
 [[segments]]
 id = "4-seg_59"
-start = 1973.583552
-end = 1974.433552
-speaker = "A"
-ja = "夏が来る!"
-
-[[segments]]
-id = "4-seg_60"
-start = 1974.733552
-end = 1977.468552
+start = 1964.258552
+end = 1967.033552
 speaker = "B"
-ja = "紙袋はついつい貯めちゃう？それともすぐ捨てる？"
+ja = "結構成功しましたね全然成功しました"
 
 [[segments]]
-id = "4-seg_61"
-start = 1977.548552
-end = 1979.283552
-speaker = "A"
-ja = "めちゃくちゃに溜まってる!"
+id = "4-seg_61.1"
+start = 1967.433552
+end = 1969.775552
+speaker = "A,B"
+ja = "イェーイ はいということでチャレンジ成功"
+
+[[segments]]
+id = "4-seg_61.2"
+start = 1969.825552
+end = 1971.983552
+speaker = "B"
+ja = "以上「格の違いを見せつけたい」でした"
 
 [[segments]]
 id = "4-seg_62"
-start = 1979.483552
-end = 1980.383552
+start = 1973.383552
+end = 1974.483552
 speaker = "B"
-ja = "ドヤ顔が見える。"
+ja = "夏が来る"
 
 [[segments]]
 id = "4-seg_63"
-start = 1983.749552
-end = 1984.619552
-speaker = "A"
-ja = "ご飯のお供は？"
+start = 1974.883552
+end = 1977.508552
+speaker = "B"
+ja = "紙袋はついつい溜めちゃう? それともすぐ捨て?"
 
 [[segments]]
 id = "4-seg_64"
-start = 1984.699552
-end = 1985.299552
-speaker = "B"
-ja = "えっと、"
+start = 1977.658552
+end = 1979.233552
+speaker = "A"
+ja = "めっちゃくちゃに溜まってる"
 
 [[segments]]
 id = "4-seg_65"
-start = 1985.449552
-end = 1987.799552
+start = 1979.383552
+end = 1980.333552
 speaker = "B"
-ja = "海苔、海苔の佃煮？"
+ja = "ドヤ顔が見え"
 
 [[segments]]
 id = "4-seg_66"
-start = 1988.049552
-end = 1988.649552
-speaker = "B"
-ja = "あるっけ?"
+start = 1983.8495520000001
+end = 1984.499552
+speaker = "A"
+ja = "どんなおともは?"
 
 [[segments]]
 id = "4-seg_67"
-start = 1988.999552
-end = 1991.699552
-speaker = "A"
-ja = "どんはどんでもお米じゃないどんはなんだ？"
+start = 1984.649552
+end = 1987.799552
+speaker = "B"
+ja = "えっと のりの佃煮?"
 
 [[segments]]
 id = "4-seg_68"
-start = 1994.299552
-end = 1994.879552
+start = 1987.949552
+end = 1988.549552
 speaker = "B"
-ja = "壁ドン。"
+ja = "おるけ"
 
 [[segments]]
 id = "4-seg_69"
-start = 1994.999552
-end = 1998.949552
+start = 1988.899552
+end = 1991.699552
+speaker = "A"
+ja = "ドンはドンでもお米じゃないドンはなんだ?"
+
+[[segments]]
+id = "4-seg_70"
+start = 1993.999552
+end = 1994.449552
+speaker = "B"
+ja = "カベドン"
+
+[[segments]]
+id = "4-seg_71"
+start = 1994.899552
+end = 1998.899552
 speaker = "A"
 ja = "リップの色を選ぶとき一番大事にしているポイントは?"
 
 [[segments]]
-id = "4-seg_70"
-start = 2030.465552
-end = 2035.245552
+id = "4-seg_72.1"
+start = 2030.985552
+end = 2033.575552
 speaker = "A"
-ja = "来ました。春日さくらと乾夏寧の夏もさくらを咲かせたい、\nエンディングのお時間です。"
+ja = "来ました 春日さくらと乾夏寧の\n夏もさくらを咲かせたい"
 
 [[segments]]
-id = "4-seg_71"
-start = 2035.325552
-end = 2036.085552
-speaker = "B"
-ja = "はーい"
+id = "4-seg_72.2"
+start = 2033.625552
+end = 2035.035552
+speaker = "A"
+ja = "エンディングのお時間です"
 
 [[segments]]
-id = "4-seg_72"
-start = 2037.235552
-end = 2041.885552
-speaker = "B"
-ja = "えっとね、「夏が来る」は、えーと、ここからかな。"
-
-[[segments]]
-id = "4-seg_73.1"
-start = 2044.635552
-end = 2049.910552
-speaker = "B"
-ja = "好きなご飯のお供は海苔の佃煮って\n言ったんだけど、あるよね。"
-zh = ""
-
-[[segments]]
-id = "4-seg_73.2"
-start = 2049.990552
-end = 2054.755552
-speaker = "B"
-ja = "私なんか、あんま食べたことないんだよね。\n佃煮がちょっと甘くて、もともと苦手で。"
-zh = ""
+id = "4-seg_73"
+start = 2036.985552
+end = 2039.785552
+speaker = "A"
+ja = "えっとで夏の夏が来るわ"
 
 [[segments]]
 id = "4-seg_74"
-start = 2054.835552
+start = 2040.335552
+end = 2041.935552
+speaker = "B"
+ja = "えっともうここからだから"
+
+[[segments]]
+id = "4-seg_75"
+start = 2043.885552
+end = 2047.010552
+speaker = "B"
+ja = "あ好きなご飯のお供は"
+
+[[segments]]
+id = "4-seg_76"
+start = 2047.160552
+end = 2049.910552
+speaker = "A"
+ja = "のりの佃煮って言ったんだけど あるよね"
+
+[[segments]]
+id = "4-seg_77"
+start = 2050.060552
+end = 2051.810552
+speaker = "B"
+ja = "私なんかあんま食べたことないんだよね少"
+
+[[segments]]
+id = "4-seg_78"
+start = 2051.960552
+end = 2052.810552
+speaker = "A"
+ja = "ほんとにつくだにが"
+
+[[segments]]
+id = "4-seg_79"
+start = 2052.960552
+end = 2054.710552
+speaker = "B"
+ja = "ちょっと甘くてもとても苦手で"
+
+[[segments]]
+id = "4-seg_80"
+start = 2054.860552
 end = 2055.335552
 speaker = "A"
 ja = "そうだ"
 
 [[segments]]
-id = "4-seg_75"
-start = 2056.617552
-end = 2061.777552
-speaker = "A,B"
-ja = "ちょっと甘いかも。めっちゃ甘いかも。\nえー、でも結構好きな人多いよね、海苔の佃煮とか。"
-zh = ""
-
-[[segments]]
 id = "4-seg_81"
-start = 2061.857552
-end = 2065.5175520000003
+start = 2056.617552
+end = 2057.042552
 speaker = "A"
-ja = "おいしい。でもあれは、ご飯と甘いのがね、苦手だよね。"
+ja = "ちょっとあれか"
 
 [[segments]]
 id = "4-seg_82"
-start = 2065.967552
-end = 2067.652552
+start = 2057.192552
+end = 2058.467552
 speaker = "B"
-ja = "あ、微妙かも。え、なんだろう。"
+ja = "結構甘いかも"
 
 [[segments]]
 id = "4-seg_83"
-start = 2067.732552
-end = 2069.7675520000003
-speaker = "A,B"
-ja = "でもそういう系好き。お供系。えー"
+start = 2058.5175520000003
+end = 2058.917552
+speaker = "A"
+ja = "えー"
 
 [[segments]]
 id = "4-seg_85"
-start = 2069.847552
-end = 2075.577552
-speaker = "A"
-ja = "なんか結構、お土産とかで\nそういうフレークのなんかさ、もらえるとさ、嬉しい。"
+start = 2059.0175520000003
+end = 2061.642552
+speaker = "A,B"
+ja = "うん でも結構好きな人多いよね のりの佃煮って"
 
 [[segments]]
 id = "4-seg_86"
-start = 2075.657552
-end = 2081.967552
-speaker = "B"
-ja = "確かに。なんかたまに瓶のやつとかさ、\nお供系、なんか牛しぐれみたいな。佃煮、しぐれ。"
+start = 2061.792552
+end = 2065.5175520000003
+speaker = "A"
+ja = "美味しい でもあれだもんねご飯と甘いのがね苦手だよね"
 
 [[segments]]
 id = "4-seg_87"
-start = 2085.257552
-end = 2087.777552
-speaker = "A"
-ja = "どんはどんでもお米じゃないどんはなんだ？"
+start = 2065.967552
+end = 2067.692552
+speaker = "B"
+ja = "微妙かもえ何だろう"
 
 [[segments]]
-id = "4-seg_88"
-start = 2087.857552
-end = 2088.707552
-speaker = "B"
-ja = "壁ドン。"
+id = "4-seg_88.1"
+start = 2067.842552
+end = 2071.717552
+speaker = "A"
+ja = "でもそういう系好き お供系"
+
+[[segments]]
+id = "4-seg_88.2"
+start = 2071.767552
+end = 2075.642552
+speaker = "A"
+ja = "なんか結構お土産とかで\nそういうフレークのなんかさもらえると嬉しい"
 
 [[segments]]
 id = "4-seg_89"
-start = 2090.307552
-end = 2092.867552
-speaker = "A"
-ja = "これ答え、うどんって書いてあるの。マジか。"
-
-[[segments]]
-id = "4-seg_90"
-start = 2092.947552
-end = 2095.307552
+start = 2075.792552
+end = 2079.217552
 speaker = "B"
-ja = "何基準の答え？"
+ja = "確かになんかたまに瓶のやつとかさお供系"
 
 [[segments]]
 id = "4-seg_91"
-start = 2095.757552
-end = 2097.407552
-speaker = "A"
-ja = "壁ドンでも答えだよね。"
+start = 2079.267552
+end = 2082.067552
+speaker = "A,B"
+ja = "そう なんか何しぐれみたいなツナしぐれ"
 
 [[segments]]
 id = "4-seg_92"
-start = 2097.557552
-end = 2103.667552
+start = 2085.257552
+end = 2087.507552
 speaker = "A"
-ja = "そう。だってさ、お米じゃないどんならなんでもいい。\n食べ物と書いてないもんね。そう、壁ドンでも。"
+ja = "ドンはドンでもお米じゃないドンはなんだ"
 
 [[segments]]
 id = "4-seg_93"
-start = 2103.747552
-end = 2105.307552
+start = 2087.907552
+end = 2088.657552
 speaker = "B"
-ja = "壁ドンなんかある？他に。"
+ja = "壁ドン"
 
 [[segments]]
 id = "4-seg_94"
-start = 2106.607552
-end = 2108.757552
-speaker = "B"
-ja = "丼ぶりはでも米か"
+start = 2090.407552
+end = 2092.582552
+speaker = "A"
+ja = "これ答えうどんって書いてあるの"
 
 [[segments]]
 id = "4-seg_95"
-start = 2121.193552
-end = 2122.243552
+start = 2092.732552
+end = 2095.057552
 speaker = "B"
-ja = "うどんだったそうなんだ"
+ja = "マーシャルさんのやつ何基準の答え"
 
 [[segments]]
-id = "4-seg_96"
-start = 2123.043552
-end = 2125.253552
+id = "4-seg_96.1"
+start = 2095.407552
+end = 2098.032552
 speaker = "A"
-ja = "OKうどんうどんうどんだね"
+ja = "壁ドンでも答えだよね"
+
+[[segments]]
+id = "4-seg_96.2"
+start = 2098.082552
+end = 2100.832552
+speaker = "A"
+ja = "だってさお米じゃないドンなら なんでもいい"
+
+[[segments]]
+id = "4-seg_96.3"
+start = 2100.882552
+end = 2103.382552
+speaker = "A"
+ja = "食べ物って書いてないもんね そう 壁ドンでも"
 
 [[segments]]
 id = "4-seg_97"
-start = 2125.333552
-end = 2127.253552
+start = 2103.532552
+end = 2105.007552
 speaker = "B"
-ja = "誰かに出してみよう今度"
+ja = "壁ドンなんかある? 他に"
 
 [[segments]]
 id = "4-seg_98"
-start = 2127.333552
-end = 2128.353552
-speaker = "A"
-ja = "えやりたい"
-
-[[segments]]
-id = "4-seg_99"
-start = 2128.433552
-end = 2132.253552
+start = 2106.157552
+end = 2109.257552
 speaker = "B"
-ja = "どんはどんでも、誰かがうどんって答えるまで出してみよう。"
+ja = "どんぶりはでも米がどん"
 
 [[segments]]
 id = "4-seg_100"
-start = 2132.333552
-end = 2135.093552
-speaker = "A,B"
-ja = "やってみますんで報告します。\nお願いします。はい"
+start = 2121.193552
+end = 2123.818552
+speaker = "B,A"
+ja = "ほんとだった そうなんだオッケー"
+
+[[segments]]
+id = "4-seg_101"
+start = 2123.968552
+end = 2124.268552
+speaker = "B"
+ja = "誕生日ました"
+
+[[segments]]
+id = "4-seg_102"
+start = 2124.418552
+end = 2125.668552
+speaker = "A"
+ja = "うどんうどんうどんだね"
 
 [[segments]]
 id = "4-seg_103.1"
-start = 2135.693552
-end = 2140.360552
+start = 2125.818552
+end = 2128.793552
 speaker = "B"
-ja = "はい、ということで番組では皆さんからの\nお便りをお待ちしております。"
-zh = ""
+ja = "誰かに出してみよう今度 え やりたい"
 
 [[segments]]
 id = "4-seg_103.2"
-start = 2140.440552
-end = 2144.560552
+start = 2128.843552
+end = 2132.168552
 speaker = "B"
-ja = "番組の感想や私たちに聞きたいことなど、\n気軽にお送りください。"
-zh = ""
-
-[[segments]]
-id = "4-seg_103.3"
-start = 2144.640552
-end = 2149.493552
-speaker = "B"
-ja = "次回のメールテーマは\n「人生で一番お金をかけて良かったと思ったこと」です。"
-zh = ""
-
-[[segments]]
-id = "4-seg_104"
-start = 2151.113552
-end = 2154.323552
-speaker = "A"
-ja = "趣味だったりとかなんかなんかなんだろう"
-
-[[segments]]
-id = "4-seg_105"
-start = 2154.403552
-end = 2156.323552
-speaker = "B"
-ja = "ちょっと推し活とか以外がいいかな。そう。"
+ja = "ドンはドンでも誰かがうどんって出すまで\nうどんって答えるまで出してみよう"
 
 [[segments]]
 id = "4-seg_106"
-start = 2156.403552
-end = 2157.873552
-speaker = "A"
-ja = "なんか自分の趣味とか"
+start = 2132.318552
+end = 2134.993552
+speaker = "A,B"
+ja = "やってみますんで報告します お願いします はい"
 
 [[segments]]
 id = "4-seg_107"
-start = 2157.953552
-end = 2159.373552
+start = 2135.643552
+end = 2138.943552
 speaker = "B"
-ja = "生活のね面とかで"
+ja = "はいということで番組では\n皆さんからのお便りをお待ちしております"
 
 [[segments]]
-id = "4-seg_108"
-start = 2159.453552
-end = 2164.065552
+id = "4-seg_109"
+start = 2138.993552
+end = 2143.443552
 speaker = "A,B"
-ja = "わかんないけど、コーヒーにはめっちゃお金かけてます。\nとか。そう、こだわり。"
+ja = "うん 続いては番組の感想や\n私たちに聞きたいことなど気軽にお送りください"
 
 [[segments]]
-id = "4-seg_111"
-start = 2164.145552
-end = 2169.155552
+id = "4-seg_110"
+start = 2143.993552
+end = 2149.493552
+speaker = "B"
+ja = "次回のメールテーマは\n人生で一番お金をかけてよかったと思ったことです"
+
+[[segments]]
+id = "4-seg_111.1"
+start = 2151.113552
+end = 2154.613552
+speaker = "A"
+ja = "趣味だったりとか なんかなんだろう\nちょっと推し活とか以外がいいかな"
+
+[[segments]]
+id = "4-seg_111.2"
+start = 2154.663552
+end = 2159.638552
 speaker = "A,B"
-ja = "なんか、みたいな。寝具とか靴下とか、わかんないけど、\nそういうやつでお待ちしております。"
+ja = "なんか自分の趣味とか そう 生活の面とかで"
 
 [[segments]]
-id = "4-seg_114"
-start = 2169.235552
-end = 2169.955552
-speaker = "B"
-ja = "ぜひぜひ"
-
-[[segments]]
-id = "4-seg_115.1"
-start = 2170.035552
-end = 2179.210552
+id = "4-seg_115"
+start = 2159.788552
+end = 2162.313552
 speaker = "A"
-ja = "今私が言ったのと被っても全然待ってます。ミニコーナー「さくら前線と夏が来る」宛てに、\nそれぞれ一問一答形式の質問をお送りください。"
-zh = ""
+ja = "わかんないけどコーヒーにはめっちゃお金かけてます"
 
 [[segments]]
-id = "4-seg_115.3"
-start = 2179.290552
-end = 2182.860552
-speaker = "A"
-ja = "さくらと夏寧、なるべくセットで\n送っていただけると嬉しいです。"
-zh = ""
-
-[[segments]]
-id = "4-seg_115.4"
-start = 2182.940552
-end = 2187.645552
-speaker = "A"
-ja = "そしてこちら、「てぇてぇちゃんさくら」に語ってもらいたいテーマ、\n「悟り転校生なつね」の質問、相談、問題、募集しております。"
-zh = ""
-
-[[segments]]
-id = "4-seg_116"
-start = 2189.193552
-end = 2190.393552
-speaker = "A"
-ja = "メールアドレスは"
-
-[[segments]]
-id = "4-seg_117"
-start = 2190.623552
-end = 2195.578552
-speaker = "A"
-ja = "natsusaku@secondshot.jpです。\nたくさんのお便りお待ちしております。"
-
-[[segments]]
-id = "4-seg_118.1"
-start = 2195.658552
-end = 2201.860552
-speaker = "B"
-ja = "はい、続いて私たちからのお知らせです。\n6月4日から7日、高円寺Studio Kにて上演される"
-zh = ""
-
-[[segments]]
-id = "4-seg_118.2"
-start = 2201.940552
-end = 2207.760552
-speaker = "B"
-ja = "オムニバス朗読「だい研6」に出演しております。\n明日ですね、放送日から考えると。"
-zh = ""
-
-[[segments]]
-id = "4-seg_118.3"
-start = 2207.840552
-end = 2210.993552
-speaker = "B"
-ja = "あらまあ。頑張ります。"
-zh = ""
-
-[[segments]]
-id = "4-seg_119.1"
-start = 2213.481552
-end = 2220.960552
-speaker = "A"
-ja = "4日には公開ゲネプロもありますので、\nそちらもちょっとね、お値段が安いのかな。"
-zh = ""
-
-[[segments]]
-id = "4-seg_119.2"
-start = 2221.040552
-end = 2226.360552
-speaker = "A"
-ja = "公開ゲネプロのほうもあります。よろしくお願いします。"
-zh = ""
-
-[[segments]]
-id = "4-seg_119.3"
-start = 2226.440552
-end = 2231.860552
-speaker = "A"
-ja = "6月21日、大阪工業大学梅田キャンパス常翔ホールにて、\n茶屋町推し Festival 2026、"
-zh = ""
-
-[[segments]]
-id = "4-seg_119.4"
-start = 2231.940552
-end = 2235.541552
-speaker = "A"
-ja = "テレビアニメ「前橋ウィッチーズ」スペシャルステージに\n出演いたします。大阪、嬉しい。"
-zh = ""
+id = "4-seg_119"
+start = 2163.145552
+end = 2164.520552
+speaker = "A,B"
+ja = "とか そこ なんかこだわりみたいな"
 
 [[segments]]
 id = "4-seg_120"
-start = 2235.621552
-end = 2236.931552
-speaker = "B"
-ja = "そして大学でやるんだ"
-
-[[segments]]
-id = "4-seg_121"
-start = 2237.031552
-end = 2240.031552
+start = 2164.670552
+end = 2168.420552
 speaker = "A"
-ja = "そうなのよ大学でやるの初めてかも"
+ja = "寝具とか靴下とか分かんないけど\nそんなやつでお待ちしております"
 
 [[segments]]
-id = "4-seg_122.1"
+id = "4-seg_121.1"
+start = 2168.570552
+end = 2173.375552
+speaker = "B"
+ja = "スタイル ぜひぜひ\n今私が言ったのと被っても全然待ってます"
+
+[[segments]]
+id = "4-seg_121.2"
+start = 2173.425552
+end = 2177.425552
+speaker = "B"
+ja = "ミニコーナー「桜前線」と「夏が来る」には\nそれぞれ一問一答形式の質問をお送りください"
+
+[[segments]]
+id = "4-seg_121.3"
+start = 2177.475552
+end = 2182.175552
+speaker = "B"
+ja = "桜と夏寧 なるべくセットで\n送っていただけると嬉しいです"
+
+[[segments]]
+id = "4-seg_121.4"
+start = 2182.225552
+end = 2187.595552
+speaker = "B"
+ja = "そしてこちら てってぃちゃん桜に語ってもらいたいテーマ\n「悟り転校生夏寧」の質問相談も大募集しております"
+
+[[segments]]
+id = "4-seg_122"
+start = 2189.193552
+end = 2195.618552
+speaker = "A"
+ja = "メールアドレスは natsusaku@secondshot.jp です たくさんのお便りお待ちしております"
+
+[[segments]]
+id = "4-seg_123.1"
+start = 2195.768552
+end = 2199.875552
+speaker = "B"
+ja = "続いて私たちからのお知らせです\n6月4日 7日"
+
+[[segments]]
+id = "4-seg_123.2"
+start = 2199.925552
+end = 2204.675552
+speaker = "B"
+ja = "高円寺Studio Kにて上演される\nオムニバス朗読「だい研6」に出演しております"
+
+[[segments]]
+id = "4-seg_123.3"
+start = 2204.725552
+end = 2208.493552
+speaker = "B"
+ja = "明日ですね 放送日から考えると"
+
+[[segments]]
+id = "4-seg_124"
+start = 2208.943552
+end = 2211.093552
+speaker = "A"
+ja = "あらまぁ頑張れ"
+
+[[segments]]
+id = "4-seg_125.1"
+start = 2213.481552
+end = 2217.475552
+speaker = "A"
+ja = "4日は公開ゲネプロもありますので\nそちらもちょっとお値段が安いのかな"
+
+[[segments]]
+id = "4-seg_125.2"
+start = 2217.525552
+end = 2221.575552
+speaker = "A"
+ja = "公開ゲネプロの方が そちらもあります\nよろしくお願いします"
+
+[[segments]]
+id = "4-seg_125.3"
+start = 2221.625552
+end = 2226.375552
+speaker = "A"
+ja = "6月21日大阪工業大学梅田キャンパス\n常翔ホールにて"
+
+[[segments]]
+id = "4-seg_125.4"
+start = 2226.425552
+end = 2229.675552
+speaker = "A"
+ja = "茶屋町推しフェスティバル2026"
+
+[[segments]]
+id = "4-seg_125.5"
+start = 2229.725552
+end = 2233.331552
+speaker = "A"
+ja = "テレビアニメ「前橋ウィッチーズ」\nスペシャルステージに出演いたします"
+
+[[segments]]
+id = "4-seg_126"
+start = 2234.081552
+end = 2240.181552
+speaker = "A"
+ja = "大阪駅嬉しい そして大学でやるんだ\nそうなのよ 大学でやるの初めてかも"
+
+[[segments]]
+id = "4-seg_127.1"
 start = 2242.057552
-end = 2248.660552
-speaker = "B"
-ja = "待って、ずっとあれか。8月2日、Go☆Revoのゲストで\nイベント出演させていただきます。"
-zh = ""
-
-[[segments]]
-id = "4-seg_122.2.1"
-start = 2248.740552
-end = 2251.960552
-speaker = "B"
-ja = "新宿村LIVEさん。楽しみです。"
-zh = ""
-
-[[segments]]
-id = "4-seg_122.2.2"
-start = 2252.040552
-end = 2255.807552
-speaker = "B"
-ja = "あのね、Go☆Revoさんと一緒に\nイベントあったことないので。"
-zh = ""
-
-[[segments]]
-id = "4-seg_123"
-start = 2255.887552
-end = 2258.867552
-speaker = "A,B"
-ja = "番組も出たことあるけど、\n楽しみにしてください。"
-zh = ""
-
-[[segments]]
-id = "4-seg_127"
-start = 2258.947552
-end = 2260.467552
+end = 2245.975552
 speaker = "A"
-ja = "なちゅ、頑張ってきて。"
+ja = "そして8月2日ゴー☆レボのゲストで"
 
 [[segments]]
-id = "4-seg_128"
-start = 2260.547552
-end = 2261.757552
-speaker = "B"
-ja = "頑張っていってらっしゃい"
+id = "4-seg_127.2"
+start = 2246.025552
+end = 2250.457552
+speaker = "A"
+ja = "イベント出演させていただきます\n新宿村LIVEさん"
+
+[[segments]]
+id = "4-seg_128.1"
+start = 2251.007552
+end = 2255.782552
+speaker = "A"
+ja = "楽しみです ゴー☆ジャスさんと\nなんか一緒にイベント行ったことないので"
+
+[[segments]]
+id = "4-seg_128.2"
+start = 2255.832552
+end = 2260.507552
+speaker = "A"
+ja = "番組も出たことあるけど楽しみにしてください\n頑張ってきて"
 
 [[segments]]
 id = "4-seg_129"
-start = 2262.307552
-end = 2263.007552
+start = 2260.707552
+end = 2261.657552
 speaker = "B"
-ja = "いってきます"
+ja = "言ってらっしゃい"
 
 [[segments]]
 id = "4-seg_130"
-start = 2263.107552
-end = 2264.047552
+start = 2261.807552
+end = 2263.007552
 speaker = "A"
-ja = "いってらっしゃい"
+ja = "言ってらっしゃい言ってきます"
 
 [[segments]]
-id = "4-seg_131.1.1"
+id = "4-seg_131.1"
 start = 2265.929552
-end = 2268.210552
+end = 2269.475552
 speaker = "A"
-ja = "8月9日、星陵会館にて"
-zh = ""
+ja = "8月9日星陵会館にて 夏さくプレゼンツ"
 
 [[segments]]
-id = "4-seg_131.1.2"
-start = 2268.290552
-end = 2270.860552
+id = "4-seg_131.2"
+start = 2269.525552
+end = 2273.175552
 speaker = "A"
-ja = "「夏さく presents 乾夏寧\nBirthday Event 2026」を"
-zh = ""
-
-[[segments]]
-id = "4-seg_131.1.3"
-start = 2270.940552
-end = 2272.460552
-speaker = "A"
-ja = "開催していただきます。"
-zh = ""
-
-[[segments]]
-id = "4-seg_131.2.1"
-start = 2272.540552
-end = 2276.360552
-speaker = "A"
-ja = "昼の部のゲストに塚田悠衣ちゃん、\n月城日花ちゃん、"
-zh = ""
-
-[[segments]]
-id = "4-seg_131.2.2"
-start = 2276.440552
-end = 2280.360552
-speaker = "A"
-ja = "夜の部のゲストに花谷麻妃ちゃん、\n小森結梨ちゃんが来てくれます。"
-zh = ""
+ja = "乾夏寧バースデーイベント2026を\n開催していただきます"
 
 [[segments]]
 id = "4-seg_131.3"
-start = 2280.440552
-end = 2286.860552
+start = 2273.225552
+end = 2278.475552
 speaker = "A"
-ja = "現在チケットの一般先行抽選販売を実施中です。\nぜひ遊びに来てください。"
-zh = ""
+ja = "昼の部のゲストに塚田悠衣ちゃん\n月城日花ちゃん"
 
 [[segments]]
 id = "4-seg_131.4"
-start = 2286.940552
-end = 2293.239552
+start = 2278.525552
+end = 2283.775552
 speaker = "A"
-ja = "そしてカラオケのリクエストも参考にさせていただきますので、\nぜひぜひ送ってください。お待ちしております。"
-zh = ""
+ja = "夜の部のゲストに花谷麻妃ちゃん\n小森結梨ちゃんが来てくれます"
+
+[[segments]]
+id = "4-seg_131.5"
+start = 2283.825552
+end = 2288.575552
+speaker = "A"
+ja = "現在チケットの一般先行抽選販売を実施中です\nぜひ遊びに来てください"
+
+[[segments]]
+id = "4-seg_131.6"
+start = 2288.625552
+end = 2291.475552
+speaker = "A"
+ja = "そしてカラオケのリクエストも\n参考にさせていただきますので"
+
+[[segments]]
+id = "4-seg_131.7"
+start = 2291.525552
+end = 2293.104552
+speaker = "A"
+ja = "ぜひぜひ送ってください お待ちしております"
 
 [[segments]]
 id = "4-seg_132"
-start = 2293.319552
-end = 2294.159552
+start = 2293.254552
+end = 2294.179552
 speaker = "B"
 ja = "お待ちしてます"
 
 [[segments]]
-id = "4-seg_133.1"
+id = "4-seg_133"
 start = 2295.369552
-end = 2300.360552
+end = 2298.469552
 speaker = "A"
-ja = "そして「デートウォーズ」に\n已己巳己 巳己役で参加しております。"
-zh = ""
+ja = "そしてデートウォーズに已己巳己 巳己企画で参加しております"
 
 [[segments]]
-id = "4-seg_133.2"
-start = 2300.440552
-end = 2305.729552
+id = "4-seg_134.1"
+start = 2298.769552
+end = 2300.675552
 speaker = "A"
-ja = "新アンセムソング「フラッシュバックメモリー〜時代を駆ける物怪たち〜」が\n配信開始されておりますので、ぜひ皆さん聴いてください。お願いします。"
-zh = ""
+ja = "新アンセムソング"
 
 [[segments]]
-id = "4-seg_134"
-start = 2305.809552
-end = 2312.529552
-speaker = "B"
-ja = "この番組は隔週配信です。\n次回の配信は6月17日水曜日23時です。"
+id = "4-seg_134.2"
+start = 2300.725552
+end = 2303.275552
+speaker = "A"
+ja = "「フラッシュバックメモリー\n〜時代を駆ける物怪たち〜」"
 
 [[segments]]
-id = "4-seg_135.1"
-start = 2312.609552
-end = 2317.360552
+id = "4-seg_134.3"
+start = 2303.325552
+end = 2305.319552
 speaker = "A"
-ja = "はい。また同じタイミングで、\nニコニコ動画 Second Shot Channel 会員向けに"
-zh = ""
+ja = "配信開始されておりますので\nぜひ皆さん聴いてください"
 
 [[segments]]
-id = "4-seg_135.2"
-start = 2317.440552
-end = 2322.919552
+id = "4-seg_135"
+start = 2305.619552
+end = 2305.969552
 speaker = "A"
-ja = "YouTube版より高画質な本編とアフタートークが\n公開されますので、チェックお願いいたします。"
-zh = ""
+ja = "お願いします"
 
 [[segments]]
 id = "4-seg_136"
-start = 2325.321552
-end = 2328.671552
-speaker = "A"
-ja = "今日はね、コーナーがいい感じで気分が良いでございます。"
+start = 2306.469552
+end = 2312.469552
+speaker = "B"
+ja = "この番組は隔週配信です 次回の配信は6月17日水曜日23時です"
 
 [[segments]]
-id = "4-seg_137"
-start = 2328.921552
-end = 2333.521552
-speaker = "A,B"
-ja = "良いでございます。\nちょっと「悟り転校生なつね」はお預けです。お預けです。"
+id = "4-seg_137.1"
+start = 2312.619552
+end = 2316.975552
+speaker = "A"
+ja = "はい また同じタイミングでニコニコ動画\nセカンドショットチャンネル会員向けに"
+
+[[segments]]
+id = "4-seg_137.2"
+start = 2317.025552
+end = 2320.275552
+speaker = "A"
+ja = "YouTube版より高画質な本編と\nアフタートークが公開されますので"
+
+[[segments]]
+id = "4-seg_137.3"
+start = 2320.325552
+end = 2322.969552
+speaker = "A"
+ja = "ぜひチェックよろしくお願いいたします"
+
+[[segments]]
+id = "4-seg_138"
+start = 2323.0195519999997
+end = 2323.319552
+speaker = "B"
+ja = "お願いします"
 
 [[segments]]
 id = "4-seg_139"
-start = 2333.601552
-end = 2335.821552
-speaker = "B"
-ja = "私たちね、盛り上がっちゃうんだよね。"
+start = 2325.321552
+end = 2328.621552
+speaker = "A"
+ja = "今日はねコーナーがいい感じで気分が良いでございます"
 
 [[segments]]
 id = "4-seg_140"
-start = 2336.121552
-end = 2338.981552
-speaker = "A"
-ja = "今日喋りたいことがいっぱいあった。"
+start = 2328.921552
+end = 2332.846552
+speaker = "B"
+ja = "良いでございます ちょっと悟り転校生夏寧はお預けです"
 
 [[segments]]
 id = "4-seg_141"
-start = 2339.061552
-end = 2341.281552
-speaker = "B"
-ja = "私コーナーも楽しくなっちゃった。"
+start = 2332.996552
+end = 2333.546552
+speaker = "A"
+ja = "お預けです"
 
 [[segments]]
 id = "4-seg_142"
-start = 2341.361552
-end = 2342.481552
-speaker = "A"
-ja = "楽しくなっちゃった。"
+start = 2333.696552
+end = 2335.921552
+speaker = "B"
+ja = "私たちね 盛り上がっちゃうんだよね"
 
 [[segments]]
 id = "4-seg_143"
-start = 2342.561552
-end = 2345.931552
-speaker = "B"
-ja = "また来週できたらやりたいと思います。"
+start = 2336.221552
+end = 2338.696552
+speaker = "A"
+ja = "そうなんだよ今日は喋りたいことがいっぱいある"
 
 [[segments]]
 id = "4-seg_144"
-start = 2346.011552
-end = 2348.831552
-speaker = "A"
-ja = "それではお時間です。お相手は春日さくらと"
+start = 2338.846552
+end = 2341.246552
+speaker = "B"
+ja = "私コーナーもちょっと楽しくなっちゃった"
 
 [[segments]]
 id = "4-seg_145"
-start = 2348.911552
-end = 2350.021552
-speaker = "B"
-ja = "乾夏寧でした。"
+start = 2341.396552
+end = 2342.346552
+speaker = "A"
+ja = "楽しくなっちゃった"
 
 [[segments]]
-id = "4-seg_146"
-start = 2350.6335520000002
-end = 2351.283552
+id = "4-seg_146.1"
+start = 2342.496552
+end = 2345.475552
 speaker = "B"
+ja = "ね またまた来週できたらやりたいと思います"
+
+[[segments]]
+id = "4-seg_146.2"
+start = 2345.525552
+end = 2348.996552
+speaker = "B"
+ja = "それではお時間です お相手は春日さくらと"
+
+[[segments]]
+id = "4-seg_147"
+start = 2349.146552
+end = 2350.021552
+speaker = "A"
+ja = "乾夏寧でした"
+
+[[segments]]
+id = "4-seg_149"
+start = 2350.6335520000002
+end = 2351.333552
+speaker = "A,B"
 ja = "またね"

@@ -1,0 +1,608 @@
+created_by = "z004"
+start = 1600.0
+end = 2000.0
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_144.2"
+zh = "我还以为是不对的提示"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_145"
+zh = "是咖喱饭 好！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_149.1"
+zh = "哎呀 虽然绕了好多圈"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_149.2"
+zh = "只要有米饭就是咖喱啊 也是哦"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_149.3"
+zh = "感觉 对哦"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_150"
+zh = "原曲里有“咖喱饭”真是太好了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_154"
+zh = "太好了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_155"
+zh = "以为咕噜那段会说胡萝卜土豆"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_156"
+zh = "结果我只想到胡萝卜"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_157"
+zh = "不过不过"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_158"
+zh = "我只想得到胡萝卜"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_159"
+zh = "这样啊 不过大家都喜欢咖喱嘛"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_160"
+zh = "啊 很好懂"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_161"
+zh = "太好了 那接下来轮到なちゅ了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_162"
+zh = "那么题目是这个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_163"
+zh = "连我们的歌都拿来改 真不好意思"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_164"
+zh = "请回答这是什么"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_165"
+zh = "焗烤"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_166"
+zh = "太好了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_167"
+zh = "太好了 好厉害"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_168"
+zh = "厉害 厉害 真的很厉害"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_169"
+zh = "太好了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_170"
+zh = "听到通心粉就懂了 太好了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_171"
+zh = "太好了 白色还有通心粉"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_172"
+zh = "通心粉应该不算犯规吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_173"
+zh = "太好了太好了太好了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_174"
+zh = "嗯 感觉挺行的 毕竟已经答对两题了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_175"
+zh = "好 那下一题是"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_176"
+zh = "请闭上眼睛 是这个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_177"
+zh = "好好好 「铃儿响叮当」"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_178"
+zh = "外衣酥脆的油炸物 里面是土豆泥"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_179"
+zh = "行吧？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_180"
+zh = "可以吧？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_181"
+zh = "已经说出答案了 好！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_183"
+zh = "预备！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_184"
+zh = "厉害厉害！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_185"
+zh = "啊 好厉害！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_186"
+zh = "已经已经！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_187"
+zh = "不错不错！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_188"
+zh = "很容易懂！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_189"
+zh = "不错！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_190"
+zh = "很好！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_191"
+zh = "不错不错！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_192"
+zh = "这个小提示不错！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_193.1"
+zh = "这个到底算简单还是难"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_193.2"
+zh = "不实际试试就不知道"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_193.3"
+zh = "一开始犹豫四题答三题还是两题"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_194"
+zh = "其实也没差多少嘛"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_195"
+zh = "行得通 说不定四题也可以"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_196"
+zh = "感觉正常也能做到呢"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_197"
+zh = "不 等等 等等 不好意思 对不起"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_198"
+zh = "姑且嘛"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_199"
+zh = "姑且做吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_200"
+zh = "好 那就拜托了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_201"
+zh = "呜哇"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_202"
+zh = "是不是来了个很难的？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_203"
+zh = "里面有什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_204"
+zh = "不是跟我刚才一样吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_205"
+zh = "是「夏の思い出」"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_0"
+zh = "白色的汤 名字很时髦 只有一个吧"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_1"
+zh = "白色的汤是什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_2"
+zh = "大概是白色的"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_3"
+zh = "奶油炖菜不算汤吧"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_4"
+zh = "啊 太接近了 算了"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_5"
+zh = "不是不是 这没有提示啊"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_6"
+zh = "什么？什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_7"
+zh = "真的不知道 什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_8"
+zh = "白色的汤？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_9"
+zh = "你们肯定听过名字 啊 是那个吗"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_10"
+zh = "要给提示吗？试着给一个"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_11"
+zh = "蛤蜊浓汤？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_12"
+zh = "错了吗？是什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_13"
+zh = "你觉得是什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_15"
+zh = "可以再说一次吗？嗯"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_16"
+zh = "不是蛤蜊浓汤的话 我就想不到别的"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_17"
+zh = "白色？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_18"
+zh = "这个是白色的吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_19"
+zh = "白色的"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_21"
+zh = "也有不是白色的 嗯？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_22"
+zh = "但认真说 我觉得蛤蜊浓汤也行"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_23"
+zh = "是什么呢是什么呢 诶是什么呢"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_24"
+zh = "出题人给个首字吧"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_25"
+zh = "啊 已经是“巴”了"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_26"
+zh = "巴？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_27"
+zh = "巴？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_28"
+zh = "感觉像巴尼亚什么的"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_29"
+zh = "巴尼亚卡乌达！那不是汤吧？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_30"
+zh = "酱汁酱汁酱汁酱汁"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_31"
+zh = "巴尼亚卡乌达是酱汁吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_32"
+zh = "就是把蔬菜蘸着吃的那个吧"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_34"
+zh = "答出来了吧 我出了个少见的"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_36"
+zh = "是啊 是什么呢 是凤尾鱼之类的吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_37"
+zh = "里面放的东西"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_42"
+zh = "是吗？完全不懂 没汤就少有食材"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_44"
+zh = "嗯 跟我想象的完全不一样"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_45"
+zh = "不过少见 肯定也有人没吃过"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_46"
+zh = "是啊 总之算是附加题了"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_47"
+zh = "嗯 不过它在我的喜好榜挺靠前"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_48"
+zh = "真的吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_49"
+zh = "原来如此"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_50"
+zh = "这样啊 我还说什么白色的汤"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_51"
+zh = "而且还挺喜欢"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_52"
+zh = "啊 这样啊"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_53"
+zh = "那太好了"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_54"
+zh = "好"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_56"
+zh = "好 恭喜"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_57"
+zh = "这样一来 也算升了一级吧"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_58"
+zh = "开心"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_59"
+zh = "挺成功的呢 完全算成功"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_61.1"
+zh = "耶 好 那么挑战成功"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_61.2"
+zh = "以上就是「展示格的差距」"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_62"
+zh = "夏天要来了"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_63"
+zh = "纸袋会攒起来？还是马上扔？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_64"
+zh = "我攒得超级多"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_65"
+zh = "能看到那张得意脸"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_66"
+zh = "配饭小菜是什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_67"
+zh = "呃 海苔佃煮？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_68"
+zh = "OK"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_69"
+zh = "不是米饭的“丼” 是什么咚？"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_70"
+zh = "壁咚"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_71"
+zh = "选口红颜色时 最重视的点是什么？"

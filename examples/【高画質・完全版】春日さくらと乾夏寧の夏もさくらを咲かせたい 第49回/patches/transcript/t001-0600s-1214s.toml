@@ -1,0 +1,588 @@
+created_by = "t001"
+start = 600
+end = 1214.248333
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR wording from live feedback context."
+confidence = "medium"
+segment_id = "2-seg_2"
+ja = "なんかさくらそっちの方で結構ああいうタイプっての知ってたけどなんかあまりにもつまらない言葉がつまらないってあの表現するの出てきすぎててなんかすごいさくらすごいって思っためっちゃ可愛かったしすごかった"
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription confirms チームウィッチーズ and 煽り."
+confidence = "high"
+segment_id = "2-seg_3"
+ja = "なんか褒められたの チームウィッチーズのみんなに煽りうまくなったねって褒めてもらった"
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription confirms the reaction and removes ASR nonsense."
+confidence = "medium"
+segment_id = "2-seg_4"
+ja = "よねうますぎたもん私も客席側でみんなと話してた"
+
+[[operations]]
+op = "edit"
+reason = "Use confirmed program abbreviation."
+confidence = "high"
+segment_id = "2-seg_13"
+ja = "だい研 今度一緒にやるだい研の仲良っぴ同期なんだけどそうその子と見に行ってねその子がめっちゃ声出すタイプの子だったからあの"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR noun in event cheering context."
+confidence = "high"
+segment_id = "2-seg_15"
+ja = "一人で行った時は出せないんだけどその子がいたからめっちゃ掛け声やったよ"
+
+[[operations]]
+op = "edit"
+reason = "Correct announcement lead-in."
+confidence = "medium"
+segment_id = "2-seg_16"
+ja = "告知じゃない"
+
+[[operations]]
+op = "edit"
+reason = "Apply confirmed venue/event terminology."
+confidence = "high"
+segment_id = "2-seg_18"
+ja = "あのね 私8月2日新宿村LIVEにてゴーレボの番組イベントにゲストとして出演させていただくことが決定しました"
+
+[[operations]]
+op = "edit"
+reason = "Correct program name from glossary."
+confidence = "high"
+segment_id = "2-seg_21"
+ja = "夏さくと花コモから1人ずつ"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR adjective in context."
+confidence = "medium"
+segment_id = "2-seg_23"
+ja = "すごい新鮮な組み合わせでさ"
+
+[[operations]]
+op = "edit"
+reason = "Correct person nickname from glossary."
+confidence = "high"
+segment_id = "2-seg_28"
+ja = "そうなる?なんかもこさんってツッコミ感じですか?"
+
+[[operations]]
+op = "edit"
+reason = "Use established ゴーさん nickname."
+confidence = "high"
+segment_id = "2-seg_29"
+ja = "ゴーさんがいるからゴーさんがいるから大丈夫?"
+
+[[operations]]
+op = "edit"
+reason = "Correct joke after ツッコミ context."
+confidence = "high"
+segment_id = "2-seg_35"
+ja = "ボケの大渋滞になっちゃう"
+
+[[operations]]
+op = "edit"
+reason = "Correct repeated joke after ツッコミ context."
+confidence = "high"
+segment_id = "2-seg_36"
+ja = "ボケの大渋滞になっちゃう"
+
+[[operations]]
+op = "edit"
+reason = "Correct phrase continuation."
+confidence = "medium"
+segment_id = "2-seg_37"
+ja = "大渋滞になっちゃいそうだけど"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR fragment."
+confidence = "high"
+segment_id = "2-seg_39"
+ja = "そうだけど"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR fragment."
+confidence = "high"
+segment_id = "2-seg_40"
+ja = "確かにね すごいめっちゃ楽しみ"
+
+[[operations]]
+op = "edit"
+reason = "Correct program name."
+confidence = "high"
+segment_id = "2-seg_42"
+ja = "先日のゴーレボに月城日花ちゃんがね"
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription indicates 司会として."
+confidence = "high"
+segment_id = "2-seg_44"
+ja = "司会として出てたみたいなんですけど"
+
+[[operations]]
+op = "edit"
+reason = "Correct event title and guest names from glossary."
+confidence = "high"
+segment_id = "2-seg_45"
+ja = "実はね 8月9日に開催する夏さくプレゼンツ乾夏寧バースデーイベント2026昼の部のゲストに塚田悠衣ちゃんと月城日花ちゃんが来てくれることになりました"
+
+[[operations]]
+op = "edit"
+reason = "Correct nickname and glossary term."
+confidence = "medium"
+segment_id = "2-seg_46"
+ja = "ひかちはねうちらと謎解きメイツという"
+
+[[operations]]
+op = "edit"
+reason = "Correct mail-reading verb."
+confidence = "high"
+segment_id = "2-seg_50"
+ja = "お便りがありますので読みますね"
+
+[[operations]]
+op = "edit"
+reason = "Correct fixed mail-name phrase and listener name."
+confidence = "high"
+segment_id = "2-seg_52"
+ja = "夏さくネームロシアンカボチャさんからいただきました"
+
+[[operations]]
+op = "edit"
+reason = "Correct host nicknames and greeting."
+confidence = "medium"
+segment_id = "2-seg_54"
+ja = "さくぽん なちゅ 咲いてますか"
+
+[[operations]]
+op = "edit"
+reason = "Correct birthday-event mail terms and 脱出ゲーム."
+confidence = "high"
+segment_id = "2-seg_55"
+ja = "夏寧のバースデーイベント昼の部のゲストが決まりましたね 塚田さんは分かるんですが月城さんはどんな繋がりだろうと思っていたらゴーレボに出た時に脱出ゲームがきっかけと話していました"
+
+[[operations]]
+op = "edit"
+reason = "Correct program name and phrasing."
+confidence = "high"
+segment_id = "2-seg_56"
+ja = "なるほどゴーレボのトークの感じからバースデーイベントで"
+
+[[operations]]
+op = "edit"
+reason = "Correct sentence start from mail context."
+confidence = "high"
+segment_id = "2-seg_57"
+ja = "グッと距離が縮まる2人が見られそうで今から期待していますよ"
+
+[[operations]]
+op = "edit"
+reason = "Correct glossary term and show reference."
+confidence = "medium"
+segment_id = "2-seg_58"
+ja = "そうなんですよ実はね確かに謎解きメイツ そう謎解きメイツなんかあんまり夏さくではひかちの話まだしてなかったから"
+
+[[operations]]
+op = "edit"
+reason = "Correct context about group size and playing together."
+confidence = "medium"
+segment_id = "2-seg_61"
+ja = "なんか少人数でいる時にひかちがいるって感じだったんだよねだからまだここ3人とかで遊んだことなくて"
+
+[[operations]]
+op = "merge"
+reason = "Fix zero-duration ASR fragment and restore めちゃくちゃ."
+confidence = "high"
+source_ids = ["2-seg_64", "2-seg_65"]
+merged_id = "2-seg_64"
+speaker = "A"
+ja = "現場とかでもたまにお話しするけどまだねめちゃくちゃ仲良くなり"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Complete phrase after preceding merge."
+confidence = "high"
+segment_id = "2-seg_67"
+ja = "たいって前から仲良くなりたいと思って"
+
+[[operations]]
+op = "edit"
+reason = "Correct event/person context from clip retranscription."
+confidence = "medium"
+segment_id = "2-seg_68"
+ja = "ねえそうなの 塚田さんは私前のなんかセカショさんのなんかのイベントで裏でお会いしたじゃない"
+
+[[operations]]
+op = "edit"
+reason = "Correct response phrasing."
+confidence = "high"
+segment_id = "2-seg_72"
+ja = "それですそれですね"
+
+[[operations]]
+op = "edit"
+reason = "Correct guest names from glossary."
+confidence = "high"
+segment_id = "2-seg_84"
+ja = "あのね 夜の部のゲストには花谷麻妃ちゃんと小森結梨ちゃんが来てくれるのでぜひぜひ皆さん遊びに来てください"
+
+[[operations]]
+op = "edit"
+reason = "Correct mail theme phrase."
+confidence = "high"
+segment_id = "2-seg_87"
+ja = "今回のテーマは自分の機嫌の取り方について"
+
+[[operations]]
+op = "edit"
+reason = "Correct fixed mail-name phrase and listener name."
+confidence = "high"
+segment_id = "2-seg_90"
+ja = "どうなの?ではでは早速夏さくネームひたくちさんからいただきました ありがとうございます"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR for X."
+confidence = "high"
+segment_id = "2-seg_97"
+ja = "Xなんだ"
+
+[[operations]]
+op = "edit"
+reason = "Remove ASR lead-in that does not fit sentence flow."
+confidence = "medium"
+segment_id = "2-seg_99"
+ja = "動物を見るの結構わかるかも猫ちゃんのショート動画とか"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR tail."
+confidence = "high"
+segment_id = "2-seg_103"
+ja = "わかる私のXのおすすめ欄ほぼほぼ犬猫なの"
+
+[[operations]]
+op = "edit"
+reason = "Correct mail-name phrase and listener name casing."
+confidence = "high"
+segment_id = "2-seg_109"
+ja = "続いて夏さくネームりょうさんからいただきました"
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription confirms standard greeting."
+confidence = "high"
+segment_id = "2-seg_111"
+ja = "春日さん 乾さん こんばんは 咲いてますか"
+
+[[operations]]
+op = "edit"
+reason = "Correct mail text from clip retranscription."
+confidence = "high"
+segment_id = "2-seg_112"
+ja = "私が普段している自分のご機嫌の取り方は月に一度チートデーを設けることです 普段"
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription confirms サラダ."
+confidence = "high"
+segment_id = "2-seg_113"
+ja = "今日はサラダで我慢 お菓子はやめておこうとそれなりに節制しているのですが えらい"
+
+[[operations]]
+op = "edit"
+reason = "Correct dense cheat-day mail text from clip retranscription."
+confidence = "high"
+segment_id = "2-seg_114"
+ja = "それの反動なのかチートデーになると欲望のタガが外れます 今日は食べまくるぞというマインドでコンビニに入りポテチなどのお菓子や唐揚げアイス炭酸飲料をこれでもかと買って帰ります そして背徳感や後ろめたさを忘れて好きなものを好きなだけ食べます 最終的に締めにカップ麺かとなり胃袋がパンパンのフェス状態になります"
+
+[[operations]]
+op = "edit"
+reason = "Remove spurious ASR tail."
+confidence = "high"
+segment_id = "2-seg_115"
+ja = "ただ不思議とそういう日があるからこそまた明日から頑張ろうと思えるので自分にとってはこれがかなり大事なリセット方法なのかもしれません"
+
+[[operations]]
+op = "edit"
+reason = "Restore broken reaction phrase."
+confidence = "medium"
+segment_id = "2-seg_116"
+ja = "わーいいなー うらやましい"
+
+[[operations]]
+op = "edit"
+reason = "Restore broken reaction phrase."
+confidence = "medium"
+segment_id = "2-seg_117"
+ja = "いや"
+
+[[operations]]
+op = "edit"
+reason = "Correct チートデイ and サラダ context."
+confidence = "medium"
+segment_id = "2-seg_118"
+ja = "チートデイ以外そんなちゃんとやってるんだ サラダで我慢とか"
+
+[[operations]]
+op = "edit"
+reason = "Correct チートデイ phrase."
+confidence = "high"
+segment_id = "2-seg_120"
+ja = "チートデイは大事じゃん"
+
+[[operations]]
+op = "edit"
+reason = "Correct チートデイ sentence."
+confidence = "high"
+segment_id = "2-seg_121"
+ja = "ダイエットに必要ってチートデイがさ"
+
+[[operations]]
+op = "edit"
+reason = "Correct sentence fragment."
+confidence = "high"
+segment_id = "2-seg_124"
+ja = "そこでね"
+
+[[operations]]
+op = "edit"
+reason = "Correct sentence fragment."
+confidence = "high"
+segment_id = "2-seg_125"
+ja = "確かに"
+
+[[operations]]
+op = "edit"
+reason = "Correct sentence fragment."
+confidence = "medium"
+segment_id = "2-seg_129"
+ja = "確かにすごいよ"
+
+[[operations]]
+op = "edit"
+reason = "Correct チートデイ fragment."
+confidence = "high"
+segment_id = "2-seg_131"
+ja = "チートデイしたいね毎日がチートデイかも"
+
+[[operations]]
+op = "edit"
+reason = "Complete fragment."
+confidence = "high"
+segment_id = "2-seg_132"
+ja = "確かに"
+
+[[operations]]
+op = "edit"
+reason = "Correct ASR food term."
+confidence = "high"
+segment_id = "2-seg_134"
+ja = "さっきラーメン食べちゃった"
+
+[[operations]]
+op = "edit"
+reason = "Correct fixed mail-name phrase and listener name."
+confidence = "high"
+segment_id = "2-seg_140"
+ja = "夏さくネームごじろさんからいただきました ありがとうございます"
+
+[[operations]]
+op = "edit"
+reason = "Correct standard greeting."
+confidence = "high"
+segment_id = "2-seg_142"
+ja = "春日さん 乾さん 咲いてますか"
+
+[[operations]]
+op = "edit"
+reason = "Fix duplicated ASR phrase in mail text."
+confidence = "high"
+segment_id = "2-seg_146"
+ja = "物理的に体がさっぱりするのはもちろんですが気持ちの面でも少しリセットされる感じがあります そして誰にも聞かれていないことを祈りながらお風呂で思いっきり歌を歌ってしまうこともあります いいよね"
+
+[[operations]]
+op = "delete"
+reason = "Remove ASR-only one-character artifact in continuous mail reading."
+confidence = "high"
+segment_id = "2-seg_148"
+
+[[operations]]
+op = "edit"
+reason = "Repair boundary phrase after deleting ASR artifact."
+confidence = "high"
+segment_id = "2-seg_149"
+ja = "上手くなった気がしますし本当に"
+
+[[operations]]
+op = "edit"
+reason = "Restore missing め in reaction."
+confidence = "high"
+segment_id = "2-seg_151"
+ja = "めっちゃいいなぁいいな わぁお風呂"
+
+[[operations]]
+op = "merge"
+reason = "Merge ASR-fragmented echo question into one utterance."
+confidence = "high"
+source_ids = ["2-seg_158", "2-seg_159", "2-seg_160"]
+merged_id = "2-seg_158"
+speaker = "B"
+ja = "エコーってなんで上手く聞こえるんだ"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge ASR-fragmented phrase confirmed by clip."
+confidence = "high"
+source_ids = ["2-seg_163", "2-seg_164", "2-seg_165"]
+merged_id = "2-seg_163"
+speaker = "A"
+ja = "ねエコーずっとついてればいいのにって思う 自分の声にエコーが"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Use clip retranscription for echo joke."
+confidence = "medium"
+segment_id = "2-seg_166"
+ja = "なんかもし普通の喋ってる声にエコーがついてたらさ超なんか説得力悪くない なんか占い師さんみたいな感じ"
+
+[[operations]]
+op = "edit"
+reason = "Use clip retranscription for echo joke response."
+confidence = "high"
+segment_id = "2-seg_167"
+ja = "でもさちょっと嫌だよね"
+
+[[operations]]
+op = "edit"
+reason = "Use clip retranscription for echo joke response."
+confidence = "high"
+segment_id = "2-seg_168"
+ja = "全員ついてるんだよ"
+
+[[operations]]
+op = "edit"
+reason = "Use clip retranscription for echo joke response."
+confidence = "high"
+segment_id = "2-seg_171"
+ja = "私だけ うちらだけ"
+
+[[operations]]
+op = "edit"
+reason = "Use clip retranscription for echo joke response."
+confidence = "high"
+segment_id = "2-seg_172"
+ja = "うちらだけ?"
+
+[[operations]]
+op = "edit"
+reason = "Correct エコー term."
+confidence = "high"
+segment_id = "2-seg_173"
+ja = "それならいいや確かにエコー好きだわ私"
+
+[[operations]]
+op = "edit"
+reason = "Correct 爆食."
+confidence = "high"
+segment_id = "2-seg_181"
+ja = "いやでも私爆食だな コーラ飲めば大体機嫌治る"
+
+[[operations]]
+op = "edit"
+reason = "Use clip retranscription for cola/audition line."
+confidence = "high"
+segment_id = "2-seg_182"
+ja = "まじでだからオーディション前とかになんか緊張するじゃん 緊張するって思いながらカラオケに歌 声出していくんだけど本当は収録とかのこと 収録っていうか声使うから炭酸飲まない方がいいなとか思うんだけどギリギリまで私はコーラめっちゃ飲んでる"
+
+[[operations]]
+op = "edit"
+reason = "Use clip retranscription."
+confidence = "high"
+segment_id = "2-seg_184"
+ja = "水だけで抑えようって思う時があるの でも"
+
+[[operations]]
+op = "edit"
+reason = "Correct sleep/walking phrase."
+confidence = "high"
+segment_id = "2-seg_191"
+ja = "そうだから睡眠と散歩 わかんないけど散"
+
+[[operations]]
+op = "edit"
+reason = "Complete split word."
+confidence = "high"
+segment_id = "2-seg_193"
+ja = "歩いい とにかく"
+
+[[operations]]
+op = "edit"
+reason = "Correct walking sentence."
+confidence = "high"
+segment_id = "2-seg_194"
+ja = "なんかまあめっちゃ落ち込む時とか普通に音楽聴きながら散歩とかすると結構気分爽快になっちゃう めちゃくちゃいい"
+
+[[operations]]
+op = "edit"
+reason = "Complete phrase."
+confidence = "medium"
+segment_id = "2-seg_195"
+ja = "よね歩くとね結構忘れられるし人と喋りながら歩くのも好きだったりする"
+
+[[operations]]
+op = "edit"
+reason = "Correct recommendation phrase."
+confidence = "high"
+segment_id = "2-seg_196"
+ja = "わかるぜひ散歩してみてください 皆さん"
+
+[[operations]]
+op = "edit"
+reason = "Preserve serotonin wordplay while removing ASR lead-in."
+confidence = "high"
+segment_id = "2-seg_198"
+ja = "セロトニンだっけ セトロニン セロトニン セロトニン"
+
+[[operations]]
+op = "merge"
+reason = "Merge ASR-fragmented serotonin explanation and fix zero-duration segment."
+confidence = "high"
+source_ids = ["2-seg_199", "2-seg_200", "2-seg_201", "2-seg_202"]
+merged_id = "2-seg_199"
+speaker = "B"
+ja = "体に分泌したらねなんか気持ちも上がるらしいですよ"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription confirms お便り."
+confidence = "high"
+segment_id = "2-seg_205"
+ja = "はいということで皆さんありがとうございました これからもお便りたくさんお待ちしております"
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription confirms short B response."
+confidence = "high"
+segment_id = "2-seg_206"
+ja = "待ってます"
+
+[[operations]]
+op = "edit"
+reason = "Clip retranscription confirms next notice."
+confidence = "high"
+segment_id = "2-seg_207"
+ja = "はい宛先はエンディングでお知らせします"

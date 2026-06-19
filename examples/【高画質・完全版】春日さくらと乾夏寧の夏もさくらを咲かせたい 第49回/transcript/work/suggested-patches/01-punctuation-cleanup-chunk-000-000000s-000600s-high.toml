@@ -1,0 +1,96 @@
+name = "Punctuation cleanup suggestions"
+summary = "Remove ordinary Japanese subtitle punctuation that rajio check flags. Chunk 000 covers 0s-600s."
+created_by = "rajio"
+start = 0
+end = 600
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_31"
+ja = "前にやってるよえ?え 持つ?"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_33"
+ja = "いや まだまだまだこれから当てるこれから当て"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_53"
+ja = "あの あれも最後にしてみた調味料を"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_54"
+ja = "あ え"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_55"
+ja = "で またちょっと混ぜてみたいな?"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_59"
+ja = "いや"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_61"
+ja = "絶対おいしいけど でも健康にはいいんだもんね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_63"
+ja = "いや"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_65"
+ja = "わかんない でもなんか難しいですね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_66"
+ja = "ね 健康にいいのか?"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_70"
+ja = "え でも私は混ぜないですよ?ちょっとあの納豆に"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_204"
+ja = "ね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "1-seg_206"
+ja = "うん"

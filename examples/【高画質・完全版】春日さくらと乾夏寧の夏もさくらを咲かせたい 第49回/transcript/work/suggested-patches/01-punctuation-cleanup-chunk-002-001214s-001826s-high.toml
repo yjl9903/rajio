@@ -1,0 +1,82 @@
+name = "Punctuation cleanup suggestions"
+summary = "Remove ordinary Japanese subtitle punctuation that rajio check flags. Chunk 002 covers 1214.248s-1826.326s."
+created_by = "rajio"
+start = 1214.248333
+end = 1826.325552
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_15"
+ja = "え それいいかも"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_17"
+ja = "ね なんか手とかさ上行ってたりさ巻いてたりした方が可愛いかなって"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_19"
+ja = "わかる ちょっとでもボブだからむずいかな"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_21"
+ja = "うわ くりてぇ桜のフィギュア欲しい私"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_27"
+ja = "東進あくったか それは別に"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_30"
+ja = "あ 4分の1スケール"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_160"
+ja = "あ 分かりやすい"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_185"
+ja = "あ すごい!"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_198"
+ja = "ねえ チャクラ先生 一応ね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_199"
+ja = "やりましょう 一応ね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "3-seg_200"
+ja = "はい ではお願いします"

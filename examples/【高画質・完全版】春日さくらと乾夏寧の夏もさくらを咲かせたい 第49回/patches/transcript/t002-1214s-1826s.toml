@@ -1,0 +1,804 @@
+created_by = "t002"
+start = 1214.248333
+end = 1826.325552
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_0"
+ja = "夏さく前線 買うか買わないかで一番悩んだものは"
+reason = "Correct program corner phrase from glossary context."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_1"
+ja = "3回なくしたお気に入りのモバイルバッテリー"
+reason = "Correct ASR confusion 泣かした to なくした from the later explanation."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_4"
+ja = "フィギュア あかわいい ドッジボールは内野と外野どっちが得意"
+reason = "Correct ドッジボール term."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_5"
+ja = "内野 圧倒的に"
+reason = "Remove next-question fragment from the answer."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_6"
+ja = "打ち上げ花火と線香花火 好きなのはどっち"
+reason = "Complete the question split from the previous segment."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_7"
+gap = 0.05
+reason = "Correct corner name and split the long intro into readable subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_7.1"
+start = 1248.700333
+end = 1251.900333
+speaker = "A"
+ja = "ブリッジコーナー 夏さく前線をご覧いただきました"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_7.2"
+start = 1251.900333
+end = 1255.500333
+speaker = "A"
+ja = "皆さんからの質問に一問一答形式で答えるコーナーです"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_7.3"
+start = 1255.500333
+end = 1257.250333
+speaker = "A"
+ja = "ということで"
+zh = ""
+
+[[operations]]
+op = "split"
+source_id = "3-seg_9"
+gap = 0.05
+reason = "Split a long question into readable subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_9.1"
+start = 1258.425333
+end = 1259.425333
+speaker = "A"
+ja = "何聞こうかな"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_9.2"
+start = 1259.425333
+end = 1261.625333
+speaker = "A"
+ja = "自分のフィギュアが出るとしたらどんなポーズがいい?"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_9.3"
+start = 1261.625333
+end = 1262.425333
+speaker = "A"
+ja = "どんなんだっけ?"
+zh = ""
+
+[[operations]]
+op = "split"
+source_id = "3-seg_17"
+gap = 0.05
+reason = "Split a long figure-pose comment at the natural phrase boundary."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_17.1"
+start = 1272.771333
+end = 1274.771333
+speaker = "C"
+ja = "ね なんか手とかさ上行ってたりさ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_17.2"
+start = 1274.771333
+end = 1276.571333
+speaker = "C"
+ja = "巻いてたりした方が可愛いかなって"
+zh = ""
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_21"
+ja = "うわ 作りてぇ さくらのフィギュア欲しい私"
+reason = "Correct clipped ASR for 作りてぇ."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_22"
+ja = "アクスタで"
+reason = "Correct glossary term アクスタ."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_24"
+ja = "じゃあ等身アクスタとか"
+reason = "Correct ASR confusion 東進あくった to glossary term 等身アクスタ."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_25"
+ja = "等身アクスタ?"
+reason = "Correct ASR confusion 東進あくった to glossary term 等身アクスタ."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_26"
+ja = "等身アクスタ"
+reason = "Correct ASR confusion 東進あくった to glossary term 等身アクスタ."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_27"
+ja = "等身アクスタか それは別に"
+reason = "Correct ASR confusion 東進あくった to glossary term 等身アクスタ."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_28"
+ja = "等身アクスタか デカいか デカい"
+reason = "Correct ASR confusion 東進あくった to glossary term 等身アクスタ."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_36"
+ja = "それなら叶いそう"
+reason = "Correct phrase 叶いそう."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_37"
+ja = "あとは買うか買わないかで一番悩んだもの"
+reason = "Remove trailing fragment."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_38"
+ja = "なんて答えたっけ 買うか買わないか"
+reason = "Correct clipped phrase."
+confidence = "medium"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_40"
+gap = 0.05
+reason = "Correct brand term and split the long product description."
+confidence = "medium"
+
+[[operations.replacements]]
+segment_id = "3-seg_40.1"
+start = 1321.148333
+end = 1324.148333
+speaker = "C"
+ja = "あのそう Ankerさんの"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_40.2"
+start = 1324.148333
+end = 1328.398333
+speaker = "C"
+ja = "コンセント差すところがついてるモバイルバッテリー"
+zh = ""
+
+[[operations]]
+op = "delete"
+segment_id = "3-seg_41"
+reason = "Remove a one-character noise fragment after the product description."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_42"
+ja = "さっき紹介しているんですが本当に"
+reason = "Correct fragmented ASR around the product mention."
+confidence = "medium"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_44"
+gap = 0.05
+reason = "Split a very long explanation into readable subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_44.1"
+start = 1330.698333
+end = 1333.398333
+speaker = "C"
+ja = "私モバイルバッテリーというものを充電できないたちで"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_44.2"
+start = 1333.398333
+end = 1336.498333
+speaker = "C"
+ja = "なぜかというとコードに差すのが本当に嫌で"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_44.3"
+start = 1336.498333
+end = 1339.198333
+speaker = "C"
+ja = "なんかできなくて"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_44.4"
+start = 1339.198333
+end = 1341.998333
+speaker = "C"
+ja = "そいつを普通にモバイルバッテリーとしてじゃなくて"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_44.5"
+start = 1341.998333
+end = 1344.198333
+speaker = "C"
+ja = "充電器のコードとして使えるの"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_44.6"
+start = 1344.198333
+end = 1346.448333
+speaker = "C"
+ja = "だから充電してるだけで貯まるの そんなすげー"
+zh = ""
+
+[[operations]]
+op = "split"
+source_id = "3-seg_47"
+gap = 0.05
+reason = "Split and correct a long mobile-battery explanation."
+confidence = "medium"
+
+[[operations.replacements]]
+segment_id = "3-seg_47.1"
+start = 1348.444333
+end = 1350.694333
+speaker = "B"
+ja = "充電してたら溜まったやつ持ってけばいいだけだから"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_47.2"
+start = 1350.694333
+end = 1352.494333
+speaker = "B"
+ja = "よかったんだけど 2回なくして"
+zh = ""
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_49"
+ja = "3回なくしたの"
+reason = "Complete the lost-count phrase after splitting the prior segment."
+confidence = "medium"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_51"
+gap = 0.05
+reason = "Split a long price explanation into readable subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_51.1"
+start = 1354.819333
+end = 1357.719333
+speaker = "B"
+ja = "そうでもでも欲しくて何回も買ったんだけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_51.2"
+start = 1357.719333
+end = 1360.219333
+speaker = "B"
+ja = "ちっちゃいのと大きいのがあって"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_51.3"
+start = 1360.219333
+end = 1363.919333
+speaker = "B"
+ja = "ちっちゃいのはフル充電1回分で6000とかで"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_51.4"
+start = 1363.919333
+end = 1367.844333
+speaker = "B"
+ja = "フル充電2回分の大きいやつが8000とかなんだけど"
+zh = ""
+
+[[operations]]
+op = "split"
+source_id = "3-seg_57"
+gap = 0.05
+reason = "Split a long recommendation line into readable subtitle units."
+confidence = "medium"
+
+[[operations.replacements]]
+segment_id = "3-seg_57.1"
+start = 1376.604333
+end = 1378.004333
+speaker = "B"
+ja = "私もめっちゃいいの!おすすめ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_57.2"
+start = 1378.004333
+end = 1379.304333
+speaker = "B"
+ja = "それを布教してもらい"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_57.3"
+start = 1379.304333
+end = 1380.954333
+speaker = "B"
+ja = "もしみちーさん2人買ってますか?"
+zh = ""
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_71"
+ja = "え?なんかさ ここにいらっしゃるみんな線香花火派だったの?"
+reason = "Remove duplicated みんな and keep the fireworks question readable."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_72"
+ja = "全然打ち上げ花火ですか?"
+reason = "Correct ASR omission based on the surrounding debate."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_73"
+ja = "線香花火"
+reason = "Correct ASR confusion 戦後花火 to 線香花火."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_75"
+gap = 0.05
+reason = "Split a long線香花火 explanation at the phrase boundary."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_75.1"
+start = 1414.711333
+end = 1416.911333
+speaker = "C"
+ja = "そうそうなんかあの線香花火を持ってる間に"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_75.2"
+start = 1416.911333
+end = 1418.986333
+speaker = "C"
+ja = "肩が触れたりしていいなみたいな"
+zh = ""
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_86"
+ja = "素敵素敵 全然"
+reason = "Complete clipped phrase."
+confidence = "high"
+
+[[operations]]
+op = "delete"
+segment_id = "3-seg_88"
+reason = "Remove duplicate one-character fragment after completing the phrase in the prior segment."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_87", "3-seg_89"]
+merged_id = "3-seg_87"
+speaker = "C"
+ja = "また別の良さがありますから"
+zh = ""
+reason = "Merge fragmented phrase after deleting the intervening duplicate fragment."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_91"
+ja = "打ち上げ花火が"
+reason = "Correct ASR confusion in the ongoing fireworks topic."
+confidence = "medium"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_97"
+gap = 0.05
+reason = "Split long corner-rule explanation into readable subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_97.1"
+start = 1455.736333
+end = 1459.536333
+speaker = "B"
+ja = "2人で協力して様々な課題クリアを目指すコーナーです"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_97.2"
+start = 1459.536333
+end = 1461.936333
+speaker = "B"
+ja = "毎回スタッフさんが設定した基準レベルを"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_97.3"
+start = 1461.936333
+end = 1464.436333
+speaker = "B"
+ja = "超えることができれば格が一段昇格"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_97.4"
+start = 1464.436333
+end = 1466.686333
+speaker = "B"
+ja = "最上段まで登り詰めることが"
+zh = ""
+
+[[operations]]
+op = "delete"
+segment_id = "3-seg_98"
+reason = "The one-character fragment is incorporated into the preceding split segment."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_99"
+ja = "できた暁にはご褒美がもらえるということです"
+reason = "Complete the remaining rule sentence after moving が to the prior segment."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_115"
+ja = "はいルールは簡単でございますよ"
+reason = "Remove stray ASR fragment."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_116"
+gap = 0.05
+reason = "Split long quiz-rule explanation into readable subtitle units and fix お題じゃが ASR error."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_116.1"
+start = 1497.596333
+end = 1500.496333
+speaker = "B"
+ja = "お題の料理を即興の替え歌で歌い"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_116.2"
+start = 1500.496333
+end = 1503.696333
+speaker = "B"
+ja = "相方がそれを聞いて何のことを歌っているのか当てるだけ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_116.3"
+start = 1503.696333
+end = 1506.696333
+speaker = "B"
+ja = "役割を入れ替えて4問行い"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_116.4"
+start = 1506.696333
+end = 1509.596333
+speaker = "B"
+ja = "2問正解できれば課題クリアです"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_116.5"
+start = 1509.596333
+end = 1511.596333
+speaker = "B"
+ja = "一段昇格となります"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_116.6"
+start = 1511.596333
+end = 1513.796333
+speaker = "B"
+ja = "なお歌詞は即興で考えますが"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_116.7"
+start = 1513.796333
+end = 1516.671333
+speaker = "B"
+ja = "メロディは既存の曲で指定されるとのことですよ"
+zh = ""
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_122", "3-seg_123"]
+merged_id = "3-seg_122"
+speaker = "B,C"
+ja = "最初はグー じゃんけんぽい"
+zh = ""
+reason = "Correct standard janken phrase and merge the too-short fragments."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["3-seg_125", "3-seg_126", "3-seg_127"]
+merged_id = "3-seg_125"
+speaker = "B,C"
+ja = "はいということで勝っちゃった 私が最初に歌います"
+zh = ""
+reason = "Merge fragmented sentence across adjacent short segments."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_139"
+ja = "みんなが大好き給食メニュー にんじん入ってお米もある"
+reason = "Correct song lyric using clip transcript evidence."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_141"
+ja = "米も入ってるでしょ"
+reason = "Correct clipped phrase using clip transcript evidence."
+confidence = "medium"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_144"
+gap = 0.05
+reason = "Correct ASR confusion around quiz sound cue and split the long reaction."
+confidence = "medium"
+
+[[operations.replacements]]
+segment_id = "3-seg_144.1"
+start = 1596.584333
+end = 1598.884333
+speaker = "B"
+ja = "今びっくりした ブースの方でピンポーン鳴ったから"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_144.2"
+start = 1598.884333
+end = 1600.759333
+speaker = "B"
+ja = "バツなのかと思った"
+zh = ""
+
+[[operations]]
+op = "split"
+source_id = "3-seg_149"
+gap = 0.05
+reason = "Split a long curry-answer reaction into readable subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_149.1"
+start = 1602.884333
+end = 1605.884333
+speaker = "B"
+ja = "いやなんかさ 色々巡ったけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_149.2"
+start = 1605.884333
+end = 1608.884333
+speaker = "B"
+ja = "ご飯入ってたらカレーか そうだよね"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_149.3"
+start = 1608.884333
+end = 1611.434333
+speaker = "B"
+ja = "なんか そうだよね"
+zh = ""
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_150"
+ja = "これが原曲の"
+reason = "Correct 原色 to 原曲 in music quiz context."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_161"
+ja = "やったーよかった じゃあ次はなちゅの番ですよ"
+reason = "Correct host nickname from glossary context."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_162"
+ja = "じゃあそれではお題はこちら"
+reason = "Complete phrase using clip transcript evidence."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_164"
+ja = "何のことかお答えください"
+reason = "Correct garbled quiz prompt."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_165"
+ja = "グラタン"
+reason = "Correct dish name from glossary."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_170"
+ja = "マカロニで分かった よかった"
+reason = "Correct ASR confusion 勝った to 分かった."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_176"
+ja = "目つぶっててください こちら"
+reason = "Correct 前 to 目."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_178"
+ja = "衣サクサク揚げ物だ 中はジャガイモ潰したやつ"
+reason = "Correct croquette lyric using clip transcript evidence."
+confidence = "medium"
+
+[[operations]]
+op = "split"
+source_id = "3-seg_193"
+gap = 0.05
+reason = "Split a long staff-rule explanation into readable subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "3-seg_193.1"
+start = 1739.986333
+end = 1742.086333
+speaker = "C"
+ja = "これなんか簡単か難しいか"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_193.2"
+start = 1742.086333
+end = 1744.236333
+speaker = "C"
+ja = "やってみないと分かんないってなって"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "3-seg_193.3"
+start = 1744.236333
+end = 1746.736333
+speaker = "C"
+ja = "最初4問中3問か4問中2問かで迷ってたんですよ"
+zh = ""
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_195"
+ja = "いけた 4問とかでもいけたかも"
+reason = "Correct quiz counter from 本 to 問."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_196"
+ja = "普通にいけたかもね"
+reason = "Correct garbled reaction from context."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_197"
+ja = "いや ちょちょちょ すいません ごめんなさい"
+reason = "Correct garbled overlap using clip transcript evidence."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_198"
+ja = "一応ね"
+reason = "Remove garbled チャクラ先生 phrase."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_202"
+ja = "なんか難しいのきたんじゃない?"
+reason = "Complete phrase using clip transcript evidence."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_204"
+ja = "私もさっきと同じことじゃない?"
+reason = "Correct final particle based on clip transcript evidence."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_205"
+ja = "夏の思い出です"
+reason = "Correct known ASR confusion from description glossary."
+confidence = "high"

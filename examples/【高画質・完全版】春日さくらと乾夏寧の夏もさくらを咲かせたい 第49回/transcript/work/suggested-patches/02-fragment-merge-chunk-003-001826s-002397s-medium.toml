@@ -1,0 +1,13 @@
+name = "Fragment merge suggestions"
+summary = "Merge short ASR fragments that look like one subtitle unit. Chunk 003 covers 1826.326s-2397.397s."
+created_by = "rajio"
+start = 1826.325552
+end = 2397.397
+
+[[operations]]
+op = "merge"
+reason = "Short adjacent fragments have rapidly changing speakers and look like diarization flicker."
+confidence = "medium"
+source_ids = [ "4-seg_116", "4-seg_117", "4-seg_118" ]
+merged_id = "4-seg_116"
+ja = "とかそこなんか"

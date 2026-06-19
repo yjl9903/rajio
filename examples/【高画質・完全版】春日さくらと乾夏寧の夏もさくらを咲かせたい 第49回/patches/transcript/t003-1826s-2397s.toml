@@ -1,0 +1,468 @@
+created_by = "t003"
+start = 1826.325552
+end = 2397
+summary = "Transcript proofreading edits for t003 range: glossary-backed ASR fixes, ending announcements, and final sign-off merge."
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_11"
+ja = "クラムチャウダー?"
+reason = "Correct common soup name."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_16"
+ja = "でもね他に知らないな クラムチャウダーじゃないとなると"
+reason = "Correct common soup name."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_22"
+ja = "え でもガチなんか分かる もうクラムチャウダーでもいいもん"
+reason = "Correct common soup name in the quiz context."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_29"
+ja = "バーニャカウダ! バーニャカウダってスープじゃなくない?"
+reason = "Use confirmed glossary spelling."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_31"
+ja = "ソースなの バーニャカウダって?"
+reason = "Use confirmed glossary spelling."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_45"
+ja = "でも珍しい バーニャカウダきっと食べたことない人もいる"
+reason = "Use confirmed glossary spelling."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_61"
+gap = 0.05
+reason = "Correct fixed corner title and split a long closing line."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_61.1"
+start = 1967.733552
+end = 1969.800552
+speaker = "B"
+ja = "はいということでチャレンジ成功"
+
+[[operations.replacements]]
+segment_id = "4-seg_61.2"
+start = 1969.800552
+end = 1971.983552
+speaker = "B"
+ja = "以上「格の違いを見せつけたい」でした"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_63"
+ja = "紙袋はついつい溜めちゃう? それともすぐ捨て?"
+reason = "Correct likely mail/question text."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_65"
+ja = "ドヤ顔が見え"
+reason = "Correct known ASR confusion."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_67"
+ja = "えっと のりの佃煮?"
+reason = "Correct glossary-backed food term."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_72"
+gap = 0.05
+reason = "Correct host names and fixed ending phrase, then split title from ending cue."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_72.1"
+start = 2030.985552
+end = 2033.600552
+speaker = "A"
+ja = "来ました 春日さくらと乾夏寧の\n夏もさくらを咲かせたい"
+
+[[operations.replacements]]
+segment_id = "4-seg_72.2"
+start = 2033.600552
+end = 2035.035552
+speaker = "A"
+ja = "エンディングのお時間です"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_76"
+ja = "のりの佃煮って言ったんだけど あるよね"
+reason = "Correct glossary-backed food term."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_82"
+ja = "結構甘いかも"
+reason = "Remove stray fragment from ASR."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_85"
+ja = "でも結構好きな人多いよね のりの佃煮って"
+reason = "Correct glossary-backed food term."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_92"
+ja = "ドンはドンでもお米じゃないドンはなんだ"
+reason = "Correct repeated riddle phrase."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_93"
+ja = "壁ドン"
+reason = "Correct fixed riddle answer."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_96"
+ja = "壁ドンでも答えだよね だってさお米じゃないドンならなんでもいい 食べ物って書いてないもんね そう 壁ドンでも"
+reason = "Correct fixed riddle answer."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_97"
+ja = "壁ドンなんかある? 他に"
+reason = "Correct fixed riddle answer."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_109"
+ja = "続いては番組の感想や私たちに聞きたいことなど気軽にお送りください"
+reason = "Correct fixed mail phrase."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_110"
+ja = "次回のメールテーマは人生で一番お金をかけてよかったと思ったことです"
+reason = "Correct grammar in mail theme announcement."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_111"
+ja = "趣味だったりとか なんかなんだろう ちょっと推し活とか以外がいいかな なんか自分"
+reason = "Correct common term."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_119"
+ja = "こだわりみたいな"
+reason = "Restore missing initial syllable."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_122"
+ja = "メールアドレスは natsusaku@secondshot.jp です たくさんのお便りお待ちしております"
+reason = "Correct fixed program email address."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_123"
+gap = 0.05
+reason = "Correct glossary-backed venue and reading title, then split a long announcement."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_123.1"
+start = 2195.768552
+end = 2199.900552
+speaker = "B"
+ja = "続いて私たちからのお知らせです\n6月4日 7日"
+
+[[operations.replacements]]
+segment_id = "4-seg_123.2"
+start = 2199.900552
+end = 2204.700552
+speaker = "B"
+ja = "高円寺Studio Kにて上演される\nオムニバス朗読「だい研6」に出演しております"
+
+[[operations.replacements]]
+segment_id = "4-seg_123.3"
+start = 2204.700552
+end = 2208.493552
+speaker = "B"
+ja = "明日ですね 放送日から考えると"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_125"
+gap = 0.05
+reason = "Correct glossary-backed event, venue, and title names, then split a long announcement."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_125.1"
+start = 2213.481552
+end = 2217.500552
+speaker = "A"
+ja = "4日は公開ゲネプロもありますので\nそちらもちょっとお値段が安いのかな"
+
+[[operations.replacements]]
+segment_id = "4-seg_125.2"
+start = 2217.500552
+end = 2221.600552
+speaker = "A"
+ja = "公開ゲネプロの方が そちらもあります\nよろしくお願いします"
+
+[[operations.replacements]]
+segment_id = "4-seg_125.3"
+start = 2221.600552
+end = 2226.400552
+speaker = "A"
+ja = "6月21日大阪工業大学梅田キャンパス\n常翔ホールにて"
+
+[[operations.replacements]]
+segment_id = "4-seg_125.4"
+start = 2226.400552
+end = 2229.700552
+speaker = "A"
+ja = "茶屋町推しフェスティバル2026"
+
+[[operations.replacements]]
+segment_id = "4-seg_125.5"
+start = 2229.700552
+end = 2233.331552
+speaker = "A"
+ja = "テレビアニメ「前橋ウィッチーズ」\nスペシャルステージに出演いたします"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_127"
+gap = 0.05
+reason = "Correct glossary-backed event and venue names, then split a long announcement."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_127.1"
+start = 2242.057552
+end = 2246.000552
+speaker = "A"
+ja = "そして8月2日ゴー☆レボのゲストで"
+
+[[operations.replacements]]
+segment_id = "4-seg_127.2"
+start = 2246.000552
+end = 2250.457552
+speaker = "A"
+ja = "イベント出演させていただきます\n新宿村LIVEさん"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_128"
+ja = "楽しみです ゴー☆ジャスさんとなんか一緒にイベント行ったことないので 番組も出たことあるけど楽しみにしてください 頑張ってきて"
+reason = "Correct glossary-backed performer name."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_131"
+gap = 0.05
+reason = "Correct glossary-backed birthday event, venue, and guest names, then split a long announcement."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_131.1"
+start = 2265.929552
+end = 2269.500552
+speaker = "A"
+ja = "8月9日星陵会館にて 夏さくプレゼンツ"
+
+[[operations.replacements]]
+segment_id = "4-seg_131.2"
+start = 2269.500552
+end = 2273.200552
+speaker = "A"
+ja = "乾夏寧バースデーイベント2026を\n開催していただきます"
+
+[[operations.replacements]]
+segment_id = "4-seg_131.3"
+start = 2273.200552
+end = 2278.500552
+speaker = "A"
+ja = "昼の部のゲストに塚田悠衣ちゃん\n月城日花ちゃん"
+
+[[operations.replacements]]
+segment_id = "4-seg_131.4"
+start = 2278.500552
+end = 2283.800552
+speaker = "A"
+ja = "夜の部のゲストに花谷麻妃ちゃん\n小森結梨ちゃんが来てくれます"
+
+[[operations.replacements]]
+segment_id = "4-seg_131.5"
+start = 2283.800552
+end = 2288.600552
+speaker = "A"
+ja = "現在チケットの一般先行抽選販売を実施中です\nぜひ遊びに来てください"
+
+[[operations.replacements]]
+segment_id = "4-seg_131.6"
+start = 2288.600552
+end = 2291.500552
+speaker = "A"
+ja = "そしてカラオケのリクエストも\n参考にさせていただきますので"
+
+[[operations.replacements]]
+segment_id = "4-seg_131.7"
+start = 2291.500552
+end = 2293.104552
+speaker = "A"
+ja = "ぜひぜひ送ってください お待ちしております"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_133"
+ja = "そしてデートウォーズに已己巳己 巳己企画で参加しております"
+reason = "Correct glossary-backed project and name."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_134"
+gap = 0.05
+reason = "Correct glossary-backed song title and split for subtitle length."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_134.1"
+start = 2298.769552
+end = 2300.700552
+speaker = "A"
+ja = "新アンセムソング"
+
+[[operations.replacements]]
+segment_id = "4-seg_134.2"
+start = 2300.700552
+end = 2303.300552
+speaker = "A"
+ja = "「フラッシュバックメモリー\n〜時代を駆ける物怪たち〜」"
+
+[[operations.replacements]]
+segment_id = "4-seg_134.3"
+start = 2303.300552
+end = 2305.319552
+speaker = "A"
+ja = "配信開始されておりますので\nぜひ皆さん聴いてください"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_136"
+ja = "この番組は隔週配信です 次回の配信は6月17日水曜日23時です"
+reason = "Correct fixed distribution phrase."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_137"
+gap = 0.05
+reason = "Normalize platform casing and spacing, then split a long announcement."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_137.1"
+start = 2312.619552
+end = 2317.000552
+speaker = "A"
+ja = "はい また同じタイミングでニコニコ動画\nセカンドショットチャンネル会員向けに"
+
+[[operations.replacements]]
+segment_id = "4-seg_137.2"
+start = 2317.000552
+end = 2320.300552
+speaker = "A"
+ja = "YouTube版より高画質な本編と\nアフタートークが公開されますので"
+
+[[operations.replacements]]
+segment_id = "4-seg_137.3"
+start = 2320.300552
+end = 2323.019552
+speaker = "A"
+ja = "ぜひチェックよろしくお願いいたします"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_140"
+ja = "良いでございます ちょっと悟り転校生夏寧はお預けです"
+reason = "Correct host name in corner title."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_142"
+ja = "私たちね 盛り上がっちゃうんだよね"
+reason = "Correct natural spoken phrase."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_146"
+gap = 0.05
+reason = "Correct host name in sign-off and split the long closing line."
+confidence = "medium"
+
+[[operations.replacements]]
+segment_id = "4-seg_146.1"
+start = 2342.496552
+end = 2345.500552
+speaker = "B"
+ja = "ね またまた来週できたらやりたいと思います"
+
+[[operations.replacements]]
+segment_id = "4-seg_146.2"
+start = 2345.500552
+end = 2348.996552
+speaker = "B"
+ja = "それではお時間です お相手は春日さくらと"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_147"
+ja = "乾夏寧でした"
+reason = "Correct host name in sign-off."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_148", "4-seg_149"]
+merged_id = "4-seg_149"
+speaker = "A,B"
+ja = "またね"
+reason = "Merge zero-duration final fragment into the audible sign-off."
+confidence = "high"

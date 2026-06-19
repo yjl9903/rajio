@@ -1,0 +1,718 @@
+created_by = "z003"
+start = 1200
+end = 1600
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_199"
+zh = "据说分泌出来后心情也会变好"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_203"
+zh = "请大家一定试试看 拜托啦"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_205a"
+zh = "好的 那么谢谢大家"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_205b"
+zh = "今后也期待大家多多来信 等着哦"
+
+[[operations]]
+op = "edit"
+segment_id = "2-seg_205c"
+zh = "来信地址会在片尾告知大家"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_0"
+zh = "夏樱前线 买还是不买之间最纠结的东西是"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_1"
+zh = "丢了三次的心爱移动电源"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_2"
+zh = "如果要推出自己的手办 希望是什么姿势"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_3"
+zh = "就这个 就这个手办"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_4"
+zh = "手办 啊好可爱 躲避球你更擅长内场还是外场"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_5"
+zh = "内场 压倒性地内场"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_6"
+zh = "升空烟花和线香花火 你喜欢哪一个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_7.1"
+zh = "大家刚才看到的是过场小环节「夏樱前线」"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_7.2"
+zh = "这是用一问一答形式回答大家提问的环节"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_7.3"
+zh = "那么"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_8"
+zh = "看样子"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_9.1"
+zh = "问什么好呢"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_9.2"
+zh = "如果要推出自己的手办 希望是什么姿势？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_9.3"
+zh = "是什么样来着？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_10"
+zh = "我不需要自己的手办啦"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_11"
+zh = "诶？我想要啊！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_12"
+zh = "我家想要"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_13"
+zh = "什么姿势？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_14"
+zh = "像这样？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_15"
+zh = "诶 这个可能不错"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_16"
+zh = "不错 手办还是有点动作会比较可爱"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_17.1"
+zh = "对吧 比如手往上举之类的"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_17.2"
+zh = "或者头发卷起来一点会比较可爱吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_18"
+zh = "还有希望头发能稍微飘起来"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_19"
+zh = "懂 但我是波波头 可能有点难"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_20"
+zh = "可以的可以的"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_21"
+zh = "哇 好想做 我想要春日樱的手办"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_22"
+zh = "做立牌吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_23"
+zh = "可以啊"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_24"
+zh = "那就等身大亚克力立牌之类的"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_25"
+zh = "等身大亚克力立牌？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_26"
+zh = "等身立牌"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_27"
+zh = "等身大亚克力立牌啊 那倒也不是"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_28"
+zh = "等身大亚克力立牌啊 很大吗 很大"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_29"
+zh = "那大概就是这么大吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_30"
+zh = "啊 四分之一比例"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_31"
+zh = "对对对对"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_32"
+zh = "有点 有点想要了 确实啊"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_34"
+zh = "诶 不错"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_36"
+zh = "这样感觉能实现"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_37"
+zh = "还有就是买还是不买之间最纠结的东西"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_38"
+zh = "我当时怎么回答的来着 买还是不买"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_39"
+zh = "香蕉"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_40.1"
+zh = "啊 对 Anker 家的那个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_40.2"
+zh = "自带插头的移动电源"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_42"
+zh = "刚才也介绍过了 真的 很好用"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_44.1"
+zh = "我这人就是不会给移动电源充电"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_44.2"
+zh = "原因是我真的很讨厌把它接到线上"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_44.3"
+zh = "就是做不到"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_44.4"
+zh = "但那东西不只是能当普通移动电源用"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_44.5"
+zh = "还可以当充电器来用"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_44.6"
+zh = "所以只要插着充电 它自己也会存电 这么厉害啊 对吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_46"
+zh = "对 所以"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_47.1"
+zh = "平时插着充好电 出门带上那个就行了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_47.2"
+zh = "本来很好用 结果丢了两次"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_48"
+zh = "嗯 丢了三次"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_50"
+zh = "啊 糟糕"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_51.1"
+zh = "对 可我还是想要 所以买了好几次"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_51.2"
+zh = "它有小号和大号"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_51.3"
+zh = "小号能充满一次 大概六千日元"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_51.4"
+zh = "大号能充满两次 大概要八千日元"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_52"
+zh = "哇 这样啊 还挺"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_53"
+zh = "挺贵的 对吧 虽然很纠结 但每次都买了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_57.1"
+zh = "我也觉得超好用！推荐"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_57.2"
+zh = "被她安利了这个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_57.3"
+zh = "みっちー已经买两个了吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_58"
+zh = "厉害！还有三个人也买了吗？挺多的！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_61"
+zh = "只要剩下一半以上也买了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_66"
+zh = "就能制霸了！好厉害！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_67"
+zh = "诶？我可以再问一个吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_69"
+zh = "升空烟花和线香花火 你喜欢哪一个？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_70"
+zh = "诶？当然是升空烟花啊！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_71"
+zh = "诶？刚才在场的大家不是都站线香花火派吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_72"
+zh = "完全是升空烟花派吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_73"
+zh = "线香花火"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_74"
+zh = "能做到吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_75.1"
+zh = "对对 就是在拿着线香花火的时候"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_75.2"
+zh = "肩膀不小心碰到之类的 感觉很好"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_76"
+zh = "对 然后像升空烟花啊"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_78"
+zh = "不是也会有告白事件之类的吗 我这么一说"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_79"
+zh = "他们就说那样听不见吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_80"
+zh = "那是动画里的情节啦 肯定听得见吧 骗人的吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_81"
+zh = "什么嘛 大家不都是升空烟花派吗"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_82"
+zh = "什么嘛 刚才那场辩论算什么"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_83"
+zh = "到底是什么啊？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_84"
+zh = "哎 不过"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_85"
+zh = "线香花火当然也很美好哦"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_86"
+zh = "美好美好 当然"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_87"
+zh = "也有另一种好"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_90"
+zh = "对 总觉得那个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_91"
+zh = "升空烟花就是 对 嗯 对对对"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_95"
+zh = "好的 那么差不多该进入环节了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_96"
+zh = "预备 「展示格的差距」"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_97.1"
+zh = "这是两人合作挑战各种课题的环节"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_97.2"
+zh = "每次如果能超过工作人员设定的基准等级"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_97.3"
+zh = "格就能晋升一段"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_97.4"
+zh = "如果能一路爬到最高段位"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_99"
+zh = "就可以获得奖励"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_100"
+zh = "现在的段位是21段"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_101"
+zh = "感觉刚到20多段没多久 是有这种感觉"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_104"
+zh = "也没怎么升了又降"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_108"
+zh = "一般不会又增又减的吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_112"
+zh = "吓我一跳 原来还会减少啊"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_113"
+zh = "是啊 好的 那么这次的课题是这个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_114"
+zh = "「猜猜是什么料理！即兴改词猜谜挑战」"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_115"
+zh = "好的 规则很简单哦"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_116.1"
+zh = "用即兴改词唱出题目里的料理"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_116.2"
+zh = "搭档听完之后猜出唱的是什么就行"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_116.3"
+zh = "交换角色后一共进行四题"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_116.4"
+zh = "答对两题就算课题成功"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_116.5"
+zh = "可以晋升一段"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_116.6"
+zh = "另外 歌词要即兴想"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_116.7"
+zh = "旋律则会指定已有的歌曲"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_117"
+zh = "原来如此"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_118"
+zh = "那我们马上开始吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_119"
+zh = "开始吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_120"
+zh = "那谁来唱呢"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_121"
+zh = "那就猜拳赢的人来唱吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_122"
+zh = "石头起手 剪刀石头布"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_124"
+zh = "哦 糟了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_125"
+zh = "好的 那么我赢了 由我先来唱"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_128"
+zh = "嗯 那么那么"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_129"
+zh = "那么题目是这个"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_130"
+zh = "啊 这个好像很好唱 对对"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_131"
+zh = "好的 要唱的歌曲是"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_132"
+zh = "啊 「どんぐりころころ」"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_133"
+zh = "嗯 OK"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_134"
+zh = "好 这个就唱刚才那个就行吧"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_135"
+zh = "已经可以了吗？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_136"
+zh = "等一下 有点难啊"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_137"
+zh = "好 OK了"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_138"
+zh = "那么请开始"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_139"
+zh = "大家都喜欢的供餐菜单 里面有胡萝卜也有米饭"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_140"
+zh = "气味还有点个性很强"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_141"
+zh = "也有米饭对吧 OK 那么请问刚才唱的是什么？"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_143"
+zh = "太好了！"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_144.1"
+zh = "刚才吓我一跳 因为播音间那边响了叮咚"
+
+[[operations]]
+op = "edit"
+segment_id = "3-seg_144.2"
+zh = "我还以为是答错了"

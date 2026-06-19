@@ -1,0 +1,29 @@
+name = "Fragment merge suggestions"
+summary = "Merge short ASR fragments that look like one subtitle unit. Chunk 000 covers 0s-600s."
+created_by = "rajio"
+start = 0
+end = 600
+
+[[operations]]
+op = "merge"
+reason = "Short adjacent fragments have rapidly changing speakers and look like diarization flicker."
+confidence = "medium"
+source_ids = [ "1-seg_84", "1-seg_85", "1-seg_86", "1-seg_87" ]
+merged_id = "1-seg_84"
+ja = "400やったん回です"
+
+[[operations]]
+op = "merge"
+reason = "Short adjacent fragments have rapidly changing speakers and look like diarization flicker."
+confidence = "medium"
+source_ids = [ "1-seg_187", "1-seg_188", "1-seg_189", "1-seg_190" ]
+merged_id = "1-seg_187"
+ja = "前って感じがのやつ"
+
+[[operations]]
+op = "merge"
+reason = "Short adjacent fragments have rapidly changing speakers and look like diarization flicker."
+confidence = "medium"
+source_ids = [ "1-seg_202", "1-seg_203", "1-seg_204", "1-seg_206" ]
+merged_id = "1-seg_202"
+ja = "ちょっとあるないねうん"

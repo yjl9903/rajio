@@ -1,0 +1,47 @@
+name = "Punctuation cleanup suggestions"
+summary = "Remove ordinary Japanese subtitle punctuation that rajio check flags. Chunk 003 covers 1826.326s-2397.397s."
+created_by = "rajio"
+start = 1826.325552
+end = 2397.397
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "4-seg_5"
+ja = "いやいやいや ヒントがない"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "4-seg_7"
+ja = "本当に分かんない 何?"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "4-seg_51"
+ja = "で イグレスキー"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "4-seg_52"
+ja = "あ そうなんだ"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "4-seg_53"
+ja = "よかったじゃん"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "4-seg_127"
+ja = "待って ずっとあれか8月2日ゴーレボのゲストでイベント出演させていただきます新宿ライブさん"

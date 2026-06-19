@@ -1,0 +1,1303 @@
+created_by = "t101"
+start = 600
+end = 1214.248333
+
+[[operations]]
+op = "split"
+reason = "Break an overlong dense reaction into readable subtitle units without changing wording."
+confidence = "medium"
+source_id = "2-seg_2"
+
+[[operations.replacements]]
+segment_id = "2-seg_2a"
+start = 602.525
+end = 605.388
+speaker = "A"
+ja = "なんかさくらそっちの方で結構"
+
+[[operations.replacements]]
+segment_id = "2-seg_2b"
+start = 605.388
+end = 608.25
+speaker = "A"
+ja = "ああいうタイプっての知ってたけど"
+
+[[operations.replacements]]
+segment_id = "2-seg_2c"
+start = 608.25
+end = 611.113
+speaker = "A"
+ja = "なんかあまりにもつまらない言葉が"
+
+[[operations.replacements]]
+segment_id = "2-seg_2d"
+start = 611.113
+end = 613.975
+speaker = "A"
+ja = "つまらないってあの表現するの出てきすぎてて"
+
+[[operations.replacements]]
+segment_id = "2-seg_2e"
+start = 613.975
+end = 616.838
+speaker = "A"
+ja = "なんかすごいさくらすごいって思った"
+
+[[operations.replacements]]
+segment_id = "2-seg_2f"
+start = 616.838
+end = 619.7
+speaker = "A"
+ja = "めっちゃ可愛かったしすごかった"
+
+[[operations]]
+op = "split"
+reason = "Split confirmed チームウィッチーズ reaction at a natural phrase boundary."
+confidence = "high"
+source_id = "2-seg_3"
+
+[[operations.replacements]]
+segment_id = "2-seg_3a"
+start = 620.55
+end = 623.2
+speaker = "B"
+ja = "なんか褒められたの"
+
+[[operations.replacements]]
+segment_id = "2-seg_3b"
+start = 623.2
+end = 625.85
+speaker = "B"
+ja = "チームウィッチーズのみんなに"
+
+[[operations.replacements]]
+segment_id = "2-seg_3c"
+start = 625.85
+end = 628.5
+speaker = "B"
+ja = "煽りうまくなったねって褒めてもらった"
+
+[[operations]]
+op = "merge"
+reason = "Collapse rapid ASR speaker flicker into the confirmed sentence about 真中りお."
+confidence = "medium"
+source_ids = ["2-seg_7", "2-seg_8", "2-seg_9", "2-seg_10", "2-seg_11"]
+merged_id = "2-seg_7"
+speaker = "A,B"
+ja = "そうあのね私の同期と一緒に見に来てくれたの"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Remove doubtful microfragment inside a continuous event-cheering sentence and split for subtitle structure."
+confidence = "medium"
+source_ids = ["2-seg_13", "2-seg_14", "2-seg_15"]
+merged_id = "2-seg_13m"
+speaker = "A,B"
+ja = "だい研 今度一緒にやるだい研の仲良っぴ同期なんだけどその子と見に行ってねその子がめっちゃ声出すタイプの子だったから一人で行った時は出せないんだけどその子がいたからめっちゃ掛け声やったよ"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split the merged event-cheering sentence into readable subtitle units."
+confidence = "medium"
+source_id = "2-seg_13m"
+
+[[operations.replacements]]
+segment_id = "2-seg_13a"
+start = 640.439
+end = 642.924
+speaker = "A,B"
+ja = "だい研 今度一緒にやるだい研の"
+
+[[operations.replacements]]
+segment_id = "2-seg_13b"
+start = 642.924
+end = 645.409
+speaker = "A,B"
+ja = "仲良っぴ同期なんだけどその子と見に行ってね"
+
+[[operations.replacements]]
+segment_id = "2-seg_13c"
+start = 645.409
+end = 647.894
+speaker = "A,B"
+ja = "その子がめっちゃ声出すタイプの子だったから"
+
+[[operations.replacements]]
+segment_id = "2-seg_13d"
+start = 647.894
+end = 650.379
+speaker = "A,B"
+ja = "一人で行った時は出せないんだけど"
+
+[[operations.replacements]]
+segment_id = "2-seg_13e"
+start = 650.379
+end = 652.864
+speaker = "A,B"
+ja = "その子がいたからめっちゃ掛け声やったよ"
+
+[[operations]]
+op = "split"
+reason = "Split long announcement line at venue/event boundary."
+confidence = "high"
+source_id = "2-seg_18"
+
+[[operations.replacements]]
+segment_id = "2-seg_18a"
+start = 666.172
+end = 669.072
+speaker = "B"
+ja = "あのね 私8月2日新宿村LIVEにて"
+
+[[operations.replacements]]
+segment_id = "2-seg_18b"
+start = 669.072
+end = 671.972
+speaker = "B"
+ja = "ゴーレボの番組イベントにゲストとして"
+
+[[operations.replacements]]
+segment_id = "2-seg_18c"
+start = 671.972
+end = 674.872
+speaker = "B"
+ja = "出演させていただくことが決定しました"
+
+[[operations]]
+op = "merge"
+reason = "Merge very short affirmative response with the preceding phrase."
+confidence = "high"
+source_ids = ["2-seg_19", "2-seg_20"]
+merged_id = "2-seg_19"
+speaker = "A"
+ja = "しかもコモチーと そう"
+zh = ""
+
+[[operations]]
+op = "delete"
+reason = "Delete one-character ASR artifact before the following sentence; surrounding gap becomes valid."
+confidence = "medium"
+segment_id = "2-seg_24"
+
+[[operations]]
+op = "split"
+reason = "Split long reaction after removing the artifact."
+confidence = "medium"
+source_id = "2-seg_25"
+
+[[operations.replacements]]
+segment_id = "2-seg_25a"
+start = 682.872
+end = 685.097
+speaker = "A"
+ja = "ってもそうだよねなんか花ちゃんもいないから"
+
+[[operations.replacements]]
+segment_id = "2-seg_25b"
+start = 685.097
+end = 687.322
+speaker = "A"
+ja = "そうコモチーとサクラ"
+
+[[operations]]
+op = "merge"
+reason = "Merge short backchannel into the preceding question."
+confidence = "high"
+source_ids = ["2-seg_32", "2-seg_33"]
+merged_id = "2-seg_32"
+speaker = "A,B"
+ja = "もかちゃんってどっちなんだろう?ね?"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge ASR-fragmented reaction cluster into one subtitle."
+confidence = "high"
+source_ids = ["2-seg_37", "2-seg_38", "2-seg_39", "2-seg_40"]
+merged_id = "2-seg_37"
+speaker = "A,B"
+ja = "大渋滞になっちゃいそうだけど\n確かにね すごいめっちゃ楽しみ"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split birthday-event guest announcement at event and guest-name boundaries."
+confidence = "high"
+source_id = "2-seg_45"
+
+[[operations.replacements]]
+segment_id = "2-seg_45a"
+start = 725.822
+end = 728.822
+speaker = "A"
+ja = "実はね 8月9日に開催する"
+
+[[operations.replacements]]
+segment_id = "2-seg_45b"
+start = 728.822
+end = 731.822
+speaker = "A"
+ja = "夏さくプレゼンツ乾夏寧バースデーイベント2026"
+
+[[operations.replacements]]
+segment_id = "2-seg_45c"
+start = 731.822
+end = 734.822
+speaker = "A"
+ja = "昼の部のゲストに塚田悠衣ちゃんと"
+
+[[operations.replacements]]
+segment_id = "2-seg_45d"
+start = 734.822
+end = 737.822
+speaker = "A"
+ja = "月城日花ちゃんが来てくれることになりました"
+
+[[operations]]
+op = "merge"
+reason = "Merge short interjections into the 謎解きメイツ explanation."
+confidence = "medium"
+source_ids = ["2-seg_46", "2-seg_47", "2-seg_48", "2-seg_49"]
+merged_id = "2-seg_46"
+speaker = "A,B"
+ja = "ひかちはねうちらと謎解きメイツという そうなんですよ"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge mail-reading prompt with the request response."
+confidence = "high"
+source_ids = ["2-seg_50", "2-seg_51", "2-seg_52"]
+merged_id = "2-seg_50"
+speaker = "A,B"
+ja = "お便りがありますので読みますね お願いします\n夏さくネームロシアンカボチャさんからいただきました"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Create a valid subtitle gap before the next merged greeting."
+confidence = "high"
+segment_id = "2-seg_50"
+end = 750.748
+
+[[operations]]
+op = "merge"
+reason = "Merge short thanks into the following greeting line."
+confidence = "high"
+source_ids = ["2-seg_53", "2-seg_54"]
+merged_id = "2-seg_53"
+speaker = "A,B"
+ja = "ありがとうございます さくぽん なちゅ 咲いてますか"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split long listener mail sentence into readable clauses."
+confidence = "high"
+source_id = "2-seg_55"
+
+[[operations.replacements]]
+segment_id = "2-seg_55a"
+start = 753.898
+end = 756.56
+speaker = "A"
+ja = "夏寧のバースデーイベント昼の部のゲストが決まりましたね"
+
+[[operations.replacements]]
+segment_id = "2-seg_55b"
+start = 756.56
+end = 759.223
+speaker = "A"
+ja = "塚田さんは分かるんですが"
+
+[[operations.replacements]]
+segment_id = "2-seg_55c"
+start = 759.223
+end = 761.885
+speaker = "A"
+ja = "月城さんはどんな繋がりだろうと思っていたら"
+
+[[operations.replacements]]
+segment_id = "2-seg_55d"
+start = 761.885
+end = 764.548
+speaker = "A"
+ja = "ゴーレボに出た時に脱出ゲームがきっかけと話していました"
+
+[[operations]]
+op = "split"
+reason = "Split one-character-over hard line at a natural boundary."
+confidence = "high"
+source_id = "2-seg_57"
+
+[[operations.replacements]]
+segment_id = "2-seg_57a"
+start = 768.64
+end = 770.561
+speaker = "A"
+ja = "グッと距離が縮まる2人が見られそうで"
+
+[[operations.replacements]]
+segment_id = "2-seg_57b"
+start = 770.561
+end = 772.482
+speaker = "A"
+ja = "今から期待していますよ"
+
+[[operations]]
+op = "merge"
+reason = "Merge short backchannel cluster, then split the continuous explanation."
+confidence = "high"
+source_ids = ["2-seg_58", "2-seg_59", "2-seg_60"]
+merged_id = "2-seg_58m"
+speaker = "A,B"
+ja = "そうなんですよ実はね確かに謎解きメイツ そう謎解きメイツなんかあんまり夏さくではひかちの話まだしてなかったから とかなんだけどたまにね一緒に行ってね"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged 謎解きメイツ explanation into readable units."
+confidence = "high"
+source_id = "2-seg_58m"
+
+[[operations.replacements]]
+segment_id = "2-seg_58a"
+start = 773.876
+end = 776.257
+speaker = "A,B"
+ja = "そうなんですよ実はね確かに謎解きメイツ"
+
+[[operations.replacements]]
+segment_id = "2-seg_58b"
+start = 776.257
+end = 778.639
+speaker = "A,B"
+ja = "そう謎解きメイツなんかあんまり夏さくでは"
+
+[[operations.replacements]]
+segment_id = "2-seg_58c"
+start = 778.639
+end = 781.02
+speaker = "A,B"
+ja = "ひかちの話まだしてなかったから とかなんだけど"
+
+[[operations.replacements]]
+segment_id = "2-seg_58d"
+start = 781.02
+end = 783.401
+speaker = "A,B"
+ja = "たまにね一緒に行ってね"
+
+[[operations]]
+op = "split"
+reason = "Split long group-size explanation at clause boundary."
+confidence = "high"
+source_id = "2-seg_61"
+
+[[operations.replacements]]
+segment_id = "2-seg_61a"
+start = 783.551
+end = 787.301
+speaker = "B"
+ja = "なんか少人数でいる時にひかちがいるって感じだったんだよね"
+
+[[operations.replacements]]
+segment_id = "2-seg_61b"
+start = 787.301
+end = 791.051
+speaker = "B"
+ja = "だからまだここ3人とかで遊んだことなくて"
+
+[[operations]]
+op = "merge"
+reason = "Merge split word around short backchannel and make readable subtitles."
+confidence = "high"
+source_ids = ["2-seg_64", "2-seg_66", "2-seg_67"]
+merged_id = "2-seg_64m"
+speaker = "A,B"
+ja = "現場とかでもたまにお話しするけどまだねめちゃくちゃ仲良くなりたいって前から仲良くなりたいと思って"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged 仲良くなりたい sentence into subtitle-sized units."
+confidence = "high"
+source_id = "2-seg_64m"
+
+[[operations.replacements]]
+segment_id = "2-seg_64a"
+start = 793.401
+end = 796.412
+speaker = "A,B"
+ja = "現場とかでもたまにお話しするけど"
+
+[[operations.replacements]]
+segment_id = "2-seg_64b"
+start = 796.412
+end = 799.424
+speaker = "A,B"
+ja = "まだねめちゃくちゃ仲良くなりたいって"
+
+[[operations.replacements]]
+segment_id = "2-seg_64c"
+start = 799.424
+end = 802.435
+speaker = "A,B"
+ja = "前から仲良くなりたいと思って"
+
+[[operations]]
+op = "split"
+reason = "Split long セカショ event explanation at the event/person boundary."
+confidence = "medium"
+source_id = "2-seg_68"
+
+[[operations.replacements]]
+segment_id = "2-seg_68a"
+start = 802.585
+end = 804.952
+speaker = "B"
+ja = "ねえそうなの 塚田さんは私前の"
+
+[[operations.replacements]]
+segment_id = "2-seg_68b"
+start = 804.952
+end = 807.319
+speaker = "B"
+ja = "なんかセカショさんのなんかのイベントで"
+
+[[operations.replacements]]
+segment_id = "2-seg_68c"
+start = 807.319
+end = 809.685
+speaker = "B"
+ja = "裏でお会いしたじゃない"
+
+[[operations]]
+op = "merge"
+reason = "Merge short exclamation with the following reaction."
+confidence = "high"
+source_ids = ["2-seg_77", "2-seg_78"]
+merged_id = "2-seg_77"
+speaker = "A,B"
+ja = "あ えぇー!"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split long night-session guest announcement at guest-name boundary."
+confidence = "high"
+source_id = "2-seg_84"
+
+[[operations.replacements]]
+segment_id = "2-seg_84a"
+start = 833.976
+end = 836.243
+speaker = "A"
+ja = "あのね 夜の部のゲストには"
+
+[[operations.replacements]]
+segment_id = "2-seg_84b"
+start = 836.243
+end = 838.51
+speaker = "A"
+ja = "花谷麻妃ちゃんと小森結梨ちゃんが来てくれるので"
+
+[[operations.replacements]]
+segment_id = "2-seg_84c"
+start = 838.51
+end = 840.776
+speaker = "A"
+ja = "ぜひぜひ皆さん遊びに来てください"
+
+[[operations]]
+op = "split"
+reason = "Split mail intro and thanks."
+confidence = "high"
+source_id = "2-seg_90"
+
+[[operations.replacements]]
+segment_id = "2-seg_90a"
+start = 852.935
+end = 854.343
+speaker = "A"
+ja = "どうなの?ではでは早速"
+
+[[operations.replacements]]
+segment_id = "2-seg_90b"
+start = 854.343
+end = 855.752
+speaker = "A"
+ja = "夏さくネームひたくちさんからいただきました"
+
+[[operations.replacements]]
+segment_id = "2-seg_90c"
+start = 855.752
+end = 857.16
+speaker = "A"
+ja = "ありがとうございます"
+
+[[operations]]
+op = "split"
+reason = "Split listener mail sentence at SNS detail boundary."
+confidence = "high"
+source_id = "2-seg_91"
+
+[[operations.replacements]]
+segment_id = "2-seg_91a"
+start = 858.21
+end = 862.273
+speaker = "A"
+ja = "僕は仕事が忙しくて疲れた時や機嫌が作れない時は"
+
+[[operations.replacements]]
+segment_id = "2-seg_91b"
+start = 862.273
+end = 866.335
+speaker = "A"
+ja = "X等のSNSでハムスターの動画を見ています"
+
+[[operations]]
+op = "split"
+reason = "Split overlong hamster mail description into natural clauses."
+confidence = "high"
+source_id = "2-seg_93"
+
+[[operations.replacements]]
+segment_id = "2-seg_93a"
+start = 869.492
+end = 872.223
+speaker = "A"
+ja = "回し車をして遊んでいたりと"
+
+[[operations.replacements]]
+segment_id = "2-seg_93b"
+start = 872.223
+end = 874.955
+speaker = "A"
+ja = "丸くてもふもふしたハムちゃんたちが"
+
+[[operations.replacements]]
+segment_id = "2-seg_93c"
+start = 874.955
+end = 877.686
+speaker = "A"
+ja = "ちょこちょこと動き回っている可愛い姿を見ると"
+
+[[operations.replacements]]
+segment_id = "2-seg_93d"
+start = 877.686
+end = 880.417
+speaker = "A"
+ja = "自然と心が癒されて自分の気持ちもリセットされる気がします"
+
+[[operations]]
+op = "split"
+reason = "Split final hamster-mail recommendation."
+confidence = "high"
+source_id = "2-seg_95"
+
+[[operations.replacements]]
+segment_id = "2-seg_95a"
+start = 880.917
+end = 884.267
+speaker = "A"
+ja = "ハムスターの可愛さからしか得られない栄養素を"
+
+[[operations.replacements]]
+segment_id = "2-seg_95b"
+start = 884.267
+end = 887.617
+speaker = "A"
+ja = "ぜひ皆さんにも知っていただきたいです可愛い"
+
+[[operations]]
+op = "edit"
+reason = "Avoid floating-point hard-minimum failure by using available leading gap."
+confidence = "high"
+segment_id = "2-seg_94"
+start = 880.55
+
+[[operations]]
+op = "edit"
+reason = "Create valid gap before merged short reaction."
+confidence = "high"
+segment_id = "2-seg_99"
+end = 903.642
+
+[[operations]]
+op = "merge"
+reason = "Merge rapid めっちゃ reaction pair."
+confidence = "medium"
+source_ids = ["2-seg_100", "2-seg_101"]
+merged_id = "2-seg_100"
+speaker = "A,B"
+ja = "めっちゃ めっちゃ見る"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge ASR-fragmented SNS recommendation response."
+confidence = "medium"
+source_ids = ["2-seg_106", "2-seg_107", "2-seg_108"]
+merged_id = "2-seg_106"
+speaker = "A,B"
+ja = "出てくるよね あそっか出てくるよね"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge mail intro and short thanks before splitting."
+confidence = "high"
+source_ids = ["2-seg_109", "2-seg_110"]
+merged_id = "2-seg_109m"
+speaker = "A,B"
+ja = "続いて夏さくネームりょうさんからいただきました ありがとうございます"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged mail intro and thanks into readable units."
+confidence = "high"
+source_id = "2-seg_109m"
+
+[[operations.replacements]]
+segment_id = "2-seg_109a"
+start = 915.092
+end = 916.842
+speaker = "A,B"
+ja = "続いて夏さくネームりょうさんからいただきました"
+
+[[operations.replacements]]
+segment_id = "2-seg_109b"
+start = 916.842
+end = 918.592
+speaker = "A,B"
+ja = "ありがとうございます"
+
+[[operations]]
+op = "split"
+reason = "Split cheat-day mail setup at the repeated 普段 boundary."
+confidence = "high"
+source_id = "2-seg_112"
+
+[[operations.replacements]]
+segment_id = "2-seg_112a"
+start = 922.542
+end = 925.817
+speaker = "B"
+ja = "私が普段している自分のご機嫌の取り方は"
+
+[[operations.replacements]]
+segment_id = "2-seg_112b"
+start = 925.817
+end = 929.092
+speaker = "B"
+ja = "月に一度チートデーを設けることです 普段"
+
+[[operations]]
+op = "split"
+reason = "Split diet-restraint sentence and host reaction."
+confidence = "high"
+source_id = "2-seg_113"
+
+[[operations.replacements]]
+segment_id = "2-seg_113a"
+start = 929.332
+end = 931.682
+speaker = "A"
+ja = "今日はサラダで我慢 お菓子はやめておこうと"
+
+[[operations.replacements]]
+segment_id = "2-seg_113b"
+start = 931.682
+end = 934.032
+speaker = "A"
+ja = "それなりに節制しているのですが えらい"
+
+[[operations]]
+op = "split"
+reason = "Split overlong cheat-day mail block using confirmed clip sentence boundaries."
+confidence = "high"
+source_id = "2-seg_114"
+
+[[operations.replacements]]
+segment_id = "2-seg_114a"
+start = 934.582
+end = 937.532
+speaker = "A"
+ja = "それの反動なのかチートデーになると"
+
+[[operations.replacements]]
+segment_id = "2-seg_114b"
+start = 937.532
+end = 940.482
+speaker = "A"
+ja = "欲望のタガが外れます"
+
+[[operations.replacements]]
+segment_id = "2-seg_114c"
+start = 940.482
+end = 943.064
+speaker = "A"
+ja = "今日は食べまくるぞというマインドでコンビニに入り"
+
+[[operations.replacements]]
+segment_id = "2-seg_114d"
+start = 943.064
+end = 945.646
+speaker = "A"
+ja = "ポテチなどのお菓子や唐揚げアイス炭酸飲料を"
+
+[[operations.replacements]]
+segment_id = "2-seg_114e"
+start = 945.646
+end = 948.228
+speaker = "A"
+ja = "これでもかと買って帰ります"
+
+[[operations.replacements]]
+segment_id = "2-seg_114f"
+start = 948.228
+end = 950.81
+speaker = "A"
+ja = "そして背徳感や後ろめたさを忘れて"
+
+[[operations.replacements]]
+segment_id = "2-seg_114g"
+start = 950.81
+end = 952.281
+speaker = "A"
+ja = "好きなものを好きなだけ食べます"
+
+[[operations.replacements]]
+segment_id = "2-seg_114h"
+start = 952.281
+end = 953.757
+speaker = "A"
+ja = "最終的に締めにカップ麺かとなり"
+
+[[operations.replacements]]
+segment_id = "2-seg_114i"
+start = 953.757
+end = 955.232
+speaker = "A"
+ja = "胃袋がパンパンのフェス状態になります"
+
+[[operations]]
+op = "split"
+reason = "Split closing cheat-day thought into two readable subtitles."
+confidence = "high"
+source_id = "2-seg_115"
+
+[[operations.replacements]]
+segment_id = "2-seg_115a"
+start = 956.18
+end = 958.855
+speaker = "B"
+ja = "ただ不思議とそういう日があるからこそ"
+
+[[operations.replacements]]
+segment_id = "2-seg_115b"
+start = 958.855
+end = 960.638
+speaker = "B"
+ja = "また明日から頑張ろうと思えるので"
+
+[[operations.replacements]]
+segment_id = "2-seg_115c"
+start = 960.638
+end = 962.422
+speaker = "B"
+ja = "自分にとってはこれがかなり大事な"
+
+[[operations.replacements]]
+segment_id = "2-seg_115d"
+start = 962.422
+end = 964.205
+speaker = "B"
+ja = "リセット方法なのかもしれません"
+
+[[operations]]
+op = "split"
+reason = "Split host comment at a natural hesitation boundary."
+confidence = "high"
+source_id = "2-seg_119"
+
+[[operations.replacements]]
+segment_id = "2-seg_119a"
+start = 972.405
+end = 975.455
+speaker = "B"
+ja = "お菓子はやめておこう偉いよ"
+
+[[operations.replacements]]
+segment_id = "2-seg_119b"
+start = 975.455
+end = 978.505
+speaker = "B"
+ja = "いやでもね大事って言うよねちょっと"
+
+[[operations]]
+op = "merge"
+reason = "Merge ASR-fragmented explanation around チートデイ."
+confidence = "high"
+source_ids = ["2-seg_123", "2-seg_124", "2-seg_125", "2-seg_126", "2-seg_127", "2-seg_128", "2-seg_129"]
+merged_id = "2-seg_123m"
+speaker = "A,B"
+ja = "そうだよね そこでね 確かに でね我慢せずにいっぱい食べとくことでその後欲が抑えられるから 確かにすごいよ"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged チートデイ explanation into readable units."
+confidence = "high"
+source_id = "2-seg_123m"
+
+[[operations.replacements]]
+segment_id = "2-seg_123a"
+start = 985.143
+end = 987.56
+speaker = "A,B"
+ja = "そうだよね そこでね 確かに"
+
+[[operations.replacements]]
+segment_id = "2-seg_123b"
+start = 987.56
+end = 989.976
+speaker = "A,B"
+ja = "でね我慢せずにいっぱい食べとくことで"
+
+[[operations.replacements]]
+segment_id = "2-seg_123c"
+start = 989.976
+end = 992.393
+speaker = "A,B"
+ja = "その後欲が抑えられるから 確かにすごいよ"
+
+[[operations]]
+op = "edit"
+reason = "Create valid gap before the next merged reaction."
+confidence = "high"
+segment_id = "2-seg_131"
+end = 997.768
+
+[[operations]]
+op = "merge"
+reason = "Merge short reaction pair."
+confidence = "high"
+source_ids = ["2-seg_132", "2-seg_133"]
+merged_id = "2-seg_132"
+speaker = "A,B"
+ja = "確かに やばい"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge mail intro, duplicate thanks, and greeting to remove hard gap/short issues."
+confidence = "high"
+source_ids = ["2-seg_140", "2-seg_141", "2-seg_142"]
+merged_id = "2-seg_140m"
+speaker = "A,B"
+ja = "夏さくネームごじろさんからいただきました ありがとうございます ありがとうございます 春日さん 乾さん 咲いてますか"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged mail intro into subtitle-sized units."
+confidence = "high"
+source_id = "2-seg_140m"
+
+[[operations.replacements]]
+segment_id = "2-seg_140a"
+start = 1010.1
+end = 1012.05
+speaker = "A,B"
+ja = "夏さくネームごじろさんからいただきました"
+
+[[operations.replacements]]
+segment_id = "2-seg_140b"
+start = 1012.05
+end = 1014
+speaker = "A,B"
+ja = "ありがとうございます ありがとうございます"
+
+[[operations.replacements]]
+segment_id = "2-seg_140c"
+start = 1014
+end = 1015.95
+speaker = "A,B"
+ja = "春日さん 乾さん 咲いてますか"
+
+[[operations]]
+op = "merge"
+reason = "Merge short reaction into the bath-mail sentence before splitting."
+confidence = "high"
+source_ids = ["2-seg_144", "2-seg_145"]
+merged_id = "2-seg_144m"
+speaker = "A,B"
+ja = "お 嫌なことがあった日やなんとなく気持ちがモヤモヤしている日でもお風呂に入るととりあえず今日のいろいろを一回流せたなという気持ちになります"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split bath-mail sentence into readable clauses."
+confidence = "high"
+source_id = "2-seg_144m"
+
+[[operations.replacements]]
+segment_id = "2-seg_144a"
+start = 1020.979
+end = 1023.185
+speaker = "A,B"
+ja = "お 嫌なことがあった日や"
+
+[[operations.replacements]]
+segment_id = "2-seg_144b"
+start = 1023.185
+end = 1025.392
+speaker = "A,B"
+ja = "なんとなく気持ちがモヤモヤしている日でも"
+
+[[operations.replacements]]
+segment_id = "2-seg_144c"
+start = 1025.392
+end = 1027.598
+speaker = "A,B"
+ja = "お風呂に入るととりあえず"
+
+[[operations.replacements]]
+segment_id = "2-seg_144d"
+start = 1027.598
+end = 1029.804
+speaker = "A,B"
+ja = "今日のいろいろを一回流せたなという気持ちになります"
+
+[[operations]]
+op = "split"
+reason = "Split overlong bath-mail paragraph at sentence boundaries."
+confidence = "high"
+source_id = "2-seg_146"
+
+[[operations.replacements]]
+segment_id = "2-seg_146a"
+start = 1030.104
+end = 1033.525
+speaker = "A"
+ja = "物理的に体がさっぱりするのはもちろんですが"
+
+[[operations.replacements]]
+segment_id = "2-seg_146b"
+start = 1033.525
+end = 1036.947
+speaker = "A"
+ja = "気持ちの面でも少しリセットされる感じがあります"
+
+[[operations.replacements]]
+segment_id = "2-seg_146c"
+start = 1036.947
+end = 1040.368
+speaker = "A"
+ja = "そして誰にも聞かれていないことを祈りながら"
+
+[[operations.replacements]]
+segment_id = "2-seg_146d"
+start = 1040.368
+end = 1043.789
+speaker = "A"
+ja = "お風呂で思いっきり歌を歌ってしまうこともあります いいよね"
+
+[[operations]]
+op = "split"
+reason = "Split final bath-mail paragraph into readable clauses."
+confidence = "high"
+source_id = "2-seg_150"
+
+[[operations.replacements]]
+segment_id = "2-seg_150a"
+start = 1048.824
+end = 1051.88
+speaker = "A"
+ja = "声を出すことでストレス発散にもなっています"
+
+[[operations.replacements]]
+segment_id = "2-seg_150b"
+start = 1051.88
+end = 1054.937
+speaker = "A"
+ja = "さらにスッキリしたい時は"
+
+[[operations.replacements]]
+segment_id = "2-seg_150c"
+start = 1054.937
+end = 1057.382
+speaker = "A"
+ja = "プレゼントでもらった入浴剤を使います"
+
+[[operations.replacements]]
+segment_id = "2-seg_150d"
+start = 1057.382
+end = 1059.216
+speaker = "A"
+ja = "お風呂が私にとっての一番手軽な"
+
+[[operations.replacements]]
+segment_id = "2-seg_150e"
+start = 1059.216
+end = 1061.049
+speaker = "A"
+ja = "自分の機嫌の取り方かもしれませんね"
+
+[[operations]]
+op = "edit"
+reason = "Create valid gap before the next echo explanation."
+confidence = "high"
+segment_id = "2-seg_158"
+end = 1078.136
+
+[[operations]]
+op = "split"
+reason = "Split long karaoke-echo sentence."
+confidence = "high"
+source_id = "2-seg_161"
+
+[[operations.replacements]]
+segment_id = "2-seg_161a"
+start = 1078.186
+end = 1080.024
+speaker = "A"
+ja = "本当にカラオケとかでも"
+
+[[operations.replacements]]
+segment_id = "2-seg_161b"
+start = 1080.024
+end = 1081.861
+speaker = "A"
+ja = "マイクエコー上げるとちょっとうまく聞こえる"
+
+[[operations]]
+op = "split"
+reason = "Split long echo wish sentence."
+confidence = "high"
+source_id = "2-seg_163"
+
+[[operations.replacements]]
+segment_id = "2-seg_163a"
+start = 1082.986
+end = 1085.024
+speaker = "A"
+ja = "ねエコーずっとついてればいいのにって思う"
+
+[[operations.replacements]]
+segment_id = "2-seg_163b"
+start = 1085.024
+end = 1087.061
+speaker = "A"
+ja = "自分の声にエコーが"
+
+[[operations]]
+op = "split"
+reason = "Split doubtful echo joke structurally without changing wording."
+confidence = "medium"
+source_id = "2-seg_166"
+
+[[operations.replacements]]
+segment_id = "2-seg_166a"
+start = 1087.211
+end = 1090.186
+speaker = "B"
+ja = "なんかもし普通の喋ってる声に"
+
+[[operations.replacements]]
+segment_id = "2-seg_166b"
+start = 1090.186
+end = 1093.161
+speaker = "B"
+ja = "エコーがついてたらさ超なんか"
+
+[[operations.replacements]]
+segment_id = "2-seg_166c"
+start = 1093.161
+end = 1096.136
+speaker = "B"
+ja = "説得力悪くない なんか占い師さんみたいな感じ"
+
+[[operations]]
+op = "merge"
+reason = "Merge one-character ASR flicker into the surrounding sentence."
+confidence = "high"
+source_ids = ["2-seg_168", "2-seg_169", "2-seg_170"]
+merged_id = "2-seg_168"
+speaker = "A,B"
+ja = "全員ついてるんだよ ちょっとやだよね"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong cola/audition explanation using confirmed clip boundary."
+confidence = "high"
+source_id = "2-seg_182"
+
+[[operations.replacements]]
+segment_id = "2-seg_182a"
+start = 1128.052
+end = 1131.887
+speaker = "A"
+ja = "まじでだからオーディション前とかになんか緊張するじゃん"
+
+[[operations.replacements]]
+segment_id = "2-seg_182b"
+start = 1131.887
+end = 1135.722
+speaker = "A"
+ja = "緊張するって思いながらカラオケに歌 声出していくんだけど"
+
+[[operations.replacements]]
+segment_id = "2-seg_182c"
+start = 1135.722
+end = 1138.279
+speaker = "A"
+ja = "本当は収録とかのこと"
+
+[[operations.replacements]]
+segment_id = "2-seg_182d"
+start = 1138.279
+end = 1140.836
+speaker = "A"
+ja = "収録っていうか声使うから"
+
+[[operations.replacements]]
+segment_id = "2-seg_182e"
+start = 1140.836
+end = 1143.392
+speaker = "A"
+ja = "炭酸飲まない方がいいなとか思うんだけど"
+
+[[operations.replacements]]
+segment_id = "2-seg_182f"
+start = 1143.392
+end = 1147.227
+speaker = "A"
+ja = "ギリギリまで私はコーラめっちゃ飲んでる"
+
+[[operations]]
+op = "split"
+reason = "Split long response about mood recovering quickly."
+confidence = "high"
+source_id = "2-seg_189"
+
+[[operations.replacements]]
+segment_id = "2-seg_189a"
+start = 1165.873
+end = 1168.273
+speaker = "B"
+ja = "そうなのすごいいいことだね"
+
+[[operations.replacements]]
+segment_id = "2-seg_189b"
+start = 1168.273
+end = 1170.673
+speaker = "B"
+ja = "いやでも忘れるのすぐ普通に歩いてたら忘れるからさ"
+
+[[operations]]
+op = "split"
+reason = "Split long walking recommendation sentence."
+confidence = "high"
+source_id = "2-seg_194"
+
+[[operations.replacements]]
+segment_id = "2-seg_194a"
+start = 1178.612
+end = 1181.354
+speaker = "B"
+ja = "なんかまあめっちゃ落ち込む時とか"
+
+[[operations.replacements]]
+segment_id = "2-seg_194b"
+start = 1181.354
+end = 1184.096
+speaker = "B"
+ja = "普通に音楽聴きながら散歩とかすると"
+
+[[operations.replacements]]
+segment_id = "2-seg_194c"
+start = 1184.096
+end = 1186.837
+speaker = "B"
+ja = "結構気分爽快になっちゃう めちゃくちゃいい"
+
+[[operations]]
+op = "split"
+reason = "Split long walking response at clause boundary."
+confidence = "high"
+source_id = "2-seg_195"
+
+[[operations.replacements]]
+segment_id = "2-seg_195a"
+start = 1186.987
+end = 1189.587
+speaker = "A"
+ja = "よね歩くとね結構忘れられるし"
+
+[[operations.replacements]]
+segment_id = "2-seg_195b"
+start = 1189.587
+end = 1192.187
+speaker = "A"
+ja = "人と喋りながら歩くのも好きだったりする"
+
+[[operations]]
+op = "merge"
+reason = "Merge short closing response with the preceding recommendation."
+confidence = "high"
+source_ids = ["2-seg_203", "2-seg_204"]
+merged_id = "2-seg_203"
+speaker = "A,B"
+ja = "ぜひぜひ試してみてください よろしくお願いします"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Avoid floating-point hard-minimum failure by using available leading gap."
+confidence = "high"
+segment_id = "2-seg_197"
+start = 1194.22
+
+[[operations]]
+op = "merge"
+reason = "Merge closing mail-request cluster before splitting into readable subtitles."
+confidence = "high"
+source_ids = ["2-seg_205", "2-seg_206", "2-seg_207"]
+merged_id = "2-seg_205m"
+speaker = "A,B"
+ja = "はいということで皆さんありがとうございました これからもお便りたくさんお待ちしております 待ってます はい宛先はエンディングでお知らせします"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split closing mail-request cluster into readable units."
+confidence = "high"
+source_id = "2-seg_205m"
+
+[[operations.replacements]]
+segment_id = "2-seg_205a"
+start = 1206.395
+end = 1208.553
+speaker = "A,B"
+ja = "はいということで皆さんありがとうございました"
+
+[[operations.replacements]]
+segment_id = "2-seg_205b"
+start = 1208.553
+end = 1210.712
+speaker = "A,B"
+ja = "これからもお便りたくさんお待ちしております 待ってます"
+
+[[operations.replacements]]
+segment_id = "2-seg_205c"
+start = 1210.712
+end = 1212.87
+speaker = "A,B"
+ja = "はい宛先はエンディングでお知らせします"

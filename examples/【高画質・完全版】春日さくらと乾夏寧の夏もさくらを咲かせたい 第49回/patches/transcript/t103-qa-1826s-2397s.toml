@@ -1,0 +1,357 @@
+created_by = "t103"
+start = 1826.325552
+end = 2397
+summary = "QA cleanup for transcript blockers in 1826.325552-2397s: merge short fragments, split long Japanese lines, and retime one closing gap."
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_14", "4-seg_15"]
+merged_id = "4-seg_15"
+speaker = "B,A"
+ja = "もう一回言っていい? うん"
+reason = "Merge a short acknowledgement with the preceding question."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_20", "4-seg_21"]
+merged_id = "4-seg_21"
+speaker = "C,B"
+ja = "白くないのがある ん?"
+reason = "Merge a too-short reaction with its prompt."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_33", "4-seg_34"]
+merged_id = "4-seg_34"
+speaker = "A,B"
+ja = "来たかな まぁちょっとだから珍しいの出してきました"
+reason = "Merge the too-short fragment into the following phrase."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_34"
+end = 1927.741552
+reason = "Leave the hard minimum gap before the next merged subtitle."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_35", "4-seg_36"]
+merged_id = "4-seg_36"
+speaker = "A,B"
+ja = "そうだね なんだろうアンチョビとかじゃない?"
+reason = "Merge adjacent short/gap-bound dialogue."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_38", "4-seg_39", "4-seg_40", "4-seg_41", "4-seg_42"]
+merged_id = "4-seg_42"
+speaker = "A,B"
+ja = "そうなの? 全然わかんない じゃそっか\nスープないから具材とかないかもあんまり"
+reason = "Recombine interleaved fragments into readable subtitle units."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_42"
+end = 1935.091552
+reason = "Leave the hard minimum gap before the following merged reaction."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_43", "4-seg_44"]
+merged_id = "4-seg_44"
+speaker = "B,A"
+ja = "うん 何も想像してるのと違ったわ"
+reason = "Merge a too-short acknowledgement with the following reaction."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_55", "4-seg_56"]
+merged_id = "4-seg_56"
+speaker = "B,C"
+ja = "はい おめでとう"
+reason = "Merge adjacent short congratulatory turn."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_60", "4-seg_61.1"]
+merged_id = "4-seg_61.1"
+speaker = "A,B"
+ja = "イェーイ はいということでチャレンジ成功"
+reason = "Merge the short cheer into the corner result line."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_82"
+end = 2058.467552
+reason = "Restore the hard minimum gap before the following reaction."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_84", "4-seg_85"]
+merged_id = "4-seg_85"
+speaker = "A,B"
+ja = "うん でも結構好きな人多いよね のりの佃煮って"
+reason = "Merge a too-short acknowledgement with the following comment."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_88"
+gap = 0.05
+reason = "Split a long comment about rice accompaniments into natural subtitle phrases."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_88.1"
+start = 2067.842552
+end = 2071.742552
+speaker = "A"
+ja = "でもそういう系好き お供系"
+
+[[operations.replacements]]
+segment_id = "4-seg_88.2"
+start = 2071.742552
+end = 2075.642552
+speaker = "A"
+ja = "なんか結構お土産とかで\nそういうフレークのなんかさもらえると嬉しい"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_90", "4-seg_91"]
+merged_id = "4-seg_91"
+speaker = "A,B"
+ja = "そう なんか何しぐれみたいなツナしぐれ"
+reason = "Merge a too-short agreement with the following example."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_91"
+start = 2079.267552
+reason = "Leave the hard minimum gap after the previous subtitle."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_96"
+gap = 0.05
+reason = "Split a long riddle reaction at phrase boundaries."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_96.1"
+start = 2095.407552
+end = 2098.057552
+speaker = "A"
+ja = "壁ドンでも答えだよね"
+
+[[operations.replacements]]
+segment_id = "4-seg_96.2"
+start = 2098.057552
+end = 2100.857552
+speaker = "A"
+ja = "だってさお米じゃないドンなら なんでもいい"
+
+[[operations.replacements]]
+segment_id = "4-seg_96.3"
+start = 2100.857552
+end = 2103.382552
+speaker = "A"
+ja = "食べ物って書いてないもんね そう 壁ドンでも"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_99", "4-seg_100"]
+merged_id = "4-seg_100"
+speaker = "B,A"
+ja = "ほんとだった そうなんだオッケー"
+reason = "Merge a fast fragment with the following acknowledgement."
+confidence = "medium"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_103"
+gap = 0.05
+reason = "Split a long riddle follow-up into two readable subtitles."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_103.1"
+start = 2125.818552
+end = 2128.818552
+speaker = "B"
+ja = "誰かに出してみよう今度 え やりたい"
+
+[[operations.replacements]]
+segment_id = "4-seg_103.2"
+start = 2128.818552
+end = 2132.168552
+speaker = "B"
+ja = "ドンはドンでも誰かがうどんって出すまで\nうどんって答えるまで出してみよう"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_104", "4-seg_105", "4-seg_106"]
+merged_id = "4-seg_106"
+speaker = "A,B"
+ja = "やってみますんで報告します お願いします はい"
+reason = "Merge adjacent closing acknowledgements and remove zero-gap short fragments."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_107"
+end = 2138.943552
+ja = "はいということで番組では\n皆さんからのお便りをお待ちしております"
+reason = "Break the fixed mail phrase into two readable lines."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_108", "4-seg_109"]
+merged_id = "4-seg_109"
+speaker = "A,B"
+ja = "うん 続いては番組の感想や\n私たちに聞きたいことなど気軽にお送りください"
+reason = "Merge a short acknowledgement into the following mail prompt and split the long line."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_110"
+ja = "次回のメールテーマは\n人生で一番お金をかけてよかったと思ったことです"
+reason = "Split the next mail theme at a natural boundary."
+confidence = "high"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_111", "4-seg_112", "4-seg_113", "4-seg_114"]
+merged_id = "4-seg_111-114"
+speaker = "A,B"
+ja = "趣味だったりとか なんかなんだろう ちょっと推し活とか以外がいいかな なんか自分の趣味とか そう 生活の面とかで"
+reason = "Rejoin fragmented explanation before splitting into readable subtitles."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_111-114"
+gap = 0.05
+reason = "Split the rejoined mail-theme examples into two subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_111.1"
+start = 2151.113552
+end = 2154.638552
+speaker = "A"
+ja = "趣味だったりとか なんかなんだろう\nちょっと推し活とか以外がいいかな"
+
+[[operations.replacements]]
+segment_id = "4-seg_111.2"
+start = 2154.638552
+end = 2159.638552
+speaker = "A,B"
+ja = "なんか自分の趣味とか そう 生活の面とかで"
+
+[[operations]]
+op = "merge"
+source_ids = ["4-seg_116", "4-seg_117", "4-seg_118", "4-seg_119"]
+merged_id = "4-seg_119"
+speaker = "A,B"
+ja = "とか そこ なんかこだわりみたいな"
+reason = "Merge adjacent short fragments in the examples."
+confidence = "medium"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_120"
+ja = "寝具とか靴下とか分かんないけど\nそんなやつでお待ちしております"
+reason = "Split a long example line at a natural boundary."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_121"
+gap = 0.05
+reason = "Split the long mini-corner announcement using clip retranscription for the corner titles."
+confidence = "medium"
+
+[[operations.replacements]]
+segment_id = "4-seg_121.1"
+start = 2168.570552
+end = 2173.400552
+speaker = "B"
+ja = "スタイル ぜひぜひ\n今私が言ったのと被っても全然待ってます"
+
+[[operations.replacements]]
+segment_id = "4-seg_121.2"
+start = 2173.400552
+end = 2177.450552
+speaker = "B"
+ja = "ミニコーナー「桜前線」と「夏が来る」には\nそれぞれ一問一答形式の質問をお送りください"
+
+[[operations.replacements]]
+segment_id = "4-seg_121.3"
+start = 2177.450552
+end = 2182.200552
+speaker = "B"
+ja = "桜と夏寧 なるべくセットで\n送っていただけると嬉しいです"
+
+[[operations.replacements]]
+segment_id = "4-seg_121.4"
+start = 2182.200552
+end = 2187.595552
+speaker = "B"
+ja = "そしてこちら てってぃちゃん桜に語ってもらいたいテーマ\n「悟り転校生夏寧」の質問相談も大募集しております"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_126"
+ja = "大阪駅嬉しい そして大学でやるんだ\nそうなのよ 大学でやるの初めてかも"
+reason = "Split a long reaction at the speaker turn."
+confidence = "high"
+
+[[operations]]
+op = "split"
+source_id = "4-seg_128"
+gap = 0.05
+reason = "Split the long Go Revo event reaction into two subtitle units."
+confidence = "high"
+
+[[operations.replacements]]
+segment_id = "4-seg_128.1"
+start = 2251.007552
+end = 2255.807552
+speaker = "A"
+ja = "楽しみです ゴー☆ジャスさんと\nなんか一緒にイベント行ったことないので"
+
+[[operations.replacements]]
+segment_id = "4-seg_128.2"
+start = 2255.807552
+end = 2260.507552
+speaker = "A"
+ja = "番組も出たことあるけど楽しみにしてください\n頑張ってきて"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_135"
+end = 2305.969552
+reason = "Extend the short request into nearby silence to clear the hard duration edge case."
+confidence = "high"
+
+[[operations]]
+op = "edit"
+segment_id = "4-seg_137.3"
+end = 2322.969552
+reason = "Restore the hard minimum gap before the following acknowledgement."
+confidence = "high"

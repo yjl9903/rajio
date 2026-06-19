@@ -1,0 +1,1147 @@
+created_by = "t100"
+start = 0
+end = 600
+
+[[operations]]
+op = "merge"
+reason = "Join adjacent hair-comment fragments and remove filler repetition that caused reading-speed and gap errors."
+confidence = "high"
+source_ids = ["1-seg_8", "1-seg_9"]
+merged_id = "1-seg_8"
+speaker = "C"
+ja = "ちょっと髪がさらさらじゃない"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Adjacent short reactions form one subtitle."
+confidence = "high"
+source_ids = ["1-seg_11", "1-seg_12"]
+merged_id = "1-seg_11"
+speaker = "C,A"
+ja = "ちょっと どうしてどうして"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Adjacent compliment and response share a zero gap and read naturally together."
+confidence = "high"
+source_ids = ["1-seg_21", "1-seg_22"]
+merged_id = "1-seg_21"
+speaker = "A,C"
+ja = "すごい マジで朝起きてもこれだからめっちゃ嬉しいんだ"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Join tiny overlap into the following rainy-season comment."
+confidence = "medium"
+source_ids = ["1-seg_24", "1-seg_25"]
+merged_id = "1-seg_24"
+speaker = "C,A"
+ja = "楽うん わかるいいな梅雨の時期だからこれから"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Short lead-in belongs with the following hair-treatment example."
+confidence = "high"
+source_ids = ["1-seg_28", "1-seg_29.1"]
+merged_id = "1-seg_28"
+speaker = "C,A"
+ja = "じゃあ こうなっちゃうのやったことあるよ"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge interjection with the following overlong natto topic before splitting into readable units."
+confidence = "high"
+source_ids = ["1-seg_34", "1-seg_35"]
+merged_id = "1-seg_34"
+speaker = "C,A"
+ja = "オッケーオッケー はいということであとね納豆 食べてんのみんな ちょっとなんかさ毎朝回す 回せば回すほど納豆の栄養が変化するのかって 変化ないらしいよ別に"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split the natto topic into shorter subtitles."
+confidence = "high"
+source_id = "1-seg_34"
+
+[[operations.replacements]]
+segment_id = "1-seg_34.1"
+start = 111.812
+end = 115.2
+speaker = "C,A"
+ja = "オッケーオッケー はいということであとね"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_34.2"
+start = 115.2
+end = 119.2
+speaker = "A"
+ja = "納豆 食べてんのみんな"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_34.3"
+start = 119.2
+end = 123.3
+speaker = "A"
+ja = "毎朝回す 回せば回すほど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_34.4"
+start = 123.3
+end = 127.187
+speaker = "A"
+ja = "納豆の栄養が変化するのかって 変化ないらしいよ別に"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Tiny alternating fragments are one conversational beat before the next natto point."
+confidence = "medium"
+source_ids = ["1-seg_39", "1-seg_40", "1-seg_41", "1-seg_42"]
+merged_id = "1-seg_39"
+speaker = "C,A"
+ja = "よね むずくなっちゃうよ でもそれが好きで美味しいから食べてる人もいるんだもんね"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged natto aside into readable subtitle units."
+confidence = "medium"
+source_id = "1-seg_39"
+
+[[operations.replacements]]
+segment_id = "1-seg_39.1"
+start = 131.22
+end = 133.3
+speaker = "C,A"
+ja = "よね むずくなっちゃうよ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_39.2"
+start = 133.3
+end = 134.9
+speaker = "A"
+ja = "でもそれが好きで美味しいから"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_39.3"
+start = 134.9
+end = 136.445
+speaker = "A"
+ja = "食べてる人もいるんだもんね"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge tiny reaction with the following long natto anecdote before splitting."
+confidence = "high"
+source_ids = ["1-seg_45", "1-seg_46"]
+merged_id = "1-seg_45"
+speaker = "C,A"
+ja = "え 私あの話をして家に帰って納豆があったからめっちゃやってみたんですよ 40回くらい混ぜてみた"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split natto anecdote into readable subtitle units."
+confidence = "high"
+source_id = "1-seg_45"
+
+[[operations.replacements]]
+segment_id = "1-seg_45.1"
+start = 137.52
+end = 140.4
+speaker = "C,A"
+ja = "え 私あの話をして家に帰って"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_45.2"
+start = 140.4
+end = 142.8
+speaker = "A"
+ja = "納豆があったからめっちゃやってみたんですよ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_45.3"
+start = 142.8
+end = 145.52
+speaker = "A"
+ja = "40回くらい混ぜてみた"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Zero-gap acknowledgment belongs with the following praise."
+confidence = "high"
+source_ids = ["1-seg_50", "1-seg_51"]
+merged_id = "1-seg_50"
+speaker = "A,C"
+ja = "うん えらいね納豆のね"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Adjacent fragments form one response about mixing again."
+confidence = "high"
+source_ids = ["1-seg_55", "1-seg_56"]
+merged_id = "1-seg_55"
+speaker = "A,C"
+ja = "で またちょっと混ぜてみたいな そう"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Tiny fragments form one short answer."
+confidence = "high"
+source_ids = ["1-seg_59", "1-seg_60"]
+merged_id = "1-seg_59"
+speaker = "A,C"
+ja = "いや 気がする"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Zero-gap reaction fragments form one exchange."
+confidence = "medium"
+source_ids = ["1-seg_63", "1-seg_64", "1-seg_65"]
+merged_id = "1-seg_63"
+speaker = "C,A"
+ja = "いや 本当に わかんない でもなんか難しいですね"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split mail introduction to avoid overlong Japanese line."
+confidence = "high"
+source_id = "1-seg_74"
+
+[[operations.replacements]]
+segment_id = "1-seg_74.1"
+start = 187.188
+end = 188.8
+speaker = "A"
+ja = "納豆のメールもほっぺまーさんから"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_74.2"
+start = 188.8
+end = 190.163
+speaker = "A"
+ja = "いただきました ありがとうございます"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split long 魯山人 quote into readable units."
+confidence = "high"
+source_id = "1-seg_81"
+
+[[operations.replacements]]
+segment_id = "1-seg_81.1"
+start = 210.74
+end = 213.7
+speaker = "A"
+ja = "この有名な魯山人は最低でも400回かき混ぜると"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_81.2"
+start = 213.7
+end = 216.49
+speaker = "A"
+ja = "美味しくなると言ったとされています"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Zero-gap reaction and answer are safer as a merged subtitle group before splitting."
+confidence = "medium"
+source_ids = ["1-seg_82", "1-seg_83", "1-seg_84", "1-seg_88"]
+merged_id = "1-seg_82"
+speaker = "C,A"
+ja = "えー 試しにやったら確かに美味しいんですよ 400回やったんです やったの"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Keep merged reaction readable."
+confidence = "medium"
+source_id = "1-seg_82"
+
+[[operations.replacements]]
+segment_id = "1-seg_82.1"
+start = 216.49
+end = 219.14
+speaker = "C,A"
+ja = "えー 試しにやったら確かに美味しいんですよ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_82.2"
+start = 219.14
+end = 220.69
+speaker = "A,C"
+ja = "400回やったんです やったの"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong baking analogy into subtitle-sized pieces."
+confidence = "high"
+source_id = "1-seg_92"
+
+[[operations.replacements]]
+segment_id = "1-seg_92.1"
+start = 225.265
+end = 228.0
+speaker = "C"
+ja = "でもなんかさ 分かんないけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_92.2"
+start = 228.0
+end = 230.1
+speaker = "C"
+ja = "お菓子作りとかでもバーって混ぜて"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_92.3"
+start = 230.1
+end = 231.865
+speaker = "C"
+ja = "バーって膨らんで減ったりするじゃん 泡"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Zero-gap confirmation belongs with the following possibility."
+confidence = "high"
+source_ids = ["1-seg_95", "1-seg_96"]
+merged_id = "1-seg_95"
+speaker = "A,C"
+ja = "確かに 400回混ぜたら逆にもこもこじゃない可能性"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged 400回 reaction into readable units."
+confidence = "high"
+source_id = "1-seg_95"
+
+[[operations.replacements]]
+segment_id = "1-seg_95.1"
+start = 237.072
+end = 238.6
+speaker = "A,C"
+ja = "確かに 400回混ぜたら"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_95.2"
+start = 238.6
+end = 240.122
+speaker = "C"
+ja = "逆にもこもこじゃない可能性"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Correct damaged ASR using review clip and shorten to subtitle-safe wording."
+confidence = "medium"
+segment_id = "1-seg_107"
+ja = "いいよね もう一期間あったら0倍になるかもしんないしね"
+
+[[operations]]
+op = "split"
+reason = "Split long ramen-nori explanation into readable units."
+confidence = "high"
+source_id = "1-seg_122"
+
+[[operations.replacements]]
+segment_id = "1-seg_122.1"
+start = 287.988
+end = 290.4
+speaker = "C"
+ja = "びちょびちょじゃない ちょっと浸して"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_122.2"
+start = 290.4
+end = 292.5
+speaker = "C"
+ja = "お米と一緒に食べるのが好きなの"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_122.3"
+start = 292.5
+end = 294.463
+speaker = "C"
+ja = "家系とかのお米つけれるとこ"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Zero-gap reaction leads directly into the white-rice comment."
+confidence = "high"
+source_ids = ["1-seg_124", "1-seg_125"]
+merged_id = "1-seg_124"
+speaker = "C,A"
+ja = "本当 でも私ラーメン屋さんでさラーメンと一緒に白米まだ頼んだことなくて"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split merged white-rice comment into readable units."
+confidence = "high"
+source_id = "1-seg_124"
+
+[[operations.replacements]]
+segment_id = "1-seg_124.1"
+start = 295.888
+end = 298.2
+speaker = "C,A"
+ja = "本当 でも私ラーメン屋さんでさ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_124.2"
+start = 298.2
+end = 301.138
+speaker = "A"
+ja = "ラーメンと一緒に白米まだ頼んだことなくて"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong fullness-problem segment into readable units."
+confidence = "high"
+source_id = "1-seg_128"
+
+[[operations.replacements]]
+segment_id = "1-seg_128.1"
+start = 315.22
+end = 317.5
+speaker = "C"
+ja = "でもさなんか多分"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_128.2"
+start = 317.5
+end = 319.5
+speaker = "C"
+ja = "特にこれは女子だけの話かもしれないですけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_128.3"
+start = 319.5
+end = 321.295
+speaker = "C"
+ja = "お腹がいっぱいになっちゃう問題 卵"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong チャーシュー comment."
+confidence = "high"
+source_id = "1-seg_133"
+
+[[operations.replacements]]
+segment_id = "1-seg_133.1"
+start = 331.545
+end = 333.7
+speaker = "A"
+ja = "マジだよね 私たち毎回思ってさ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_133.2"
+start = 333.7
+end = 335.745
+speaker = "A"
+ja = "チャーシュー残しちゃって最後まで"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong ramen comment."
+confidence = "high"
+source_id = "1-seg_135"
+
+[[operations.replacements]]
+segment_id = "1-seg_135.1"
+start = 341.396
+end = 343.0
+speaker = "A"
+ja = "最初に食べちゃえば"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_135.2"
+start = 343.0
+end = 344.571
+speaker = "A"
+ja = "麺は意外とツルって入ったりするんだよね"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong egg-capacity comment."
+confidence = "high"
+source_id = "1-seg_146"
+
+[[operations.replacements]]
+segment_id = "1-seg_146.1"
+start = 361.621
+end = 363.8
+speaker = "A"
+ja = "やっぱ卵結構胃の容量"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_146.2"
+start = 363.8
+end = 365.946
+speaker = "A"
+ja = "持ってかれそうで後回ししちゃうんだよな"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split egg-on-rice prompt into readable subtitle units."
+confidence = "high"
+source_id = "1-seg_150"
+
+[[operations.replacements]]
+segment_id = "1-seg_150.1"
+start = 371.791
+end = 375.0
+speaker = "A"
+ja = "ね私さ みんなの卵かけご飯のこだわり知りたい"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_150.2"
+start = 375.0
+end = 379.091
+speaker = "A"
+ja = "私結構アレンジレシピ派でさ 色々"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Tiny interjection leads into the request to send mail."
+confidence = "high"
+source_ids = ["1-seg_154", "1-seg_155"]
+merged_id = "1-seg_154"
+speaker = "A,D"
+ja = "え ぜひ送ってください お願いします"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split hashtag closing into subtitle-sized pieces."
+confidence = "high"
+source_id = "1-seg_156"
+
+[[operations.replacements]]
+segment_id = "1-seg_156.1"
+start = 384.641
+end = 387.0
+speaker = "A"
+ja = "ということで今日もハッシュタグ夏さく咲くで"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_156.2"
+start = 387.0
+end = 389.3
+speaker = "A"
+ja = "盛り上げていただけると嬉しいです"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_156.3"
+start = 389.3
+end = 391.716
+speaker = "A"
+ja = "それでは最後までよろしくお願いします"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Use a two-line subtitle while preserving existing official-title skip check."
+confidence = "high"
+segment_id = "1-seg_160"
+ja = "えー私はですね先日渋谷のライブ\nSTRAIGHT! REACH!! CHEER!!! をやりました やりました"
+
+[[operations]]
+op = "split"
+reason = "Correct damaged wording from review clip and split Osaka-performance timing note."
+confidence = "high"
+source_id = "1-seg_162"
+
+[[operations.replacements]]
+segment_id = "1-seg_162.1"
+start = 416.065
+end = 419.2
+speaker = "D"
+ja = "東京公演で現時点でまだね"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_162.2"
+start = 419.2
+end = 422.2
+speaker = "D"
+ja = "大阪公演は終わってないんですけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_162.3"
+start = 422.2
+end = 425.59
+speaker = "D"
+ja = "大阪公演もそろそろやると思う 放送の時には終わってるっていう"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Zero-gap fragments form one reaction."
+confidence = "medium"
+source_ids = ["1-seg_164", "1-seg_165", "1-seg_166"]
+merged_id = "1-seg_164"
+speaker = "D,C"
+ja = "んだけど 嬉しい 本当にすごかった"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong costume comment."
+confidence = "high"
+source_id = "1-seg_170"
+
+[[operations.replacements]]
+segment_id = "1-seg_170.1"
+start = 439.451
+end = 442.2
+speaker = "D"
+ja = "そう衣装が私新衣装生で見るの初めてだったから"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_170.2"
+start = 442.2
+end = 445.251
+speaker = "D"
+ja = "めちゃくちゃ可愛いね"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split mail introduction into readable subtitle units."
+confidence = "high"
+source_id = "1-seg_172"
+
+[[operations.replacements]]
+segment_id = "1-seg_172.1"
+start = 449.076
+end = 450.6
+speaker = "D"
+ja = "はい夏さくネームゆいさんから"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_172.2"
+start = 450.6
+end = 451.776
+speaker = "D"
+ja = "いただきました ありがとうございます"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split very long listener mail into readable subtitle units."
+confidence = "high"
+source_id = "1-seg_177"
+
+[[operations.replacements]]
+segment_id = "1-seg_177.1"
+start = 463.482
+end = 466.0
+speaker = "A"
+ja = "今回のライブ前のインタビューでさくぽんは"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.2"
+start = 466.0
+end = 469.0
+speaker = "A"
+ja = "私たちの成長を見せなければいけないライブと"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.3"
+start = 469.0
+end = 472.0
+speaker = "A"
+ja = "おっしゃっていましたが それを実感できる"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.4"
+start = 472.0
+end = 475.0
+speaker = "A"
+ja = "とても素晴らしいライブでした ユイナを楽しく"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.5"
+start = 475.0
+end = 478.0
+speaker = "A"
+ja = "可愛く表現するさくぽんのパフォーマンスは"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.6"
+start = 478.0
+end = 481.0
+speaker = "A"
+ja = "みんなの心のお花を咲かせたと思います"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.7"
+start = 481.0
+end = 483.0
+speaker = "A"
+ja = "今回ステージに立ったさくぽんと"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.8"
+start = 483.0
+end = 485.0
+speaker = "A"
+ja = "ドリーミードリーミーフラワーの一人の"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.9"
+start = 485.0
+end = 486.4
+speaker = "A"
+ja = "お客さんとして参加したなちゅの"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_177.10"
+start = 486.4
+end = 487.782
+speaker = "A"
+ja = "今回のライブの感想をお聞きしたいです"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge tiny reaction with the following solo-song comment before splitting."
+confidence = "high"
+source_ids = ["1-seg_183", "1-seg_184"]
+merged_id = "1-seg_183"
+speaker = "C,D"
+ja = "あー 前にもう一個のソロ曲は生で聴いたことあるんだけど初めて聴くソロ曲だったからめちゃくちゃ感動した可愛かったすごい"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split solo-song comment into readable subtitle units."
+confidence = "high"
+source_id = "1-seg_183"
+
+[[operations.replacements]]
+segment_id = "1-seg_183.1"
+start = 495.938
+end = 499.0
+speaker = "C,D"
+ja = "あー 前にもう一個のソロ曲は"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_183.2"
+start = 499.0
+end = 502.0
+speaker = "D"
+ja = "生で聴いたことあるんだけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_183.3"
+start = 502.0
+end = 504.4
+speaker = "D"
+ja = "初めて聴くソロ曲だったから"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_183.4"
+start = 504.4
+end = 506.838
+speaker = "D"
+ja = "めちゃくちゃ感動した 可愛かったすごい"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Review clip shows the zero-gap fragments are one continuation about the lyrics."
+confidence = "high"
+source_ids = ["1-seg_185", "1-seg_186", "1-seg_187", "1-seg_188", "1-seg_189", "1-seg_190"]
+merged_id = "1-seg_185"
+speaker = "D"
+ja = "よ そうなんかあのなんだろう歌詞がすごい頑張るって感じのやつじゃん"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split lyric impression into readable subtitle units."
+confidence = "high"
+source_id = "1-seg_185"
+
+[[operations.replacements]]
+segment_id = "1-seg_185.1"
+start = 506.838
+end = 510.6
+speaker = "D"
+ja = "よ そうなんかあのなんだろう"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_185.2"
+start = 510.6
+end = 514.338
+speaker = "D"
+ja = "歌詞がすごい頑張るって感じのやつじゃん"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong nostalgic-stage comment."
+confidence = "high"
+source_id = "1-seg_191"
+
+[[operations.replacements]]
+segment_id = "1-seg_191.1"
+start = 526.58
+end = 528.2
+speaker = "D"
+ja = "ステージで立ってるの見ると"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_191.2"
+start = 528.2
+end = 529.905
+speaker = "D"
+ja = "めちゃくちゃ懐かみになった"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Merge zero-gap reaction with the following overlong performance comment before splitting."
+confidence = "high"
+source_ids = ["1-seg_194", "1-seg_195"]
+merged_id = "1-seg_194"
+speaker = "C,D"
+ja = "懐かしかった 全員でのパフォーマンスも本当にアイドルってぐらい踊り揃っててめちゃくちゃかっこよかったし"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split performance comment into readable units."
+confidence = "high"
+source_id = "1-seg_194"
+
+[[operations.replacements]]
+segment_id = "1-seg_194.1"
+start = 531.93
+end = 535.0
+speaker = "C,D"
+ja = "懐かしかった 全員でのパフォーマンスも"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_194.2"
+start = 535.0
+end = 538.5
+speaker = "D"
+ja = "本当にアイドルってぐらい踊り揃ってて"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_194.3"
+start = 538.5
+end = 543.13
+speaker = "D"
+ja = "めちゃくちゃかっこよかったし"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split live-vocal praise into readable units."
+confidence = "high"
+source_id = "1-seg_196"
+
+[[operations.replacements]]
+segment_id = "1-seg_196.1"
+start = 543.28
+end = 546.3
+speaker = "D"
+ja = "生歌とは思えなかった"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_196.2"
+start = 546.3
+end = 549.255
+speaker = "D"
+ja = "みんなマジ歌うますぎてすごかった"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split long growth-impression segment."
+confidence = "high"
+source_id = "1-seg_198"
+
+[[operations.replacements]]
+segment_id = "1-seg_198.1"
+start = 552.66
+end = 556.0
+speaker = "C"
+ja = "まあ日々見てるからあんま気づかないけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_198.2"
+start = 556.0
+end = 559.0
+speaker = "C"
+ja = "この前のライブはすごいみんなの成長を感じた"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_198.3"
+start = 559.0
+end = 562.2
+speaker = "C"
+ja = "自分も含めかもしれないけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_198.4"
+start = 562.2
+end = 565.935
+speaker = "C"
+ja = "安定してきたなって 歌とか"
+zh = ""
+
+[[operations]]
+op = "merge"
+reason = "Tiny zero-gap MC fragments form one short exchange."
+confidence = "medium"
+source_ids = ["1-seg_202", "1-seg_203", "1-seg_204", "1-seg_206"]
+merged_id = "1-seg_202"
+speaker = "C,D"
+ja = "ちょっとあるね うん"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split overlong MC-count explanation."
+confidence = "high"
+source_id = "1-seg_207"
+
+[[operations.replacements]]
+segment_id = "1-seg_207.1"
+start = 579.988
+end = 582.7
+speaker = "D"
+ja = "すごいよね 今回はMCの数を減らしたんですよ"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_207.2"
+start = 582.7
+end = 585.913
+speaker = "D"
+ja = "曲数を増やした分 MC"
+zh = ""
+
+[[operations]]
+op = "split"
+reason = "Split long MC workload segment near the range end."
+confidence = "medium"
+source_id = "1-seg_209"
+
+[[operations.replacements]]
+segment_id = "1-seg_209.1"
+start = 586.763
+end = 590.0
+speaker = "D"
+ja = "減らして その体力も課題だったの"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_209.2"
+start = 590.0
+end = 593.2
+speaker = "D"
+ja = "続けてやるみたいな けど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_209.3"
+start = 593.2
+end = 596.5
+speaker = "D"
+ja = "MC減らした分 今までは分散してたんだけど"
+zh = ""
+
+[[operations.replacements]]
+segment_id = "1-seg_209.4"
+start = 596.5
+end = 599.838
+speaker = "D"
+ja = "MC自分に結構固まってたから 頑張ら"
+zh = ""
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_8"
+start = 48.732
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_21"
+start = 78.602
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_24"
+start = 82.752
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_34.1"
+start = 111.872
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_45.1"
+start = 137.58
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_50"
+start = 154.58
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_63"
+start = 170.484
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_82.1"
+start = 216.55
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_95.1"
+start = 237.132
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_124.1"
+start = 295.948
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_154"
+start = 382.476
+
+[[operations]]
+op = "edit"
+reason = "Shorten a very brief reaction to stay under the hard reading-speed limit."
+confidence = "high"
+segment_id = "1-seg_176"
+ja = "ありがとう"
+
+[[operations]]
+op = "edit"
+reason = "Shorten line after split to stay under the Japanese hard line limit."
+confidence = "high"
+segment_id = "1-seg_162.3"
+ja = "大阪公演もそろそろやると思う 放送時には終わってるっていう"
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_185.1"
+start = 506.898
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_194.1"
+start = 531.99
+
+[[operations]]
+op = "edit"
+reason = "Leave a hard-minimum gap after the previous subtitle."
+confidence = "high"
+segment_id = "1-seg_207.1"
+start = 580.048

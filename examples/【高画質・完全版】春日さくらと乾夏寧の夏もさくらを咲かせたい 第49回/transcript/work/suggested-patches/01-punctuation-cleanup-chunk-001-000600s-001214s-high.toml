@@ -1,0 +1,61 @@
+name = "Punctuation cleanup suggestions"
+summary = "Remove ordinary Japanese subtitle punctuation that rajio check flags. Chunk 001 covers 600s-1214.248s."
+created_by = "rajio"
+start = 600
+end = 1214.248333
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_8"
+ja = "あ"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_18"
+ja = "あのね 私8月2日新宿カメラライブにてゴーレボの番組イベントにゲストとして出演していただくことが決定しました!"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_22"
+ja = "え"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_42"
+ja = "昨日のゴーレムに岸愛香ちゃんがね"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_44"
+ja = "来てたみたいなんですけど"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_45"
+ja = "実はね 8月9日に開催する夏明けプレゼンツ姫夏ねバースデーイベント2026昼の部のゲストに塚田由衣ちゃんと岸愛香ちゃんが来てくれることになりました!"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_90"
+ja = "どうなの?ではでは早速ネームひたかちさんからいただきました ありがとうございます"
+
+[[operations]]
+op = "edit"
+reason = "Remove ordinary punctuation from Japanese subtitle text."
+confidence = "high"
+segment_id = "2-seg_91"
+ja = "僕は仕事が忙しくて疲れた時や機嫌が作れない時はX等のSNSでハムスターの動画を見ています"
