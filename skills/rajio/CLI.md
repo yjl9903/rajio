@@ -21,8 +21,6 @@ raw transcript files are read-only references, and clip transcripts are review a
 - Use `rajio check` to validate file shape and common segment issues. It is a quality
   floor, not a finished-quality signal, and does not replace manual QA for ASR mistakes,
   names, terms, context, translation quality, or editorial polish.
-- Do not use `--agent=codex` for ordinary single-video proofreading or translation
-  unless the user explicitly asks for batch or automatic multi-session operation.
 
 ## Availability
 
@@ -107,12 +105,8 @@ Workflow controls:
   `pending`, set `current_stage` to that stage, and continue. Valid stages are
   `audio`, `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
   Reset changes `session.toml` state; it does not delete files.
-- `--full`: run all remaining stages automatically. Manual stages use Codex by
-  default. With `--agent=false`, transcript work is committed without Codex, but
-  `translation_work` still waits because Chinese text must be produced manually or
-  by an agent.
-- `--agent codex|false`: batch automation control. `codex` runs the Codex agent for
-  the current manual stage and commits it. `false` disables Codex in `--full` mode.
+- `--full`: run remaining automatic stages. Manual stages still stop for manual edit
+  and `--commit`.
 
 Subtitle QA exceptions are recorded per segment in `segments.toml`, not in `session.toml`.
 Before adding a skip annotation, run:

@@ -84,8 +84,7 @@ Workers may use these commands when needed:
 
 Forbidden commands and actions:
 
-- run rajio default commands that advance, reset, or export the session, or
-  invoke `--agent=codex`
+- run rajio default commands that advance, reset, or export the session
 - run rajio clean commands
 - run non-dry-run `rajio segments apply` or other `rajio segments` commands that write
   changes
@@ -157,8 +156,7 @@ Work rules:
 Command boundaries:
 - You may use `rajio segments list`, `rajio segments apply --dry-run`, and
   `rajio clips list/show/transcribe` when needed.
-- Do not run rajio default commands that advance, reset, or export the session, or invoke
-  `--agent=codex`.
+- Do not run rajio default commands that advance, reset, or export the session.
 - Do not run rajio clean commands.
 - Do not run non-dry-run `rajio segments apply` or other `rajio segments` commands that
   write changes.
@@ -263,8 +261,7 @@ Command boundaries:
   `rajio clips list/show/transcribe` when needed.
 - Use `rajio clips transcribe` only for difficult, noisy, overlapped, or suspicious audio
   ranges. Clip output is reference material only; decide the final subtitle text yourself.
-- Do not run rajio default commands that advance, reset, or export the session, or invoke
-  `--agent=codex`.
+- Do not run rajio default commands that advance, reset, or export the session.
 - Do not run rajio clean commands.
 - Do not run non-dry-run `rajio segments apply` or other `rajio segments` commands that
   write changes.

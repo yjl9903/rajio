@@ -12,7 +12,7 @@ import { MANUAL_STAGES, STAGES } from '../types.js';
 import { isManualStage, manualSegmentsPath, nextStage } from './stages.js';
 import { runAudioStage } from './stages/audio.js';
 import { runExportStage } from './stages/export.js';
-import { commitManualStage, runAgentAndCommit, setupManualStage } from './stages/manual.js';
+import { commitManualStage, setupManualStage } from './stages/manual.js';
 import { runTranscriptRawStage } from './stages/transcription.js';
 
 const EXPORT_OUTPUT_FIELDS = [
@@ -50,14 +50,7 @@ export async function runRajio(
 
   const currentStage = session.currentStage;
   if (isManualStage(currentStage)) {
-    if (options.agent === 'codex') {
-      await runAgentAndCommit({
-        session,
-        runtime,
-        stage: currentStage
-      });
-      await advancePastStage(session, currentStage);
-    } else if (options.commit) {
+    if (options.commit) {
       await commitManualStage({
         session,
         stage: currentStage
@@ -96,13 +89,9 @@ async function continueAfterAction(
     }
 
     if (isManualStage(stage)) {
-      await handleManualStage(session, runtime, stage, options);
-      if (!options.full || (stage === 'translation_work' && options.agent === false)) {
-        logWorkflowStop(session, logger);
-        return;
-      }
-      steps += 1;
-      continue;
+      await handleManualStage(session, stage, options);
+      logWorkflowStop(session, logger);
+      return;
     }
 
     await runAutomaticStage(session, runtime, stage, options, deps);
@@ -139,7 +128,6 @@ function retargetDirtyManualStage(session: Session): boolean {
 
 async function handleManualStage(
   session: Session,
-  runtime: RuntimeConfig,
   stage: ManualStageName,
   options: CliOptions
 ): Promise<void> {
@@ -149,23 +137,7 @@ async function handleManualStage(
 
   if (options.full) {
     const stageLogger = taggedLogger(stage);
-    if (stage === 'translation_work' && options.agent === false) {
-      stageLogger.info('waiting for manual stage translation_work.');
-      return;
-    }
-    if (options.agent === false) {
-      await commitManualStage({
-        session,
-        stage
-      });
-    } else {
-      await runAgentAndCommit({
-        session,
-        runtime,
-        stage
-      });
-    }
-    await advancePastStage(session, stage);
+    stageLogger.info(`waiting for manual stage ${stage}.`);
     return;
   }
 

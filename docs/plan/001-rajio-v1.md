@@ -59,6 +59,7 @@ Options:
 - Per-segment `skip_checks` in `segments.toml` mark intentional subtitle QA `error`
   exceptions with exact issue codes and reasons. See
   `docs/plan/012-segment-skip-checks.md`.
+- Current implementation note: the CLI `--agent` entrypoint has been temporarily removed.
 - `--agent=codex|false`: currently only `codex` is supported. If `--commit` and
   `--agent=codex` are both present, run agent flow.
 - `--full`: run all remaining stages automatically. Manual stages use Codex by default.

@@ -106,7 +106,6 @@ export interface CliOptions {
   media?: string;
   continue: 'until-manual' | 'step';
   commit: boolean;
-  agent: 'codex' | false | undefined;
   full: boolean;
   reset?: StageName;
   chunking?: AudioChunkOptions;

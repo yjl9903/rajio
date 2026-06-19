@@ -39,20 +39,6 @@ app
     }
   })
   .option('--commit', 'commit current manual stage')
-  .option('--agent <agent>', 'batch automation only, run agent for manual stage: codex or false', {
-    cast: (value) => {
-      if (value === undefined) {
-        return undefined;
-      }
-      if (value === 'false') {
-        return false;
-      }
-      if (value !== 'codex') {
-        throw new Error('--agent currently supports only "codex" or "false".');
-      }
-      return value;
-    }
-  })
   .option('--full', 'run all remaining stages automatically')
   .option(
     '--reset <stage>',
@@ -93,7 +79,6 @@ app
       media: options.media,
       continue: options.continue,
       commit: options.commit,
-      agent: options.agent,
       full: options.full,
       reset: options.reset,
       chunking
@@ -231,7 +216,11 @@ app.command('clean <target>', 'Clean generated session artifacts').action(async 
 
 const argv = process.argv.slice(2);
 
-await app.run(argv).catch((error) => {
+const runPromise = argv.some((arg) => arg === '--agent' || arg.startsWith('--agent='))
+  ? Promise.reject(new Error('Unknown option: --agent'))
+  : app.run(argv);
+
+await runPromise.catch((error) => {
   taggedLogger('cli').error(formatCliError(error, argv));
   process.exitCode = 1;
 });

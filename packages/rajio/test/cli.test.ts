@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { registerClipCommands } from '../src/clips/commands.js';
 import { registerSegmentCommands } from '../src/segments/commands.js';
 import { writeSegmentsFile } from '../src/segments/index.js';
+import { logger } from '../src/utils/logger.js';
 import { preparedSession, sampleTranscript, sampleTranslation, tempDir } from './helpers.js';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -557,6 +558,15 @@ describe('cli explicit targets', () => {
     ]);
 
     expect(result.exitCode).toBe(1);
+  });
+
+  it('rejects removed agent option', async () => {
+    const dir = await tempDir();
+    logger.level = Number.POSITIVE_INFINITY;
+    const result = await runCliSideEffect([dir, '--agent', 'codex']);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain('Unknown option: --agent');
   });
 
   it('rejects Chinese language filtering for transcript check', async () => {

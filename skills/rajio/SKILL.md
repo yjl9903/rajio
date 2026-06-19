@@ -52,8 +52,6 @@ Respect manual-stage ownership:
   itself. The explicit exception is final Chinese refinement: after sub-agent translation
   batches have produced the first draft, the main agent must perform full-file Chinese
   subtitle refinement as described in [Refine Chinese Subtitles](#4-refine-chinese-subtitles).
-- Do not use CLI `--agent=codex` as a substitute for sub-agent batch work unless the user
-  explicitly asks for the CLI automation path.
 
 Define manual review strictly:
 
@@ -171,8 +169,8 @@ Default command workflow controls:
 - `--commit`: commit the current manual stage after validating its work file.
 - `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
   `translation_work`, or `export`.
-- `--agent=codex`: CLI automation escape hatch. Do not use it as the default manual-stage
-  workflow; use sub-agent batches instead.
+- `--full`: runs automatic stages only; manual stages still require sub-agent batch work
+  and `--commit`.
 
 Audio chunk options:
 
