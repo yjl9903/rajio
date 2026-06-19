@@ -1,7 +1,7 @@
 import type { Segment, SegmentSkipCheck, SegmentsFile } from '../types.js';
 import { Session } from '../session/index.js';
 import type { ManualStageName } from '../types.js';
-import { readSegmentsFile, writeSegmentsFile } from './index.js';
+import { assertSegmentId, readSegmentsFile, writeSegmentsFile } from './index.js';
 import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
 export type SegmentEditStage = 'transcript' | 'translation';
@@ -237,9 +237,7 @@ export function findSegmentIndex(file: SegmentsFile, id: string): number {
 }
 
 function assertAvailableId(file: SegmentsFile, id: string, ...allowedExistingIds: string[]): void {
-  if (!id.trim()) {
-    throw new Error('segment id must not be empty.');
-  }
+  assertSegmentId(id);
   const allowed = new Set(allowedExistingIds);
   const existing = file.segments.find((segment) => segment.id === id);
   if (existing && !allowed.has(existing.id)) {

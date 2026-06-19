@@ -3,7 +3,7 @@ name: rajio
 description: Use only when explicitly asked to use rajio for Japanese audio/video subtitle translation.
 metadata:
   author: OneKuma
-  version: "0.2.0-beta.1"
+  version: '0.2.0-beta.1'
 ---
 
 # Rajio
@@ -201,6 +201,7 @@ Segment command examples:
 ```bash
 rajio segments list /path/to/session --json --stage transcript
 rajio segments list /path/to/session --json --stage transcript --id 12
+rajio segments list /path/to/session --json --stage transcript --id 12,15,19
 rajio segments list /path/to/session --json --stage transcript --id 12 --around 3
 rajio segments list /path/to/session --json --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --json --stage transcript --start 600 --end 660
@@ -222,10 +223,12 @@ rajio segments delete /path/to/session 13 --json --stage transcript
 
 In `segments` commands, pass `/path/to/session` after the segment subcommand. Replace
 `--stage transcript` with `--stage translation` for `translation/work/segments.toml`.
+Segment ids must be non-empty, trimmed strings without commas.
 
 `segments list` accepts one filter mode at a time:
 
-- `--id <id>`: show one segment.
+- `--id <ids>`: show a comma-separated id list in requested order. Segment ids
+  themselves must not contain commas.
 - `--id <id> --around <count>`: show one segment plus surrounding context.
 - `--offset <count> --limit <count>`: show a zero-based segment window; omit `--limit`
   to read from offset to the end.

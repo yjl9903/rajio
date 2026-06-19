@@ -219,11 +219,14 @@ Segment mutation commands print affected rows, except `segments apply`, which de
 operation counts plus patch-scoped check feedback. `--dry-run` validates and prints the
 result without writing `segments.toml`.
 
+Segment ids must be non-empty, trimmed strings without commas.
+
 ### segments list
 
 ```bash
 rajio segments list /path/to/session --stage transcript
 rajio segments list /path/to/session --stage transcript --id 12
+rajio segments list /path/to/session --stage transcript --id 12,15,19
 rajio segments list /path/to/session --stage transcript --id 12 --around 3
 rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --stage transcript --start 600 --end 660
@@ -233,7 +236,8 @@ rajio segments list /path/to/session --stage translation --issues duration_too_l
 
 `segments list` accepts only one filter mode per invocation:
 
-- `--id <id>`: list one segment.
+- `--id <ids>`: list a comma-separated id list in requested order. Segment ids
+  themselves must not contain commas.
 - `--id <id> --around <count>`: list one segment plus that many neighboring segments
   on each side. `--around` must be a non-negative integer.
 - `--offset <count> --limit <count>`: list a zero-based window. `--offset` and

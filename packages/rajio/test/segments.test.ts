@@ -134,6 +134,37 @@ describe('segments validation and subtitle rendering', () => {
     expect(issues.some((issue) => issue.code === 'empty_zh' && issue.level === 'fatal')).toBe(true);
   });
 
+  it('rejects blank, untrimmed, or comma segment ids', () => {
+    const issues = validateSegments({
+      version: 1,
+      source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        { id: '  ', start: 0, end: 1, speaker: 'A', ja: '空白' },
+        { id: ' 1', start: 1.2, end: 2, speaker: 'A', ja: '空白付き' },
+        { id: '1,2', start: 2.2, end: 3, speaker: 'A', ja: 'カンマ' }
+      ]
+    });
+
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'schema',
+          message: expect.stringContaining('segment id must not be blank')
+        }),
+        expect.objectContaining({
+          code: 'schema',
+          message: expect.stringContaining(
+            'segment id must not have leading or trailing whitespace'
+          )
+        }),
+        expect.objectContaining({
+          code: 'schema',
+          message: expect.stringContaining('segment id must not contain comma')
+        })
+      ])
+    );
+  });
+
   it('ignores tiny floating point drift when checking overlaps', () => {
     const issues = validateSegments({
       version: 1,
@@ -1243,7 +1274,11 @@ describe('segment edit tools', () => {
       { id: '3', start: 3, end: 4.2, speaker: 'C', ja: 'またね' }
     ];
 
-    expect(listSegments(segments, { id: '2' }).map((segment) => segment.id)).toEqual(['2']);
+    expect(listSegments(segments, { id: ['2'] }).map((segment) => segment.id)).toEqual(['2']);
+    expect(listSegments(segments, { id: ['2', '1'] }).map((segment) => segment.id)).toEqual([
+      '2',
+      '1'
+    ]);
     expect(listSegments(segments, { offset: 1, limit: 1 }).map((segment) => segment.id)).toEqual([
       '2'
     ]);
@@ -1251,7 +1286,7 @@ describe('segment edit tools', () => {
     expect(listSegments(segments, { start: 1.2, end: 2.8 }).map((segment) => segment.id)).toEqual([
       '2'
     ]);
-    expect(listSegments(segments, { id: '2', around: 1 }).map((segment) => segment.id)).toEqual([
+    expect(listSegments(segments, { id: ['2'], around: 1 }).map((segment) => segment.id)).toEqual([
       '1',
       '2',
       '3'
@@ -1261,14 +1296,20 @@ describe('segment edit tools', () => {
   it('rejects conflicting or invalid segment list filters', () => {
     const segments = sampleTranscript().segments;
 
-    expect(() => listSegments(segments, { id: '1', offset: 0 })).toThrow('mutually exclusive');
+    expect(() => listSegments(segments, { id: ['1'], offset: 0 })).toThrow('mutually exclusive');
     expect(() => listSegments(segments, { issues: ['overlap'], start: 0, end: 1 })).toThrow(
       'mutually exclusive'
     );
     expect(() => listSegments(segments, { start: 0 })).toThrow('provided together');
     expect(() => listSegments(segments, { start: 2, end: 1 })).toThrow('greater than or equal');
     expect(() => listSegments(segments, { offset: -1 })).toThrow('non-negative integer');
-    expect(() => listSegments(segments, { id: 'missing' })).toThrow('segment not found');
+    expect(() => listSegments(segments, { id: [] })).toThrow(
+      '--id requires at least one segment id'
+    );
+    expect(() => listSegments(segments, { id: ['missing'] })).toThrow('segment not found');
+    expect(() => listSegments(segments, { id: ['1', '2'], around: 1 })).toThrow(
+      '--around supports only one --id'
+    );
     expect(() => listSegments(segments, { around: 1 })).toThrow('requires --id');
   });
 
@@ -1626,6 +1667,21 @@ describe('segment edit tools', () => {
     );
   });
 
+  it('rejects invalid new ids when splitting or merging segments', () => {
+    expect(() =>
+      splitSegment(sampleTranscript(), '1', {
+        at: 0.6,
+        id1: '1,1',
+        id2: '1.2',
+        ja1: 'こん',
+        ja2: 'にちは'
+      })
+    ).toThrow('segment id must not contain comma');
+    expect(() =>
+      mergeSegments(sampleTranscript(), '1', '2', { id: ' ', ja: 'こんにちはまたね' })
+    ).toThrow('segment id must not be blank');
+  });
+
   it('does not inherit skip checks when splitting or merging segments', () => {
     const splitFile: SegmentsFile = {
       ...sampleTranscript(),
@@ -1887,6 +1943,21 @@ describe('segment edit tools', () => {
     expect(() =>
       parseSegmentPatch(['[[items]]', 'segment_id = "1"', 'zh = "您好"'].join('\n'))
     ).toThrow();
+    expect(() =>
+      parseSegmentPatch(
+        ['[[operations]]', 'op = "edit"', 'segment_id = "1,2"', 'zh = "您好"'].join('\n')
+      )
+    ).toThrow('segment id must not contain comma');
+    expect(() =>
+      parseSegmentPatch(
+        ['[[operations]]', 'op = "edit"', 'segment_id = " 1"', 'zh = "您好"'].join('\n')
+      )
+    ).toThrow('segment id must not have leading or trailing whitespace');
+    expect(() =>
+      applySegmentPatch(file, {
+        operations: [{ op: 'edit', segment_id: '1,2', zh: '您好' }]
+      })
+    ).toThrow('segment id must not contain comma');
 
     expect(() =>
       applySegmentPatch(file, {

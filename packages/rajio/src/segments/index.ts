@@ -67,8 +67,22 @@ export const segmentSkipCheckSchema = z.object({
   reason: z.string().trim().min(1)
 });
 
+export const segmentIdSchema = z
+  .string()
+  .min(1, 'segment id must not be empty.')
+  .refine((id) => id.trim().length > 0, 'segment id must not be blank.')
+  .refine((id) => id === id.trim(), 'segment id must not have leading or trailing whitespace.')
+  .refine((id) => !id.includes(','), 'segment id must not contain comma.');
+
+export function assertSegmentId(id: string): void {
+  const result = segmentIdSchema.safeParse(id);
+  if (!result.success) {
+    throw new Error(result.error.issues[0]?.message ?? 'invalid segment id.');
+  }
+}
+
 export const segmentSchema = z.object({
-  id: z.string().min(1),
+  id: segmentIdSchema,
   start: z.number().nonnegative(),
   end: z.number().positive(),
   speaker: z.string().min(1),

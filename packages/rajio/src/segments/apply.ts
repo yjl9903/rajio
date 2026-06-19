@@ -12,7 +12,7 @@ import {
   mergeSpeakerLabels,
   withoutSkipChecks
 } from './edit.js';
-import { segmentSkipCheckSchema } from './index.js';
+import { segmentIdSchema, segmentSkipCheckSchema } from './index.js';
 import { SEGMENT_TIME_EPSILON as SPLIT_TIME_EPSILON } from './limits.js';
 import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
@@ -27,7 +27,7 @@ const editOperationSchema = z
   .object({
     op: z.literal('edit'),
     ...operationMetadataSchema,
-    segment_id: z.string().min(1),
+    segment_id: segmentIdSchema,
     start: z.number().nonnegative().optional(),
     end: z.number().positive().optional(),
     speaker: z.string().min(1).optional(),
@@ -39,7 +39,7 @@ const editOperationSchema = z
 
 const splitReplacementSchema = z
   .object({
-    segment_id: z.string().min(1),
+    segment_id: segmentIdSchema,
     start: z.number().nonnegative(),
     end: z.number().positive(),
     speaker: z.string().min(1),
@@ -52,7 +52,7 @@ const splitOperationSchema = z
   .object({
     op: z.literal('split'),
     ...operationMetadataSchema,
-    source_id: z.string().min(1),
+    source_id: segmentIdSchema,
     gap: z.number().nonnegative().optional(),
     replacements: z.array(splitReplacementSchema).min(2)
   })
@@ -62,8 +62,8 @@ const mergeOperationSchema = z
   .object({
     op: z.literal('merge'),
     ...operationMetadataSchema,
-    source_ids: z.array(z.string().min(1)).min(2),
-    merged_id: z.string().min(1),
+    source_ids: z.array(segmentIdSchema).min(2),
+    merged_id: segmentIdSchema,
     speaker: z.string().min(1).optional(),
     ja: z.string(),
     zh: z.string().optional()
@@ -74,7 +74,7 @@ const deleteOperationSchema = z
   .object({
     op: z.literal('delete'),
     ...operationMetadataSchema,
-    segment_id: z.string().min(1)
+    segment_id: segmentIdSchema
   })
   .strict();
 
@@ -145,6 +145,7 @@ export function parseSegmentPatch(text: string): SegmentPatch {
 }
 
 export function applySegmentPatch(file: SegmentsFile, patch: SegmentPatch): SegmentPatchResult {
+  patch = segmentPatchSchema.parse(patch);
   const next = cloneSegmentsFile(file);
   const result: SegmentPatchResult = {
     edits: [],

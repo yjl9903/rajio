@@ -38,7 +38,7 @@ export const SEGMENT_ISSUE_FILTERS = [
 export type SegmentIssueFilter = (typeof SEGMENT_ISSUE_FILTERS)[number];
 
 export interface SegmentListOptions {
-  id?: string;
+  id?: string[];
   offset?: number;
   limit?: number;
   start?: number;
@@ -52,16 +52,15 @@ export interface SegmentListOptions {
 export function listSegments(segments: Segment[], options: SegmentListOptions): Segment[] {
   const mode = resolveListMode(options);
   if (mode === 'id') {
+    const ids = options.id!;
     if (options.around !== undefined) {
       validateAroundOptions(options);
-      return listAroundId(segments, options.id!, options.around);
+      if (ids.length !== 1) {
+        throw new Error('--around supports only one --id.');
+      }
+      return listAroundId(segments, ids[0]!, options.around);
     }
-    const byId = new Map(segments.map((segment) => [segment.id, segment]));
-    const segment = byId.get(options.id!);
-    if (!segment) {
-      throw new Error(`segment not found: ${options.id}`);
-    }
-    return [segment];
+    return listByIds(segments, ids);
   }
 
   if (mode === 'range') {
@@ -103,6 +102,9 @@ function resolveListMode(options: SegmentListOptions): 'all' | 'id' | 'range' | 
   if (!hasId && options.around !== undefined) {
     throw new Error('--around requires --id.');
   }
+  if (hasId && options.id!.length === 0) {
+    throw new Error('--id requires at least one segment id.');
+  }
 
   if (hasId) {
     return 'id';
@@ -127,6 +129,17 @@ function listAroundId(segments: Segment[], id: string, around: number): Segment[
     throw new Error(`segment not found: ${id}`);
   }
   return segments.slice(Math.max(0, index - around), index + around + 1);
+}
+
+function listByIds(segments: Segment[], ids: string[]): Segment[] {
+  const byId = new Map(segments.map((segment) => [segment.id, segment]));
+  return ids.map((id) => {
+    const segment = byId.get(id);
+    if (!segment) {
+      throw new Error(`segment not found: ${id}`);
+    }
+    return segment;
+  });
 }
 
 function validateAroundOptions(options: SegmentListOptions): void {

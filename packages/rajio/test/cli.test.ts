@@ -65,6 +65,48 @@ describe('cli explicit targets', () => {
     expect(output.segments.map((segment) => segment.id)).toEqual(['2']);
   });
 
+  it('filters segments list by multiple ids', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_work: {
+        status: 'waiting',
+        segments: 'transcript/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'transcript/work'), { recursive: true });
+    await writeSegmentsFile(path.join(dir, 'transcript/work/segments.toml'), sampleTranscript());
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'list',
+      dir,
+      '--stage',
+      'transcript',
+      '--id',
+      '2,1',
+      '--json'
+    ]);
+
+    const output = JSON.parse(stdout.text()) as { segments: Array<{ id: string }> };
+    expect(output.segments.map((segment) => segment.id)).toEqual(['2', '1']);
+    await expect(
+      createCommandApp().run(['segments', 'list', dir, '--stage', 'transcript', '--id', '1,,2'])
+    ).rejects.toThrow('--id must be a comma-separated list of non-empty segment ids');
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'list',
+        dir,
+        '--stage',
+        'transcript',
+        '--id',
+        '1,2',
+        '--around',
+        '1'
+      ])
+    ).rejects.toThrow('--around supports only one --id');
+  });
+
   it('filters segments list by validation issue code', async () => {
     const dir = await preparedSession('translation_work', {
       translation_work: {

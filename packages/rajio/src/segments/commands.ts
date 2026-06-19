@@ -48,7 +48,7 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
-    .option('--id <id>', 'filter by segment id')
+    .option('--id <ids>', 'filter by comma-separated segment id list', { cast: castSegmentIds })
     .option('--around <count>', 'with one --id, include this many neighboring segments', {
       cast: castCount
     })
@@ -613,6 +613,17 @@ function castIssues(value: string | undefined): SegmentIssueFilter[] | undefined
     }
   }
   return issues as SegmentIssueFilter[];
+}
+
+function castSegmentIds(value: string | undefined): string[] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+  const ids = value.split(',').map((id) => id.trim());
+  if (ids.some((id) => id.length === 0)) {
+    throw new Error('--id must be a comma-separated list of non-empty segment ids.');
+  }
+  return ids;
 }
 
 function castIssueLevel(value: string | undefined): IssueLevel | undefined {
