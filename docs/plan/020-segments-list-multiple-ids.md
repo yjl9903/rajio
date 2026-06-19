@@ -11,7 +11,8 @@ contain commas.
 - Add shared segment id validation for `segments.toml`, segment patches, and new split/merge ids.
 - Parse `segments list --id 12,15,19` as an ordered id list.
 - Reject empty id tokens such as `--id 1,,2`.
-- Keep `--around` limited to a single id.
+- Apply `--around` to each requested id, deduplicate overlapping windows, and print results in
+  source segment order.
 
 ## Test Plan
 
@@ -19,7 +20,7 @@ contain commas.
 - `segments list --id 2,1 --json` returns `['2', '1']`.
 - Missing ids still report `segment not found: <id>`.
 - `segments list --id 1,,2` reports an invalid id list.
-- `segments list --id 1,2 --around 1` reports that `--around` supports only one id.
+- `segments list --id 2,4 --around 1 --json` returns each context window deduped in source order.
 - Segment validation and patch parsing/application reject blank, untrimmed, or
   comma-containing ids.
 

@@ -1296,6 +1296,21 @@ describe('segment edit tools', () => {
       '2',
       '3'
     ]);
+
+    const aroundSegments = [
+      ...segments,
+      { id: '4', start: 4.5, end: 5, speaker: 'D', ja: '四つ目' },
+      { id: '5', start: 5.5, end: 6, speaker: 'E', ja: '五つ目' }
+    ];
+    expect(
+      listSegments(aroundSegments, { id: ['2', '4'], around: 1 }).map((segment) => segment.id)
+    ).toEqual(['1', '2', '3', '4', '5']);
+    expect(
+      listSegments(aroundSegments, { id: ['2', '3'], around: 1 }).map((segment) => segment.id)
+    ).toEqual(['1', '2', '3', '4']);
+    expect(
+      listSegments(aroundSegments, { id: ['4', '2'], around: 0 }).map((segment) => segment.id)
+    ).toEqual(['2', '4']);
   });
 
   it('rejects conflicting or invalid segment list filters', () => {
@@ -1312,8 +1327,11 @@ describe('segment edit tools', () => {
       '--id requires at least one segment id'
     );
     expect(() => listSegments(segments, { id: ['missing'] })).toThrow('segment not found');
-    expect(() => listSegments(segments, { id: ['1', '2'], around: 1 })).toThrow(
-      '--around supports only one --id'
+    expect(() => listSegments(segments, { id: ['missing'], around: 1 })).toThrow(
+      'segment not found'
+    );
+    expect(() => listSegments(segments, { id: ['1', '2'], around: -1 })).toThrow(
+      'non-negative integer'
     );
     expect(() => listSegments(segments, { around: 1 })).toThrow('requires --id');
   });

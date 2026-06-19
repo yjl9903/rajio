@@ -55,10 +55,7 @@ export function listSegments(segments: Segment[], options: SegmentListOptions): 
     const ids = options.id!;
     if (options.around !== undefined) {
       validateAroundOptions(options);
-      if (ids.length !== 1) {
-        throw new Error('--around supports only one --id.');
-      }
-      return listAroundId(segments, ids[0]!, options.around);
+      return listAroundIds(segments, ids, options.around);
     }
     return listByIds(segments, ids);
   }
@@ -123,12 +120,18 @@ function resolveListMode(options: SegmentListOptions): 'all' | 'id' | 'range' | 
   return 'all';
 }
 
-function listAroundId(segments: Segment[], id: string, around: number): Segment[] {
-  const index = segments.findIndex((segment) => segment.id === id);
-  if (index === -1) {
-    throw new Error(`segment not found: ${id}`);
+function listAroundIds(segments: Segment[], ids: string[], around: number): Segment[] {
+  const indexes = new Set<number>();
+  for (const id of ids) {
+    const index = segments.findIndex((segment) => segment.id === id);
+    if (index === -1) {
+      throw new Error(`segment not found: ${id}`);
+    }
+    for (let selected = Math.max(0, index - around); selected <= index + around; selected += 1) {
+      indexes.add(selected);
+    }
   }
-  return segments.slice(Math.max(0, index - around), index + around + 1);
+  return segments.filter((_, index) => indexes.has(index));
 }
 
 function listByIds(segments: Segment[], ids: string[]): Segment[] {

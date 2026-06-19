@@ -49,7 +49,7 @@ export function registerSegmentCommands(app: RajioApp): void {
       cast: castSegmentStage
     })
     .option('--id <ids>', 'filter by comma-separated segment id list', { cast: castSegmentIds })
-    .option('--around <count>', 'with one --id, include this many neighboring segments', {
+    .option('--around <count>', 'with --id, include this many neighboring segments', {
       cast: castCount
     })
     .option('--offset <count>', 'start listing at zero-based segment offset', { cast: castCount })

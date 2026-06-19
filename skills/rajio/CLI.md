@@ -227,7 +227,7 @@ Segment ids must be non-empty, trimmed strings without commas.
 rajio segments list /path/to/session --stage transcript
 rajio segments list /path/to/session --stage transcript --id 12
 rajio segments list /path/to/session --stage transcript --id 12,15,19
-rajio segments list /path/to/session --stage transcript --id 12 --around 3
+rajio segments list /path/to/session --stage transcript --id 12,15,19 --around 3
 rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --stage transcript --start 600 --end 660
 rajio segments list /path/to/session --stage translation --issues empty_zh,zh_line_hard_limit
@@ -238,8 +238,9 @@ rajio segments list /path/to/session --stage translation --issues duration_too_l
 
 - `--id <ids>`: list a comma-separated id list in requested order. Segment ids
   themselves must not contain commas.
-- `--id <id> --around <count>`: list one segment plus that many neighboring segments
-  on each side. `--around` must be a non-negative integer.
+- `--id <ids> --around <count>`: list that many neighboring segments on each side of
+  each requested id, deduplicated in timeline order. `--around` must be a non-negative
+  integer.
 - `--offset <count> --limit <count>`: list a zero-based window. `--offset` and
   `--limit` must be non-negative integers. If `--limit` is omitted, list from offset
   to the end.

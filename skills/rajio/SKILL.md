@@ -202,7 +202,7 @@ Segment command examples:
 rajio segments list /path/to/session --json --stage transcript
 rajio segments list /path/to/session --json --stage transcript --id 12
 rajio segments list /path/to/session --json --stage transcript --id 12,15,19
-rajio segments list /path/to/session --json --stage transcript --id 12 --around 3
+rajio segments list /path/to/session --json --stage transcript --id 12,15,19 --around 3
 rajio segments list /path/to/session --json --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --json --stage transcript --start 600 --end 660
 rajio segments list /path/to/session --json --stage translation --issues empty_zh,zh_line_hard_limit
@@ -229,7 +229,8 @@ Segment ids must be non-empty, trimmed strings without commas.
 
 - `--id <ids>`: show a comma-separated id list in requested order. Segment ids
   themselves must not contain commas.
-- `--id <id> --around <count>`: show one segment plus surrounding context.
+- `--id <ids> --around <count>`: show surrounding context for each requested id,
+  deduplicated in timeline order.
 - `--offset <count> --limit <count>`: show a zero-based segment window; omit `--limit`
   to read from offset to the end.
 - `--start <time> --end <time>`: show segments whose `start` time is in `[start, end)`.
