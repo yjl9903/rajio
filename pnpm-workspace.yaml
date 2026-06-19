@@ -5,11 +5,11 @@ allowBuilds:
   esbuild: true
 
 minimumReleaseAgeExclude:
-  - '@breadc/color@1.0.0-beta.16'
-  - '@breadc/core@1.0.0-beta.16'
-  - '@breadc/death@1.0.0-beta.16'
-  - '@breadc/tui@1.0.0-beta.16'
-  - breadc@1.0.0-beta.16
+  - '@breadc/color@1.0.0-beta.17'
+  - '@breadc/core@1.0.0-beta.17'
+  - '@breadc/death@1.0.0-beta.17'
+  - '@breadc/tui@1.0.0-beta.17'
+  - breadc@1.0.0-beta.17
 
 shellEmulator: true
 ignoreWorkspaceRootCheck: true
