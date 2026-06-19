@@ -39,7 +39,15 @@ applies them automatically.
   - Skips invalid durations, large overlaps, segments touched by fragment merge, and edits that
     would make either side shorter than 0.5 seconds.
 - `04-long-segment-candidates`
-  - `low`: Markdown report only for long, overly dense, or high-reading-speed Japanese segments.
+  - `low`: split segments that have related error-level QA issues:
+    `duration_too_long`, `ja_line_hard_limit`, `ja_line_break_hard_limit`, or
+    `ja_reading_speed_limit`.
+  - Prefer punctuation-cleaned whitespace boundaries that keep each replacement at or below 28
+    Japanese text units.
+  - If a chunk still exceeds 28 units, hard-break it without semantic guarantees and mark that
+    clearly in the operation reason.
+  - Replacement timings are proportional to replacement text-unit counts.
+  - Skips suggestions that would create too-short split replacements.
 
 ## Test Plan
 
@@ -55,4 +63,4 @@ applies them automatically.
 - Fragment merge patches are generated from punctuation-cleaned virtual segments and do not reference
   segments deleted by punctuation cleanup.
 - High confidence patch files dry-run/apply through existing segment patch logic.
-- Long segment candidates are emitted as Markdown reports, not applyable patches.
+- Long segment split candidates are emitted as low-confidence applyable TOML patches.

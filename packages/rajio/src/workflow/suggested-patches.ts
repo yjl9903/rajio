@@ -10,6 +10,7 @@ import {
   SEGMENT_TIME_EPSILON as TIME_EPSILON,
   SUBTITLE_GAP_LIMITS as GAP_LIMITS
 } from '../segments/limits.js';
+import { validateSegments } from '../segments/index.js';
 import { countSubtitleTextUnits, replaceOutsideSubtitleProtectedText } from '../segments/text.js';
 import type { Session } from '../session/index.js';
 
@@ -30,6 +31,22 @@ interface MergeOperation {
   ja: string;
 }
 
+interface SplitOperation {
+  op: 'split';
+  reason: string;
+  confidence: PatchConfidence;
+  source_id: string;
+  replacements: SplitReplacement[];
+}
+
+interface SplitReplacement {
+  segment_id: string;
+  start: number;
+  end: number;
+  speaker: string;
+  ja: string;
+}
+
 interface EditOperation {
   op: 'edit';
   reason: string;
@@ -47,14 +64,7 @@ interface DeleteOperation {
   segment_id: string;
 }
 
-type SuggestedPatchOperation = MergeOperation | EditOperation | DeleteOperation;
-
-interface LongSegmentCandidate {
-  segment: Segment;
-  reasons: string[];
-  chars: number;
-  charsPerSecond?: number;
-}
+type SuggestedPatchOperation = MergeOperation | SplitOperation | EditOperation | DeleteOperation;
 
 const SUGGESTED_PATCH_DIR = ['transcript', 'work', 'suggested-patches'];
 const PUNCTUATION_CLEANUP_PASS = '01-punctuation-cleanup';
@@ -67,8 +77,15 @@ const MAX_FRAGMENT_CLUSTER_SECONDS = 2;
 const MAX_FLICKER_CLUSTER_SECONDS = 1.5;
 const MAX_FRAGMENT_CHARS = 28;
 const MAX_FLICKER_CHARS = 18;
+const MAX_SPLIT_CHARS = 28;
 const MIN_RETIME_GAP = -0.12;
 const MAX_RETIME_GAP = GAP_LIMITS.soft;
+const LONG_SPLIT_ISSUE_CODES = new Set([
+  'duration_too_long',
+  'ja_line_hard_limit',
+  'ja_line_break_hard_limit',
+  'ja_reading_speed_limit'
+]);
 const ORDINARY_SUBTITLE_PUNCTUATION = /[。．.,，、]+/gu;
 const TERMINAL_SUBTITLE_PUNCTUATION_WITH_CLOSERS = /[。．.,，、;；:：…]+([\s"'”’）)」』】》]*)$/u;
 const INLINE_WHITESPACE = /[^\S\r\n]+/g;
@@ -105,10 +122,11 @@ export async function generateTranscriptWorkSuggestedPatches(input: {
     groups: fragmentMerge.groups
   });
 
+  const longSplits = collectLongSplitOperations(cleanedSource, chunks);
   const boundaryRetimes = collectBoundaryRetimeOperations(
     cleanedSource,
     chunks,
-    fragmentMerge.touchedSegmentIds
+    new Set([...fragmentMerge.touchedSegmentIds, ...longSplits.touchedSegmentIds])
   );
   await writeOperationPatches({
     outputDir,
@@ -119,10 +137,13 @@ export async function generateTranscriptWorkSuggestedPatches(input: {
     groups: boundaryRetimes
   });
 
-  await writeLongSegmentReports({
+  await writeOperationPatches({
     outputDir,
+    pass: LONG_SEGMENT_PASS,
+    name: 'Long segment split suggestions',
+    summary: 'Split long Japanese transcript segments into reviewable subtitle units.',
     chunks,
-    groups: collectLongSegmentCandidates(cleanedSource, chunks)
+    groups: longSplits.groups
   });
 }
 
@@ -434,35 +455,171 @@ function boundaryRetimeForGap(
   return { previousEnd, segmentStart, reason };
 }
 
-function collectLongSegmentCandidates(
+function collectLongSplitOperations(
   source: SegmentsFile,
   chunks: SuggestedPatchChunk[]
-): Map<string, LongSegmentCandidate[]> {
-  const groups = new Map<string, LongSegmentCandidate[]>();
+): { groups: Map<string, SuggestedPatchOperation[]>; touchedSegmentIds: Set<string> } {
+  const groups = new Map<string, SuggestedPatchOperation[]>();
+  const touchedSegmentIds = new Set<string>();
+  const existingIds = new Set(source.segments.map((segment) => segment.id));
+  const candidateIds = longSplitCandidateIds(source);
+
   for (const segment of source.segments) {
-    const duration = segment.end - segment.start;
-    const chars = countSubtitleTextUnits(segment.ja);
-    const reasons: string[] = [];
-    if (duration > DURATION_LIMITS.longHard) {
-      reasons.push(`duration ${formatSeconds(duration)}s exceeds ${DURATION_LIMITS.longHard}s`);
+    if (!candidateIds.has(segment.id)) {
+      continue;
     }
-    if (chars > 28) {
-      reasons.push(`Japanese text has ${chars} non-space chars`);
-    }
-    const charsPerSecond = hasValidDuration(segment) ? chars / duration : undefined;
-    if (charsPerSecond !== undefined && charsPerSecond > 20) {
-      reasons.push(`reading speed is ${formatRate(charsPerSecond)} chars/s`);
-    }
-    if (reasons.length === 0) {
+    const operation = buildLongSplitOperation(segment, existingIds);
+    if (!operation) {
       continue;
     }
     const chunk = chunkForTime(chunks, segment.start);
-    const key = groupKey(LONG_SEGMENT_PASS, 'low', chunk);
-    const candidates = groups.get(key) ?? [];
-    candidates.push({ segment, reasons, chars, charsPerSecond });
-    groups.set(key, candidates);
+    addOperation(groups, LONG_SEGMENT_PASS, 'low', chunk, operation);
+    touchedSegmentIds.add(segment.id);
   }
-  return groups;
+
+  return { groups, touchedSegmentIds };
+}
+
+function longSplitCandidateIds(source: SegmentsFile): Set<string> {
+  return new Set(
+    validateSegments(source)
+      .filter(
+        (issue) =>
+          issue.level === 'error' &&
+          issue.segmentId !== undefined &&
+          LONG_SPLIT_ISSUE_CODES.has(issue.code)
+      )
+      .map((issue) => issue.segmentId!)
+  );
+}
+
+function buildLongSplitOperation(
+  segment: Segment,
+  existingIds: Set<string>
+): SplitOperation | undefined {
+  if (segment.zh !== undefined) {
+    return undefined;
+  }
+  const splitText = splitLongJapaneseText(segment.ja);
+  if (splitText.parts.length < 2) {
+    return undefined;
+  }
+
+  const replacements = allocateSplitTimes(segment, splitText.parts);
+  if (
+    !replacements ||
+    replacements.some((replacement) => existingIds.has(replacement.segment_id))
+  ) {
+    return undefined;
+  }
+
+  return {
+    op: 'split',
+    reason: longSplitReason(splitText.kind),
+    confidence: 'low',
+    source_id: segment.id,
+    replacements
+  };
+}
+
+function splitLongJapaneseText(value: string): {
+  parts: string[];
+  kind: 'space' | 'hard' | 'mixed';
+} {
+  const text = value.trim();
+  const hasSpace = /\s/.test(text);
+  const tokens = text.split(/\s+/).filter(Boolean);
+  const parts: string[] = [];
+  let current = '';
+  let usedHardBreak = false;
+
+  for (const token of tokens) {
+    if (countSubtitleTextUnits(token) > MAX_SPLIT_CHARS) {
+      if (current) {
+        parts.push(current);
+        current = '';
+      }
+      parts.push(...hardBreakJapaneseText(token));
+      usedHardBreak = true;
+      continue;
+    }
+    const next = current ? `${current} ${token}` : token;
+    if (!current || countSubtitleTextUnits(next) <= MAX_SPLIT_CHARS) {
+      current = next;
+      continue;
+    }
+    parts.push(current);
+    current = token;
+  }
+  if (current) {
+    parts.push(current);
+  }
+
+  return {
+    parts,
+    kind: usedHardBreak ? (hasSpace ? 'mixed' : 'hard') : 'space'
+  };
+}
+
+function hardBreakJapaneseText(value: string): string[] {
+  const parts: string[] = [];
+  let current = '';
+  for (const char of value) {
+    const next = `${current}${char}`;
+    if (current && countSubtitleTextUnits(next) > MAX_SPLIT_CHARS) {
+      parts.push(current);
+      current = char;
+    } else {
+      current = next;
+    }
+  }
+  if (current) {
+    parts.push(current);
+  }
+  return parts;
+}
+
+function allocateSplitTimes(segment: Segment, parts: string[]): SplitReplacement[] | undefined {
+  const weights = parts.map((part) => Math.max(1, countSubtitleTextUnits(part)));
+  const totalWeight = weights.reduce((total, weight) => total + weight, 0);
+  const duration = segment.end - segment.start;
+  const minimumAllocatedDuration = DURATION_LIMITS.shortHard + GAP_LIMITS.hard;
+  const replacements: SplitReplacement[] = [];
+  let elapsedWeight = 0;
+
+  for (const [index, part] of parts.entries()) {
+    const start =
+      index === 0
+        ? segment.start
+        : roundSegmentTime(segment.start + (duration * elapsedWeight) / totalWeight);
+    elapsedWeight += weights[index]!;
+    const end =
+      index === parts.length - 1
+        ? segment.end
+        : roundSegmentTime(segment.start + (duration * elapsedWeight) / totalWeight);
+    if (end - start < minimumAllocatedDuration - TIME_EPSILON) {
+      return undefined;
+    }
+    replacements.push({
+      segment_id: `${segment.id}.${index + 1}`,
+      start,
+      end,
+      speaker: segment.speaker,
+      ja: part
+    });
+  }
+
+  return replacements;
+}
+
+function longSplitReason(kind: 'space' | 'hard' | 'mixed'): string {
+  if (kind === 'hard') {
+    return 'Low-confidence hard long segment split without a punctuation or semantic boundary; review wording, timing, and meaning before applying.';
+  }
+  if (kind === 'mixed') {
+    return 'Low-confidence long segment split using punctuation/whitespace where possible and hard non-semantic breaks elsewhere; review wording, timing, and meaning before applying.';
+  }
+  return 'Low-confidence long segment split at punctuation/whitespace boundaries; review timing and meaning before applying.';
 }
 
 async function writeOperationPatches(input: {
@@ -493,24 +650,6 @@ async function writeOperationPatches(input: {
         operations
       })
     );
-  }
-}
-
-async function writeLongSegmentReports(input: {
-  outputDir: string;
-  chunks: SuggestedPatchChunk[];
-  groups: Map<string, LongSegmentCandidate[]>;
-}): Promise<void> {
-  for (const [key, candidates] of input.groups) {
-    if (candidates.length === 0) {
-      continue;
-    }
-    const { confidence, chunk } = parseGroupKey(key, input.chunks);
-    const filePath = path.join(
-      input.outputDir,
-      patchFileName(LONG_SEGMENT_PASS, chunk, confidence, 'md')
-    );
-    await writeFileAtomic(filePath, formatLongSegmentReport(chunk, candidates));
   }
 }
 
@@ -652,35 +791,8 @@ function formatChunkSummary(chunk: SuggestedPatchChunk): string {
   )}s.`;
 }
 
-function formatLongSegmentReport(
-  chunk: SuggestedPatchChunk,
-  candidates: LongSegmentCandidate[]
-): string {
-  const lines = [
-    '# Long Segment Candidates',
-    '',
-    `Chunk: ${pad(chunk.index, 3)} (${formatSeconds(chunk.start)}s-${formatSeconds(chunk.end)}s)`,
-    '',
-    'These are review targets only. They are not segment patch operations.',
-    ''
-  ];
-  for (const candidate of candidates) {
-    const { segment } = candidate;
-    lines.push(
-      `- ${segment.id} ${formatSeconds(segment.start)}s-${formatSeconds(segment.end)}s ` +
-        `speaker=${segment.speaker} chars=${candidate.chars}: ${candidate.reasons.join('; ')}`
-    );
-    lines.push(`  ja: ${segment.ja}`);
-  }
-  return `${lines.join('\n')}\n`;
-}
-
 function formatSeconds(value: number): string {
   return Number(value.toFixed(3)).toString();
-}
-
-function formatRate(value: number): string {
-  return Number(value.toFixed(2)).toString();
 }
 
 function pad(value: number, length: number): string {

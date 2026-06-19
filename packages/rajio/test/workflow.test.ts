@@ -307,11 +307,18 @@ describe('session workflow', () => {
           { id: 'retime-1', start: 2, end: 3, speaker: 'A', ja: '長めの文です' },
           { id: 'retime-2', start: 3, end: 4, speaker: 'A', ja: '次の文です' },
           {
-            id: 'long',
+            id: 'long-space',
             start: 5,
-            end: 16,
+            end: 10,
             speaker: 'A',
-            ja: 'これはとても長い字幕候補なので人間が意味を見ながら分割する必要があります'
+            ja: 'これは長い字幕候補です、意味を見ながら分けます、あとで確認します'
+          },
+          {
+            id: 'long-hard',
+            start: 10.2,
+            end: 15.8,
+            speaker: 'A',
+            ja: 'あ'.repeat(60)
           },
           { id: 'hard-1', start: 16.2, end: 16.8, speaker: 'A', ja: '硬めの文です' },
           { id: 'hard-2', start: 16.8, end: 17.4, speaker: 'B', ja: '次の硬め文です' },
@@ -362,7 +369,11 @@ describe('session workflow', () => {
       suggestedPatchDir,
       '03-boundary-retime-chunk-000-000000s-000020s-high.toml'
     );
-    const longReportPath = path.join(
+    const longPatchPath = path.join(
+      suggestedPatchDir,
+      '04-long-segment-candidates-chunk-000-000000s-000020s-low.toml'
+    );
+    const oldLongReportPath = path.join(
       suggestedPatchDir,
       '04-long-segment-candidates-chunk-000-000000s-000020s-low.md'
     );
@@ -427,14 +438,52 @@ describe('session workflow', () => {
     expect(retimePatch.operations).toEqual(
       expect.arrayContaining([expect.objectContaining({ segment_id: 'no-shrink-1' })])
     );
-    await expect(readFile(longReportPath, 'utf8')).resolves.toContain('long');
+    await expect(readFile(oldLongReportPath, 'utf8')).rejects.toThrow();
+    const longPatch = parseSegmentPatch(await readFile(longPatchPath, 'utf8'));
+    expect(longPatch.operations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          op: 'split',
+          confidence: 'low',
+          source_id: 'long-space',
+          reason:
+            'Low-confidence long segment split at punctuation/whitespace boundaries; review timing and meaning before applying.'
+        }),
+        expect.objectContaining({
+          op: 'split',
+          confidence: 'low',
+          source_id: 'long-hard',
+          reason:
+            'Low-confidence hard long segment split without a punctuation or semantic boundary; review wording, timing, and meaning before applying.'
+        })
+      ])
+    );
+    expect(
+      longPatch.operations
+        .filter((operation) => operation.op === 'split')
+        .flatMap((operation) => operation.replacements.map((replacement) => replacement.ja))
+    ).toEqual(
+      expect.arrayContaining([
+        'これは長い字幕候補です 意味を見ながら分けます',
+        'あとで確認します',
+        'あ'.repeat(28)
+      ])
+    );
 
     const patched = structuredClone(work);
     applySegmentPatch(patched, punctuationPatch);
     applySegmentPatch(patched, parseSegmentPatch(fragmentHigh));
+    applySegmentPatch(patched, longPatch);
     applySegmentPatch(patched, retimePatch);
     expect(patched.segments.find((segment) => segment.id === 'same-1')?.ja).toBe('なんか');
     expect(patched.segments.find((segment) => segment.id === 'punctuation-only')).toBeUndefined();
+    expect(patched.segments.find((segment) => segment.id === 'long-space')).toBeUndefined();
+    expect(patched.segments.find((segment) => segment.id === 'long-space.1')?.ja).toBe(
+      'これは長い字幕候補です 意味を見ながら分けます'
+    );
+    expect(patched.segments.find((segment) => segment.id === 'long-hard.1')?.ja).toBe(
+      'あ'.repeat(28)
+    );
     expect(patched.segments.find((segment) => segment.id === 'retime-1')?.end).toBe(2.925);
     expect(patched.segments.find((segment) => segment.id === 'retime-2')?.start).toBe(3.075);
     expect(patched.segments.find((segment) => segment.id === 'hard-1')?.end).toBe(16.725);
@@ -442,6 +491,58 @@ describe('session workflow', () => {
     expect(patched.segments.find((segment) => segment.id === 'no-shrink-1')?.end).toBe(18.085);
     expect(patched.segments.find((segment) => segment.id === 'no-fit-1')?.end).toBe(19.345);
     expect(patched.segments.find((segment) => segment.id === 'no-fit-2')?.start).toBe(19.495);
+  });
+
+  it('uses error-level QA issues to trigger long split suggestions', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml',
+        segments_sha256: 'placeholder'
+      }
+    });
+    await writeFile(
+      path.join(dir, 'transcript/raw/segments.toml'),
+      stringify({
+        ...sampleTranscript(),
+        segments: [
+          {
+            id: 'skipped-long',
+            start: 0,
+            end: 5,
+            speaker: 'A',
+            ja: 'あ'.repeat(29),
+            skip_checks: [{ code: 'ja_line_hard_limit', reason: 'Reviewed as intentional.' }]
+          }
+        ]
+      })
+    );
+    const session = await Session.loadOrCreate(dir);
+    session.state.stages.audio = {
+      status: 'done',
+      chunks: [
+        {
+          audio: 'audio/chunks/chunk-000.m4a',
+          start: 0,
+          end: 10,
+          size: 1,
+          sha256: 'placeholder'
+        }
+      ]
+    };
+    await session.save();
+
+    await runRajio(session, baseOptions);
+
+    await expect(
+      readFile(
+        path.join(
+          dir,
+          'transcript/work/suggested-patches/04-long-segment-candidates-chunk-000-000000s-000010s-low.toml'
+        ),
+        'utf8'
+      )
+    ).rejects.toThrow();
   });
 
   it('copies long raw transcript segments without pre-cutting transcript work', async () => {
