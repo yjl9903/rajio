@@ -860,9 +860,11 @@ Before reporting completion:
 - If a committed manual stage becomes `dirty`, inspect the changed work and rerun
   `--commit` only after it passes manual review and validation.
 - If transcription fails, inspect `transcript/raw/checkpoints/input-000.error.log`, check
-  credentials, provider access, media path, ffmpeg, and ffprobe, then retry. A matching completed
-  checkpoint is reused on retry; use `--reset transcript_raw` to start a full new transcription
-  round.
+  credentials, provider access, media path, ffmpeg, and ffprobe, report the likely cause and
+  recommended next step to the user, then pause work. Do not retry transcription, reset
+  transcription artifacts, or continue downstream stages unless the user explicitly asks for it.
+  A matching completed checkpoint is reused on retry; use `--reset transcript_raw` only when the
+  user asks to start a full new transcription round.
 - If the user asks to retry an earlier workflow step, run the default command with
   `--reset`: `--reset audio` retries audio extraction, `--reset transcript_raw` reruns
   transcription generation, `--reset transcript_work` regenerates the transcript
