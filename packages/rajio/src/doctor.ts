@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
 import { Codex } from '@openai/codex-sdk';
 import { execa } from 'execa';
 import OpenAI from 'openai';
@@ -14,6 +15,7 @@ import { taggedLogger } from './utils/logger.js';
 const REQUIRED_NODE_MAJOR = 24;
 const CHECK_TIMEOUT_MS = 10000;
 const NPM_RAJIO_LATEST_URL = 'https://registry.npmjs.org/rajio/latest';
+const ELEVENLABS_PROBE_TRANSCRIPT_ID = 'rajio-doctor-probe';
 
 export type DoctorStatus = 'pass' | 'warn' | 'fail';
 
@@ -31,6 +33,7 @@ export interface DoctorResult {
 
 export interface DoctorDeps {
   execa?: typeof execa;
+  checkElevenLabs?: (runtime: RuntimeConfig) => Promise<void>;
   checkOpenAI?: (runtime: RuntimeConfig) => Promise<void>;
   createCodex?: (runtime: RuntimeConfig) => void;
   getLatestRajioVersion?: () => Promise<string>;
@@ -57,9 +60,9 @@ export async function runDoctor(
   checks.push(await cliVersionCheck(deps));
   checks.push(nodeCheck(deps.nodeVersion ?? process.versions.node));
   checks.push(...envFilesChecks(envFiles));
-  checks.push(await openAIConnectivityCheck(runtime, deps));
-  checks.push(elevenLabsApiKeyCheck(runtime));
   checks.push(baseUrlCheck(runtime));
+  checks.push(await elevenLabsConnectivityCheck(runtime, deps));
+  checks.push(await openAIConnectivityCheck(runtime, deps));
   checks.push(await commandVersionCheck('ffmpeg', runtime.ffmpegBin, deps));
   checks.push(await commandVersionCheck('ffprobe', runtime.ffprobeBin, deps));
   checks.push(codexCheck(runtime, deps));
@@ -178,19 +181,32 @@ async function openAIConnectivityCheck(
   }
 }
 
-function elevenLabsApiKeyCheck(runtime: RuntimeConfig): DoctorCheck {
+async function elevenLabsConnectivityCheck(
+  runtime: RuntimeConfig,
+  deps: DoctorDeps
+): Promise<DoctorCheck> {
   if (!runtime.elevenlabsApiKey) {
     return {
-      name: 'provider',
+      name: 'transcription',
       status: 'fail',
       message: 'ELEVENLABS_API_KEY is not set'
     };
   }
-  return {
-    name: 'provider',
-    status: 'pass',
-    message: 'ELEVENLABS_API_KEY is set'
-  };
+  try {
+    await (deps.checkElevenLabs ?? checkElevenLabsConnectivity)(runtime);
+    return {
+      name: 'transcription',
+      status: 'pass',
+      message: 'ElevenLabs Speech-to-Text API is reachable'
+    };
+  } catch (error) {
+    return {
+      name: 'transcription',
+      status: 'fail',
+      message: 'ElevenLabs API check failed',
+      detail: formatError(error)
+    };
+  }
 }
 
 function baseUrlCheck(runtime: RuntimeConfig): DoctorCheck {
@@ -306,6 +322,55 @@ async function checkOpenAIConnectivity(runtime: RuntimeConfig): Promise<void> {
     timeout: CHECK_TIMEOUT_MS
   });
   await client.models.list();
+}
+
+async function checkElevenLabsConnectivity(runtime: RuntimeConfig): Promise<void> {
+  const client = new ElevenLabsClient({ apiKey: runtime.elevenlabsApiKey });
+  try {
+    await client.speechToText.transcripts.get(ELEVENLABS_PROBE_TRANSCRIPT_ID, {
+      timeoutInSeconds: CHECK_TIMEOUT_MS / 1000
+    });
+  } catch (error) {
+    if (isElevenLabsProbeSuccessError(error)) {
+      return;
+    }
+    throw error;
+  }
+}
+
+export function isElevenLabsProbeSuccessError(error: unknown): boolean {
+  return isHttpStatus(error, 404) || isElevenLabsInvalidUidError(error);
+}
+
+function isElevenLabsInvalidUidError(error: unknown): boolean {
+  const body = getErrorBody(error);
+  const detail = isRecord(body) ? body.detail : undefined;
+  if (!isRecord(detail)) {
+    return false;
+  }
+  return detail.status === 'invalid_uid' || detail.code === 'invalid_uid';
+}
+
+function getErrorBody(error: unknown): unknown {
+  if (isRecord(error)) {
+    return error.body;
+  }
+  return undefined;
+}
+
+function isHttpStatus(error: unknown, statusCode: number): boolean {
+  if (!isRecord(error)) {
+    return false;
+  }
+  return error.statusCode === statusCode;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value)
+  );
 }
 
 function compareSemverCore(left: string, right: string): number | undefined {

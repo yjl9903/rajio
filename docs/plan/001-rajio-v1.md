@@ -119,8 +119,8 @@ Environment variables:
 
 - `OPENAI_API_KEY`
 - `OPENAI_BASE_URL`
-- `RAJIO_FFMPEG_BIN`
-- `RAJIO_FFPROBE_BIN`
+- `FFMPEG_PATH`
+- `FFPROBE_PATH`
 
 The CLI loads `.env` once from the command working directory, then once from the
 resolved session directory. Later files override earlier values, so priority is:

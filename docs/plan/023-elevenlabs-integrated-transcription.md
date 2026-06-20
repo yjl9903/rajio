@@ -74,7 +74,8 @@ Refactor code layout:
 - Existing `--chunk-*` CLI options remain accepted and validated. The chunking strategy stays in
   code for future models, while ElevenLabs integrated transcription currently selects
   `single_file` and does not write chunk metadata.
-- `doctor` checks `ELEVENLABS_API_KEY` for the recorded transcription provider.
+- `doctor` checks `ELEVENLABS_API_KEY` for the recorded transcription provider. See
+  `024-elevenlabs-doctor-probe.md` for the later API reachability probe.
 - OpenAI env remains for Codex/manual workflow use, not transcription provider connectivity.
 
 ## Test Plan
@@ -91,7 +92,8 @@ Refactor code layout:
   handling, `confidence = exp(logprob)`.
 - Work stage: raw keeps `words`, transcript work drops `words`.
 - Clips: one extracted range, one checkpoint, matching resume.
-- Doctor: missing `ELEVENLABS_API_KEY` fails for ElevenLabs.
+- Doctor: missing `ELEVENLABS_API_KEY` fails for ElevenLabs; configured keys are probed with the
+  ElevenLabs Speech-to-Text API.
 
 ## Assumptions
 

@@ -4,7 +4,7 @@ import path from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 import { version as packageVersion } from '../package.json' with { type: 'json' };
-import { runDoctor, type DoctorDeps } from '../src/doctor.js';
+import { isElevenLabsProbeSuccessError, runDoctor, type DoctorDeps } from '../src/doctor.js';
 import { Session } from '../src/index.js';
 import { readRuntimeConfig } from '../src/utils/env.js';
 import type { RuntimeConfig } from '../src/types.js';
@@ -16,15 +16,15 @@ describe('runtime environment', () => {
     const sessionDir = await tempDir();
     process.env.OPENAI_API_KEY = 'from-process';
     process.env.OPENAI_BASE_URL = 'https://process.example';
-    process.env.RAJIO_FFMPEG_BIN = 'process-ffmpeg';
+    process.env.FFMPEG_PATH = 'process-ffmpeg';
     await writeFile(
       path.join(cwd, '.env'),
       [
         'OPENAI_API_KEY=from-cwd',
         'OPENAI_BASE_URL=https://cwd.example',
         'ELEVENLABS_API_KEY=from-cwd-elevenlabs',
-        'RAJIO_FFMPEG_BIN=cwd-ffmpeg',
-        'RAJIO_FFPROBE_BIN=cwd-ffprobe'
+        'FFMPEG_PATH=cwd-ffmpeg',
+        'FFPROBE_PATH=cwd-ffprobe'
       ].join('\n')
     );
     await writeFile(
@@ -32,7 +32,7 @@ describe('runtime environment', () => {
       [
         'OPENAI_API_KEY=from-session',
         'ELEVENLABS_API_KEY=from-session-elevenlabs',
-        'RAJIO_FFMPEG_BIN=session-ffmpeg'
+        'FFMPEG_PATH=session-ffmpeg'
       ].join('\n')
     );
 
@@ -80,8 +80,8 @@ describe('doctor', () => {
         'OPENAI_API_KEY=from-cwd',
         'OPENAI_BASE_URL=https://cwd.example',
         'ELEVENLABS_API_KEY=from-cwd-elevenlabs',
-        'RAJIO_FFMPEG_BIN=cwd-ffmpeg',
-        'RAJIO_FFPROBE_BIN=cwd-ffprobe'
+        'FFMPEG_PATH=cwd-ffmpeg',
+        'FFPROBE_PATH=cwd-ffprobe'
       ].join('\n')
     );
     await writeFile(
@@ -89,19 +89,23 @@ describe('doctor', () => {
       [
         'OPENAI_API_KEY=from-session',
         'ELEVENLABS_API_KEY=from-session-elevenlabs',
-        'RAJIO_FFMPEG_BIN=session-ffmpeg'
+        'FFMPEG_PATH=session-ffmpeg'
       ].join('\n')
     );
     const execaMock = vi.fn(async (command: string) => ({
       stdout: `${command} version test`
     }));
     const seenCodexConfigs: RuntimeConfig[] = [];
+    const seenElevenLabsConfigs: RuntimeConfig[] = [];
     const session = await Session.loadOrCreate(sessionDir);
 
     const result = await runDoctor(session, {
       cwd,
       deps: doctorDeps({
         execa: execaMock as never,
+        checkElevenLabs: async (runtime) => {
+          seenElevenLabsConfigs.push(runtime);
+        },
         createCodex: (runtime) => {
           seenCodexConfigs.push(runtime);
         }
@@ -114,15 +118,16 @@ describe('doctor', () => {
       'node',
       '.env',
       '.env',
-      'openai',
-      'provider',
       '.env',
+      'transcription',
+      'openai',
       'ffmpeg',
       'ffprobe',
       'codex'
     ]);
     expect(execaMock.mock.calls.map((call) => call[0])).toEqual(['session-ffmpeg', 'cwd-ffprobe']);
     expect(seenCodexConfigs[0]?.openaiApiKey).toBe('from-session');
+    expect(seenElevenLabsConfigs[0]?.elevenlabsApiKey).toBe('from-session-elevenlabs');
     expect(checkByName(result, 'rajio')).toEqual({
       name: 'rajio',
       status: 'pass',
@@ -138,10 +143,10 @@ describe('doctor', () => {
       status: 'pass',
       message: 'OpenAI API is reachable'
     });
-    expect(checkByName(result, 'provider')).toEqual({
-      name: 'provider',
+    expect(checkByName(result, 'transcription')).toEqual({
+      name: 'transcription',
       status: 'pass',
-      message: 'ELEVENLABS_API_KEY is set'
+      message: 'ElevenLabs Speech-to-Text API is reachable'
     });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({
       status: 'pass',
@@ -168,8 +173,8 @@ describe('doctor', () => {
     delete process.env.OPENAI_API_KEY;
     delete process.env.ELEVENLABS_API_KEY;
     delete process.env.OPENAI_BASE_URL;
-    delete process.env.RAJIO_FFMPEG_BIN;
-    delete process.env.RAJIO_FFPROBE_BIN;
+    delete process.env.FFMPEG_PATH;
+    delete process.env.FFPROBE_PATH;
     const session = await Session.loadOrCreate(cwd);
 
     const result = await runDoctor(session, {
@@ -189,7 +194,7 @@ describe('doctor', () => {
     ).toMatchObject({ status: 'warn' });
     expect(checkByName(result, 'node')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({ status: 'fail' });
-    expect(checkByName(result, 'provider')).toMatchObject({ status: 'fail' });
+    expect(checkByName(result, 'transcription')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'codex')).toMatchObject({ status: 'warn' });
   });
 
@@ -215,6 +220,55 @@ describe('doctor', () => {
       message: 'OpenAI API check failed',
       detail: 'api down'
     });
+  });
+
+  it('fails when ElevenLabs API connectivity fails', async () => {
+    const cwd = await tempDir();
+    process.env.OPENAI_API_KEY = 'from-process';
+    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
+    const session = await Session.load(cwd);
+
+    const result = await runDoctor(session, {
+      cwd,
+      deps: doctorDeps({
+        checkElevenLabs: async () => {
+          throw new Error('provider down');
+        }
+      })
+    });
+
+    expect(result.ok).toBe(false);
+    expect(checkByName(result, 'transcription')).toEqual({
+      name: 'transcription',
+      status: 'fail',
+      message: 'ElevenLabs API check failed',
+      detail: 'provider down'
+    });
+  });
+
+  it('accepts ElevenLabs invalid UID as a successful no-upload probe', () => {
+    expect(isElevenLabsProbeSuccessError({ statusCode: 404 })).toBe(true);
+    expect(
+      isElevenLabsProbeSuccessError({
+        statusCode: 400,
+        body: {
+          detail: {
+            status: 'invalid_uid',
+            message: 'An invalid ID has been received'
+          }
+        }
+      })
+    ).toBe(true);
+    expect(
+      isElevenLabsProbeSuccessError({
+        statusCode: 401,
+        body: {
+          detail: {
+            status: 'missing_permissions'
+          }
+        }
+      })
+    ).toBe(false);
   });
 
   it('warns when Codex SDK initialization fails without failing doctor', async () => {
@@ -287,6 +341,7 @@ describe('doctor', () => {
 
 function doctorDeps(overrides: DoctorDeps = {}): DoctorDeps {
   return {
+    checkElevenLabs: async () => undefined,
     checkOpenAI: async () => undefined,
     execa: vi.fn(async (command: string) => ({
       stdout: `${command} version test`

@@ -69,6 +69,6 @@ generated files, or workflow/session format changes.
 
 ## Security
 
-Do not commit secrets, media files, generated session outputs, or local `.env` overrides. Runtime
-configuration may come from `.env`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `RAJIO_FFMPEG_BIN`, and
-`RAJIO_FFPROBE_BIN`.
+Do not commit secrets, media files, generated session outputs, or local `.env` overrides. Sensitive
+runtime configuration may come from `.env`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and
+`ELEVENLABS_API_KEY`.

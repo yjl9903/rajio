@@ -40,8 +40,8 @@ rajio reads these environment variables:
 - `OPENAI_API_KEY`
 - `OPENAI_BASE_URL`
 - `ELEVENLABS_API_KEY`
-- `RAJIO_FFMPEG_BIN`
-- `RAJIO_FFPROBE_BIN`
+- `FFMPEG_PATH`
+- `FFPROBE_PATH`
 
 When a command needs runtime configuration, rajio loads `.env` from the command cwd,
 then loads `.env` from the resolved session directory. Later files override earlier
@@ -728,7 +728,7 @@ rajio doctor /path/to/session
 ```
 
 `rajio doctor` reports the rajio CLI version and update status, then checks session runtime
-readiness: `.env` loading, ElevenLabs API key presence for ElevenLabs transcription,
+readiness: `.env` loading, ElevenLabs Speech-to-Text API reachability for ElevenLabs transcription,
 OpenAI/Codex readiness where relevant, ffmpeg, ffprobe, and Node.js version expectations. The
 target is required. If any check fails, process exit code is `1`.
 

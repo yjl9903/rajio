@@ -17,8 +17,8 @@ export async function readRuntimeConfig(input: {
     openaiApiKey: process.env.OPENAI_API_KEY,
     openaiBaseUrl: process.env.OPENAI_BASE_URL,
     elevenlabsApiKey: process.env.ELEVENLABS_API_KEY,
-    ffmpegBin: process.env.RAJIO_FFMPEG_BIN || 'ffmpeg',
-    ffprobeBin: process.env.RAJIO_FFPROBE_BIN || 'ffprobe'
+    ffmpegBin: process.env.FFMPEG_PATH || 'ffmpeg',
+    ffprobeBin: process.env.FFPROBE_PATH || 'ffprobe'
   };
 }
 
