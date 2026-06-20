@@ -1745,6 +1745,10 @@ describe('segment edit tools', () => {
     const original = sampleTranslation();
     const cases: Array<[unknown, string]> = [
       [{ id: '1', start: 1.25, end: 1.35, speaker: 'A', ja: '重复' }, 'already exists'],
+      [
+        { id: 'negative-time', start: -1, end: -0.5, speaker: 'A', ja: '负时间', zh: '负时间' },
+        'nonnegative'
+      ],
       [{ id: 'bad-time', start: 1.25, end: 1.25, speaker: 'A', ja: '坏时间' }, 'greater'],
       [{ id: 'empty-ja', start: 1.25, end: 1.35, speaker: 'A', ja: ' ' }, 'empty Japanese'],
       [{ id: 'empty-zh', start: 1.25, end: 1.35, speaker: 'A', ja: '缺中文' }, 'empty Chinese'],

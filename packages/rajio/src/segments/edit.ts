@@ -177,6 +177,12 @@ export function insertSegment(
   if (file.segments.some((segment) => segment.id === input.id)) {
     throw new Error(`segment id already exists: ${input.id}`);
   }
+  if (input.start < 0) {
+    throw new Error(`Segment ${input.id} start must be nonnegative.`);
+  }
+  if (input.end <= 0) {
+    throw new Error(`Segment ${input.id} end must be positive.`);
+  }
   if (input.end <= input.start) {
     throw new Error(`Segment ${input.id} end must be greater than start.`);
   }
