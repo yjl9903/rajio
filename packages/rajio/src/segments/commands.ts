@@ -111,6 +111,7 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--json', 'print JSON output')
     .allowUnknownOption(rejectUnknownOption)
     .action(async (target, file, options) => {
+      rejectApplyPatchAsTarget(target, file);
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
         sessionTarget: target,
@@ -695,6 +696,21 @@ function requireNumberOption(value: number | undefined, name: string): number {
 function rejectUnexpectedArguments(options: { '--'?: string[] }): void {
   if (options['--']?.length) {
     throw new Error(`Unexpected argument: ${options['--'][0]}`);
+  }
+}
+
+function rejectApplyPatchAsTarget(target: string, file: string | undefined): void {
+  if (file !== undefined || target.split(/[\\/]/u).at(-1) === 'session.toml') {
+    return;
+  }
+  if (target.toLowerCase().endsWith('.toml')) {
+    throw new Error(
+      [
+        'segments apply is missing a session target.',
+        'Use: rajio segments apply <target> <patch.toml> [options]',
+        `Received patch path as <target>: ${target}`
+      ].join('\n')
+    );
   }
 }
 

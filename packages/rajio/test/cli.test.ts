@@ -774,6 +774,21 @@ describe('cli explicit targets', () => {
     });
   });
 
+  it('explains when segments apply receives the patch path as target', async () => {
+    vi.useRealTimers();
+    const result = await runCliSideEffect([
+      'segments',
+      'apply',
+      '.rajio/example/patches/translation/main-refine-pass2.toml',
+      '--dry-run',
+      '--json'
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain('segments apply is missing a session target.');
+    expect(result.stderr).toContain('Use: rajio segments apply <target> <patch.toml> [options]');
+  });
+
   it('lists and shows clips with target before clip id', async () => {
     const dir = await preparedSession('transcript_work', {});
     await writeClipFixture(dir);
