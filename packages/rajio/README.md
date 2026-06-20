@@ -71,7 +71,7 @@ Requirements:
 
 - Install the latest Node.js.
 - Make sure `ffmpeg` and `ffprobe` can be found in your environment.
-- Set `OPENAI_API_KEY` and, if needed, `OPENAI_BASE_URL` for a provider that supports `gpt-4o-transcribe-diarize`.
+- Configure the API key or credentials required by your selected ASR provider.
 
 ## CLI
 

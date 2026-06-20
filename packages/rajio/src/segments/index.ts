@@ -67,6 +67,15 @@ export const segmentSkipCheckSchema = z.object({
   reason: z.string().trim().min(1)
 });
 
+export const segmentWordSchema = z.object({
+  text: z.string(),
+  start: z.number().nonnegative(),
+  end: z.number().nonnegative(),
+  speaker: z.string().optional(),
+  confidence: z.number().optional(),
+  type: z.string().optional()
+});
+
 export const segmentIdSchema = z
   .string()
   .min(1, 'segment id must not be empty.')
@@ -90,7 +99,8 @@ export const segmentSchema = z.object({
   zh: z.string().optional(),
   notes: z.string().optional(),
   flags: z.array(z.string()).optional(),
-  skip_checks: z.array(segmentSkipCheckSchema).optional()
+  skip_checks: z.array(segmentSkipCheckSchema).optional(),
+  words: z.array(segmentWordSchema).optional()
 });
 
 export const segmentsFileSchema = z.object({
@@ -364,10 +374,13 @@ export function cloneForTranslation(source: SegmentsFile, generatedAt: string): 
 
 export function normalizeTranscriptWorkSegments(source: SegmentsFile): SegmentsFile {
   const segments = source.segments
-    .map((segment) => ({
-      ...segment,
-      ja: segment.ja.trim()
-    }))
+    .map((segment) => {
+      const { words: _words, ...rest } = segment;
+      return {
+        ...rest,
+        ja: segment.ja.trim()
+      };
+    })
     .filter((segment) => segment.ja);
 
   return {

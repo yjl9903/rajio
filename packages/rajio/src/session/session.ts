@@ -21,6 +21,7 @@ import type {
   StageState
 } from '../types.js';
 import { CURRENT_STAGES, MANUAL_STAGES, STAGES } from '../types.js';
+import { normalizeTranscriptionConfig } from '../transcription/config.js';
 
 const SESSION_FILE = 'session.toml';
 
@@ -466,6 +467,9 @@ function normalizeSession(session: SessionState): SessionState {
     throw new Error(`Unsupported session schema version: ${String(session.schema_version)}`);
   }
   session.stages = { ...createInitialStages(), ...session.stages };
+  if (session.transcription !== undefined) {
+    session.transcription = normalizeTranscriptionConfig(session.transcription);
+  }
   if (!CURRENT_STAGES.includes(session.current_stage)) {
     throw new Error(`Invalid current_stage: ${String(session.current_stage)}`);
   }

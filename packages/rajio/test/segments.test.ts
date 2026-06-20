@@ -37,7 +37,7 @@ import {
   resolveCheckScope
 } from '../src/session/check.js';
 import { renderAss, renderSrt } from '../src/workflow/subtitles.js';
-import { mergeTranscriptChunks } from '../src/workflow/transcription.js';
+import { mergeElevenLabsInputs } from '../src/transcription/elevenlabs.js';
 import type { SegmentsFile } from '../src/types.js';
 import {
   preparedCompleteSession,
@@ -1224,20 +1224,23 @@ describe('segments validation and subtitle rendering', () => {
     expect(await readFile(filePath, 'utf8')).not.toContain('media =');
   });
 
-  it('preserves empty transcript segments when merging raw chunks', () => {
-    const file = mergeTranscriptChunks({
+  it('merges ElevenLabs transcript words into raw segments', () => {
+    const file = mergeElevenLabsInputs({
       generatedAt: '2026-06-06T00:00:00.000Z',
-      chunks: [
+      inputs: [
         {
           index: 0,
-          audioPath: 'chunk-000.m4a',
+          audioPath: 'audio/extracted.m4a',
           start: 10,
           end: 11,
+          transcription: {
+            provider: 'elevenlabs',
+            model: 'scribe_v2',
+            segmenter: 'integrated'
+          },
           response: {
-            segments: [
-              { id: 'empty', start: 0, end: 0.2, speaker: 'A', text: '' },
-              { id: 'blank', start: 0.2, end: 0.4, speaker: 'A', text: '   ' },
-              { id: 'ok', start: 0.4, end: 1, speaker: 'A', text: 'こんにちは' }
+            words: [
+              { text: 'こんにちは', start: 0.4, end: 1, speaker_id: 'speaker_0', type: 'word' }
             ]
           }
         }
@@ -1246,25 +1249,20 @@ describe('segments validation and subtitle rendering', () => {
 
     expect(file.segments).toEqual([
       {
-        id: '1-empty',
-        start: 10,
-        end: 10.2,
-        speaker: 'A',
-        ja: ''
-      },
-      {
-        id: '1-blank',
-        start: 10.2,
-        end: 10.4,
-        speaker: 'A',
-        ja: '   '
-      },
-      {
-        id: '1-ok',
+        id: '1-s1',
         start: 10.4,
         end: 11,
-        speaker: 'A',
-        ja: 'こんにちは'
+        speaker: 'speaker_0',
+        ja: 'こんにちは',
+        words: [
+          {
+            text: 'こんにちは',
+            start: 10.4,
+            end: 11,
+            speaker: 'speaker_0',
+            type: 'word'
+          }
+        ]
       }
     ]);
     expect(file.source).toEqual({

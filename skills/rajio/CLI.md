@@ -15,7 +15,8 @@ raw transcript files are read-only references, and clip transcripts are review a
 - Edit only manual work files through `rajio segments`: `transcript/work/segments.toml`
   with `--stage transcript`, or `translation/work/segments.toml` with
   `--stage translation`.
-- Do not edit `transcript/raw/segments.toml` or `transcript/raw/chunks/*.toml`.
+- Do not edit `transcript/raw/segments.toml`, `transcript/raw/checkpoints/*.toml`, or
+  `transcript/raw/chunks/*.toml`.
 - Use `rajio clips` only to independently retranscribe difficult source-video ranges
   for comparison. Clip output never updates the main transcript automatically.
 - Use `rajio check` to validate file shape and common segment issues. It is a quality
@@ -38,6 +39,7 @@ rajio reads these environment variables:
 
 - `OPENAI_API_KEY`
 - `OPENAI_BASE_URL`
+- `ELEVENLABS_API_KEY`
 - `RAJIO_FFMPEG_BIN`
 - `RAJIO_FFPROBE_BIN`
 
@@ -49,7 +51,7 @@ values, so priority is:
 session .env > cwd .env > process environment
 ```
 
-Transcription commands upload audio chunks to the configured OpenAI-compatible provider.
+Transcription commands upload audio to the configured transcription provider.
 Follow the privacy rule in [SKILL.md](SKILL.md) before starting transcription.
 
 ## Targets
@@ -157,10 +159,9 @@ Allowed `skip_checks.code` values are:
 
 Reset boundaries:
 
-- `--reset audio`: re-extract audio, recreate audio chunks, rerun transcription, and
-  invalidate all downstream work.
-- `--reset transcript_raw`: preserve audio metadata/chunks, clear raw transcript
-  checkpoints, rerun ASR, and invalidate transcript work, translation work, and export.
+- `--reset audio`: re-extract audio, rerun transcription, and invalidate all downstream work.
+- `--reset transcript_raw`: preserve audio metadata, clear raw transcript checkpoints, rerun ASR,
+  and invalidate transcript work, translation work, and export.
 - `--reset transcript_work`: preserve raw transcript and regenerate
   `transcript/work/segments.toml`.
 - `--reset translation_work`: preserve clean committed transcript work and regenerate
@@ -182,10 +183,10 @@ Audio chunk options:
 - `--chunk-silence-duration <seconds>`: ffmpeg `silencedetect` minimum silence
   duration. Default `0.4`; must be non-negative.
 
-`--chunk-target + --chunk-boundary-search` must be at most `1350` seconds. Chunk
-options are read during first audio generation and `--reset audio`, then recorded under
-`stages.audio.chunking` in `session.toml`. `--reset transcript_raw` reuses existing
-`stages.audio.chunks[]` and does not apply new chunk options.
+`--chunk-target + --chunk-boundary-search` must be at most `1350` seconds. rajio keeps both
+`single_file` and chunking audio strategies. With the current ElevenLabs/scribe_v2/integrated
+flow, these options are validated but the audio stage records `strategy = "single_file"` and does
+not write `stages.audio.chunking` or `stages.audio.chunks[]`.
 
 ## Segments Commands
 
@@ -553,15 +554,14 @@ Required options are `--start` and `--end`, in source-video seconds. The range i
 `clips transcribe`:
 
 - extracts the source media range to `clips/<clip-id>/source.m4a`
-- creates `clips/<clip-id>/chunks/chunk-*.m4a`
-- uploads chunks to ASR
-- writes successful chunk checkpoints to `chunks/chunk-*.toml`
-- writes failed chunk logs to `chunks/chunk-*.error.log`
+- uploads that source audio to ASR for the current ElevenLabs/scribe_v2/integrated flow
+- writes successful checkpoints to `checkpoints/input-000.toml`
+- writes failed logs to `checkpoints/input-000.error.log`
 - writes absolute source-video transcript times to `clips/<clip-id>/segments.toml`
-- resumes by skipping successful chunk checkpoints and retrying failed or missing chunks
+- resumes by reusing a matching checkpoint and retrying failed or missing checkpoints
 
-It supports the same chunk options as the default command and records the resolved
-options in `clip.toml`.
+It accepts the same chunk options as the default command for strategy compatibility, but current
+ElevenLabs clip transcription uses `strategy = "single_file"`.
 
 Clip directory shape:
 
@@ -570,16 +570,14 @@ clips/
   clip-120000-180000/
     clip.toml
     source.m4a
-    chunks/
-      chunk-000.m4a
-      chunk-000.toml
-      chunk-000.error.log
+    checkpoints/
+      input-000.toml
+      input-000.error.log
     segments.toml
 ```
 
-If the same start/end/label/chunking combination already has a clip directory, the
-command resumes that clip. Otherwise it creates a new id; if the base id is already used
-by a different clip, a numeric suffix is added.
+If the same start/end range already has a clip directory, the command resumes that clip. Otherwise
+it creates a new id; if the base id is already used by a different clip, a numeric suffix is added.
 
 ### clips list
 
@@ -593,7 +591,7 @@ JSON mode returns `{ "clips": [...] }` with the same fields.
 Status values:
 
 - `done`: `segments.toml` exists and parses.
-- `failed`: no parseable `segments.toml`, and at least one chunk error log exists.
+- `failed`: no parseable `segments.toml`, and at least one checkpoint error log exists.
 - `partial`: no parseable `segments.toml`, no error log, and at least one checkpoint exists.
 - `missing`: no parseable `segments.toml` and no usable checkpoint state.
 
@@ -729,11 +727,10 @@ Exit behavior:
 rajio doctor /path/to/session
 ```
 
-`rajio doctor` reports the rajio CLI version and update status, then checks session
-runtime readiness: `.env` loading, API key presence, OpenAI-compatible provider
-reachability, ffmpeg, ffprobe, Codex availability where relevant, and Node.js
-version expectations. The target is required. If any check fails, process exit code
-is `1`.
+`rajio doctor` reports the rajio CLI version and update status, then checks session runtime
+readiness: `.env` loading, ElevenLabs API key presence for ElevenLabs transcription,
+OpenAI/Codex readiness where relevant, ffmpeg, ffprobe, and Node.js version expectations. The
+target is required. If any check fails, process exit code is `1`.
 
 Run `doctor` before automatic transcription/export stages or when provider, ffmpeg, or
 environment setup looks misconfigured. Also compare the reported CLI version with

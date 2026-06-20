@@ -36,9 +36,8 @@ Quality comes first:
 
 Respect privacy and provider boundaries:
 
-- Make the privacy boundary explicit before transcription. Rajio uploads audio to the
-  configured OpenAI-compatible transcription provider; start transcription only after the
-  user authorizes that upload.
+- Make the privacy boundary explicit before transcription. Rajio uploads audio to the configured
+  transcription provider; start transcription only after the user authorizes that upload.
 - During `translation_work`, do not use the OpenAI-compatible provider configured in
   `.env` as a machine-translation service. Sub-agents produce the first-draft batch
   translations from the provided context; the main agent reviews, merges, validates, and
@@ -84,8 +83,8 @@ Define manual review strictly:
 
 Respect file boundaries:
 
-- Never edit `transcript/raw/segments.toml` or `transcript/raw/chunks/*.toml`. Raw
-  transcript files are references.
+- Never edit `transcript/raw/segments.toml`, `transcript/raw/checkpoints/*.toml`, or
+  `transcript/raw/chunks/*.toml`. Raw transcript files are references.
 - Edit only the active manual work file, `description.md`, and session-local patch or
   review artifacts: `transcript/work/segments.toml`, `translation/work/segments.toml`,
   `description.md`, and files under session-local `patches/` or clip review directories.
@@ -184,10 +183,10 @@ Audio chunk options:
 - `--chunk-silence-noise <db>`: ffmpeg `silencedetect` threshold. Default `-35`.
 - `--chunk-silence-duration <seconds>`: minimum silence duration. Default `0.4`.
 
-These chunk options apply when audio chunks are generated, including first run and
-`--reset audio`. They are recorded under `stages.audio.chunking` in `session.toml`.
-`--reset transcript_raw` reuses existing `stages.audio.chunks[]` and does not apply new
-chunk options.
+rajio keeps both `single_file` and chunking audio strategies. With the current
+ElevenLabs/scribe_v2/integrated flow, rajio validates these options for CLI compatibility but
+selects `strategy = "single_file"` and does not write `stages.audio.chunking` or
+`stages.audio.chunks[]`. Future transcription models may select the chunking strategy again.
 
 ### Segments
 
@@ -436,8 +435,9 @@ Expected result: rajio creates or reads `session.toml`, extracts audio, transcri
 Japanese, writes raw transcript artifacts, creates `transcript/work/segments.toml`, and
 stops at `transcript_work`.
 
-If transcription is chunked, wait for chunk success or error logs. Do not restart while
-requests may still be in flight unless there is a clear CLI/provider failure.
+Wait for `transcript/raw/checkpoints/input-000.toml` or
+`transcript/raw/checkpoints/input-000.error.log`. Do not restart while requests may still be in
+flight unless there is a clear CLI/provider failure.
 
 Treat automatically created work segments as a draft.
 
@@ -846,11 +846,12 @@ Before reporting completion:
   errors, fix the relevant work file before committing.
 - If a committed manual stage becomes `dirty`, inspect the changed work and rerun
   `--commit` only after it passes manual review and validation.
-- If transcription fails, inspect `transcript/raw/chunks/*.error.log`, check credentials,
-  provider access, media path, ffmpeg, and ffprobe, then retry. Completed chunk checkpoints
-  are reused on retry; use `--reset transcript_raw` to start a full new transcription round.
+- If transcription fails, inspect `transcript/raw/checkpoints/input-000.error.log`, check
+  credentials, provider access, media path, ffmpeg, and ffprobe, then retry. A matching completed
+  checkpoint is reused on retry; use `--reset transcript_raw` to start a full new transcription
+  round.
 - If the user asks to retry an earlier workflow step, run the default command with
-  `--reset`: `--reset audio` retries audio extraction and chunking, `--reset transcript_raw`
-  reruns transcription generation, `--reset transcript_work` regenerates the transcript
+  `--reset`: `--reset audio` retries audio extraction, `--reset transcript_raw` reruns
+  transcription generation, `--reset transcript_work` regenerates the transcript
   work file, `--reset translation_work` regenerates the translation draft, and
   `--reset export` reruns subtitle export.

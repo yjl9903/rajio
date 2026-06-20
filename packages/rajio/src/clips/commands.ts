@@ -8,7 +8,8 @@ import { castNumber } from '../utils/cast.js';
 import { Session } from '../session/index.js';
 import { readSegmentsFile } from '../segments/index.js';
 import { prepareSegmentOutput, printSegments } from '../segments/output.js';
-import { resolveAudioChunkOptions } from '../workflow/stages/audio.js';
+import { resolveAudioChunkOptions } from '../audio/index.js';
+import { resolveClipTranscriptionConfig } from '../transcription/config.js';
 import { listClips, readClipFile } from './list.js';
 import { prepareClipOutput, printClipList } from './output.js';
 import { transcribeClip } from './transcribe.js';
@@ -36,6 +37,9 @@ export function registerClipCommands(app: RajioApp): void {
     .option('--chunk-silence-duration <seconds>', 'ffmpeg silencedetect minimum silence duration', {
       cast: castNumber
     })
+    .option('--transcription-provider <provider>', 'transcription provider')
+    .option('--transcription-model <model>', 'transcription model')
+    .option('--transcription-segmenter <segmenter>', 'transcription segmenter')
     .allowUnknownOption(rejectUnknownOption)
     .action(async (target, options) => {
       const session = await Session.load(target);
@@ -50,6 +54,14 @@ export function registerClipCommands(app: RajioApp): void {
       await transcribeClip({
         session,
         runtime,
+        transcription: resolveClipTranscriptionConfig({
+          state: session.state,
+          cli: {
+            provider: options.transcriptionProvider,
+            model: options.transcriptionModel,
+            segmenter: options.transcriptionSegmenter
+          }
+        }),
         start: requireNumberOption(options.start, '--start'),
         end: requireNumberOption(options.end, '--end'),
         label: options.label,

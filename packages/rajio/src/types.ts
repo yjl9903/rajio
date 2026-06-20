@@ -44,12 +44,28 @@ export interface SessionAudioChunk {
   sha256: string;
 }
 
+export type TranscriptionProviderName = 'elevenlabs';
+export type TranscriptionSegmenterName = 'integrated';
+
+export interface TranscriptionConfig {
+  provider: TranscriptionProviderName;
+  model: 'scribe_v2';
+  segmenter: TranscriptionSegmenterName;
+}
+
+export interface TranscriptionCliOptions {
+  provider?: string;
+  model?: string;
+  segmenter?: string;
+}
+
 export interface SessionState {
   schema_version: 1;
   session_id: string;
   created_at: string;
   updated_at: string;
   current_stage: CurrentStageName;
+  transcription?: TranscriptionConfig;
   input: {
     description?: string;
     media?: string;
@@ -73,6 +89,7 @@ export interface DescriptionInfo {
 export interface RuntimeConfig {
   openaiApiKey?: string;
   openaiBaseUrl?: string;
+  elevenlabsApiKey?: string;
   ffmpegBin: string;
   ffprobeBin: string;
 }
@@ -109,6 +126,7 @@ export interface CliOptions {
   full: boolean;
   reset?: StageName;
   chunking?: AudioChunkOptions;
+  transcription?: TranscriptionCliOptions;
 }
 
 export const SKIPPABLE_ISSUE_CODES = [
@@ -140,6 +158,15 @@ export interface SegmentSkipCheck {
   reason: string;
 }
 
+export interface SegmentWord {
+  text: string;
+  start: number;
+  end: number;
+  speaker?: string;
+  confidence?: number;
+  type?: string;
+}
+
 export interface Segment {
   id: string;
   start: number;
@@ -150,6 +177,7 @@ export interface Segment {
   notes?: string;
   flags?: string[];
   skip_checks?: SegmentSkipCheck[];
+  words?: SegmentWord[];
 }
 
 export interface SegmentsFile {
@@ -178,5 +206,6 @@ export interface StageRunnerDeps {
     mediaPath: string;
     description: DescriptionInfo;
     runtime: RuntimeConfig;
+    transcription: TranscriptionConfig;
   }) => Promise<unknown>;
 }

@@ -1,7 +1,7 @@
-import { mkdir, readdir, readFile, stat, unlink } from 'node:fs/promises';
+import { mkdir, readdir, stat, unlink } from 'node:fs/promises';
 import path from 'node:path';
 
-import { parse, stringify } from 'smol-toml';
+import { stringify } from 'smol-toml';
 
 import {
   fromSessionRelative,
@@ -10,46 +10,32 @@ import {
   toSessionRelative,
   writeFileAtomic
 } from '../../utils/fs.js';
-import { newQueue } from '../../utils/queue.js';
+import { mergeElevenLabsInputs, transcribeWithElevenLabs } from '../../transcription/elevenlabs.js';
+import type { TranscriptInputResult } from '../../transcription/types.js';
 import {
-  TRANSCRIPTION_MODEL,
-  mergeTranscriptChunks,
-  transcribeWithOpenAI
-} from '../transcription.js';
-import type { RuntimeConfig, SessionAudioChunk, StageRunnerDeps } from '../../types.js';
+  formatBytes,
+  formatTimeRange,
+  transcribeCheckpointedInput
+} from '../../transcription/run.js';
+import type {
+  RuntimeConfig,
+  SessionAudioChunk,
+  StageRunnerDeps,
+  TranscriptionConfig
+} from '../../types.js';
 import type { Session } from '../../session/index.js';
 import { taggedLogger } from '../../utils/logger.js';
-import type { TranscriptChunkResult } from '../transcription.js';
-import { MAX_OPENAI_TRANSCRIPTION_SECONDS } from './audio.js';
+import { MAX_CHUNKED_TRANSCRIPTION_SECONDS } from '../../audio/index.js';
 
-const TRANSCRIPTION_CHUNK_CONCURRENCY = 5;
-export const TRANSCRIPTION_HEARTBEAT_INTERVAL_MS = 30_000;
-
-interface AudioInputChunk {
+interface AudioTranscriptionInput {
   index: number;
   audioPath: string;
   start: number;
   end: number;
 }
 
-interface RawTranscriptionChunkFile {
-  version: 1;
-  status: 'done';
-  chunk_index: number;
-  audio: string;
-  start: number;
-  end: number;
-  model: string;
-  started_at: string;
-  completed_at: string;
-  response: unknown;
-}
-
-interface TranscriptionHeartbeatLogger {
+interface TranscriptionLogger {
   info(message: string): void;
-}
-
-interface TranscriptionLogger extends TranscriptionHeartbeatLogger {
   success(message: string): void;
   error(message: string): void;
 }
@@ -58,52 +44,90 @@ export async function runTranscriptRawStage(input: {
   session: Session;
   runtime: RuntimeConfig;
   deps: StageRunnerDeps;
+  transcription: TranscriptionConfig;
   resetCheckpoints?: boolean;
 }): Promise<void> {
-  const { session, runtime, deps, resetCheckpoints = false } = input;
-  const audio = session.stage('audio').audio;
-  if (typeof audio !== 'string') {
-    throw new Error('audio stage must produce an audio path before transcription.');
-  }
-  const audioPath = fromSessionRelative(session.dir, audio);
+  const { session, runtime, deps, transcription, resetCheckpoints = false } = input;
   const segmentsPath = session.artifact('transcript', 'raw', 'segments.toml');
-  const chunkResultsDir = session.artifact('transcript', 'raw', 'chunks');
-  const audioInputs = await collectAudioInputChunks(session, audioPath);
-  const transcribe = deps.transcribe ?? transcribeWithOpenAI;
+  const checkpointsDir = session.artifact('transcript', 'raw', 'checkpoints');
+  const audioInputs = await collectAudioInputs(session);
+  const transcribe = deps.transcribe ?? transcribeWithElevenLabs;
   const logger = taggedLogger('transcript_raw');
 
-  await mkdir(chunkResultsDir, { recursive: true });
+  await mkdir(checkpointsDir, { recursive: true });
   if (resetCheckpoints) {
-    await clearTranscriptionCheckpointFiles(chunkResultsDir);
+    await clearTranscriptionCheckpointFiles(checkpointsDir);
   }
-  await printTranscriptionUploadNotice(runtime, audioInputs, logger);
-  const chunks = await transcribeChunks({
-    session,
-    runtime,
-    chunkResultsDir,
-    audioInputs,
-    transcribe,
-    logger
-  });
-  const segments = mergeTranscriptChunks({
-    chunks,
+  await printTranscriptionUploadNotice(transcription, audioInputs, logger);
+  const inputs: TranscriptInputResult[] = [];
+  for (const audioInput of audioInputs) {
+    inputs.push(
+      await transcribeInput({
+        session,
+        runtime,
+        transcription,
+        checkpointsDir,
+        audioInput,
+        transcribe,
+        logger,
+        totalInputs: audioInputs.length
+      })
+    );
+  }
+
+  const segments = mergeElevenLabsInputs({
+    inputs,
     generatedAt: new Date().toISOString()
   });
   await writeFileAtomic(segmentsPath, stringify(segments));
+  const inputAudio = session.stage('audio').audio;
+  if (typeof inputAudio !== 'string') {
+    throw new Error('audio stage must produce an audio path before transcription.');
+  }
   session.updateStage('transcript_raw', {
-    input_audio: toSessionRelative(session.dir, audioPath),
-    chunks_dir: toSessionRelative(session.dir, chunkResultsDir),
-    chunk_count: chunks.length,
-    chunk_concurrency: TRANSCRIPTION_CHUNK_CONCURRENCY,
+    input_audio: inputAudio,
+    checkpoints_dir: toSessionRelative(session.dir, checkpointsDir),
+    input_count: inputs.length,
     segments: toSessionRelative(session.dir, segmentsPath),
     segments_sha256: await sha256File(segmentsPath)
   });
 }
 
-async function collectAudioInputChunks(
+async function collectAudioInputs(session: Session): Promise<AudioTranscriptionInput[]> {
+  const audioStage = session.stage('audio');
+  const audio = audioStage.audio;
+  if (typeof audio !== 'string') {
+    throw new Error('audio stage must produce an audio path before transcription.');
+  }
+  const audioPath = fromSessionRelative(session.dir, audio);
+  if (audioStage.strategy !== 'single_file') {
+    return collectAudioChunkInputs(session, audioPath);
+  }
+  const expectedSize = Number(audioStage.audio_size);
+  if (Number.isFinite(expectedSize) && (await stat(audioPath)).size !== expectedSize) {
+    throw new Error(`audio file size mismatch: ${audio}.`);
+  }
+  if (typeof audioStage.audio_sha256 === 'string') {
+    const actualHash = await sha256File(audioPath);
+    if (actualHash !== audioStage.audio_sha256) {
+      throw new Error(`audio file hash mismatch: ${audio}.`);
+    }
+  }
+  const duration = Number(audioStage.duration);
+  return [
+    {
+      index: 0,
+      audioPath,
+      start: 0,
+      end: Number.isFinite(duration) ? duration : 0
+    }
+  ];
+}
+
+async function collectAudioChunkInputs(
   session: Session,
   audioPath: string
-): Promise<AudioInputChunk[]> {
+): Promise<AudioTranscriptionInput[]> {
   const sessionChunks = session.audioChunks();
   if (sessionChunks.length === 0) {
     throw new Error(
@@ -111,7 +135,7 @@ async function collectAudioInputChunks(
     );
   }
 
-  const chunks: AudioInputChunk[] = [];
+  const chunks: AudioTranscriptionInput[] = [];
   for (const [index, chunk] of sessionChunks.entries()) {
     const audioChunkPath = fromSessionRelative(session.dir, chunk.audio);
     const metadata = await validateAndNormalizeAudioChunk(audioChunkPath, chunk, audioPath, index);
@@ -155,7 +179,7 @@ async function validateAndNormalizeAudioChunk(
   if (chunk.end <= chunk.start) {
     throw new Error(`audio chunk time range is invalid for ${chunk.audio}.`);
   }
-  if (chunk.end - chunk.start > MAX_OPENAI_TRANSCRIPTION_SECONDS) {
+  if (chunk.end - chunk.start > MAX_CHUNKED_TRANSCRIPTION_SECONDS) {
     throw new Error(`audio chunk duration exceeds transcription limit for ${chunk.audio}.`);
   }
 
@@ -165,264 +189,70 @@ async function validateAndNormalizeAudioChunk(
   };
 }
 
-async function transcribeChunks(input: {
+async function transcribeInput(input: {
   session: Session;
   runtime: RuntimeConfig;
-  chunkResultsDir: string;
-  audioInputs: AudioInputChunk[];
+  transcription: TranscriptionConfig;
+  checkpointsDir: string;
+  audioInput: AudioTranscriptionInput;
+  totalInputs: number;
   transcribe: NonNullable<StageRunnerDeps['transcribe']>;
   logger: TranscriptionLogger;
-}): Promise<TranscriptChunkResult[]> {
-  const queue = newQueue(TRANSCRIPTION_CHUNK_CONCURRENCY);
-  const tasks = input.audioInputs.map((chunk) =>
-    queue.add(() =>
-      transcribeChunk({
-        ...input,
-        totalChunks: input.audioInputs.length,
-        chunk
-      })
-    )
-  );
-
-  const results = await Promise.allSettled(tasks);
-  await queue.done();
-  const failed = results.find((result) => result.status === 'rejected');
-  if (failed?.status === 'rejected') {
-    throw failed.reason;
-  }
-  return results
-    .filter(
-      (result): result is PromiseFulfilledResult<TranscriptChunkResult> =>
-        result.status === 'fulfilled'
-    )
-    .map((result) => result.value)
-    .sort((a, b) => a.index - b.index);
-}
-
-async function transcribeChunk(input: {
-  session: Session;
-  runtime: RuntimeConfig;
-  chunkResultsDir: string;
-  chunk: AudioInputChunk;
-  totalChunks: number;
-  transcribe: NonNullable<StageRunnerDeps['transcribe']>;
-  logger: TranscriptionLogger;
-}): Promise<TranscriptChunkResult> {
-  const chunkPath = chunkResultPath(input.chunkResultsDir, input.chunk.index);
-  const errorPath = chunkErrorPath(input.chunkResultsDir, input.chunk.index);
-  if (await pathExists(chunkPath)) {
-    const chunkFile = await readRawTranscriptionChunkFile(chunkPath);
-    input.logger.info(
-      `chunk ${input.chunk.index + 1} resume ${formatTimeRange(
-        chunkFile.start,
-        chunkFile.end
-      )} from ${toSessionRelative(input.session.dir, chunkPath)}.`
-    );
-    return {
-      index: chunkFile.chunk_index,
-      audioPath: fromSessionRelative(input.session.dir, chunkFile.audio),
-      start: input.chunk.start,
-      end: input.chunk.end,
-      model: chunkFile.model,
-      response: chunkFile.response
-    };
-  }
-
-  const startedAt = new Date().toISOString();
-  input.logger.info(
-    `chunk ${input.chunk.index + 1}/${input.totalChunks} start ${formatTimeRange(
-      input.chunk.start,
-      input.chunk.end
-    )} (${toSessionRelative(input.session.dir, input.chunk.audioPath)}).`
-  );
-  try {
-    const heartbeat = startTranscriptionHeartbeat({
-      chunk: input.chunk,
-      totalChunks: input.totalChunks,
-      sessionDir: input.session.dir,
-      logger: input.logger
-    });
-    let response: unknown;
-    try {
-      response = await input.transcribe({
-        audioPath: input.chunk.audioPath,
-        mediaPath: input.session.mediaPath,
-        description: input.session.description,
-        runtime: input.runtime
-      });
-    } finally {
-      heartbeat.stop();
-    }
-    const completedAt = new Date().toISOString();
-    await writeRawTranscriptionChunkFile(chunkPath, {
-      version: 1,
-      status: 'done',
-      chunk_index: input.chunk.index,
-      audio: toSessionRelative(input.session.dir, input.chunk.audioPath),
-      start: input.chunk.start,
-      end: input.chunk.end,
-      model: TRANSCRIPTION_MODEL,
-      started_at: startedAt,
-      completed_at: completedAt,
-      response: toTomlCompatible(response)
-    });
-    await unlink(errorPath).catch(() => undefined);
-    input.logger.success(
-      `chunk ${input.chunk.index + 1} done ${formatTimeRange(
-        input.chunk.start,
-        input.chunk.end
-      )}; wrote ${toSessionRelative(input.session.dir, chunkPath)}.`
-    );
-    return {
-      index: input.chunk.index,
-      audioPath: input.chunk.audioPath,
-      start: input.chunk.start,
-      end: input.chunk.end,
-      model: TRANSCRIPTION_MODEL,
-      response
-    };
-  } catch (error) {
-    const message = formatError(error);
-    await writeFileAtomic(errorPath, `${new Date().toISOString()}\n${message}\n`);
-    input.logger.error(
-      `chunk ${input.chunk.index + 1} failed ${formatTimeRange(
-        input.chunk.start,
-        input.chunk.end
-      )}; wrote ${toSessionRelative(input.session.dir, errorPath)}.`
-    );
-    throw error;
-  }
-}
-
-export function startTranscriptionHeartbeat(input: {
-  chunk: AudioInputChunk;
-  totalChunks: number;
-  sessionDir: string;
-  logger: TranscriptionHeartbeatLogger;
-  intervalMs?: number;
-}): { stop: () => void } {
-  const startedAt = Date.now();
-
-  const timer = setInterval(() => {
-    const elapsed = formatDuration((Date.now() - startedAt) / 1000);
-    input.logger.info(
-      `chunk ${input.chunk.index + 1}/${input.totalChunks} heartbeat ${elapsed} ${formatTimeRange(
-        input.chunk.start,
-        input.chunk.end
-      )} (${toSessionRelative(input.sessionDir, input.chunk.audioPath)}); waiting for provider response.`
-    );
-  }, input.intervalMs ?? TRANSCRIPTION_HEARTBEAT_INTERVAL_MS);
-  timer.unref?.();
-
-  return {
-    stop: () => {
-      clearInterval(timer);
-    }
-  };
-}
-
-async function readRawTranscriptionChunkFile(filePath: string): Promise<RawTranscriptionChunkFile> {
-  const value = parse(await readFile(filePath, 'utf8')) as unknown as RawTranscriptionChunkFile;
-  if (value.status !== 'done' || typeof value.response === 'undefined') {
-    throw new Error(`Invalid transcription chunk result: ${filePath}`);
-  }
-  return value;
-}
-
-async function writeRawTranscriptionChunkFile(
-  filePath: string,
-  value: RawTranscriptionChunkFile
-): Promise<void> {
-  await writeFileAtomic(filePath, stringify(value));
+}): Promise<TranscriptInputResult> {
+  const checkpointPath = inputCheckpointPath(input.checkpointsDir, input.audioInput.index);
+  const errorPath = inputErrorPath(input.checkpointsDir, input.audioInput.index);
+  const checkpointAudio = toSessionRelative(input.session.dir, input.audioInput.audioPath);
+  return transcribeCheckpointedInput({
+    session: input.session,
+    runtime: input.runtime,
+    transcription: input.transcription,
+    item: {
+      index: input.audioInput.index,
+      totalInputs: input.totalInputs,
+      audioPath: input.audioInput.audioPath,
+      checkpointAudio,
+      checkpointBaseDir: input.session.dir,
+      start: input.audioInput.start,
+      end: input.audioInput.end
+    },
+    checkpointPath,
+    errorPath,
+    label: 'input',
+    transcribe: input.transcribe,
+    logger: input.logger
+  });
 }
 
 async function clearTranscriptionCheckpointFiles(dir: string): Promise<void> {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
-    if (entry.isFile() && /^chunk-\d+\.(toml|error\.log)$/.test(entry.name)) {
+    if (entry.isFile() && /^input-\d+\.(toml|error\.log)$/.test(entry.name)) {
       await unlink(path.join(dir, entry.name));
     }
   }
 }
 
 async function printTranscriptionUploadNotice(
-  runtime: RuntimeConfig,
-  audioInputs: AudioInputChunk[],
+  transcription: TranscriptionConfig,
+  audioInputs: AudioTranscriptionInput[],
   logger: TranscriptionLogger
 ): Promise<void> {
   logger.info('rajio will upload audio to an external transcription API.');
-  logger.info(`provider: ${formatProvider(runtime)}`);
-  logger.info(`model: ${TRANSCRIPTION_MODEL}`);
-  logger.info(`chunk concurrency: ${TRANSCRIPTION_CHUNK_CONCURRENCY}`);
-  for (const chunk of audioInputs) {
-    const size = (await stat(chunk.audioPath)).size;
+  logger.info(`transcription: ${transcription.provider}/${transcription.model}`);
+  for (const input of audioInputs) {
+    const size = (await stat(input.audioPath)).size;
     logger.info(
-      `upload chunk ${chunk.index + 1}/${audioInputs.length}: ${formatTimeRange(
-        chunk.start,
-        chunk.end
-      )} ${chunk.audioPath} (${formatBytes(size)})`
+      `upload input ${input.index + 1}/${audioInputs.length}: ${formatTimeRange(
+        input.start,
+        input.end
+      )} ${input.audioPath} (${formatBytes(size)})`
     );
   }
 }
 
-function chunkResultPath(dir: string, index: number): string {
-  return path.join(dir, `chunk-${pad(index, 3)}.toml`);
+function inputCheckpointPath(dir: string, index: number): string {
+  return path.join(dir, `input-${String(index).padStart(3, '0')}.toml`);
 }
 
-function chunkErrorPath(dir: string, index: number): string {
-  return path.join(dir, `chunk-${pad(index, 3)}.error.log`);
-}
-
-function formatProvider(runtime: RuntimeConfig): string {
-  return runtime.openaiBaseUrl
-    ? `OpenAI-compatible (${runtime.openaiBaseUrl})`
-    : 'OpenAI (default API endpoint)';
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) {
-    return `${bytes} B`;
-  }
-  const units = ['KB', 'MB', 'GB'];
-  let value = bytes / 1024;
-  let unit = units[0];
-  for (const candidate of units) {
-    unit = candidate;
-    if (value < 1024 || candidate === units[units.length - 1]) {
-      break;
-    }
-    value /= 1024;
-  }
-  return `${value.toFixed(value >= 10 ? 1 : 2)} ${unit}`;
-}
-
-function formatTimeRange(start: number, end: number): string {
-  return `${formatSeconds(start)}-${formatSeconds(end)}`;
-}
-
-function formatDuration(seconds: number): string {
-  return formatSeconds(seconds);
-}
-
-function formatSeconds(seconds: number): string {
-  const total = Math.max(0, Math.round(seconds));
-  const s = total % 60;
-  const totalMinutes = Math.floor(total / 60);
-  const m = totalMinutes % 60;
-  const h = Math.floor(totalMinutes / 60);
-  return h > 0 ? `${h}:${pad(m, 2)}:${pad(s, 2)}` : `${String(m).padStart(2, '0')}:${pad(s, 2)}`;
-}
-
-function pad(value: number, length: number): string {
-  return String(value).padStart(length, '0');
-}
-
-function toTomlCompatible(value: unknown): unknown {
-  return JSON.parse(JSON.stringify(value)) as unknown;
-}
-
-function formatError(error: unknown): string {
-  if (error instanceof Error) {
-    return `${error.message}\n${error.stack ?? ''}`.trim();
-  }
-  return String(error);
+function inputErrorPath(dir: string, index: number): string {
+  return path.join(dir, `input-${String(index).padStart(3, '0')}.error.log`);
 }

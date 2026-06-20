@@ -19,7 +19,7 @@ import { castNumber } from './utils/cast.js';
 import { formatCliError } from './utils/cli-error.js';
 import { taggedLogger, wrapConsoleLogger } from './utils/logger.js';
 import { runRajio } from './workflow/index.js';
-import { resolveAudioChunkOptions } from './workflow/stages/audio.js';
+import { resolveAudioChunkOptions } from './audio/index.js';
 
 installBrokenPipeHandler();
 wrapConsoleLogger();
@@ -67,6 +67,9 @@ app
   .option('--chunk-silence-duration <seconds>', 'ffmpeg silencedetect minimum silence duration', {
     cast: castNumber
   })
+  .option('--transcription-provider <provider>', 'transcription provider')
+  .option('--transcription-model <model>', 'transcription model')
+  .option('--transcription-segmenter <segmenter>', 'transcription segmenter')
   .action(async (target, options) => {
     const chunking = {
       targetSeconds: options.chunkTarget,
@@ -81,7 +84,12 @@ app
       commit: options.commit,
       full: options.full,
       reset: options.reset,
-      chunking
+      chunking,
+      transcription: {
+        provider: options.transcriptionProvider,
+        model: options.transcriptionModel,
+        segmenter: options.transcriptionSegmenter
+      }
     };
     const session = await Session.loadOrCreate(target, cliOptions.media);
     await runRajio(session, cliOptions);

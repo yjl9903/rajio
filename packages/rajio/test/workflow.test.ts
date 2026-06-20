@@ -990,7 +990,7 @@ describe('session workflow', () => {
     expect(result.issues.some((issue) => issue.code === 'failed_stage')).toBe(false);
   });
 
-  it('reports missing audio chunk metadata for completed audio stages', async () => {
+  it('reports missing audio chunk metadata for completed chunking audio stages', async () => {
     const dir = await preparedSession('transcript_raw', {
       audio: {
         status: 'done',
@@ -1010,6 +1010,69 @@ describe('session workflow', () => {
         level: 'fatal',
         code: 'missing_audio_chunks',
         message: 'audio stage is missing detailed chunk metadata.'
+      })
+    );
+  });
+
+  it('reports missing single-file audio for completed audio stages', async () => {
+    const dir = await preparedSession('transcript_raw', {
+      audio: {
+        status: 'done',
+        audio: 'audio/extracted.m4a',
+        strategy: 'single_file'
+      }
+    });
+
+    const session = await Session.loadOrCreate(dir);
+    const result = await checkRajio(session);
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual(
+      expect.objectContaining({
+        file: path.join(dir, 'session.toml'),
+        stage: 'audio',
+        level: 'fatal',
+        code: 'missing_audio_file',
+        message: 'audio file does not exist: audio/extracted.m4a.'
+      })
+    );
+  });
+
+  it('reports single-file audio metadata mismatches', async () => {
+    const dir = await preparedSession('transcript_raw', {});
+    await mkdir(path.join(dir, 'audio'), { recursive: true });
+    const audioPath = path.join(dir, 'audio/extracted.m4a');
+    await writeFile(audioPath, 'audio');
+    const audioHash = await sha256File(audioPath);
+    await writeFile(audioPath, 'changed');
+
+    const session = await Session.loadOrCreate(dir);
+    session.state.stages.audio = {
+      status: 'done',
+      audio: 'audio/extracted.m4a',
+      audio_size: 5,
+      audio_sha256: audioHash,
+      strategy: 'single_file'
+    };
+    const result = await checkRajio(session);
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual(
+      expect.objectContaining({
+        file: path.join(dir, 'session.toml'),
+        stage: 'audio',
+        level: 'fatal',
+        code: 'audio_file_size_mismatch',
+        message: 'audio file size mismatch: audio/extracted.m4a.'
+      })
+    );
+    expect(result.issues).toContainEqual(
+      expect.objectContaining({
+        file: path.join(dir, 'session.toml'),
+        stage: 'audio',
+        level: 'fatal',
+        code: 'audio_file_hash_mismatch',
+        message: 'audio file hash mismatch: audio/extracted.m4a.'
       })
     );
   });
@@ -1438,20 +1501,18 @@ describe('session workflow', () => {
     expect(session.stage('export').status).toBe('pending');
   });
 
-  it('resets to raw transcription and regenerates all chunk checkpoints', async () => {
+  it('resets to raw transcription and regenerates the single input checkpoint', async () => {
     const dir = await preparedCompleteSession();
-    await mkdir(path.join(dir, 'audio/chunks'), { recursive: true });
+    await mkdir(path.join(dir, 'audio'), { recursive: true });
     await mkdir(path.join(dir, 'transcript/raw/chunks'), { recursive: true });
     await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
-    await writeFile(path.join(dir, 'audio/chunks/chunk-000.m4a'), 'audio 0');
-    await writeFile(path.join(dir, 'audio/chunks/chunk-001.m4a'), 'audio 1');
     await writeFile(
       path.join(dir, 'transcript/raw/chunks/chunk-000.toml'),
       [
         'version = 1',
         'status = "done"',
         'chunk_index = 0',
-        'audio = "audio/chunks/chunk-000.m4a"',
+        'audio = "audio/extracted.m4a"',
         'start = 0',
         'end = 1',
         'model = "old"',
@@ -1467,30 +1528,11 @@ describe('session workflow', () => {
       ].join('\n')
     );
 
-    const firstHash = await sha256File(path.join(dir, 'audio/chunks/chunk-000.m4a'));
-    const secondHash = await sha256File(path.join(dir, 'audio/chunks/chunk-001.m4a'));
     const session = await Session.loadOrCreate(dir);
     session.state.stages.audio = {
       status: 'done',
       audio: 'audio/extracted.m4a',
-      chunks_dir: 'audio/chunks',
-      chunk_count: 2,
-      chunks: [
-        {
-          audio: 'audio/chunks/chunk-000.m4a',
-          start: 0,
-          end: 1,
-          size: 7,
-          sha256: firstHash
-        },
-        {
-          audio: 'audio/chunks/chunk-001.m4a',
-          start: 1,
-          end: 2,
-          size: 7,
-          sha256: secondHash
-        }
-      ]
+      strategy: 'single_file'
     };
     await session.save();
 
@@ -1502,13 +1544,13 @@ describe('session workflow', () => {
         transcribe: async ({ audioPath }) => {
           calls.push(path.basename(audioPath));
           return {
-            segments: [
+            words: [
               {
-                id: path.basename(audioPath, '.m4a'),
+                text: path.basename(audioPath),
                 start: 0,
                 end: 0.5,
-                speaker: 'A',
-                text: path.basename(audioPath)
+                speaker_id: 'speaker_0',
+                type: 'word'
               }
             ]
           };
@@ -1516,10 +1558,10 @@ describe('session workflow', () => {
       }
     );
 
-    expect(calls.toSorted()).toEqual(['chunk-000.m4a', 'chunk-001.m4a']);
+    expect(calls).toEqual(['extracted.m4a']);
     expect(
-      await readFile(path.join(dir, 'transcript/raw/chunks/chunk-000.toml'), 'utf8')
-    ).toContain('chunk-000.m4a');
+      await readFile(path.join(dir, 'transcript/raw/checkpoints/input-000.toml'), 'utf8')
+    ).toContain('extracted.m4a');
     expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).not.toContain(
       'old checkpoint'
     );

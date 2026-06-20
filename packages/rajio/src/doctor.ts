@@ -6,7 +6,6 @@ import OpenAI from 'openai';
 
 import { version as packageVersion } from '../package.json' with { type: 'json' };
 import type { Session } from './session/index.js';
-import { TRANSCRIPTION_MODEL } from './workflow/transcription.js';
 import { pathExists } from './utils/fs.js';
 import { readRuntimeConfig } from './utils/env.js';
 import type { RuntimeConfig } from './types.js';
@@ -32,7 +31,7 @@ export interface DoctorResult {
 
 export interface DoctorDeps {
   execa?: typeof execa;
-  listProviderModels?: (runtime: RuntimeConfig) => Promise<string[]>;
+  checkOpenAI?: (runtime: RuntimeConfig) => Promise<void>;
   createCodex?: (runtime: RuntimeConfig) => void;
   getLatestRajioVersion?: () => Promise<string>;
   nodeVersion?: string;
@@ -58,9 +57,9 @@ export async function runDoctor(
   checks.push(await cliVersionCheck(deps));
   checks.push(nodeCheck(deps.nodeVersion ?? process.versions.node));
   checks.push(...envFilesChecks(envFiles));
-  checks.push(apiKeyCheck(runtime));
+  checks.push(await openAIConnectivityCheck(runtime, deps));
+  checks.push(elevenLabsApiKeyCheck(runtime));
   checks.push(baseUrlCheck(runtime));
-  checks.push(await providerCheck(runtime, deps));
   checks.push(await commandVersionCheck('ffmpeg', runtime.ffmpegBin, deps));
   checks.push(await commandVersionCheck('ffprobe', runtime.ffprobeBin, deps));
   checks.push(codexCheck(runtime, deps));
@@ -151,18 +150,46 @@ function envFilesChecks(envFiles: string[]): DoctorCheck[] {
   }));
 }
 
-function apiKeyCheck(runtime: RuntimeConfig): DoctorCheck {
+async function openAIConnectivityCheck(
+  runtime: RuntimeConfig,
+  deps: DoctorDeps
+): Promise<DoctorCheck> {
   if (!runtime.openaiApiKey) {
     return {
-      name: '.env',
+      name: 'openai',
+      status: 'warn',
+      message: 'OPENAI_API_KEY is not set; manual AI stages will not work'
+    };
+  }
+  try {
+    await (deps.checkOpenAI ?? checkOpenAIConnectivity)(runtime);
+    return {
+      name: 'openai',
+      status: 'pass',
+      message: 'OpenAI API is reachable'
+    };
+  } catch (error) {
+    return {
+      name: 'openai',
+      status: 'warn',
+      message: 'OpenAI API check failed',
+      detail: formatError(error)
+    };
+  }
+}
+
+function elevenLabsApiKeyCheck(runtime: RuntimeConfig): DoctorCheck {
+  if (!runtime.elevenlabsApiKey) {
+    return {
+      name: 'provider',
       status: 'fail',
-      message: 'OPENAI_API_KEY is not set'
+      message: 'ELEVENLABS_API_KEY is not set'
     };
   }
   return {
-    name: '.env',
+    name: 'provider',
     status: 'pass',
-    message: 'OPENAI_API_KEY is set'
+    message: 'ELEVENLABS_API_KEY is set'
   };
 }
 
@@ -224,45 +251,11 @@ async function commandVersionCheck(
   }
 }
 
-async function providerCheck(runtime: RuntimeConfig, deps: DoctorDeps): Promise<DoctorCheck> {
-  if (!runtime.openaiApiKey) {
-    return {
-      name: 'provider',
-      status: 'fail',
-      message: 'Skipped provider connectivity check because OPENAI_API_KEY is missing'
-    };
-  }
-
-  try {
-    const models = await (deps.listProviderModels ?? listProviderModels)(runtime);
-    if (models.includes(TRANSCRIPTION_MODEL)) {
-      return {
-        name: 'provider',
-        status: 'pass',
-        message: `Provider is reachable and lists ${TRANSCRIPTION_MODEL}`
-      };
-    }
-    return {
-      name: 'provider',
-      status: 'warn',
-      message: `Provider is reachable, but ${TRANSCRIPTION_MODEL} was not listed`,
-      detail: models.slice(0, 20).join('\n')
-    };
-  } catch (error) {
-    return {
-      name: 'provider',
-      status: 'fail',
-      message: 'Provider connectivity check failed',
-      detail: formatError(error)
-    };
-  }
-}
-
 function codexCheck(runtime: RuntimeConfig, deps: DoctorDeps): DoctorCheck {
   if (!runtime.openaiApiKey) {
     return {
       name: 'codex',
-      status: 'fail',
+      status: 'warn',
       message: 'Skipped Codex check because OPENAI_API_KEY is missing'
     };
   }
@@ -277,22 +270,11 @@ function codexCheck(runtime: RuntimeConfig, deps: DoctorDeps): DoctorCheck {
   } catch (error) {
     return {
       name: 'codex',
-      status: 'fail',
+      status: 'warn',
       message: 'Codex SDK check failed',
       detail: formatError(error)
     };
   }
-}
-
-async function listProviderModels(runtime: RuntimeConfig): Promise<string[]> {
-  const client = new OpenAI({
-    apiKey: runtime.openaiApiKey,
-    baseURL: runtime.openaiBaseUrl,
-    timeout: CHECK_TIMEOUT_MS,
-    maxRetries: 0
-  });
-  const page = await client.models.list();
-  return page.data.map((model) => model.id);
 }
 
 async function getLatestRajioVersion(): Promise<string> {
@@ -315,6 +297,15 @@ function createCodex(runtime: RuntimeConfig): void {
     apiKey: runtime.openaiApiKey,
     baseUrl: runtime.openaiBaseUrl
   });
+}
+
+async function checkOpenAIConnectivity(runtime: RuntimeConfig): Promise<void> {
+  const client = new OpenAI({
+    apiKey: runtime.openaiApiKey,
+    baseURL: runtime.openaiBaseUrl,
+    timeout: CHECK_TIMEOUT_MS
+  });
+  await client.models.list();
 }
 
 function compareSemverCore(left: string, right: string): number | undefined {

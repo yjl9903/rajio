@@ -1,4 +1,4 @@
-import type { AudioChunkingMetadata, Segment } from '../types.js';
+import type { Segment, TranscriptionConfig } from '../types.js';
 
 export interface ClipChunkMetadata {
   audio: string;
@@ -20,10 +20,12 @@ export interface ClipFile {
   segments: string;
   created_at: string;
   updated_at: string;
+  provider?: TranscriptionConfig['provider'];
   model: string;
+  segmenter?: TranscriptionConfig['segmenter'];
   start: number;
   end: number;
-  chunking: AudioChunkingMetadata;
+  strategy?: 'single_file';
   chunks: ClipChunkMetadata[];
 }
 

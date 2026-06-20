@@ -4,10 +4,9 @@ import path from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 import { version as packageVersion } from '../package.json' with { type: 'json' };
-import { runDoctor } from '../src/doctor.js';
+import { runDoctor, type DoctorDeps } from '../src/doctor.js';
 import { Session } from '../src/index.js';
 import { readRuntimeConfig } from '../src/utils/env.js';
-import { TRANSCRIPTION_MODEL } from '../src/workflow/transcription.js';
 import type { RuntimeConfig } from '../src/types.js';
 import { tempDir } from './helpers.js';
 
@@ -23,18 +22,24 @@ describe('runtime environment', () => {
       [
         'OPENAI_API_KEY=from-cwd',
         'OPENAI_BASE_URL=https://cwd.example',
+        'ELEVENLABS_API_KEY=from-cwd-elevenlabs',
         'RAJIO_FFMPEG_BIN=cwd-ffmpeg',
         'RAJIO_FFPROBE_BIN=cwd-ffprobe'
       ].join('\n')
     );
     await writeFile(
       path.join(sessionDir, '.env'),
-      ['OPENAI_API_KEY=from-session', 'RAJIO_FFMPEG_BIN=session-ffmpeg'].join('\n')
+      [
+        'OPENAI_API_KEY=from-session',
+        'ELEVENLABS_API_KEY=from-session-elevenlabs',
+        'RAJIO_FFMPEG_BIN=session-ffmpeg'
+      ].join('\n')
     );
 
     expect(await readRuntimeConfig({ cwd, sessionDir })).toEqual({
       openaiApiKey: 'from-session',
       openaiBaseUrl: 'https://cwd.example',
+      elevenlabsApiKey: 'from-session-elevenlabs',
       ffmpegBin: 'session-ffmpeg',
       ffprobeBin: 'cwd-ffprobe'
     });
@@ -47,19 +52,12 @@ describe('doctor', () => {
     await writeFile(path.join(cwd, 'a.md'), '');
     await writeFile(path.join(cwd, 'b.md'), '');
     process.env.OPENAI_API_KEY = 'from-process';
+    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
 
     const session = await Session.load(cwd);
     const result = await runDoctor(session, {
       cwd,
-      deps: {
-        execa: vi.fn(async (command: string) => ({
-          stdout: `${command} version test`
-        })) as never,
-        listProviderModels: async () => [TRANSCRIPTION_MODEL],
-        createCodex: () => undefined,
-        getLatestRajioVersion: async () => packageVersion,
-        nodeVersion: '24.1.0'
-      }
+      deps: doctorDeps()
     });
 
     expect(result.ok).toBe(true);
@@ -81,35 +79,33 @@ describe('doctor', () => {
       [
         'OPENAI_API_KEY=from-cwd',
         'OPENAI_BASE_URL=https://cwd.example',
+        'ELEVENLABS_API_KEY=from-cwd-elevenlabs',
         'RAJIO_FFMPEG_BIN=cwd-ffmpeg',
         'RAJIO_FFPROBE_BIN=cwd-ffprobe'
       ].join('\n')
     );
     await writeFile(
       path.join(sessionDir, '.env'),
-      ['OPENAI_API_KEY=from-session', 'RAJIO_FFMPEG_BIN=session-ffmpeg'].join('\n')
+      [
+        'OPENAI_API_KEY=from-session',
+        'ELEVENLABS_API_KEY=from-session-elevenlabs',
+        'RAJIO_FFMPEG_BIN=session-ffmpeg'
+      ].join('\n')
     );
     const execaMock = vi.fn(async (command: string) => ({
       stdout: `${command} version test`
     }));
-    const seenProviderConfigs: RuntimeConfig[] = [];
     const seenCodexConfigs: RuntimeConfig[] = [];
     const session = await Session.loadOrCreate(sessionDir);
 
     const result = await runDoctor(session, {
       cwd,
-      deps: {
+      deps: doctorDeps({
         execa: execaMock as never,
-        listProviderModels: async (runtime) => {
-          seenProviderConfigs.push(runtime);
-          return [TRANSCRIPTION_MODEL];
-        },
         createCodex: (runtime) => {
           seenCodexConfigs.push(runtime);
-        },
-        getLatestRajioVersion: async () => packageVersion,
-        nodeVersion: '24.1.0'
-      }
+        }
+      })
     });
 
     expect(result.ok).toBe(true);
@@ -118,16 +114,14 @@ describe('doctor', () => {
       'node',
       '.env',
       '.env',
-      '.env',
-      '.env',
+      'openai',
       'provider',
+      '.env',
       'ffmpeg',
       'ffprobe',
       'codex'
     ]);
     expect(execaMock.mock.calls.map((call) => call[0])).toEqual(['session-ffmpeg', 'cwd-ffprobe']);
-    expect(seenProviderConfigs[0]?.openaiApiKey).toBe('from-session');
-    expect(seenProviderConfigs[0]?.openaiBaseUrl).toBe('https://cwd.example');
     expect(seenCodexConfigs[0]?.openaiApiKey).toBe('from-session');
     expect(checkByName(result, 'rajio')).toEqual({
       name: 'rajio',
@@ -137,10 +131,18 @@ describe('doctor', () => {
     expect(result.checks.filter((check) => check.name === '.env')).toEqual([
       { name: '.env', status: 'pass', message: `Loaded ${path.join(cwd, '.env')}` },
       { name: '.env', status: 'pass', message: `Loaded ${path.join(sessionDir, '.env')}` },
-      { name: '.env', status: 'pass', message: 'OPENAI_API_KEY is set' },
       { name: '.env', status: 'pass', message: 'OPENAI_BASE_URL uses https://cwd.example' }
     ]);
-    expect(checkByName(result, 'provider')).toMatchObject({ status: 'pass' });
+    expect(checkByName(result, 'openai')).toEqual({
+      name: 'openai',
+      status: 'pass',
+      message: 'OpenAI API is reachable'
+    });
+    expect(checkByName(result, 'provider')).toEqual({
+      name: 'provider',
+      status: 'pass',
+      message: 'ELEVENLABS_API_KEY is set'
+    });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({
       status: 'pass',
       message: 'session-ffmpeg version test'
@@ -164,6 +166,7 @@ describe('doctor', () => {
       ['---', 'media: ./video.mp4', 'title: Example', '---', '', 'context'].join('\n')
     );
     delete process.env.OPENAI_API_KEY;
+    delete process.env.ELEVENLABS_API_KEY;
     delete process.env.OPENAI_BASE_URL;
     delete process.env.RAJIO_FFMPEG_BIN;
     delete process.env.RAJIO_FFPROBE_BIN;
@@ -171,43 +174,82 @@ describe('doctor', () => {
 
     const result = await runDoctor(session, {
       cwd,
-      deps: {
+      deps: doctorDeps({
         execa: vi.fn(async () => {
           throw new Error('not found');
         }) as never,
-        listProviderModels: async () => {
-          throw new Error('must not connect without a key');
-        },
-        getLatestRajioVersion: async () => packageVersion,
         nodeVersion: '23.0.0'
-      }
+      })
     });
 
     expect(result.ok).toBe(false);
     expect(result.checks.some((check) => check.message.startsWith('Loaded '))).toBe(false);
-    expect(checkByMessage(result, 'OPENAI_API_KEY is not set')).toMatchObject({ status: 'fail' });
+    expect(
+      checkByMessage(result, 'OPENAI_API_KEY is not set; manual AI stages will not work')
+    ).toMatchObject({ status: 'warn' });
     expect(checkByName(result, 'node')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'provider')).toMatchObject({ status: 'fail' });
-    expect(checkByName(result, 'codex')).toMatchObject({ status: 'fail' });
+    expect(checkByName(result, 'codex')).toMatchObject({ status: 'warn' });
+  });
+
+  it('fails when OpenAI API connectivity fails', async () => {
+    const cwd = await tempDir();
+    process.env.OPENAI_API_KEY = 'from-process';
+    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
+    const session = await Session.load(cwd);
+
+    const result = await runDoctor(session, {
+      cwd,
+      deps: doctorDeps({
+        checkOpenAI: async () => {
+          throw new Error('api down');
+        }
+      })
+    });
+
+    expect(result.ok).toBe(true);
+    expect(checkByName(result, 'openai')).toEqual({
+      name: 'openai',
+      status: 'warn',
+      message: 'OpenAI API check failed',
+      detail: 'api down'
+    });
+  });
+
+  it('warns when Codex SDK initialization fails without failing doctor', async () => {
+    const cwd = await tempDir();
+    process.env.OPENAI_API_KEY = 'from-process';
+    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
+    const session = await Session.load(cwd);
+
+    const result = await runDoctor(session, {
+      cwd,
+      deps: doctorDeps({
+        createCodex: () => {
+          throw new Error('sdk unavailable');
+        }
+      })
+    });
+
+    expect(result.ok).toBe(true);
+    expect(checkByName(result, 'codex')).toEqual({
+      name: 'codex',
+      status: 'warn',
+      message: 'Codex SDK check failed',
+      detail: 'sdk unavailable'
+    });
   });
 
   it('warns when a newer rajio version is available without failing doctor', async () => {
     const cwd = await tempDir();
     process.env.OPENAI_API_KEY = 'from-process';
+    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
     const session = await Session.load(cwd);
 
     const result = await runDoctor(session, {
       cwd,
-      deps: {
-        execa: vi.fn(async (command: string) => ({
-          stdout: `${command} version test`
-        })) as never,
-        listProviderModels: async () => [TRANSCRIPTION_MODEL],
-        createCodex: () => undefined,
-        getLatestRajioVersion: async () => '999.0.0',
-        nodeVersion: '24.1.0'
-      }
+      deps: doctorDeps({ getLatestRajioVersion: async () => '999.0.0' })
     });
 
     expect(result.ok).toBe(true);
@@ -221,21 +263,16 @@ describe('doctor', () => {
   it('warns when rajio update check fails without failing doctor', async () => {
     const cwd = await tempDir();
     process.env.OPENAI_API_KEY = 'from-process';
+    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
     const session = await Session.load(cwd);
 
     const result = await runDoctor(session, {
       cwd,
-      deps: {
-        execa: vi.fn(async (command: string) => ({
-          stdout: `${command} version test`
-        })) as never,
-        listProviderModels: async () => [TRANSCRIPTION_MODEL],
-        createCodex: () => undefined,
+      deps: doctorDeps({
         getLatestRajioVersion: async () => {
           throw new Error('network down');
-        },
-        nodeVersion: '24.1.0'
-      }
+        }
+      })
     });
 
     expect(result.ok).toBe(true);
@@ -247,6 +284,19 @@ describe('doctor', () => {
     });
   });
 });
+
+function doctorDeps(overrides: DoctorDeps = {}): DoctorDeps {
+  return {
+    checkOpenAI: async () => undefined,
+    execa: vi.fn(async (command: string) => ({
+      stdout: `${command} version test`
+    })) as never,
+    createCodex: () => undefined,
+    getLatestRajioVersion: async () => packageVersion,
+    nodeVersion: '24.1.0',
+    ...overrides
+  };
+}
 
 function checkByName(result: Awaited<ReturnType<typeof runDoctor>>, name: string) {
   const check = result.checks.find((item) => item.name === name);

@@ -1,4 +1,4 @@
-import { readdir } from 'node:fs/promises';
+import { readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 import type { ConsolaInstance } from 'consola';
@@ -351,6 +351,56 @@ async function checkSession(
     if (
       stage === 'audio' &&
       stageState.status === 'done' &&
+      stageState.strategy === 'single_file'
+    ) {
+      if (typeof stageState.audio !== 'string') {
+        issues.push({
+          file: session.path,
+          stage,
+          level: 'fatal',
+          code: 'missing_audio_file',
+          message: 'audio stage is missing extracted audio path.'
+        });
+        continue;
+      }
+      const audioPath = fromSessionRelative(session.dir, stageState.audio);
+      if (!(await pathExists(audioPath))) {
+        issues.push({
+          file: session.path,
+          stage,
+          level: 'fatal',
+          code: 'missing_audio_file',
+          message: `audio file does not exist: ${stageState.audio}.`
+        });
+      } else {
+        const expectedSize = Number(stageState.audio_size);
+        if (Number.isFinite(expectedSize) && (await stat(audioPath)).size !== expectedSize) {
+          issues.push({
+            file: session.path,
+            stage,
+            level: 'fatal',
+            code: 'audio_file_size_mismatch',
+            message: `audio file size mismatch: ${stageState.audio}.`
+          });
+        }
+        if (typeof stageState.audio_sha256 === 'string') {
+          const current = await sha256File(audioPath);
+          if (stageState.audio_sha256 !== current) {
+            issues.push({
+              file: session.path,
+              stage,
+              level: 'fatal',
+              code: 'audio_file_hash_mismatch',
+              message: `audio file hash mismatch: ${stageState.audio}.`
+            });
+          }
+        }
+      }
+      continue;
+    }
+    if (
+      stage === 'audio' &&
+      stageState.status === 'done' &&
       shouldValidateAudioChunks(stageState)
     ) {
       if (!Array.isArray(stageState.chunks)) {
@@ -413,6 +463,9 @@ async function checkSession(
 }
 
 function shouldValidateAudioChunks(stageState: StageState): boolean {
+  if (stageState.strategy === 'single_file') {
+    return false;
+  }
   return (
     Array.isArray(stageState.chunks) ||
     typeof stageState.audio === 'string' ||

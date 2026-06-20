@@ -14,6 +14,7 @@ import { runAudioStage } from './stages/audio.js';
 import { runExportStage } from './stages/export.js';
 import { commitManualStage, setupManualStage } from './stages/manual.js';
 import { runTranscriptRawStage } from './stages/transcription.js';
+import { resolveWorkflowTranscriptionConfig } from '../transcription/config.js';
 
 const EXPORT_OUTPUT_FIELDS = [
   ['ja srt', 'ja_srt'],
@@ -36,6 +37,14 @@ export async function runRajio(
   deps: WorkflowDeps = {}
 ): Promise<void> {
   const runtime = await readRuntimeConfig({ cwd: process.cwd(), sessionDir: session.dir });
+  const transcription = resolveWorkflowTranscriptionConfig({
+    state: session.state,
+    description: session.description,
+    cli: options.transcription,
+    reset: options.reset,
+    target: session.dir
+  });
+  session.state.transcription = transcription;
   const mediaInvalidated = await session.refreshMediaState();
   if (mediaInvalidated && options.reset && options.reset !== 'audio') {
     await session.save();
@@ -164,12 +173,18 @@ async function runAutomaticStage(
     await session.save();
 
     if (stage === 'audio') {
-      await runAudioStage({ session, runtime, chunking: options.chunking });
+      await runAudioStage({
+        session,
+        runtime,
+        transcription: session.state.transcription!,
+        chunking: options.chunking
+      });
     } else if (stage === 'transcript_raw') {
       await runTranscriptRawStage({
         session,
         runtime,
         deps,
+        transcription: session.state.transcription!,
         resetCheckpoints: resetTranscriptCheckpoints
       });
     } else if (stage === 'export') {

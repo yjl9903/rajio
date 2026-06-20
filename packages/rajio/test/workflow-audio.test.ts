@@ -5,15 +5,21 @@ import { describe, expect, it } from 'vitest';
 
 import { Session } from '../src/index.js';
 import {
-  MAX_OPENAI_AUDIO_BYTES,
   parseSilenceDetectOutput,
   planAudioChunks,
-  resolveAudioChunkOptions,
-  runAudioStage
-} from '../src/workflow/stages/audio.js';
+  resolveAudioChunkOptions
+} from '../src/audio/index.js';
+import { runAudioStage } from '../src/workflow/stages/audio.js';
+import { sha256File } from '../src/utils/fs.js';
 import { preparedSession, tempDir } from './helpers.js';
 
-describe('audio chunk planning', () => {
+const transcription = {
+  provider: 'elevenlabs',
+  model: 'scribe_v2',
+  segmenter: 'integrated'
+} as const;
+
+describe('audio stage', () => {
   it('uses nearby silence boundaries instead of fixed timestamps', () => {
     const chunks = planAudioChunks(
       2397,
@@ -78,15 +84,23 @@ describe('audio chunk planning', () => {
     });
   });
 
-  it('writes chunking metadata without old redundant audio fields', async () => {
+  it('records single-file audio strategy without chunk metadata', async () => {
     const dir = await preparedSession('audio', {});
     const ffmpegBin = await fakeFfmpegBin();
     const ffprobeBin = await fakeFfprobeJsonBin(1);
     const session = await Session.loadOrCreate(dir);
+    session.state.stages.audio = {
+      status: 'running',
+      chunks_dir: 'audio/chunks',
+      chunk_count: 1,
+      chunking: { strategy: 'silence_or_time' },
+      chunks: [{ audio: 'audio/chunks/chunk-000.m4a' }]
+    };
 
     await runAudioStage({
       session,
       runtime: { ffmpegBin, ffprobeBin },
+      transcription,
       chunking: {
         targetSeconds: 120,
         boundarySearchSeconds: 30,
@@ -97,28 +111,32 @@ describe('audio chunk planning', () => {
     await session.save();
 
     const sessionToml = await readFile(path.join(dir, 'session.toml'), 'utf8');
-    expect(sessionToml).toContain('[stages.audio.chunking]');
-    expect(sessionToml).toContain('requested_target_seconds = 120');
-    expect(sessionToml).toContain('boundary_search_seconds = 30');
-    expect(sessionToml).toContain('silence_noise_db = -42');
+    const audioHash = await sha256File(path.join(dir, 'audio/extracted.m4a'));
+    expect(sessionToml).toContain('strategy = "single_file"');
+    expect(sessionToml).toContain('audio = "audio/extracted.m4a"');
+    expect(sessionToml).toContain('audio_size = 5');
+    expect(sessionToml).toContain(`audio_sha256 = "${audioHash}"`);
+    expect(sessionToml).not.toContain('[stages.audio.chunking]');
+    expect(sessionToml).not.toContain('chunks_dir =');
+    expect(sessionToml).not.toContain('[[stages.audio.chunks]]');
     expect(sessionToml).not.toContain('chunk_count =');
-    expect(sessionToml).not.toContain('chunk_target_seconds =');
-    expect(sessionToml).not.toContain('chunk_boundary =');
   });
 
-  it('rejects generated chunks that exceed the transcription byte limit', async () => {
+  it('does not chunk large extracted audio for ElevenLabs', async () => {
     const dir = await preparedSession('audio', {});
-    const ffmpegBin = await fakeFfmpegBin(MAX_OPENAI_AUDIO_BYTES + 1);
+    const ffmpegBin = await fakeFfmpegBin(25 * 1024 * 1024);
     const ffprobeBin = await fakeFfprobeJsonBin(120);
     const session = await Session.loadOrCreate(dir);
 
-    await expect(
-      runAudioStage({
-        session,
-        runtime: { ffmpegBin, ffprobeBin },
-        chunking: { targetSeconds: 120, boundarySearchSeconds: 0 }
-      })
-    ).rejects.toThrow('exceeds transcription byte limit');
+    await runAudioStage({
+      session,
+      runtime: { ffmpegBin, ffprobeBin },
+      transcription,
+      chunking: { targetSeconds: 120, boundarySearchSeconds: 0 }
+    });
+
+    expect(session.stage('audio').strategy).toBe('single_file');
+    expect(session.stage('audio').chunks).toBeUndefined();
   });
 });
 

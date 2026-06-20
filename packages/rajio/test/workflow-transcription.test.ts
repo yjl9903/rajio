@@ -4,430 +4,236 @@ import path from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Session } from '../src/index.js';
-import { readSegmentsFile } from '../src/segments/index.js';
+import { readSegmentsFile, writeSegmentsFile } from '../src/segments/index.js';
+import { runTranscriptRawStage } from '../src/workflow/stages/transcription.js';
+import {
+  mergeElevenLabsInputs,
+  normalizeElevenLabsTranscript
+} from '../src/transcription/elevenlabs.js';
+import { resolveWorkflowTranscriptionConfig } from '../src/transcription/config.js';
+import { startTranscriptionHeartbeat } from '../src/transcription/run.js';
 import { sha256File } from '../src/utils/fs.js';
-import {
-  runTranscriptRawStage,
-  startTranscriptionHeartbeat
-} from '../src/workflow/stages/transcription.js';
-import {
-  mergeTranscriptChunks,
-  transcriptionRequestOptionsForModel
-} from '../src/workflow/transcription.js';
 import { baseSession, fakeFfprobeBin, preparedSession, tempDir } from './helpers.js';
 
+const transcription = {
+  provider: 'elevenlabs',
+  model: 'scribe_v2',
+  segmenter: 'integrated'
+} as const;
+
 describe('transcript raw stage', () => {
-  it('maps supported transcription models to their API request options', () => {
-    expect(transcriptionRequestOptionsForModel('whisper-1')).toEqual({
-      response_format: 'verbose_json',
-      timestamp_granularities: ['segment']
-    });
-    expect(transcriptionRequestOptionsForModel('gpt-4o-transcribe-diarize')).toEqual({
-      response_format: 'diarized_json',
-      chunking_strategy: 'auto'
-    });
-  });
-
-  it('merges whisper verbose JSON segments with chunk offsets and default speaker', () => {
-    const segments = mergeTranscriptChunks({
-      generatedAt: '2026-06-09T00:00:00.000Z',
-      chunks: [
-        {
-          index: 0,
-          audioPath: 'chunk-000.m4a',
-          start: 10,
-          end: 15,
-          model: 'whisper-1',
-          response: {
-            text: 'こんにちは。次です。',
-            segments: [
-              { id: 0, start: 0.25, end: 1.5, text: 'こんにちは。' },
-              { id: 1, start: 1.5, end: 3, text: '次です。' }
-            ]
-          }
-        }
-      ]
-    });
-
-    expect(segments.segments).toEqual([
+  it('maps ElevenLabs words to raw segments with global times', () => {
+    const segments = normalizeElevenLabsTranscript(
       {
-        id: '1-0',
+        words: [
+          {
+            text: 'こんにちは',
+            start: 0.25,
+            end: 0.75,
+            speakerId: 'speaker_0',
+            type: 'word',
+            logprob: Math.log(0.8)
+          },
+          { text: ' ', start: 0.75, end: 0.8, speakerId: 'speaker_0', type: 'spacing' },
+          { text: '。', start: 0.8, end: 0.9, speakerId: 'speaker_0', type: 'word' },
+          { text: '(拍手)', start: 1, end: 1.2, speakerId: 'speaker_0', type: 'audio_event' },
+          { text: 'はい', start: 2, end: 2.4, speakerId: 'speaker_1', type: 'word' }
+        ]
+      },
+      { offset: 10, idPrefix: '1' }
+    );
+
+    expect(segments).toEqual([
+      {
+        id: '1-s1',
         start: 10.25,
-        end: 11.5,
-        speaker: 'A',
-        ja: 'こんにちは。'
+        end: 11.2,
+        speaker: 'speaker_0',
+        ja: 'こんにちは。',
+        words: [
+          {
+            text: 'こんにちは',
+            start: 10.25,
+            end: 10.75,
+            speaker: 'speaker_0',
+            confidence: 0.8,
+            type: 'word'
+          },
+          {
+            text: ' ',
+            start: 10.75,
+            end: 10.8,
+            speaker: 'speaker_0',
+            type: 'spacing'
+          },
+          {
+            text: '。',
+            start: 10.8,
+            end: 10.9,
+            speaker: 'speaker_0',
+            type: 'word'
+          },
+          {
+            text: '(拍手)',
+            start: 11,
+            end: 11.2,
+            speaker: 'speaker_0',
+            type: 'audio_event'
+          }
+        ]
       },
       {
-        id: '1-1',
-        start: 11.5,
-        end: 13,
-        speaker: 'A',
-        ja: '次です。'
+        id: '1-s2',
+        start: 12,
+        end: 12.4,
+        speaker: 'speaker_1',
+        ja: 'はい',
+        words: [
+          {
+            text: 'はい',
+            start: 12,
+            end: 12.4,
+            speaker: 'speaker_1',
+            type: 'word'
+          }
+        ]
       }
     ]);
   });
 
-  it('requires speaker labels for non-whisper transcript segments', () => {
-    expect(() =>
-      mergeTranscriptChunks({
-        generatedAt: '2026-06-09T00:00:00.000Z',
-        chunks: [
-          {
-            index: 0,
-            audioPath: 'chunk-000.m4a',
-            start: 10,
-            end: 15,
-            model: 'gpt-4o-transcribe-diarize',
-            response: {
-              segments: [{ id: 'a', start: 0, end: 1, text: 'こんにちは' }]
-            }
-          }
-        ]
-      })
-    ).toThrow('Transcription segment 1 speaker must be a string.');
-  });
-
-  it('normalizes diarized JSON segments while preserving speaker labels', () => {
-    const segments = mergeTranscriptChunks({
+  it('merges single transcription inputs', () => {
+    const file = mergeElevenLabsInputs({
       generatedAt: '2026-06-09T00:00:00.000Z',
-      chunks: [
+      inputs: [
         {
           index: 0,
-          audioPath: 'chunk-000.m4a',
-          start: 20,
-          end: 25,
+          audioPath: 'audio/extracted.m4a',
+          start: 5,
+          end: 10,
+          transcription,
           response: {
-            segments: [
-              { id: 'a', start: 0, end: 1, speaker: 'A', text: 'はい。' },
-              { id: 'b', start: 1, end: 2.5, speaker: 'B', text: 'そうです。' }
-            ]
+            words: [{ text: 'はい', start: 0, end: 0.5, speaker_id: 'speaker_0', type: 'word' }]
           }
         }
       ]
     });
 
-    expect(segments.segments).toEqual([
-      {
-        id: '1-a',
-        start: 20,
-        end: 21,
-        speaker: 'A',
-        ja: 'はい。'
-      },
-      {
-        id: '1-b',
-        start: 21,
-        end: 22.5,
-        speaker: 'B',
-        ja: 'そうです。'
-      }
-    ]);
-  });
-
-  it('rejects transcription responses without segments', () => {
-    expect(() =>
-      mergeTranscriptChunks({
-        generatedAt: '2026-06-09T00:00:00.000Z',
-        chunks: [
-          {
-            index: 0,
-            audioPath: 'chunk-000.m4a',
-            start: 10,
-            end: 15,
-            response: { text: 'こんにちは' }
-          }
-        ]
-      })
-    ).toThrow('Transcription response does not contain segments.');
-  });
-
-  it.each([
-    ['missing speaker', { id: 'a', start: 0, end: 1, text: 'こんにちは' }, 'speaker'],
-    ['missing text', { id: 'a', start: 0, end: 1, speaker: 'A' }, 'text'],
-    ['string start', { id: 'a', start: '0', end: 1, speaker: 'A', text: 'こんにちは' }, 'start'],
-    ['string end', { id: 'a', start: 0, end: '1', speaker: 'A', text: 'こんにちは' }, 'end'],
-    ['NaN start', { id: 'a', start: Number.NaN, end: 1, speaker: 'A', text: 'こんにちは' }, 'start']
-  ])('rejects malformed provider segment with %s', (_label, segment, field) => {
-    expect(() =>
-      mergeTranscriptChunks({
-        generatedAt: '2026-06-09T00:00:00.000Z',
-        chunks: [
-          {
-            index: 0,
-            audioPath: 'chunk-000.m4a',
-            start: 10,
-            end: 15,
-            response: { segments: [segment] }
-          }
-        ]
-      })
-    ).toThrow(`Transcription segment 1 ${field} must be`);
-  });
-
-  it('preserves provider text without trimming or dropping empty segments', () => {
-    const segments = mergeTranscriptChunks({
-      generatedAt: '2026-06-09T00:00:00.000Z',
-      chunks: [
-        {
-          index: 0,
-          audioPath: 'chunk-000.m4a',
-          start: 10,
-          end: 15,
-          response: {
-            segments: [
-              { id: 'empty', start: 0, end: 0.1, speaker: 'A', text: '' },
-              { id: 'blank', start: 0.1, end: 0.2, speaker: 'A', text: '   ' },
-              { id: 'spaced', start: 0.2, end: 1, speaker: 'A', text: ' こんにちは ' }
-            ]
-          }
-        }
-      ]
+    expect(file.segments[0]).toMatchObject({
+      id: '1-s1',
+      start: 5,
+      end: 5.5,
+      speaker: 'speaker_0',
+      ja: 'はい'
     });
-
-    expect(segments.segments).toEqual([
-      {
-        id: '1-empty',
-        start: 10,
-        end: 10.1,
-        speaker: 'A',
-        ja: ''
-      },
-      {
-        id: '1-blank',
-        start: 10.1,
-        end: 10.2,
-        speaker: 'A',
-        ja: '   '
-      },
-      {
-        id: '1-spaced',
-        start: 10.2,
-        end: 11,
-        speaker: 'A',
-        ja: ' こんにちは '
-      }
-    ]);
   });
 
-  it('transcribes chunks concurrently and resumes from completed chunk files', async () => {
-    const dir = await preparedSession('transcript_raw', {});
-    const ffprobeBin = await fakeFfprobeBin();
-    await mkdir(path.join(dir, 'audio/chunks'), { recursive: true });
-    for (let index = 0; index < 6; index += 1) {
-      await writeFile(
-        path.join(dir, `audio/chunks/chunk-${String(index).padStart(3, '0')}.m4a`),
-        'audio'
-      );
-    }
-    const chunkHash = await sha256File(path.join(dir, 'audio/chunks/chunk-000.m4a'));
-    const chunkSize = 5;
-
-    const session = await Session.loadOrCreate(dir);
-    session.state = baseSession('transcript_raw');
-    session.state.stages.audio = {
-      status: 'done',
-      audio: 'audio/extracted.m4a',
-      chunks_dir: 'audio/chunks',
-      chunk_count: 6,
-      chunks: Array.from({ length: 6 }, (_, index) => ({
-        audio: `audio/chunks/chunk-${String(index).padStart(3, '0')}.m4a`,
-        start: index,
-        end: index + 1,
-        size: chunkSize,
-        sha256: chunkHash
-      }))
-    };
-
-    let active = 0;
-    let maxActive = 0;
-    const calls: string[] = [];
-    let waiting: Array<() => void> = [];
-    const releaseWaiting = () => {
-      const ready = waiting;
-      waiting = [];
-      for (const resolve of ready) {
-        resolve();
-      }
-    };
-    const transcribe = async ({ audioPath }: { audioPath: string }) => {
-      active += 1;
-      maxActive = Math.max(maxActive, active);
-      calls.push(path.basename(audioPath));
-      await new Promise<void>((resolve) => {
-        waiting.push(resolve);
-        if (waiting.length === 5 || calls.length === 6) {
-          releaseWaiting();
-        }
-      });
-      active -= 1;
-      return {
-        segments: [
-          {
-            id: path.basename(audioPath, '.m4a'),
-            start: 0,
-            end: 0.5,
-            speaker: 'A',
-            text: path.basename(audioPath)
-          }
-        ]
-      };
-    };
-
-    await runTranscriptRawStage({
-      session,
-      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
-      deps: { transcribe }
+  it('resolves session transcription config and guards CLI changes', () => {
+    const state = baseSession('audio');
+    const initial = resolveWorkflowTranscriptionConfig({
+      state,
+      description: { body: '', frontmatter: { transcription: { provider: 'elevenlabs' } } },
+      target: '/tmp/session'
     });
+    expect(initial).toEqual(transcription);
 
-    expect(maxActive).toBeGreaterThan(1);
-    expect(maxActive).toBeLessThanOrEqual(5);
-    expect(calls).toHaveLength(6);
+    state.transcription = transcription;
     expect(
-      await readFile(path.join(dir, 'transcript/raw/chunks/chunk-000.toml'), 'utf8')
-    ).toContain('chunk-000.m4a');
-    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).toContain(
-      'ja = "chunk-005.m4a"'
-    );
-    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).not.toContain(
-      'media ='
-    );
+      resolveWorkflowTranscriptionConfig({
+        state,
+        description: { body: '', frontmatter: { transcription: { model: 'ignored' } } },
+        cli: { model: 'scribe_v2' },
+        target: '/tmp/session'
+      })
+    ).toEqual(transcription);
 
-    calls.length = 0;
-    await runTranscriptRawStage({
-      session,
-      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
-      deps: { transcribe }
-    });
-    expect(calls).toHaveLength(0);
+    expect(() =>
+      resolveWorkflowTranscriptionConfig({
+        state,
+        description: { body: '', frontmatter: {} },
+        cli: { model: 'unsupported' },
+        target: '/tmp/session'
+      })
+    ).toThrow('Transcription model "unsupported" is not supported.');
   });
 
-  it('uses recorded audio chunk timeline instead of probed chunk durations', async () => {
+  it('transcribes one extracted audio input and resumes matching checkpoints', async () => {
     const dir = await preparedSession('transcript_raw', {});
-    const ffprobeBin = await fakeFfprobeBin();
-    await mkdir(path.join(dir, 'audio/chunks'), { recursive: true });
-    await writeFile(path.join(dir, 'audio/chunks/chunk-000.m4a'), 'audio');
-    await writeFile(path.join(dir, 'audio/chunks/chunk-001.m4a'), 'audio');
-    const chunkHash = await sha256File(path.join(dir, 'audio/chunks/chunk-000.m4a'));
-
-    const session = await Session.loadOrCreate(dir);
-    session.state = baseSession('transcript_raw');
-    session.state.stages.audio = {
-      status: 'done',
-      audio: 'audio/extracted.m4a',
-      chunks_dir: 'audio/chunks',
-      chunk_count: 2,
-      chunks: [
-        {
-          audio: 'audio/chunks/chunk-000.m4a',
-          start: 0,
-          end: 595,
-          size: 5,
-          sha256: chunkHash
-        },
-        {
-          audio: 'audio/chunks/chunk-001.m4a',
-          start: 595,
-          end: 1194,
-          size: 5,
-          sha256: chunkHash
-        }
-      ]
-    };
-
-    await runTranscriptRawStage({
-      session,
-      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
-      deps: {
-        transcribe: async ({ audioPath }) => ({
-          segments: [
-            {
-              id: path.basename(audioPath, '.m4a'),
-              start: 0.25,
-              end: 0.75,
-              speaker: 'A',
-              text: path.basename(audioPath)
-            }
-          ]
-        })
-      }
-    });
-
-    const segments = await readSegmentsFile(path.join(dir, 'transcript/raw/segments.toml'));
-    expect(segments.segments.map((segment) => segment.start)).toEqual([0.25, 595.25]);
-    expect(segments.segments.map((segment) => segment.end)).toEqual([0.75, 595.75]);
-  });
-
-  it('rejects missing audio chunk metadata before transcription', async () => {
-    const dir = await preparedSession('transcript_raw', {});
-    const ffprobeBin = await fakeFfprobeBin();
     await mkdir(path.join(dir, 'audio'), { recursive: true });
     await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
-
     const session = await Session.loadOrCreate(dir);
     session.state = baseSession('transcript_raw');
+    session.state.transcription = transcription;
     session.state.stages.audio = {
       status: 'done',
       audio: 'audio/extracted.m4a',
-      chunk_count: 1
+      strategy: 'single_file',
+      duration: 2
     };
+    let calls = 0;
 
-    await expect(
-      runTranscriptRawStage({
-        session,
-        runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
-        deps: {
-          transcribe: async () => {
-            throw new Error('should not transcribe');
-          }
+    await runTranscriptRawStage({
+      session,
+      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+      transcription,
+      deps: {
+        transcribe: async ({ audioPath }) => {
+          calls += 1;
+          return {
+            words: [
+              {
+                text: path.basename(audioPath),
+                start: 0,
+                end: 0.5,
+                speaker_id: 'speaker_0',
+                type: 'word'
+              }
+            ]
+          };
         }
-      })
-    ).rejects.toThrow('audio stage does not include chunk metadata');
-  });
+      }
+    });
 
-  it('does not resume stale transcription checkpoints after upstream reset', async () => {
-    const dir = await preparedSession('transcript_raw', {});
-    const ffprobeBin = await fakeFfprobeBin();
-    await mkdir(path.join(dir, 'audio'), { recursive: true });
-    await mkdir(path.join(dir, 'audio/chunks'), { recursive: true });
-    await mkdir(path.join(dir, 'transcript/raw/chunks'), { recursive: true });
-    await writeFile(path.join(dir, 'audio/extracted.m4a'), 'new audio');
-    await writeFile(path.join(dir, 'audio/chunks/chunk-000.m4a'), 'new audio');
-    const chunkHash = await sha256File(path.join(dir, 'audio/chunks/chunk-000.m4a'));
-    await writeFile(
-      path.join(dir, 'transcript/raw/chunks/chunk-000.toml'),
-      [
-        'version = 1',
-        'status = "done"',
-        'chunk_index = 0',
-        'audio = "audio/extracted.m4a"',
-        'start = 0',
-        'end = 1',
-        'model = "old"',
-        'started_at = "2026-06-05T00:00:00.000Z"',
-        'completed_at = "2026-06-05T00:00:00.000Z"',
-        '',
-        '[[response.segments]]',
-        'id = "old"',
-        'start = 0',
-        'end = 0.5',
-        'speaker = "A"',
-        'text = "old media"'
-      ].join('\n')
+    expect(calls).toBe(1);
+    expect(
+      await readFile(path.join(dir, 'transcript/raw/checkpoints/input-000.toml'), 'utf8')
+    ).toContain('provider = "elevenlabs"');
+    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).toContain(
+      'ja = "extracted.m4a"'
     );
 
+    await runTranscriptRawStage({
+      session,
+      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+      transcription,
+      deps: {
+        transcribe: async () => {
+          throw new Error('should resume');
+        }
+      }
+    });
+    expect(calls).toBe(1);
+  });
+
+  it('keeps extracted audio as raw input while transcribing chunks', async () => {
+    const dir = await preparedSession('transcript_raw', {});
+    await mkdir(path.join(dir, 'audio/chunks'), { recursive: true });
+    await writeFile(path.join(dir, 'audio/extracted.m4a'), 'full-audio');
+    await writeFile(path.join(dir, 'audio/chunks/chunk-000.m4a'), 'chunk-audio');
+    const chunkPath = path.join(dir, 'audio/chunks/chunk-000.m4a');
     const session = await Session.loadOrCreate(dir);
     session.state = baseSession('transcript_raw');
+    session.state.transcription = transcription;
     session.state.stages.audio = {
       status: 'done',
       audio: 'audio/extracted.m4a',
-      chunk_count: 1,
+      strategy: 'silence_or_time',
       chunks: [
         {
           audio: 'audio/chunks/chunk-000.m4a',
-          start: 0,
-          end: 1,
-          size: 9,
-          sha256: chunkHash
+          start: 10,
+          end: 12,
+          size: 11,
+          sha256: await sha256File(chunkPath)
         }
       ]
     };
@@ -435,65 +241,138 @@ describe('transcript raw stage', () => {
 
     await runTranscriptRawStage({
       session,
-      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
+      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+      transcription,
       deps: {
-        transcribe: async () => {
+        transcribe: async ({ audioPath }) => {
           calls += 1;
           return {
-            segments: [
+            words: [
               {
-                id: 'new',
+                text: path.basename(audioPath),
                 start: 0,
                 end: 0.5,
-                speaker: 'A',
-                text: 'new media'
+                speaker_id: 'speaker_0',
+                type: 'word'
               }
             ]
           };
         }
-      },
-      resetCheckpoints: true
+      }
+    });
+
+    expect(calls).toBe(1);
+    expect(session.stage('transcript_raw').input_audio).toBe('audio/extracted.m4a');
+    expect(
+      await readFile(path.join(dir, 'transcript/raw/checkpoints/input-000.toml'), 'utf8')
+    ).toContain('audio = "audio/chunks/chunk-000.m4a"');
+    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).toContain(
+      'start = 10'
+    );
+
+    await runTranscriptRawStage({
+      session,
+      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+      transcription,
+      deps: {
+        transcribe: async () => {
+          throw new Error('should resume');
+        }
+      }
+    });
+    expect(calls).toBe(1);
+  });
+
+  it('does not resume mismatched checkpoints', async () => {
+    const dir = await preparedSession('transcript_raw', {});
+    await mkdir(path.join(dir, 'audio'), { recursive: true });
+    await mkdir(path.join(dir, 'transcript/raw/checkpoints'), { recursive: true });
+    await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
+    await writeRawCheckpointFixture(dir, { model: 'old' });
+
+    const session = await Session.loadOrCreate(dir);
+    session.state = baseSession('transcript_raw');
+    session.state.transcription = transcription;
+    session.state.stages.audio = {
+      status: 'done',
+      audio: 'audio/extracted.m4a',
+      strategy: 'single_file',
+      duration: 1
+    };
+
+    await runTranscriptRawStage({
+      session,
+      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+      transcription,
+      deps: {
+        transcribe: async () => ({
+          words: [{ text: 'new', start: 0, end: 0.5, speaker_id: 'speaker_0', type: 'word' }]
+        })
+      }
+    });
+
+    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).toContain(
+      'ja = "new"'
+    );
+  });
+
+  it('does not resume checkpoints for a different input', async () => {
+    const dir = await preparedSession('transcript_raw', {});
+    await mkdir(path.join(dir, 'audio'), { recursive: true });
+    await mkdir(path.join(dir, 'transcript/raw/checkpoints'), { recursive: true });
+    await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
+    await writeRawCheckpointFixture(dir, { audio: 'audio/other.m4a' });
+
+    const session = await Session.loadOrCreate(dir);
+    session.state = baseSession('transcript_raw');
+    session.state.transcription = transcription;
+    session.state.stages.audio = {
+      status: 'done',
+      audio: 'audio/extracted.m4a',
+      strategy: 'single_file',
+      duration: 1
+    };
+
+    let calls = 0;
+    await runTranscriptRawStage({
+      session,
+      runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+      transcription,
+      deps: {
+        transcribe: async () => {
+          calls += 1;
+          return {
+            words: [{ text: 'new', start: 0, end: 0.5, speaker_id: 'speaker_0', type: 'word' }]
+          };
+        }
+      }
     });
 
     expect(calls).toBe(1);
     expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).toContain(
-      'ja = "new media"'
-    );
-    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).not.toContain(
-      'old media'
+      'ja = "new"'
     );
   });
 
-  it('writes chunk error logs when transcription fails', async () => {
+  it('writes input error logs when transcription fails', async () => {
     const dir = await preparedSession('transcript_raw', {});
-    const ffprobeBin = await fakeFfprobeBin();
     await mkdir(path.join(dir, 'audio'), { recursive: true });
-    await mkdir(path.join(dir, 'audio/chunks'), { recursive: true });
     await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
-    await writeFile(path.join(dir, 'audio/chunks/chunk-000.m4a'), 'audio');
-    const chunkHash = await sha256File(path.join(dir, 'audio/chunks/chunk-000.m4a'));
-
     const session = await Session.loadOrCreate(dir);
     session.state = baseSession('transcript_raw');
+    session.state.transcription = transcription;
     session.state.stages.audio = {
       status: 'done',
       audio: 'audio/extracted.m4a',
-      chunk_count: 1,
-      chunks: [
-        {
-          audio: 'audio/chunks/chunk-000.m4a',
-          start: 0,
-          end: 1,
-          size: 5,
-          sha256: chunkHash
-        }
-      ]
+      strategy: 'single_file',
+      duration: 1
     };
 
     await expect(
       runTranscriptRawStage({
         session,
-        runtime: { ffmpegBin: 'ffmpeg', ffprobeBin },
+        runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+        transcription,
         deps: {
           transcribe: async () => {
             throw new Error('temporary ASR failure');
@@ -503,24 +382,86 @@ describe('transcript raw stage', () => {
     ).rejects.toThrow('temporary ASR failure');
 
     expect(
-      await readFile(path.join(dir, 'transcript/raw/chunks/chunk-000.error.log'), 'utf8')
+      await readFile(path.join(dir, 'transcript/raw/checkpoints/input-000.error.log'), 'utf8')
     ).toContain('temporary ASR failure');
-    await expect(
-      readFile(path.join(dir, 'transcript/raw/chunks/chunk-000.toml'), 'utf8')
-    ).rejects.toThrow();
   });
 
-  it('logs transcription heartbeats while a chunk is still running', async () => {
+  it('rejects single-file audio hash mismatches before transcription', async () => {
+    const dir = await preparedSession('transcript_raw', {});
+    await mkdir(path.join(dir, 'audio'), { recursive: true });
+    await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
+    const session = await Session.loadOrCreate(dir);
+    session.state = baseSession('transcript_raw');
+    session.state.transcription = transcription;
+    session.state.stages.audio = {
+      status: 'done',
+      audio: 'audio/extracted.m4a',
+      audio_size: 5,
+      audio_sha256: 'not-the-current-hash',
+      strategy: 'single_file',
+      duration: 1
+    };
+
+    await expect(
+      runTranscriptRawStage({
+        session,
+        runtime: { ffmpegBin: 'ffmpeg', ffprobeBin: await fakeFfprobeBin() },
+        transcription,
+        deps: {
+          transcribe: async () => {
+            throw new Error('should not upload');
+          }
+        }
+      })
+    ).rejects.toThrow('audio file hash mismatch: audio/extracted.m4a.');
+  });
+
+  it('drops raw words when creating transcript work', async () => {
+    const dir = await preparedSession('transcript_work', {
+      transcript_raw: {
+        status: 'done',
+        segments: 'transcript/raw/segments.toml'
+      }
+    });
+    await writeSegmentsFile(path.join(dir, 'transcript/raw/segments.toml'), {
+      version: 1,
+      source: { kind: 'transcript', generated_at: '2026-06-06T00:00:00.000Z' },
+      segments: [
+        {
+          id: '1',
+          start: 0,
+          end: 1,
+          speaker: 'speaker_0',
+          ja: ' はい ',
+          words: [{ text: 'はい', start: 0, end: 1, speaker: 'speaker_0', type: 'word' }]
+        }
+      ]
+    });
+    const session = await Session.loadOrCreate(dir);
+    const { setupManualStage } = await import('../src/workflow/stages/manual.js');
+    await setupManualStage({ session, stage: 'transcript_work' });
+
+    const work = await readSegmentsFile(path.join(dir, 'transcript/work/segments.toml'));
+    expect(work.segments[0]).toEqual({
+      id: '1',
+      start: 0,
+      end: 1,
+      speaker: 'speaker_0',
+      ja: 'はい'
+    });
+  });
+
+  it('logs transcription heartbeats while an input is still running', async () => {
     const dir = await tempDir();
     const logs: string[] = [];
     const heartbeat = startTranscriptionHeartbeat({
-      chunk: {
+      input: {
         index: 0,
-        audioPath: path.join(dir, 'audio/chunks/chunk-000.m4a'),
+        audioPath: path.join(dir, 'audio/extracted.m4a'),
         start: 0,
         end: 90
       },
-      totalChunks: 2,
+      totalInputs: 2,
       sessionDir: dir,
       intervalMs: 1000,
       logger: {
@@ -531,7 +472,7 @@ describe('transcript raw stage', () => {
     });
 
     await vi.advanceTimersByTimeAsync(1000);
-    expect(logs.at(-1)).toContain('chunk 1/2 heartbeat 00:01 00:00-01:30');
+    expect(logs.at(-1)).toContain('input 1/2 heartbeat 00:01 00:00-01:30');
     expect(logs.at(-1)).toContain('waiting for provider response');
 
     heartbeat.stop();
@@ -540,3 +481,32 @@ describe('transcript raw stage', () => {
     expect(logs).toHaveLength(logCount);
   });
 });
+
+async function writeRawCheckpointFixture(
+  dir: string,
+  overrides: { audio?: string; model?: string } = {}
+): Promise<void> {
+  await writeFile(
+    path.join(dir, 'transcript/raw/checkpoints/input-000.toml'),
+    [
+      'version = 1',
+      'status = "done"',
+      'input_index = 0',
+      `audio = "${overrides.audio ?? 'audio/extracted.m4a'}"`,
+      'start = 0',
+      'end = 1',
+      'provider = "elevenlabs"',
+      `model = "${overrides.model ?? 'scribe_v2'}"`,
+      'segmenter = "integrated"',
+      'started_at = "2026-06-05T00:00:00.000Z"',
+      'completed_at = "2026-06-05T00:00:00.000Z"',
+      '',
+      '[[response.words]]',
+      'text = "old"',
+      'start = 0',
+      'end = 0.5',
+      'speaker_id = "speaker_0"',
+      'type = "word"'
+    ].join('\n')
+  );
+}
