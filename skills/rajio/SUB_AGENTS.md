@@ -16,10 +16,9 @@ submission reread loop, command boundaries, or final reporting requirements.
 - If the sub-agent tool supports roles, spawn batch workers as `worker`.
 - Respect the environment's spawn limit. By default, run at most 6 sub-agents at the same
   time; if the environment allows fewer, use the actual lower limit.
-- Give each worker a `worker label` and one non-overlapping assigned source-media time
-  range as `start` and `end` seconds. Use the sub-agent nickname as the label if the tool
-  provides one; otherwise use a short random string. Do not spawn a worker until the label
-  and time range are known.
+- Before spawning, generate a short random `worker label` string for each worker. Give
+  each worker one non-overlapping assigned source-media time range as `start` and `end`
+  seconds. Do not spawn a worker until the label and time range are known.
 - Tell every worker that they are not alone in the workspace and must not revert or
   overwrite edits made by other agents.
 
@@ -45,7 +44,7 @@ validation rules, QA rules, or command syntax are unclear.
 - Patch files must include top-level `created_by`, `start`, and `end` matching the
   worker label and assigned source-media time range.
 - Name patch files as `<worker-label>-<time-range>.toml`, for example
-  `sakura-0000s-0600s.toml` or `a1b2c3-0600s-1214s.toml`. When reporting a patch path,
+  `a1b2c3-0000s-0600s.toml` or `f8d9e0-0600s-1214s.toml`. When reporting a patch path,
   use the absolute path.
 - After writing a patch file, workers must run `rajio segments apply --dry-run`,
   use the check summary to keep improving the patch, and report the final dry-run
@@ -119,7 +118,7 @@ range unless explicitly asked.
 
 Task:
 - session: <absolute session path>
-- worker label: <sub-agent nickname or short random string>
+- worker label: <main-agent generated random label>
 - stage: transcript
 - assigned time range: <start seconds>-<end seconds>
 - work file: <session>/transcript/work/segments.toml
@@ -227,7 +226,7 @@ range unless explicitly asked.
 
 Task:
 - session: <absolute session path>
-- worker label: <sub-agent nickname or short random string>
+- worker label: <main-agent generated random label>
 - stage: translation
 - assigned time range: <start seconds>-<end seconds>
 - work file: <session>/translation/work/segments.toml
