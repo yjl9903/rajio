@@ -46,6 +46,7 @@ export interface SegmentPatchOutputStats {
   edits: number;
   splits: number;
   merges: number;
+  inserts: number;
   deletes: number;
   total: number;
 }
@@ -53,7 +54,7 @@ export interface SegmentPatchOutputStats {
 const baseColumns = ['id', 'start', 'end', 'speaker', 'ja', 'zh'] as const;
 const affectedColumn = 'affected';
 const issueColumn = 'issues';
-const patchStatColumns = ['edits', 'splits', 'merges', 'deletes', 'total'] as const;
+const patchStatColumns = ['edits', 'splits', 'merges', 'inserts', 'deletes', 'total'] as const;
 
 export function prepareSegmentOutput(options: SegmentOutputOptions): SegmentOutput {
   const writer = options.writer ?? process.stdout;

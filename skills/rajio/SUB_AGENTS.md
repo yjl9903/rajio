@@ -196,7 +196,7 @@ Write a patch file under `<session>/patches/transcript/`. Name it
 `end = <assigned end seconds>`.
 
 Inside the patch file, write `[[operations]]` entries. Use `op = "edit"`,
-`op = "split"`, `op = "merge"`, or `op = "delete"` according to
+`op = "split"`, `op = "merge"`, `op = "insert"`, or `op = "delete"` according to
 [CLI.md](CLI.md#segments-apply).
 
 After writing the patch file, run

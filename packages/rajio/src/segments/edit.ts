@@ -2,6 +2,7 @@ import type { Segment, SegmentSkipCheck, SegmentsFile } from '../types.js';
 import { Session } from '../session/index.js';
 import type { ManualStageName } from '../types.js';
 import { assertSegmentId, readSegmentsFile, writeSegmentsFile } from './index.js';
+import { SEGMENT_TIME_EPSILON } from './limits.js';
 import { assertMinimumSplitDurations, normalizeSplitGap, splitAroundMidpoint } from './split.js';
 
 export type SegmentEditStage = 'transcript' | 'translation';
@@ -158,6 +159,61 @@ export function splitSegment(
 
   file.segments.splice(index, 1, first, second);
   return [first, second];
+}
+
+export function insertSegment(
+  file: SegmentsFile,
+  input: {
+    id: string;
+    start: number;
+    end: number;
+    speaker: string;
+    ja: string;
+    zh?: string;
+    requireZh?: boolean;
+  }
+): Segment {
+  assertSegmentId(input.id);
+  if (file.segments.some((segment) => segment.id === input.id)) {
+    throw new Error(`segment id already exists: ${input.id}`);
+  }
+  if (input.end <= input.start) {
+    throw new Error(`Segment ${input.id} end must be greater than start.`);
+  }
+  if (input.speaker.length === 0) {
+    throw new Error(`Segment ${input.id} has empty speaker.`);
+  }
+  if (!input.ja.trim()) {
+    throw new Error(`Segment ${input.id} has empty Japanese text.`);
+  }
+  if (input.requireZh === true && !input.zh?.trim()) {
+    throw new Error(`Segment ${input.id} has empty Chinese text.`);
+  }
+
+  const segment: Segment = {
+    id: input.id,
+    start: input.start,
+    end: input.end,
+    speaker: input.speaker,
+    ja: input.ja
+  };
+  if (input.zh !== undefined) {
+    segment.zh = input.zh;
+  }
+
+  const index = file.segments.findIndex((current) => current.start > segment.start);
+  const insertAt = index === -1 ? file.segments.length : index;
+  const previous = file.segments[insertAt - 1];
+  const next = file.segments[insertAt];
+  if (previous && segment.start < previous.end - SEGMENT_TIME_EPSILON) {
+    throw new Error(`Segment ${segment.id} overlaps previous segment ${previous.id}.`);
+  }
+  if (next && next.start < segment.end - SEGMENT_TIME_EPSILON) {
+    throw new Error(`Segment ${next.id} overlaps previous segment ${segment.id}.`);
+  }
+
+  file.segments.splice(insertAt, 0, segment);
+  return segment;
 }
 
 export function mergeSegments(

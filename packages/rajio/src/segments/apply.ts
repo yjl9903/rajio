@@ -9,6 +9,7 @@ import {
   findSegment,
   findSegmentIndex,
   hasTranslatedText,
+  insertSegment,
   mergeSpeakerLabels,
   withoutSkipChecks
 } from './edit.js';
@@ -70,6 +71,19 @@ const mergeOperationSchema = z
   })
   .strict();
 
+const insertOperationSchema = z
+  .object({
+    op: z.literal('insert'),
+    ...operationMetadataSchema,
+    segment_id: segmentIdSchema,
+    start: z.number().nonnegative(),
+    end: z.number().positive(),
+    speaker: z.string().min(1),
+    ja: z.string(),
+    zh: z.string().optional()
+  })
+  .strict();
+
 const deleteOperationSchema = z
   .object({
     op: z.literal('delete'),
@@ -83,6 +97,7 @@ const segmentPatchOperationSchema = z
     editOperationSchema,
     splitOperationSchema,
     mergeOperationSchema,
+    insertOperationSchema,
     deleteOperationSchema
   ])
   .superRefine((operation, context) => {
@@ -128,6 +143,7 @@ export interface SegmentPatchResult {
   edits: Segment[];
   splits: Segment[];
   merges: Segment[];
+  inserts: Segment[];
   deletes: Segment[];
   affected: Segment[];
 }
@@ -136,6 +152,7 @@ export interface SegmentPatchResultStats {
   edits: number;
   splits: number;
   merges: number;
+  inserts: number;
   deletes: number;
   total: number;
 }
@@ -145,18 +162,28 @@ export function parseSegmentPatch(text: string): SegmentPatch {
 }
 
 export function applySegmentPatch(file: SegmentsFile, patch: SegmentPatch): SegmentPatchResult {
+  return applySegmentPatchWithOptions(file, patch);
+}
+
+export function applySegmentPatchWithOptions(
+  file: SegmentsFile,
+  patch: SegmentPatch,
+  options: { requireZhForInserts?: boolean } = {}
+): SegmentPatchResult {
   patch = segmentPatchSchema.parse(patch);
   const next = cloneSegmentsFile(file);
+  const requireZhForInserts = options.requireZhForInserts ?? next.source.kind === 'translation';
   const result: SegmentPatchResult = {
     edits: [],
     splits: [],
     merges: [],
+    inserts: [],
     deletes: [],
     affected: []
   };
 
   for (const operation of patch.operations) {
-    applyOperation(next, operation, result);
+    applyOperation(next, operation, result, { requireZhForInserts });
     assertUniqueCurrentIds(next);
   }
 
@@ -168,20 +195,23 @@ export function summarizeSegmentPatchResult(patch: SegmentPatch): SegmentPatchRe
   const edits = patch.operations.filter((operation) => operation.op === 'edit').length;
   const splits = patch.operations.filter((operation) => operation.op === 'split').length;
   const merges = patch.operations.filter((operation) => operation.op === 'merge').length;
+  const inserts = patch.operations.filter((operation) => operation.op === 'insert').length;
   const deletes = patch.operations.filter((operation) => operation.op === 'delete').length;
   return {
     edits,
     splits,
     merges,
+    inserts,
     deletes,
-    total: edits + splits + merges + deletes
+    total: edits + splits + merges + inserts + deletes
   };
 }
 
 function applyOperation(
   file: SegmentsFile,
   operation: SegmentPatchOperation,
-  result: SegmentPatchResult
+  result: SegmentPatchResult,
+  options: { requireZhForInserts?: boolean }
 ): void {
   if (operation.op === 'edit') {
     editSegment(file, operation.segment_id, {
@@ -206,6 +236,22 @@ function applyOperation(
   if (operation.op === 'merge') {
     const segment = cloneSegment(applyMerge(file, operation));
     result.merges.push(segment);
+    result.affected.push(segment);
+    return;
+  }
+  if (operation.op === 'insert') {
+    const segment = cloneSegment(
+      insertSegment(file, {
+        id: operation.segment_id,
+        start: operation.start,
+        end: operation.end,
+        speaker: operation.speaker,
+        ja: operation.ja,
+        zh: operation.zh,
+        requireZh: options.requireZhForInserts
+      })
+    );
+    result.inserts.push(segment);
     result.affected.push(segment);
     return;
   }
