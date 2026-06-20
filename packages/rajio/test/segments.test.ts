@@ -1316,9 +1316,11 @@ describe('segment edit tools', () => {
   it('rejects conflicting or invalid segment list filters', () => {
     const segments = sampleTranscript().segments;
 
-    expect(() => listSegments(segments, { id: ['1'], offset: 0 })).toThrow('mutually exclusive');
+    expect(() => listSegments(segments, { id: ['1'], offset: 0 })).toThrow(
+      'filter modes cannot be mixed'
+    );
     expect(() => listSegments(segments, { issues: ['overlap'], start: 0, end: 1 })).toThrow(
-      'mutually exclusive'
+      'filter modes cannot be mixed'
     );
     expect(() => listSegments(segments, { start: 0 })).toThrow('provided together');
     expect(() => listSegments(segments, { start: 2, end: 1 })).toThrow('greater than or equal');
@@ -1379,6 +1381,14 @@ describe('segment edit tools', () => {
       'missing-zh',
       'blank-zh'
     ]);
+    expect(
+      listSegments(segments, {
+        issues: ['empty_zh'],
+        offset: 1,
+        limit: 1,
+        validationIssues
+      }).map((segment) => segment.id)
+    ).toEqual(['blank-zh']);
     expect(() => listSegments(segments, { level: 'error' })).toThrow('--level requires --issues');
   });
 

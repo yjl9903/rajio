@@ -230,6 +230,6 @@ const runPromise = argv.some((arg) => arg === '--agent' || arg.startsWith('--age
   : app.run(argv);
 
 await runPromise.catch((error) => {
-  taggedLogger('cli').error(formatCliError(error, argv));
+  process.stderr.write(`${formatCliError(error, argv)}\n`);
   process.exitCode = 1;
 });

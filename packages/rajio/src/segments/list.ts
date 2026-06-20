@@ -61,9 +61,7 @@ export function listSegments(segments: Segment[], options: SegmentListOptions): 
   }
 
   if (mode === 'range') {
-    const offset = options.offset ?? 0;
-    const limit = options.limit ?? Number.POSITIVE_INFINITY;
-    return segments.slice(offset, Number.isFinite(limit) ? offset + limit : undefined);
+    return pageSegments(segments, options);
   }
 
   if (mode === 'time') {
@@ -77,24 +75,32 @@ export function listSegments(segments: Segment[], options: SegmentListOptions): 
     if (!options.validationIssues) {
       throw new Error('--issues requires validation issues.');
     }
-    return listByValidationIssues(segments, filters, options.validationIssues, options.level);
+    return pageSegments(
+      listByValidationIssues(segments, filters, options.validationIssues, options.level),
+      options
+    );
   }
 
   return segments;
 }
 
 function resolveListMode(options: SegmentListOptions): 'all' | 'id' | 'range' | 'time' | 'issues' {
+  const filterModeError =
+    'filter modes cannot be mixed: use only one of --id, --start/--end, or --issues. --offset/--limit may page all rows or --issues results.';
   const hasId = options.id !== undefined;
-  const hasRange = options.offset !== undefined || options.limit !== undefined;
+  const hasPagination = options.offset !== undefined || options.limit !== undefined;
   const hasTime = options.start !== undefined || options.end !== undefined;
   const hasIssues = options.issues !== undefined && options.issues.length > 0;
   const hasLevel = options.level !== undefined;
   if (hasLevel && !hasIssues) {
     throw new Error('--level requires --issues.');
   }
-  const modeCount = [hasId, hasRange, hasTime, hasIssues].filter(Boolean).length;
+  const modeCount = [hasId, hasTime, hasIssues].filter(Boolean).length;
   if (modeCount > 1) {
-    throw new Error('--id, --offset/--limit, --start/--end, and --issues are mutually exclusive.');
+    throw new Error(filterModeError);
+  }
+  if (hasPagination && (hasId || hasTime)) {
+    throw new Error(filterModeError);
   }
   if (!hasId && options.around !== undefined) {
     throw new Error('--around requires --id.');
@@ -102,13 +108,12 @@ function resolveListMode(options: SegmentListOptions): 'all' | 'id' | 'range' | 
   if (hasId && options.id!.length === 0) {
     throw new Error('--id requires at least one segment id.');
   }
+  if (hasPagination) {
+    validateRangeOptions(options);
+  }
 
   if (hasId) {
     return 'id';
-  }
-  if (hasRange) {
-    validateRangeOptions(options);
-    return 'range';
   }
   if (hasTime) {
     validateTimeOptions(options);
@@ -117,7 +122,16 @@ function resolveListMode(options: SegmentListOptions): 'all' | 'id' | 'range' | 
   if (hasIssues) {
     return 'issues';
   }
+  if (hasPagination) {
+    return 'range';
+  }
   return 'all';
+}
+
+function pageSegments(segments: Segment[], options: SegmentListOptions): Segment[] {
+  const offset = options.offset ?? 0;
+  const limit = options.limit ?? Number.POSITIVE_INFINITY;
+  return segments.slice(offset, Number.isFinite(limit) ? offset + limit : undefined);
 }
 
 function listAroundIds(segments: Segment[], ids: string[], around: number): Segment[] {

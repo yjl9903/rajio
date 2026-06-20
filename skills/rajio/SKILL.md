@@ -207,6 +207,7 @@ rajio segments list /path/to/session --json --stage transcript --offset 100 --li
 rajio segments list /path/to/session --json --stage transcript --start 600 --end 660
 rajio segments list /path/to/session --json --stage translation --issues empty_zh,zh_line_hard_limit
 rajio segments list /path/to/session --json --stage translation --issues duration_too_long --level error
+rajio segments list /path/to/session --json --stage translation --issues empty_zh --offset 100 --limit 50
 rajio segments apply /path/to/session patch.toml --json --stage translation
 rajio segments apply /path/to/session --json --stage translation <<'EOF'
 [[operations]]
@@ -225,18 +226,20 @@ In `segments` commands, pass `/path/to/session` after the segment subcommand. Re
 `--stage transcript` with `--stage translation` for `translation/work/segments.toml`.
 Segment ids must be non-empty, trimmed strings without commas.
 
-`segments list` accepts one filter mode at a time:
+`segments list` selects rows by id, time range, validation issue, or plain pagination:
 
 - `--id <ids>`: show a comma-separated id list in requested order. Segment ids
   themselves must not contain commas.
 - `--id <ids> --around <count>`: show surrounding context for each requested id,
   deduplicated in timeline order.
-- `--offset <count> --limit <count>`: show a zero-based segment window; omit `--limit`
-  to read from offset to the end.
 - `--start <time> --end <time>`: show segments whose `start` time is in `[start, end)`.
 - `--issues <codes>`: show segments matching validation codes such as `invalid_time`,
   `ja_line_hard_limit`, or `empty_zh`; add `--level error` to exclude warning-level
-  matches for soft-or-hard codes like duration and reading speed.
+  matches for soft-or-hard codes like duration and reading speed. Add `--offset` and
+  `--limit` to page through issue matches.
+- `--offset <count> --limit <count>`: show a zero-based window after any issue filtering;
+  omit `--limit` to read from offset to the end. Do not combine with `--id`, `--around`,
+  or `--start/--end`.
 
 `segments apply <target> [file]` applies an ordered TOML patch as the batch form of `edit`,
 `split`, `merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in

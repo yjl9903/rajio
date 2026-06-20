@@ -781,6 +781,74 @@ describe('cli explicit targets', () => {
     expect(result.stderr).toContain('Unknown option: --agent');
   });
 
+  it('pages segment issue results in json mode', async () => {
+    const dir = await preparedSession('translation_work', {
+      translation_work: {
+        status: 'waiting',
+        segments: 'translation/work/segments.toml'
+      }
+    });
+    await mkdir(path.join(dir, 'translation/work'), { recursive: true });
+    await writeSegmentsFile(
+      path.join(dir, 'translation/work/segments.toml'),
+      {
+        version: 1,
+        source: { kind: 'translation', generated_at: '2026-06-06T00:00:00.000Z' },
+        segments: [
+          { id: 'translated', start: 0, end: 1, speaker: 'A', ja: 'はい', zh: '是' },
+          { id: 'missing-a', start: 1.3, end: 2.3, speaker: 'A', ja: '未翻訳A' },
+          { id: 'missing-b', start: 2.6, end: 3.6, speaker: 'A', ja: '未翻訳B' }
+        ]
+      },
+      { validate: false }
+    );
+
+    const result = await runCliSideEffect([
+      'segments',
+      'list',
+      dir,
+      '--stage',
+      'translation',
+      '--issues',
+      'empty_zh',
+      '--offset',
+      '1',
+      '--limit',
+      '1',
+      '--json'
+    ]);
+    const output = JSON.parse(result.stdout) as {
+      segments: Array<{ id: string }>;
+      stats: { total: number; listed: number };
+    };
+
+    expect(result.exitCode).toBeUndefined();
+    expect(output.segments.map((segment) => segment.id)).toEqual(['missing-b']);
+    expect(output.stats).toMatchObject({ total: 3, listed: 1 });
+  });
+
+  it('prints mixed filter errors in json mode', async () => {
+    const dir = await preparedTranslationSession();
+    const result = await runCliSideEffect([
+      'segments',
+      'list',
+      dir,
+      '--stage',
+      'translation',
+      '--issues',
+      'empty_zh',
+      '--start',
+      '0',
+      '--end',
+      '2',
+      '--json'
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toBe('');
+    expect(result.stderr).toContain('filter modes cannot be mixed');
+  });
+
   it('rejects Chinese language filtering for transcript check', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_work: {

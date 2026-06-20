@@ -233,24 +233,25 @@ rajio segments list /path/to/session --stage transcript --offset 100 --limit 50
 rajio segments list /path/to/session --stage transcript --start 600 --end 660
 rajio segments list /path/to/session --stage translation --issues empty_zh,zh_line_hard_limit
 rajio segments list /path/to/session --stage translation --issues duration_too_long --level error
+rajio segments list /path/to/session --stage translation --issues empty_zh --offset 100 --limit 50
 ```
 
-`segments list` accepts only one filter mode per invocation:
+`segments list` selects rows by id, time range, validation issue, or plain pagination:
 
 - `--id <ids>`: list a comma-separated id list in requested order. Segment ids
   themselves must not contain commas.
 - `--id <ids> --around <count>`: list that many neighboring segments on each side of
   each requested id, deduplicated in timeline order. `--around` must be a non-negative
   integer.
-- `--offset <count> --limit <count>`: list a zero-based window. `--offset` and
-  `--limit` must be non-negative integers. If `--limit` is omitted, list from offset
-  to the end.
 - `--start <seconds> --end <seconds>`: list segments whose `start` is in
   `[start, end)`. Both options are required together.
 - `--issues <codes>`: list segments matching comma-separated `rajio check` validation
   codes. Add `--level fatal|error|warning` to filter by threshold; default is `warning`,
   and `error` excludes warning-level matches for soft-or-hard codes like duration and
-  reading speed.
+  reading speed. Add `--offset` and `--limit` to page through issue matches.
+- `--offset <count> --limit <count>`: list a zero-based window after any issue filtering.
+  Both values must be non-negative integers; omit `--limit` to list from offset to the
+  end. Do not combine with `--id`, `--around`, or `--start/--end`.
 
 In JSON mode, list output includes:
 
