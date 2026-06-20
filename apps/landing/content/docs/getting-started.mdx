@@ -1,12 +1,11 @@
 ---
-title: Getting Started
-description: Start a Rajio transcription and translation session.
+title: 快速开始
+description: 创建一个 Rajio 转写和翻译会话。
 ---
 
-# Getting Started
+# 快速开始
 
-Install dependencies from the workspace root, then run Rajio against a media file or an
-existing session directory.
+先在 workspace 根目录安装依赖并构建 CLI，然后对媒体文件或已有会话目录运行 Rajio。
 
 ```bash
 pnpm install
@@ -14,5 +13,4 @@ pnpm --filter rajio build
 rajio ./path/to/session
 ```
 
-Rajio stores workflow state in `session.toml` and keeps editable transcript and translation
-artifacts in the session directory.
+Rajio 会把工作流状态写入 `session.toml`，并把可编辑的转写、翻译和字幕产物保存在会话目录中。

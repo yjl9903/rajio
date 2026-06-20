@@ -10,8 +10,10 @@ node_modules
 # Build output
 dist
 .turbo
+.tanstack
 .output
 .data
+.source
 .nuxt
 .nitro
 .cache

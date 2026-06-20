@@ -1,16 +1,53 @@
 :root {
-  color: #17202a;
-  background: #fbf8f3;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --color-brand: hsl(26, 73%, 51%);
+  --color-brand-foreground: #ffffff;
+  --color-brand-200: hsl(33, 100%, 50%);
+  --color-brand-secondary: #c6bb58;
+  --color-brand-secondary-foreground: #59592a;
+  --color-landing-foreground: #59592a;
+  --color-landing-foreground-200: #a8a866;
+  --color-fd-primary: var(--color-brand);
+  --color-fd-primary-foreground: var(--color-brand-foreground);
+  --color-fd-ring: var(--color-brand);
+  --font-sans:
+    Geist, Inter, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC',
+    'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --font-mono: 'Geist Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --default-mono-font-family: var(--font-mono);
+
+  color: var(--color-fd-foreground);
+  background: var(--color-fd-background);
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark {
+  --color-brand: #fff383;
+  --color-brand-foreground: #000000;
+  --color-brand-200: #fff7c8;
+  --color-brand-secondary: #fc7744;
+  --color-brand-secondary-foreground: #521700;
+  --color-landing-foreground: #e4e2d0;
+  --color-landing-foreground-200: #b7af7e;
 }
 
 body {
+  background: var(--color-fd-background);
+  font-family: var(--font-sans);
   margin: 0;
 }
 
+:where(code, kbd, pre, samp) {
+  font-family: var(--font-mono);
+}
+
 a {
-  color: #9d174d;
+  color: var(--color-brand);
+  font-weight: 500;
+  text-decoration: none;
 }
 
 .page {
@@ -19,35 +56,123 @@ a {
   padding: 48px 24px;
 }
 
+.landing-nav {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: 24px;
+}
+
+.landing-nav a:first-child {
+  color: var(--color-fd-foreground);
+}
+
+.landing-nav a:last-child {
+  border: 1px solid color-mix(in srgb, var(--color-brand) 42%, transparent);
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+
 .hero {
+  align-items: center;
   display: grid;
-  gap: 16px;
+  gap: 40px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 520px);
+  margin: 0 auto;
+  max-width: 1120px;
+  min-height: 560px;
+  padding: 24px 24px 64px;
+}
+
+.hero-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.hero-copy > p:first-child {
+  border: 1px solid color-mix(in srgb, var(--color-brand) 50%, transparent);
+  border-radius: 999px;
+  color: var(--color-brand);
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 8px 12px;
+  width: fit-content;
 }
 
 .hero h1 {
   font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 500;
   line-height: 0.95;
   margin: 0;
 }
 
 .hero p {
-  color: #52616b;
+  color: var(--color-landing-foreground);
   font-size: 1.25rem;
   line-height: 1.7;
   margin: 0;
   max-width: 680px;
 }
 
+.hero img {
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--color-brand) 22%, transparent);
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.button-link {
+  align-items: center;
+  background: var(--color-brand);
+  border-radius: 8px;
+  color: var(--color-brand-foreground);
+  display: inline-flex;
+  font-weight: 500;
+  min-height: 44px;
+  padding: 0 18px;
+  width: fit-content;
+}
+
+.button-link:hover {
+  background: var(--color-brand-200);
+  color: var(--color-brand-foreground);
+}
+
 .card-grid {
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  margin-top: 48px;
 }
 
 .card {
-  background: #ffffff;
-  border: 1px solid #eadfd1;
-  border-radius: 20px;
+  background: var(--color-fd-card);
+  border: 1px solid var(--color-fd-border);
+  border-radius: 8px;
   padding: 24px;
+}
+
+.card h2 {
+  color: var(--color-brand);
+  font-weight: 500;
+  margin-top: 0;
+}
+
+.card p {
+  color: var(--color-landing-foreground);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 12px;
+  }
 }

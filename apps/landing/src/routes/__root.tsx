@@ -1,4 +1,6 @@
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router';
+import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
+import { RootProvider } from 'fumadocs-ui/provider/tanstack';
+import 'fumadocs-ui/style.css';
 import '../styles.css';
 
 export const Route = createRootRoute({
@@ -7,16 +9,16 @@ export const Route = createRootRoute({
 
 function RootLayout() {
   return (
-    <>
-      <header className="page" style={{ paddingBottom: 0 }}>
-        <nav style={{ display: 'flex', gap: 16 }}>
-          <Link to="/">Home</Link>
-          <Link to="/docs/$/slug" params={{ _splat: 'getting-started' }}>
-            Docs
-          </Link>
-        </nav>
-      </header>
-      <Outlet />
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        <RootProvider>
+          <Outlet />
+        </RootProvider>
+        <Scripts />
+      </body>
+    </html>
   );
 }
