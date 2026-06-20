@@ -289,6 +289,106 @@ describe('cli explicit targets', () => {
     );
   });
 
+  it('applies insert patches and reports insert stats', async () => {
+    const dir = await preparedTranslationSession();
+    const patchPath = path.join(dir, 'patch.toml');
+    await writeFile(
+      patchPath,
+      [
+        '[[operations]]',
+        'op = "insert"',
+        'segment_id = "3"',
+        'start = 3.1',
+        'end = 4',
+        'speaker = "C"',
+        'ja = "追加"',
+        'zh = "新增"'
+      ].join('\n')
+    );
+
+    const stdout = mockStdout();
+    await createCommandApp().run([
+      'segments',
+      'apply',
+      dir,
+      patchPath,
+      '--stage',
+      'translation',
+      '--dry-run',
+      '--json'
+    ]);
+
+    expect(JSON.parse(stdout.text())).toMatchObject({
+      apply: {
+        dry_run: true,
+        stats: { edits: 0, splits: 0, merges: 0, inserts: 1, deletes: 0, total: 1 }
+      },
+      check: {
+        range: { start: 3.1, end: 4 },
+        scope: { languages: ['ja', 'zh'] }
+      }
+    });
+  });
+
+  it('inserts a segment from the CLI without writing on dry-run', async () => {
+    const dir = await preparedTranslationSession();
+    const stdout = mockStdout();
+
+    await createCommandApp().run([
+      'segments',
+      'insert',
+      dir,
+      '3',
+      '--stage',
+      'translation',
+      '--start',
+      '3.1',
+      '--end',
+      '4',
+      '--speaker',
+      'C',
+      '--ja',
+      '追加',
+      '--zh',
+      '新增',
+      '--dry-run',
+      '--json'
+    ]);
+
+    expect(JSON.parse(stdout.text())).toEqual({
+      segments: [{ id: '3', start: 3.1, end: 4, speaker: 'C', ja: '追加', zh: '新增' }]
+    });
+    expect(await readFile(path.join(dir, 'translation/work/segments.toml'), 'utf8')).not.toContain(
+      '追加'
+    );
+  });
+
+  it('rejects translation inserts without zh', async () => {
+    const dir = await preparedTranslationSession();
+
+    await expect(
+      createCommandApp().run([
+        'segments',
+        'insert',
+        dir,
+        '3',
+        '--stage',
+        'translation',
+        '--start',
+        '3.1',
+        '--end',
+        '4',
+        '--speaker',
+        'C',
+        '--ja',
+        '追加'
+      ])
+    ).rejects.toThrow('empty Chinese');
+    expect(await readFile(path.join(dir, 'translation/work/segments.toml'), 'utf8')).not.toContain(
+      '追加'
+    );
+  });
+
   it('prints affected rows with remaining issues for verbose apply', async () => {
     const dir = await preparedTranslationSession();
     const patchPath = path.join(dir, 'patch.toml');

@@ -12,7 +12,7 @@ import {
   printCheckIssues
 } from '../session/check.js';
 import {
-  applySegmentPatch,
+  applySegmentPatchWithOptions,
   parseSegmentPatch,
   summarizeSegmentPatchResult,
   type SegmentPatch,
@@ -21,6 +21,7 @@ import {
 import {
   deleteSegment,
   editSegment,
+  insertSegment,
   loadSegmentEditContext,
   mergeSegments,
   persistSegmentEdit,
@@ -100,7 +101,7 @@ export function registerSegmentCommands(app: RajioApp): void {
   app
     .command(
       'segments apply <target> [file]',
-      'Apply a TOML patch of batch edit, split, merge, and delete operations'
+      'Apply a TOML patch of batch edit, split, merge, insert, and delete operations'
     )
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
@@ -117,7 +118,9 @@ export function registerSegmentCommands(app: RajioApp): void {
       });
       const patch = parseSegmentPatch(await readPatchInput(file));
       const beforeSegments = context.file.segments;
-      const result = applySegmentPatch(context.file, patch);
+      const result = applySegmentPatchWithOptions(context.file, patch, {
+        requireZhForInserts: context.stage === 'translation_work'
+      });
       const stats = summarizeSegmentPatchResult(patch);
       const range = resolveApplyCheckRange(patch, result.affected);
       const languages = resolveApplyCheckLanguages(context.stage, patch);
@@ -203,6 +206,38 @@ export function registerSegmentCommands(app: RajioApp): void {
         ja: options.ja,
         zh: options.zh,
         clearSkipChecks: Boolean(options.clearSkipChecks)
+      });
+      await persistUnlessDryRun(context, Boolean(options.dryRun));
+      printSegments([segment], output, { totalDuration: getTotalDuration(context.file.segments) });
+    });
+
+  app
+    .command('segments insert <target> <id>', 'Insert one segment by timeline position')
+    .option('--stage <stage>', 'manual stage: transcript or translation', {
+      cast: castSegmentStage
+    })
+    .option('--start <seconds>', 'segment start time in seconds', { cast: castNumber })
+    .option('--end <seconds>', 'segment end time in seconds', { cast: castNumber })
+    .option('--speaker <speaker>', 'segment speaker')
+    .option('--ja <text>', 'Japanese subtitle text')
+    .option('--zh <text>', 'Chinese subtitle text')
+    .option('--dry-run', 'validate and print the inserted segment without writing segments.toml')
+    .option('--json', 'print JSON output')
+    .allowUnknownOption(rejectUnknownOption)
+    .action(async (target, id, options) => {
+      const output = prepareSegmentOutput({ json: Boolean(options.json) });
+      const context = await loadSegmentEditContext({
+        sessionTarget: target,
+        stage: options.stage
+      });
+      const segment = insertSegment(context.file, {
+        id,
+        start: requireNumberOption(options.start, '--start'),
+        end: requireNumberOption(options.end, '--end'),
+        speaker: requireOption(options.speaker, '--speaker'),
+        ja: requireOption(options.ja, '--ja'),
+        zh: options.zh,
+        requireZh: context.stage === 'translation_work'
       });
       await persistUnlessDryRun(context, Boolean(options.dryRun));
       printSegments([segment], output, { totalDuration: getTotalDuration(context.file.segments) });
@@ -339,6 +374,11 @@ function resolveApplyCheckLanguages(
         languages.add('zh');
       }
     } else if (operation.op === 'merge') {
+      languages.add('ja');
+      if (operation.zh !== undefined) {
+        languages.add('zh');
+      }
+    } else if (operation.op === 'insert') {
       languages.add('ja');
       if (operation.zh !== undefined) {
         languages.add('zh');
@@ -529,10 +569,10 @@ function formatApplySummary(stats: SegmentPatchResultStats, dryRun: boolean): st
   return `${prefix}: ${stats.edits} ${plural(stats.edits, 'edit')}, ${stats.splits} ${plural(
     stats.splits,
     'split'
-  )}, ${stats.merges} ${plural(stats.merges, 'merge')}, ${stats.deletes} ${plural(
-    stats.deletes,
-    'delete'
-  )}.`;
+  )}, ${stats.merges} ${plural(stats.merges, 'merge')}, ${stats.inserts} ${plural(
+    stats.inserts,
+    'insert'
+  )}, ${stats.deletes} ${plural(stats.deletes, 'delete')}.`;
 }
 
 function plural(count: number, word: string): string {

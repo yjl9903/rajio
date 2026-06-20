@@ -219,6 +219,7 @@ rajio segments edit /path/to/session 12 --json --stage transcript --start 10.2 -
 rajio segments edit /path/to/session 12 --json --stage transcript --ja "修正した日本語" --dry-run
 rajio segments split /path/to/session 12 --json --stage transcript --at 11.8 --gap 0.05 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
 rajio segments merge /path/to/session 12.1 12.2 --json --stage transcript --id 12 --ja "結合した日本語" --speaker A,B
+rajio segments insert /path/to/session 12.5 --json --stage transcript --start 42.0 --end 43.2 --speaker A --ja "追加された字幕"
 rajio segments delete /path/to/session 13 --json --stage transcript
 ```
 
@@ -242,8 +243,8 @@ Segment ids must be non-empty, trimmed strings without commas.
   or `--start/--end`.
 
 `segments apply <target> [file]` applies an ordered TOML patch as the batch form of `edit`,
-`split`, `merge`, and `delete`. Pass a file path, or omit `[file]` only when providing stdin in
-the same shell command, such as `<<'EOF' ... EOF`. For batch work, prefer a patch file
+`split`, `merge`, `insert`, and `delete`. Pass a file path, or omit `[file]` only when providing
+stdin in the same shell command, such as `<<'EOF' ... EOF`. For batch work, prefer a patch file
 under a session-local `patches/` directory. Normal apply writes the patched segments, then
 runs patch-scoped check feedback. `--dry-run` validates the patch, previews affected output,
 and runs the same checks without writing changes. Use `--verbose --json` with `jq` when you
@@ -295,6 +296,15 @@ merged_id = "13"
 speaker = "A,B"
 ja = "結合した日本語"
 zh = "合并后的中文字幕"
+
+[[operations]]
+op = "insert"
+segment_id = "13.5"
+start = 16.2
+end = 17.0
+speaker = "A"
+ja = "追加された字幕"
+zh = "新增字幕"
 
 [[operations]]
 op = "delete"

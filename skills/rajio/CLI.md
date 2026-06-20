@@ -198,6 +198,7 @@ rajio segments apply /path/to/session [file] --stage translation
 rajio segments edit /path/to/session <id> --stage transcript [fields]
 rajio segments split /path/to/session <id> --stage transcript [fields]
 rajio segments merge /path/to/session <id1> <id2> --stage transcript [fields]
+rajio segments insert /path/to/session <id> --stage transcript [fields]
 rajio segments delete /path/to/session <id> --stage transcript
 ```
 
@@ -283,7 +284,7 @@ EOF
 ```
 
 `segments apply <target> [file]` applies an ordered TOML patch as the batch form of edit, split,
-merge, and delete operations. Pass a patch file path, or omit `[file]` only when supplying
+merge, insert, and delete operations. Pass a patch file path, or omit `[file]` only when supplying
 TOML on stdin in the same shell command.
 
 Normal apply writes the patched segments, then runs patch-scoped check feedback. `--dry-run`
@@ -345,6 +346,15 @@ ja = "結合した日本語"
 zh = "合并后的中文字幕"
 
 [[operations]]
+op = "insert"
+segment_id = "13.5"
+start = 16.2
+end = 17.0
+speaker = "A"
+ja = "追加された字幕"
+zh = "新增字幕"
+
+[[operations]]
 op = "delete"
 segment_id = "14"
 ```
@@ -380,6 +390,9 @@ Patch rules:
   required. If any source has `zh`, merged `zh` is required.
 - Merged segments do not inherit `skip_checks`; add a later edit operation when the merged
   text still has an intentional QA exception.
+- `op = "insert"` requires `segment_id`, `start`, `end`, `speaker`, and `ja`; translation work also
+  requires `zh`. Insertions are placed by `start` time and are rejected if they duplicate an id,
+  have invalid time or empty required text, or overlap an immediate neighbor.
 - `op = "delete"` requires only `segment_id`.
 - Current segment ids must be unique after every operation.
 
@@ -398,7 +411,7 @@ Non-verbose JSON output:
 {
   "apply": {
     "dry_run": true,
-    "stats": { "edits": 1, "splits": 0, "merges": 0, "deletes": 0, "total": 1 }
+    "stats": { "edits": 1, "splits": 0, "merges": 0, "inserts": 0, "deletes": 0, "total": 1 }
   },
   "check": {
     "ok": true,
@@ -421,7 +434,7 @@ Verbose JSON output:
 {
   "apply": {
     "dry_run": true,
-    "stats": { "edits": 1, "splits": 0, "merges": 0, "deletes": 0, "total": 1 }
+    "stats": { "edits": 1, "splits": 0, "merges": 0, "inserts": 0, "deletes": 0, "total": 1 }
   },
   "check": {
     "ok": false,
@@ -517,6 +530,23 @@ Rules:
 - If `--speaker` is omitted, speakers are merged as a comma-separated de-duplicated list.
 
 Use `segments apply` to merge more than two adjacent source segments.
+
+### segments insert
+
+```bash
+rajio segments insert /path/to/session 12.5 --stage transcript \
+  --start 42.0 --end 43.2 --speaker A --ja "追加された字幕"
+
+rajio segments insert /path/to/session 12.5 --stage translation \
+  --start 42.0 --end 43.2 --speaker A \
+  --ja "追加された字幕" --zh "新增字幕" --dry-run
+```
+
+`segments insert` adds one new segment by timeline position. Required options are `--start`,
+`--end`, `--speaker`, and `--ja`; translation work also requires `--zh`.
+The new segment is placed before the first existing segment with a later start time, or appended
+at the end. Inserts are rejected when they duplicate an id, have invalid time or empty required
+text, or overlap an immediate neighbor.
 
 ### segments delete
 

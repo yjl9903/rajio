@@ -9,12 +9,14 @@ import { describe, expect, it, vi } from 'vitest';
 import { Session } from '../src/index.js';
 import {
   applySegmentPatch,
+  applySegmentPatchWithOptions,
   parseSegmentPatch,
   summarizeSegmentPatchResult
 } from '../src/segments/apply.js';
 import {
   deleteSegment,
   editSegment,
+  insertSegment,
   loadSegmentEditContext,
   mergeSegments,
   persistSegmentEdit,
@@ -1456,16 +1458,16 @@ describe('segment edit tools', () => {
   });
 
   it('formats segment patch stats as human table, csv, or json', () => {
-    const stats = { edits: 2, splits: 1, merges: 1, deletes: 1, total: 5 };
+    const stats = { edits: 2, splits: 1, merges: 1, inserts: 1, deletes: 1, total: 6 };
 
     expect(formatSegmentPatchStats(stats, 'human')).toContain(
-      'EDITS  SPLITS  MERGES  DELETES  TOTAL'
+      'EDITS  SPLITS  MERGES  INSERTS  DELETES  TOTAL'
     );
     expect(formatSegmentPatchStats(stats, 'csv')).toBe(
-      ['edits,splits,merges,deletes,total', '2,1,1,1,5'].join('\n')
+      ['edits,splits,merges,inserts,deletes,total', '2,1,1,1,1,6'].join('\n')
     );
     expect(formatSegmentPatchStats(stats, 'json')).toBe(
-      '{"stats":{"edits":2,"splits":1,"merges":1,"deletes":1,"total":5}}'
+      '{"stats":{"edits":2,"splits":1,"merges":1,"inserts":1,"deletes":1,"total":6}}'
     );
     expect(formatSegmentPatchStats(stats, 'json', true)).toContain('\n  "stats"');
   });
@@ -1541,6 +1543,7 @@ describe('segment edit tools', () => {
         { id: 'long.2', start: 2.025, end: 4, speaker: 'A', ja: '後半' }
       ],
       merges: [{ id: '2-3', start: 4, end: 6, speaker: 'B,C', ja: '次続き' }],
+      inserts: [],
       deletes: [{ id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' }],
       affected: [
         { id: 'delete-me', start: 6, end: 7, speaker: 'C', ja: '削除します' },
@@ -1554,6 +1557,7 @@ describe('segment edit tools', () => {
       edits: 1,
       splits: 1,
       merges: 1,
+      inserts: 0,
       deletes: 1,
       total: 4
     });
@@ -1624,6 +1628,7 @@ describe('segment edit tools', () => {
       ],
       splits: [],
       merges: [],
+      inserts: [],
       deletes: [],
       affected: [
         { id: '1', start: 0, end: 1.2, speaker: 'A', ja: 'こんにちは', zh: '您好' },
@@ -1678,6 +1683,113 @@ describe('segment edit tools', () => {
       })
     ).not.toThrow();
     expect(file.segments[0]?.zh).toBe('第一行\n第二行\n第三行');
+  });
+
+  it('inserts segments by start time', () => {
+    const file: SegmentsFile = {
+      ...sampleTranscript(),
+      segments: [
+        { id: '1', start: 1, end: 1.5, speaker: 'A', ja: '一' },
+        { id: '2', start: 3, end: 3.5, speaker: 'A', ja: '二' }
+      ]
+    };
+
+    insertSegment(file, { id: 'middle', start: 2, end: 2.5, speaker: 'B', ja: '中' });
+    insertSegment(file, { id: 'first', start: 0, end: 0.5, speaker: 'A', ja: '前' });
+    insertSegment(file, { id: 'last', start: 4, end: 4.5, speaker: 'C', ja: '後' });
+
+    expect(file.segments.map((segment) => segment.id)).toEqual([
+      'first',
+      '1',
+      'middle',
+      '2',
+      'last'
+    ]);
+  });
+
+  it('applies insert patch operations and counts them', () => {
+    const file = sampleTranscript();
+    const patch = parseSegmentPatch(
+      [
+        '[[operations]]',
+        'op = "insert"',
+        'segment_id = "1.5"',
+        'start = 1.25',
+        'end = 1.35',
+        'speaker = "A"',
+        'ja = "追加"',
+        'zh = "新增"'
+      ].join('\n')
+    );
+
+    expect(applySegmentPatch(file, patch)).toEqual({
+      edits: [],
+      splits: [],
+      merges: [],
+      inserts: [{ id: '1.5', start: 1.25, end: 1.35, speaker: 'A', ja: '追加', zh: '新增' }],
+      deletes: [],
+      affected: [{ id: '1.5', start: 1.25, end: 1.35, speaker: 'A', ja: '追加', zh: '新增' }]
+    });
+    expect(summarizeSegmentPatchResult(patch)).toEqual({
+      edits: 0,
+      splits: 0,
+      merges: 0,
+      inserts: 1,
+      deletes: 0,
+      total: 1
+    });
+    expect(file.segments.map((segment) => segment.id)).toEqual(['1', '1.5', '2']);
+  });
+
+  it('rejects invalid insert operations without changing the source file', () => {
+    const original = sampleTranslation();
+    const cases: Array<[unknown, string]> = [
+      [{ id: '1', start: 1.25, end: 1.35, speaker: 'A', ja: '重复' }, 'already exists'],
+      [
+        { id: 'negative-time', start: -1, end: -0.5, speaker: 'A', ja: '负时间', zh: '负时间' },
+        'nonnegative'
+      ],
+      [{ id: 'bad-time', start: 1.25, end: 1.25, speaker: 'A', ja: '坏时间' }, 'greater'],
+      [{ id: 'empty-ja', start: 1.25, end: 1.35, speaker: 'A', ja: ' ' }, 'empty Japanese'],
+      [{ id: 'empty-zh', start: 1.25, end: 1.35, speaker: 'A', ja: '缺中文' }, 'empty Chinese'],
+      [
+        { id: 'overlap-prev', start: 1.1, end: 1.35, speaker: 'A', ja: '重叠', zh: '重叠' },
+        'overlaps'
+      ],
+      [
+        { id: 'overlap-next', start: 1.25, end: 1.6, speaker: 'A', ja: '重叠', zh: '重叠' },
+        'overlaps'
+      ]
+    ];
+
+    for (const [input, message] of cases) {
+      const file = sampleTranslation();
+      expect(() =>
+        insertSegment(file, { ...(input as Parameters<typeof insertSegment>[1]), requireZh: true })
+      ).toThrow(message);
+      expect(file).toEqual(original);
+    }
+
+    const file = sampleTranslation();
+    expect(() =>
+      applySegmentPatchWithOptions(
+        file,
+        {
+          operations: [
+            {
+              op: 'insert',
+              segment_id: 'missing-zh',
+              start: 1.25,
+              end: 1.35,
+              speaker: 'A',
+              ja: '缺中文'
+            }
+          ]
+        },
+        { requireZhForInserts: true }
+      )
+    ).toThrow('empty Chinese');
+    expect(file).toEqual(original);
   });
 
   it('splits segments around a default midpoint gap', () => {
