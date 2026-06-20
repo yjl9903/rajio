@@ -212,11 +212,10 @@ export function registerSegmentCommands(app: RajioApp): void {
     });
 
   app
-    .command('segments insert <target>', 'Insert one segment by timeline position')
+    .command('segments insert <target> <id>', 'Insert one segment by timeline position')
     .option('--stage <stage>', 'manual stage: transcript or translation', {
       cast: castSegmentStage
     })
-    .option('--id <id>', 'new segment id')
     .option('--start <seconds>', 'segment start time in seconds', { cast: castNumber })
     .option('--end <seconds>', 'segment end time in seconds', { cast: castNumber })
     .option('--speaker <speaker>', 'segment speaker')
@@ -225,14 +224,14 @@ export function registerSegmentCommands(app: RajioApp): void {
     .option('--dry-run', 'validate and print the inserted segment without writing segments.toml')
     .option('--json', 'print JSON output')
     .allowUnknownOption(rejectUnknownOption)
-    .action(async (target, options) => {
+    .action(async (target, id, options) => {
       const output = prepareSegmentOutput({ json: Boolean(options.json) });
       const context = await loadSegmentEditContext({
         sessionTarget: target,
         stage: options.stage
       });
       const segment = insertSegment(context.file, {
-        id: requireOption(options.id, '--id'),
+        id,
         start: requireNumberOption(options.start, '--start'),
         end: requireNumberOption(options.end, '--end'),
         speaker: requireOption(options.speaker, '--speaker'),

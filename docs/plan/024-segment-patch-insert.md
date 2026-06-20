@@ -25,7 +25,7 @@ CLI form:
 
 ```bash
 rajio segments insert /path/to/session \
-  --id 12.5 \
+  12.5 \
   --start 42.0 \
   --end 43.2 \
   --speaker A \

@@ -217,7 +217,7 @@ zh = "修正后的中文字幕"
 EOF
 rajio segments edit /path/to/session 12 --json --stage transcript --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
 rajio segments edit /path/to/session 12 --json --stage transcript --ja "修正した日本語" --dry-run
-rajio segments insert /path/to/session --json --stage transcript --id 12.5 --start 42.0 --end 43.2 --speaker A --ja "追加された字幕"
+rajio segments insert /path/to/session 12.5 --json --stage transcript --start 42.0 --end 43.2 --speaker A --ja "追加された字幕"
 rajio segments split /path/to/session 12 --json --stage transcript --at 11.8 --gap 0.05 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
 rajio segments merge /path/to/session 12.1 12.2 --json --stage transcript --id 12 --ja "結合した日本語" --speaker A,B
 rajio segments delete /path/to/session 13 --json --stage transcript

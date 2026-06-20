@@ -196,7 +196,7 @@ Use these commands for stable targeted edits to manual work-stage `segments.toml
 rajio segments list /path/to/session --stage transcript
 rajio segments apply /path/to/session [file] --stage translation
 rajio segments edit /path/to/session <id> --stage transcript [fields]
-rajio segments insert /path/to/session --stage transcript [fields]
+rajio segments insert /path/to/session <id> --stage transcript [fields]
 rajio segments split /path/to/session <id> --stage transcript [fields]
 rajio segments merge /path/to/session <id1> <id2> --stage transcript [fields]
 rajio segments delete /path/to/session <id> --stage transcript
@@ -490,16 +490,16 @@ Editable fields are `--start`, `--end`, `--speaker`, `--ja`, and `--zh`. Use
 ### segments insert
 
 ```bash
-rajio segments insert /path/to/session --stage transcript \
-  --id 12.5 --start 42.0 --end 43.2 --speaker A --ja "追加された字幕"
+rajio segments insert /path/to/session 12.5 --stage transcript \
+  --start 42.0 --end 43.2 --speaker A --ja "追加された字幕"
 
-rajio segments insert /path/to/session --stage translation \
-  --id 12.5 --start 42.0 --end 43.2 --speaker A \
+rajio segments insert /path/to/session 12.5 --stage translation \
+  --start 42.0 --end 43.2 --speaker A \
   --ja "追加された字幕" --zh "新增字幕" --dry-run
 ```
 
-`segments insert` adds one new segment by timeline position. Required options are `--id`,
-`--start`, `--end`, `--speaker`, and `--ja`; translation work also requires `--zh`.
+`segments insert` adds one new segment by timeline position. Required options are `--start`,
+`--end`, `--speaker`, and `--ja`; translation work also requires `--zh`.
 The new segment is placed before the first existing segment with a later start time, or appended
 at the end. Inserts are rejected when they duplicate an id, have invalid time or empty required
 text, or overlap an immediate neighbor.
