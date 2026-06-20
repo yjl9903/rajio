@@ -1,0 +1,18 @@
+---
+title: Getting Started
+description: Start a Rajio transcription and translation session.
+---
+
+# Getting Started
+
+Install dependencies from the workspace root, then run Rajio against a media file or an
+existing session directory.
+
+```bash
+pnpm install
+pnpm --filter rajio build
+rajio ./path/to/session
+```
+
+Rajio stores workflow state in `session.toml` and keeps editable transcript and translation
+artifacts in the session directory.

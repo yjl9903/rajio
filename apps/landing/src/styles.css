@@ -1,0 +1,53 @@
+:root {
+  color: #17202a;
+  background: #fbf8f3;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: #9d174d;
+}
+
+.page {
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 48px 24px;
+}
+
+.hero {
+  display: grid;
+  gap: 16px;
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 10vw, 6rem);
+  line-height: 0.95;
+  margin: 0;
+}
+
+.hero p {
+  color: #52616b;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 680px;
+}
+
+.card-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 48px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #eadfd1;
+  border-radius: 20px;
+  padding: 24px;
+}

@@ -15,7 +15,10 @@
       ],
       "inputs": [
         "src/**/*.ts",
-        "test/**/*.ts"
+        "test/**/*.ts",
+        "src/**/*.tsx",
+        "*.ts",
+        "content/**/*.mdx"
       ]
     },
     "test:ci": {
@@ -25,7 +28,10 @@
       ],
       "inputs": [
         "src/**/*.ts",
-        "test/**/*.ts"
+        "test/**/*.ts",
+        "src/**/*.tsx",
+        "*.ts",
+        "content/**/*.mdx"
       ]
     },
     "dev": {
