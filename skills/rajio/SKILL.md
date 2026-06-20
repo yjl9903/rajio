@@ -38,6 +38,9 @@ Respect privacy and provider boundaries:
 
 - Make the privacy boundary explicit before transcription. Rajio uploads audio to the configured
   transcription provider; start transcription only after the user authorizes that upload.
+- Make the sub-agent boundary explicit before manual stages. `transcript_work` and
+  `translation_work` require sub-agent batch workers; one explicit user authorization for
+  sub-agent batch work covers both stages.
 - During `translation_work`, do not use the OpenAI-compatible provider configured in
   `.env` as a machine-translation service. Sub-agents produce the first-draft batch
   translations from the provided context; the main agent reviews, merges, validates, and
