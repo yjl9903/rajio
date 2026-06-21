@@ -1,0 +1,129 @@
+---
+title: Rajio 会话工作区
+description: Rajio 会话工作区里的文件结构、用途和权限边界。
+---
+
+# Rajio 会话工作区
+
+Rajio 会话工作区是一整个字幕任务的工作目录。它保存输入媒体、阶段状态、中间产物、人工审校文件、复听片段和最终字幕。
+
+会话工作区的目标是让长视频字幕任务可以中断、恢复、复查和继续，而不是把所有结果都塞进一次模型回复里。
+
+## 初始状态
+
+一个新的会话工作区可以先只有视频文件和 `description.md`。`description.md` 用 frontmatter 指向同目录下的视频，并在正文里放标题、链接、角色、术语或其他上下文。
+
+```text
+my-video/
+  description.md
+  input.mp4
+```
+
+```md
+---
+media: ./input.mp4
+---
+
+# 视频标题
+
+- 原始链接：
+- 角色名：
+- 术语和固定译名：
+- 字幕风格：自然、简洁，适合 B 站观看
+```
+
+之后可以把目录交给 Rajio：
+
+```bash
+rajio /path/to/my-video --continue=until-manual
+```
+
+## 常见结构
+
+不同阶段会生成不同文件，一个完整会话工作区大致会长这样：
+
+```text
+session.toml
+description.md
+.env
+audio/
+  metadata.json
+  extracted.m4a
+transcript/
+  raw/
+    segments.toml
+    checkpoints/
+  work/
+    segments.toml
+    suggested-patches/
+translation/
+  work/
+    segments.toml
+patches/
+clips/
+  <clip-id>/
+    clip.toml
+    source.m4a
+    segments.toml
+output/
+  *.ja.srt
+  *.zh.srt
+  *.ja-zh.ass
+```
+
+不是每个会话一开始都有这些文件。Rajio 会按阶段逐步生成它们。
+
+## 核心文件
+
+| 路径                             | 作用                                             | 谁来改                         |
+| -------------------------------- | ------------------------------------------------ | ------------------------------ |
+| `session.toml`                   | 记录当前阶段、输入媒体、阶段状态和产物路径。     | Rajio CLI 自动维护。           |
+| `description.md`                 | 记录标题、原始链接、角色、术语、固定译名和疑问。 | Agent 可以更新。               |
+| `.env`                           | 放密钥和本地工具路径。                           | 用户维护；不要提交或贴给他人。 |
+| `audio/metadata.json`            | 原视频的媒体信息。                               | Rajio CLI 自动生成。           |
+| `audio/extracted.m4a`            | 从原视频提取出来、用于转写的音频。               | Rajio CLI 自动生成。           |
+| `transcript/raw/segments.toml`   | 转写服务商返回并合并后的原始日语分段。           | 只读参考。                     |
+| `transcript/work/segments.toml`  | 人工校对用的日语转写工作文件。                   | Agent 通过 Rajio 命令修改。    |
+| `translation/work/segments.toml` | 中文字幕工作文件，包含日文、中文和检查例外。     | Agent 通过 Rajio 命令修改。    |
+| `patches/`                       | Agent 分批审校或翻译时留下的补丁文件。           | Agent 可写。                   |
+| `clips/<clip-id>/`               | 对疑难时间段重新截取、转写出来的复听参考。       | Rajio CLI 自动生成。           |
+| `output/*.srt` / `output/*.ass`  | 最终导出的字幕文件。                             | Rajio CLI 自动生成。           |
+
+## 权限边界
+
+Agent 可以读取会话工作区里的字幕、上下文、补丁和检查结果，但不应该随意改所有文件。
+
+应该修改：
+
+- `description.md`
+- `transcript/work/segments.toml`
+- `translation/work/segments.toml`
+- 会话工作区内的 `patches/` 和复查记录
+
+不应该手改：
+
+- `session.toml`
+- `audio/` 下的生成文件
+- `transcript/raw/segments.toml`
+- `transcript/raw/checkpoints/`
+- `clips/<clip-id>/` 下的转写结果
+- `output/` 下的导出文件
+
+如果需要修改字幕内容，优先让 Agent 使用 `rajio segments` 命令。这样 Rajio 可以保持格式、时间轴和检查结果一致。
+
+## 隐私边界
+
+会话工作区通常在你的本地工作目录里。Rajio 不会把整个目录自动上传到云端。
+
+需要注意的边界：
+
+- 转写阶段会把音频上传到配置的转写服务商；Agent 必须先确认你同意上传音频。
+- `.env` 里可能包含 API Key，不应该提交到仓库，也不应该贴进公开聊天。
+- `description.md` 可能包含未公开视频链接、角色信息或翻译决策，分享前需要确认内容可以公开。
+- `output/` 里的字幕文件是最终产物，发布前仍建议人工看一遍关键片段。
+
+## 清理和恢复
+
+如果自动阶段或人工阶段需要重跑，优先使用 Rajio 的 `--reset <stage>`，不要手动删除文件。
+
+如果确实要清理会话产物，可以使用 `rajio clean`。它会删除 Rajio 生成的 artifact，但不会把 `description.md` 或原始视频当作普通缓存随便删掉。

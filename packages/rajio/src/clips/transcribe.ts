@@ -14,11 +14,7 @@ import { extractAudioRange, resolveAudioChunkOptions } from '../audio/index.js';
 import { mergeElevenLabsInputs, transcribeWithElevenLabs } from '../transcription/elevenlabs.js';
 import type { TranscriptInputResult } from '../transcription/types.js';
 import { normalizeTranscriptionConfig } from '../transcription/config.js';
-import {
-  formatBytes,
-  formatTimeRange,
-  transcribeCheckpointedInput
-} from '../transcription/run.js';
+import { formatBytes, formatTimeRange, transcribeCheckpointedInput } from '../transcription/run.js';
 import {
   fromSessionRelative,
   pathExists,

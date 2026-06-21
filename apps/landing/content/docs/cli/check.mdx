@@ -1,0 +1,82 @@
+---
+title: 检查会话
+description: 校验 session.toml 与字幕分段文件。
+---
+
+# 检查会话
+
+```bash
+rajio check <target> [options]
+```
+
+## 用途
+
+`check` 校验会话结构、阶段状态和 `transcript/`、`translation/` 下的 `segments.toml`。它会报告文件/schema/timeline 问题，以及字幕长度、断行、标点、阅读速度、缺失翻译等 QA 问题。
+
+## 典型用法
+
+```bash
+rajio check /path/to/session
+rajio check /path/to/session --json
+rajio check /path/to/session --json --verbose
+rajio check /path/to/session --level error
+rajio check /path/to/session --stage translation --language zh
+rajio check /path/to/session --stage translation --start 120 --end 180
+```
+
+## 参数
+
+| 参数                    | 说明                                                                                                        |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `<target>`              | 必填。已有会话工作区或可解析到会话工作区的路径。                                                            |
+| `--verbose`             | 打印每一个 issue；JSON 模式下会添加完整 `issues` 数组。                                                     |
+| `--json`                | 输出 JSON。                                                                                                 |
+| `--start <seconds>`     | 只看与起点重叠的分段 QA；必须和 `--end` 一起使用。                                                          |
+| `--end <seconds>`       | 只看终点前的分段 QA；必须大于 `--start`。                                                                   |
+| `--level <level>`       | `fatal`、`error` 或 `warning`，默认 `warning`。阈值会包含更严重级别。                                       |
+| `--language <language>` | `ja` 或 `zh`。过滤语言相关字幕 QA。                                                                         |
+| `--stage <stage>`       | `audio`、`transcript`、`transcript_raw`、`transcript_work`、`translation`、`translation_work` 或 `export`。 |
+
+`transcript` 映射到 `transcript_work`，`translation` 映射到 `translation_work`。不传 `--stage` 时，检查范围按 `session.current_stage` 推断；`export` 和 `done` 默认查看 `translation_work` 的中文字幕 QA。
+
+## 产物或副作用
+
+- 不修改会话文件。
+- 如果显示出来的 issue 中有 `fatal` 或 `error`，进程退出码为 `1`。
+- 如果过滤后没有 `fatal` 或 `error`，即使其他未显示范围仍有问题，也会成功退出。
+
+JSON 摘要形状：
+
+```json
+{
+  "ok": false,
+  "counts": { "fatal": 0, "error": 1, "warning": 2 },
+  "summary": [
+    {
+      "file": "translation/work/segments.toml",
+      "level": "error",
+      "code": "zh_line_hard_limit",
+      "count": 1,
+      "message": "..."
+    }
+  ]
+}
+```
+
+## 常见 Agent 调用方式
+
+```bash
+rajio check /path/to/session --json --level error --verbose
+rajio check /path/to/session --json --stage transcript --language ja
+rajio check /path/to/session --json --stage translation --language zh --start 600 --end 720
+```
+
+Agent 应把 `check` 当作定位问题和提交前验证工具。人工校对仍要读取实际字幕文本，不能只看 summary。
+
+## 注意事项
+
+- `fatal` 是数据、文件、schema、timeline 或 workflow 完整性问题，不能用 `skip_checks` 跳过。
+- `error` 是硬字幕 QA 问题，提交/导出前需要修复，或在具体 segment 上记录允许的 `skip_checks`。
+- `warning` 是建议性问题，需要人工判断。
+- `translation_work` 中继承的日文硬 QA 会在 `--language ja` 视图里降为 warning；中文字幕硬 QA 仍是 error。
+- 可用 issue code 与 `segments list --issues` 保持一致，常见包括 `empty_zh`、`overlap`、`zh_line_hard_limit`、`duration_too_long`、`zh_reading_speed_limit`、`unused_skip_check`。

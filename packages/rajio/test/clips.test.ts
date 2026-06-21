@@ -147,7 +147,10 @@ describe('clips', () => {
     const checkpointPath = path.join(dir, 'clips/clip-50000-60000/checkpoints/input-000.toml');
     await writeFile(
       checkpointPath,
-      (await readFile(checkpointPath, 'utf8')).replace('audio = "source.m4a"', 'audio = "other.m4a"')
+      (await readFile(checkpointPath, 'utf8')).replace(
+        'audio = "source.m4a"',
+        'audio = "other.m4a"'
+      )
     );
 
     let calls = 0;

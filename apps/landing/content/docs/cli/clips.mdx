@@ -1,0 +1,96 @@
+---
+title: clips
+description: 生成和查看复听片段。
+---
+
+# clips
+
+`rajio clips` 用于把源媒体中的一小段重新截取、转写，作为复听参考。clip 不会自动覆盖主字幕；Agent 需要对照 clip 结果和主字幕上下文，再通过 `segments` 修改主工作文件。
+
+```bash
+rajio clips <command> <target> [args] [options]
+```
+
+## transcribe
+
+截取一个时间范围并单独转写。
+
+```bash
+rajio clips transcribe <target> [options]
+```
+
+常用方式：
+
+```bash
+rajio clips transcribe /path/to/session --start 120 --end 135
+rajio clips transcribe /path/to/session --start 120 --end 135 --label noisy-overlap
+rajio clips transcribe /path/to/session --start 120 --end 135 --transcription-provider elevenlabs
+```
+
+| 参数                                    | 说明                                       |
+| --------------------------------------- | ------------------------------------------ |
+| `<target>`                              | 已有会话工作区或可解析到会话工作区的路径。 |
+| `--start <seconds>`                     | clip 起点，源媒体绝对秒数。                |
+| `--end <seconds>`                       | clip 终点，源媒体绝对秒数。                |
+| `--label <name>`                        | 可选标签，便于之后识别。                   |
+| `--chunk-target <seconds>`              | 本地音频切片目标秒数，默认 `600`。         |
+| `--chunk-boundary-search <seconds>`     | 静音边界搜索窗口，默认 `90`。              |
+| `--chunk-silence-noise <db>`            | ffmpeg 静音阈值，默认 `-35`。              |
+| `--chunk-silence-duration <seconds>`    | ffmpeg 最短静音时长，默认 `0.4`。          |
+| `--transcription-provider <provider>`   | 覆盖转写服务商，当前支持 `elevenlabs`。    |
+| `--transcription-model <model>`         | 覆盖转写模型，当前支持 `scribe_v2`。       |
+| `--transcription-segmenter <segmenter>` | 覆盖转写分段器，当前支持 `integrated`。    |
+
+该命令会上传截取音频到配置的转写服务商，执行前需要用户授权。
+
+成功或恢复中的 clip 写在会话工作区下：
+
+```text
+clips/
+  clip-120000-135000/
+    clip.toml
+    source.m4a
+    checkpoints/
+      input-000.toml
+      input-000.error.log
+    segments.toml
+```
+
+## list
+
+列出已有复听片段，不展示转写正文。
+
+```bash
+rajio clips list <target>
+rajio clips list <target> --json
+```
+
+JSON 输出为 `{ "clips": [...] }`。每个 clip 行包含 `id`、`label`、`start`、`end`、`duration`、`status`、`segments`。
+
+| status    | 含义                                                            |
+| --------- | --------------------------------------------------------------- |
+| `done`    | `segments.toml` 存在且可解析。                                  |
+| `failed`  | 没有可解析 `segments.toml`，且至少有一个 checkpoint error log。 |
+| `partial` | 没有可解析 `segments.toml`，没有 error log，但有 checkpoint。   |
+| `missing` | 没有可解析 `segments.toml`，也没有可用 checkpoint 状态。        |
+
+## show
+
+查看某个 clip 的转写分段。
+
+```bash
+rajio clips show <target> <id>
+rajio clips show <target> <id> --json
+```
+
+`<id>` 是 `clip-120000-135000` 这类 clip id。输出格式和 `segments list` 的分段行一致；JSON 输出为 `{ "segments": [...] }`。
+
+## Agent 使用建议
+
+```bash
+rajio clips transcribe /path/to/session --start 245.2 --end 252.8 --label "unclear-line"
+rajio clips show /path/to/session clip-245200-252800 --json
+rajio segments list /path/to/session --stage transcript --start 245 --end 253 --json
+```
+
+Agent 应把 clip 转写和主字幕上下文一起比较，再通过 `segments apply` 或 `segments edit` 修改主 work file。

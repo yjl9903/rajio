@@ -1,8 +1,11 @@
 packages:
   - packages/*
+  - apps/*
 
 allowBuilds:
   esbuild: true
+  sharp: true
+  workerd: true
 
 minimumReleaseAgeExclude:
   - '@breadc/color@1.0.0-beta.17'

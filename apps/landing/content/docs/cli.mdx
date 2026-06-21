@@ -1,0 +1,65 @@
+---
+title: CLI 参考总览
+description: Rajio CLI 的命令结构、目标解析、输出约定和 Agent 使用边界。
+---
+
+# CLI 参考总览
+
+Rajio CLI 用来管理一个字幕会话：创建或恢复会话、推进自动阶段、提交人工阶段、校验字幕数据、编辑分段，以及为难听清片段生成复听 clip。
+
+| 命令                                                      | 用途                                     |
+| --------------------------------------------------------- | ---------------------------------------- |
+| [`rajio <target>`](/docs/cli/default)                     | 创建、运行、恢复或提交一个字幕工作流。   |
+| [`rajio check <target>`](/docs/cli/check)                 | 校验 `session.toml` 和字幕分段文件。     |
+| [`rajio doctor <target>`](/docs/cli/doctor)               | 检查运行环境、服务商和本地工具。         |
+| [`rajio clean <target>`](/docs/cli/clean)                 | 删除会话生成物。                         |
+| [`rajio segments <command> <target>`](/docs/cli/segments) | 查看、编辑、插入、拆分、合并、删除分段。 |
+| [`rajio clips <command> <target>`](/docs/cli/clips)       | 生成和查看复听片段。                     |
+
+密钥和本地工具路径见[环境变量](/docs/environment)，音频切分默认值见[音频处理](/docs/audio)。
+
+## 命令形状
+
+```bash
+rajio <target> [options]
+rajio check <target> [options]
+rajio doctor <target>
+rajio clean <target>
+rajio segments <command> <target> [args] [options]
+rajio clips <command> <target> [args] [options]
+```
+
+## target 支持什么
+
+默认命令 `rajio <target>` 可以接收：
+
+- 会话工作区。
+- `session.toml`。
+- 带 `media` frontmatter 的描述 Markdown。
+- 媒体文件，例如 `.mp4`、`.mkv`、`.wav`、`.m4a`。
+
+会话读取型命令，例如 `check`、`doctor`、`clean`、`segments` 和 `clips`，要求目标能解析到已有会话工作区。
+
+目标解析规则：
+
+- 现有会话工作区：读取目录下的 `session.toml`。
+- `session.toml`：使用所在目录作为会话工作区。
+- 描述 Markdown：使用 Markdown 所在目录作为会话工作区，`media` frontmatter 相对 Markdown 文件解析。
+- 媒体文件：使用媒体所在目录作为会话工作区，并尝试读取同目录唯一描述 Markdown。
+- 目录里有多个描述 Markdown 或多个媒体文件且没有更明确输入时，命令会报错。
+
+## 输出约定
+
+- 面向 Agent 的读取命令优先加 `--json`。
+- `segments list/edit/insert/split/merge/delete` 和 `clips show` 打印分段行。
+- `segments apply` 默认打印操作统计和补丁范围内的检查反馈；加 `--verbose --json` 才打印受影响分段。
+- `check --json --verbose` 才包含完整 issue 列表；普通 `--json` 只含统计和摘要。
+- 非 JSON 输出主要面向人读，不建议 Agent 解析。
+
+## Agent 使用边界
+
+- 不直接编辑 `transcript/raw/segments.toml`、raw checkpoints 或 raw chunks。
+- 修改字幕时使用 `rajio segments`，优先用 `segments apply` 批量提交补丁。
+- `rajio check` 是质量底线，不等于人工校对或翻译完成。
+- `clips` 输出只作为复听参考，不会自动覆盖主字幕。
+- 转写命令会上传音频到配置的转写服务商，执行前需要用户同意。
