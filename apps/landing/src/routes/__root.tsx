@@ -9,6 +9,10 @@ export const Route = createRootRoute({
     meta: [
       {
         title: 'Rajio'
+      },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1.0'
       }
     ]
   }),
