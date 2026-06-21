@@ -15,6 +15,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
+    "worker-configuration.d.ts",
     "source.config.ts"
   ]
 }
