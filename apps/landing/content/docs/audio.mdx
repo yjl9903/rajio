@@ -1,0 +1,64 @@
+---
+title: 音频处理
+description: Rajio 音频 ASR 提供商和切分参数。
+---
+
+# 音频处理
+
+Rajio 会先从视频中提取音频，再交给配置的 ASR 提供商转写。目前内置支持 ElevenLabs。
+
+## ASR 提供商
+
+| 提供商       | 当前模型    | 分段器       | 环境变量             |
+| ------------ | ----------- | ------------ | -------------------- |
+| `elevenlabs` | `scribe_v2` | `integrated` | `ELEVENLABS_API_KEY` |
+
+### ElevenLabs
+
+[ElevenLabs Speech to Text](https://elevenlabs.io/docs/api-reference/speech-to-text/convert) 是当前默认转写提供商。Rajio 使用 `scribe_v2` 模型，并固定识别日语音频。
+
+在会话工作区或当前工作目录的 `.env` 中配置：
+
+```bash
+ELEVENLABS_API_KEY="..."
+```
+
+如果需要显式写入 `description.md`，可以在 frontmatter 里保留当前默认配置：
+
+```md
+---
+media: ./input.mp4
+transcription:
+  provider: elevenlabs
+  model: scribe_v2
+  segmenter: integrated
+---
+```
+
+也可以在命令行临时覆盖：
+
+```bash
+rajio /path/to/session \
+  --transcription-provider elevenlabs \
+  --transcription-model scribe_v2 \
+  --transcription-segmenter integrated
+```
+
+## 音频切分参数
+
+当前 ElevenLabs `scribe_v2` 流程默认使用单文件转写，但 CLI 仍保留切分参数，方便未来切换服务商。
+
+```bash
+rajio /path/to/session \
+  --chunk-target 600 \
+  --chunk-boundary-search 90 \
+  --chunk-silence-noise -35 \
+  --chunk-silence-duration 0.4
+```
+
+| 参数                       | 默认值 | 说明                           |
+| -------------------------- | ------ | ------------------------------ |
+| `--chunk-target`           | `600`  | 目标切片秒数，最小 `60`。      |
+| `--chunk-boundary-search`  | `90`   | 在切点附近寻找静音的窗口秒数。 |
+| `--chunk-silence-noise`    | `-35`  | ffmpeg 静音阈值。              |
+| `--chunk-silence-duration` | `0.4`  | 最短静音时长。                 |

@@ -1,0 +1,56 @@
+---
+title: 清理会话生成物
+description: 删除一个会话的生成状态和产物。
+---
+
+# 清理会话生成物
+
+```bash
+rajio clean <target>
+```
+
+## 用途
+
+`clean` 删除会话内由 Rajio 生成的工作流状态和产物，让目录回到接近初始输入的状态。
+
+## 典型用法
+
+```bash
+rajio clean /path/to/session
+```
+
+## 参数
+
+| 参数       | 说明                                             |
+| ---------- | ------------------------------------------------ |
+| `<target>` | 必填。已有会话工作区或可解析到会话工作区的路径。 |
+
+`clean` 没有额外 CLI 选项。
+
+## 产物或副作用
+
+会删除这些路径：
+
+- `session.toml`
+- `audio/`
+- `transcript/`
+- `translation/`
+- `patches/`
+- `clips/`
+- `output/`
+
+命令会打印会话工作区，以及实际删除的 artifact 名称；如果没有可删除内容，会打印 `removed: none`。
+
+## 常见 Agent 调用方式
+
+```bash
+rajio clean /path/to/session
+```
+
+Agent 只有在用户明确要求丢弃当前会话生成物时才应调用它。
+
+## 注意事项
+
+- 这是破坏性操作，会删除人工 work 文件、patches、clips 和导出结果。
+- 不会删除源媒体文件。
+- 通常不应该用它来“修复”普通工作流问题；优先用 `--reset <stage>` 重跑指定阶段。

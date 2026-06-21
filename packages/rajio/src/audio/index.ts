@@ -37,10 +37,7 @@ export interface SilenceInterval {
   end: number;
 }
 
-export async function probeMediaMetadata(
-  ffprobeBin: string,
-  mediaPath: string
-): Promise<unknown> {
+export async function probeMediaMetadata(ffprobeBin: string, mediaPath: string): Promise<unknown> {
   const probe = await execa(ffprobeBin, [
     '-v',
     'error',
@@ -361,7 +358,11 @@ function estimateChunkSecondsForSize(
   duration: number,
   requestedTarget: number
 ): number {
-  if (!Number.isFinite(duration) || duration <= 0 || size <= MAX_CHUNKED_TRANSCRIPTION_AUDIO_BYTES) {
+  if (
+    !Number.isFinite(duration) ||
+    duration <= 0 ||
+    size <= MAX_CHUNKED_TRANSCRIPTION_AUDIO_BYTES
+  ) {
     return requestedTarget;
   }
   const estimated = Math.floor((duration * MAX_CHUNKED_TRANSCRIPTION_AUDIO_BYTES * 0.9) / size);

@@ -1,0 +1,80 @@
+---
+title: 默认命令
+description: 创建、运行、恢复、重置或提交字幕会话。
+---
+
+# 默认命令
+
+```bash
+rajio <target> [options]
+```
+
+## 用途
+
+默认命令驱动整个字幕工作流。它会创建或载入会话，刷新媒体与人工阶段状态，运行自动阶段，在人工阶段停下等待校对或翻译，也可以提交当前人工阶段并继续推进。
+
+工作流阶段固定为：
+
+```text
+audio -> transcript_raw -> transcript_work -> translation_work -> export -> done
+```
+
+其中 `audio`、`transcript_raw`、`export` 是自动阶段，`transcript_work` 和 `translation_work` 是人工阶段。
+
+## 典型用法
+
+```bash
+rajio /path/to/video.mp4 --continue=until-manual
+rajio /path/to/session --continue=step
+rajio /path/to/session --commit --continue=until-manual
+rajio /path/to/session --reset transcript_raw
+rajio /path/to/session --full
+```
+
+## 参数
+
+| 参数                                    | 说明                                                                                                      |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `<target>`                              | 必填。媒体文件、会话工作区、`session.toml` 或描述 Markdown。                                              |
+| `--media <path>`                        | 本次调用的媒体路径覆盖。新会话会写入 `session.toml`；已有会话只影响本次解析。                             |
+| `--continue <mode>`                     | `until-manual` 或 `step`，默认 `until-manual`。                                                           |
+| `--commit`                              | 提交当前人工阶段，通过检查后记录 work segments hash 并进入下一阶段。                                      |
+| `--full`                                | 尽可能运行剩余自动阶段；遇到人工阶段仍会停下等待人工处理。                                                |
+| `--reset <stage>`                       | 从指定阶段重新生成，合法值是 `audio`、`transcript_raw`、`transcript_work`、`translation_work`、`export`。 |
+| `--chunk-target <seconds>`              | 本地音频切片目标秒数，默认 `600`，最小 `60`。                                                             |
+| `--chunk-boundary-search <seconds>`     | 在目标切点附近寻找静音的窗口秒数，默认 `90`，范围 `0..300`。                                              |
+| `--chunk-silence-noise <db>`            | ffmpeg `silencedetect` 静音阈值，默认 `-35`。                                                             |
+| `--chunk-silence-duration <seconds>`    | ffmpeg `silencedetect` 最短静音时长，默认 `0.4`，不能为负。                                               |
+| `--transcription-provider <provider>`   | 覆盖转写服务商。当前源码类型只支持 `elevenlabs`。                                                         |
+| `--transcription-model <model>`         | 覆盖转写模型。当前源码类型只支持 `scribe_v2`。                                                            |
+| `--transcription-segmenter <segmenter>` | 覆盖转写分段器。当前源码类型只支持 `integrated`。                                                         |
+
+`--chunk-target + --chunk-boundary-search` 不能超过 `1350` 秒。当前 ElevenLabs `scribe_v2` integrated 流程会校验切片参数，但自动转写策略使用 `single_file`。
+
+## 产物或副作用
+
+- 新会话会创建 `session.toml`。
+- `audio` 阶段会写入音频提取相关产物。
+- `transcript_raw` 阶段会写入 raw 转写结果和 checkpoints。
+- `transcript_work` 会生成 `transcript/work/segments.toml`。
+- `translation_work` 会生成 `translation/work/segments.toml`。
+- `export` 会生成日语 SRT、中文字幕 SRT 和双语 ASS 输出。
+- `--reset` 会把指定阶段及下游阶段状态改回 `pending`，不会简单删除所有文件。
+- 媒体 hash 改变时，Rajio 会把工作流退回 `audio`；如果同时要求从更晚阶段 reset，会报错要求先从 `audio` 运行。
+
+## 常见 Agent 调用方式
+
+```bash
+rajio /path/to/session --continue=until-manual
+rajio /path/to/session --commit --continue=until-manual
+rajio /path/to/session --reset translation_work --continue=until-manual
+```
+
+Agent 通常先运行到人工阶段，再用 `segments list/apply/check` 完成校对或翻译，最后用 `--commit` 提交当前人工阶段。
+
+## 注意事项
+
+- `--commit` 只提交当前人工阶段；如果当前阶段不是人工阶段，它不会替代自动阶段运行。
+- `--full` 不会自动完成 `transcript_work` 或 `translation_work` 的人工审校。
+- 人工 work 文件被提交后又发生变化，Rajio 会把该阶段标记为 `dirty` 并重新定位到该人工阶段。
+- 转写会上传音频到配置的转写服务商，执行前应确认用户授权。

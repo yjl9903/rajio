@@ -1,8 +1,5 @@
 import { countSubtitleTextUnits } from '../segments/index.js';
-import {
-  SEGMENT_DURATION_LIMITS,
-  SUBTITLE_GAP_LIMITS
-} from '../segments/limits.js';
+import { SEGMENT_DURATION_LIMITS, SUBTITLE_GAP_LIMITS } from '../segments/limits.js';
 import type { Segment, SegmentWord, SegmentsFile } from '../types.js';
 import type { TranscriptInputResult } from './types.js';
 
@@ -88,7 +85,9 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
 function previousSegmentIsLong(words: SegmentWord[]): boolean {
   const start = words[0]?.start;
   const end = words.at(-1)?.end;
-  return start !== undefined && end !== undefined && end - start >= SEGMENT_DURATION_LIMITS.longSoft;
+  return (
+    start !== undefined && end !== undefined && end - start >= SEGMENT_DURATION_LIMITS.longSoft
+  );
 }
 
 function joinSegmentText(words: SegmentWord[]): string {

@@ -366,11 +366,7 @@ function isHttpStatus(error: unknown, statusCode: number): boolean {
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    !Array.isArray(value)
-  );
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function compareSemverCore(left: string, right: string): number | undefined {

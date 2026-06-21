@@ -1,0 +1,167 @@
+---
+title: segments
+description: 查看和修改人工阶段的字幕分段。
+---
+
+# segments
+
+`rajio segments` 面向 Agent 修改字幕工作文件。读取上下文用 `list`，批量修正优先用 `apply`；少量改动时可以用 `edit`、`split`、`merge`、`insert`、`delete`。
+
+```bash
+rajio segments <command> <target> [args] [options]
+```
+
+## list
+
+查看人工阶段的字幕分段，不修改文件。
+
+```bash
+rajio segments list <target> [options]
+```
+
+常用方式：
+
+```bash
+rajio segments list /path/to/session --stage transcript --offset 0 --limit 80 --json
+rajio segments list /path/to/session --stage translation --id 120,121 --around 5 --json
+rajio segments list /path/to/session --stage translation --issues zh_line_hard_limit --level error --json
+rajio segments list /path/to/session --stage translation --start 600 --end 660 --json
+```
+
+| 参数                | 说明                                                  |
+| ------------------- | ----------------------------------------------------- |
+| `<target>`          | 已有会话工作区或可解析到会话工作区的路径。            |
+| `--stage <stage>`   | `transcript` 或 `translation`。Agent 应显式传入。     |
+| `--id <ids>`        | 逗号分隔的 segment id，可配合 `--around` 读取上下文。 |
+| `--offset <count>`  | 分页偏移。                                            |
+| `--limit <count>`   | 最大输出分段数。                                      |
+| `--start <seconds>` | 时间范围起点，需和 `--end` 一起使用。                 |
+| `--end <seconds>`   | 时间范围终点。                                        |
+| `--issues <issues>` | 只列出命中指定检查问题的分段。                        |
+| `--level <level>`   | `fatal`、`error` 或 `warning`，默认 `warning`。       |
+| `--json`            | 输出 JSON，Agent 默认应使用。                         |
+
+`--id`、`--start/--end`、`--issues` 三类过滤不能混用。
+
+## apply
+
+批量套用 TOML patch，是 Agent 分批修正字幕的主入口。
+
+```bash
+rajio segments apply <target> [file] [options]
+```
+
+常用方式：
+
+```bash
+rajio segments apply /path/to/session patches/batch-001.toml --stage translation --dry-run --verbose --json
+rajio segments apply /path/to/session patches/batch-001.toml --stage translation --json
+```
+
+| 参数              | 说明                                              |
+| ----------------- | ------------------------------------------------- |
+| `<target>`        | 已有会话工作区或可解析到会话工作区的路径。        |
+| `[file]`          | TOML patch 文件；省略时从 stdin 读取。            |
+| `--stage <stage>` | `transcript` 或 `translation`。Agent 应显式传入。 |
+| `--dry-run`       | 只验证和预览，不写入 `segments.toml`。            |
+| `--verbose`       | 打印受影响分段和仍有问题的分段。                  |
+| `--json`          | 输出 JSON。                                       |
+
+patch 至少包含一个 `[[operations]]`，可用操作有 `edit`、`split`、`merge`、`insert`、`delete`：
+
+```toml
+name = "translation fixes"
+summary = "第一批翻译修正"
+
+[[operations]]
+op = "edit"
+segment_id = "12"
+zh = "修正后的中文字幕"
+
+[[operations]]
+op = "split"
+source_id = "long"
+gap = 0.05
+
+[[operations.replacements]]
+segment_id = "long.1"
+start = 10.0
+end = 13.2
+speaker = "A"
+ja = "前半の日本語"
+zh = "前半中文字幕"
+
+[[operations.replacements]]
+segment_id = "long.2"
+start = 13.2
+end = 16.0
+speaker = "A"
+ja = "後半の日本語"
+zh = "后半中文字幕"
+```
+
+Agent 应先 `--dry-run --verbose --json`，确认受影响分段和检查结果，再正式 apply。
+
+## edit
+
+修改一个已有分段，适合小范围人工修正。
+
+```bash
+rajio segments edit <target> <id> --stage translation --zh "修正后的中文字幕" --dry-run --json
+rajio segments edit <target> <id> --stage transcript --ja "聞き取り直した日本語" --json
+```
+
+常用参数：`--start`、`--end`、`--speaker`、`--ja`、`--zh`、`--clear-skip-checks`、`--dry-run`、`--json`。必须至少提供一个要修改的字段。
+
+## split
+
+把一个分段拆成两个相邻分段。
+
+```bash
+rajio segments split <target> 12 --stage translation \
+  --at 11.8 --id1 12.1 --id2 12.2 \
+  --ja1 "前半の日本語" --ja2 "後半の日本語" \
+  --zh1 "前半中文字幕" --zh2 "后半中文字幕" --dry-run --json
+```
+
+`--gap` 默认 `0.05` 秒。拆分前应先用 `segments list --id <id> --around` 看上下文。
+
+## merge
+
+合并两个相邻分段。
+
+```bash
+rajio segments merge <target> 31 32 --stage translation \
+  --id 31 --ja "合并后的日文" --zh "合并后的中文" --dry-run --json
+```
+
+只能合并两个相邻分段；更多批量合并用 `segments apply`。
+
+## insert
+
+插入一个新分段，按 `start` 时间写入。
+
+```bash
+rajio segments insert <target> 12.5 --stage translation \
+  --start 42.0 --end 43.2 --speaker A --ja "追加された字幕" --zh "新增字幕" --dry-run --json
+```
+
+`--start`、`--end`、`--speaker`、`--ja` 必填；translation work 还必须提供 `--zh`。
+
+## delete
+
+删除一个分段。
+
+```bash
+rajio segments delete <target> 13 --stage transcript --dry-run --json
+rajio segments delete <target> 13 --stage transcript --json
+```
+
+不要删除只是听不清或翻译不确定的内容。应先校正、复听或合并，再决定是否删除。
+
+## Agent 使用建议
+
+- 读取正文用 `segments list --json`，不要只看 `check` 摘要。
+- 修改字幕优先写 patch，再用 `segments apply --dry-run --verbose --json` 预览。
+- 正式写入后再跑 `rajio check`。
+- 不要直接编辑 `transcript/raw/segments.toml` 或 checkpoint。

@@ -40,9 +40,7 @@ export function normalizeElevenLabsTranscript(
   if (!Array.isArray(input.words)) {
     throw new Error('ElevenLabs transcription response does not contain words.');
   }
-  const words = input.words.flatMap((word) =>
-    normalizeElevenLabsWord(word, options.offset ?? 0)
-  );
+  const words = input.words.flatMap((word) => normalizeElevenLabsWord(word, options.offset ?? 0));
   return segmentWords(words, options.idPrefix ?? '1');
 }
 

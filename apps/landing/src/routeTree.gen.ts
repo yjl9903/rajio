@@ -9,10 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
+import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
+import { Route as DocsDotmdRouteImport } from './routes/docs[.]md'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
+import { Route as DocsChar123slugChar125DotmdRouteImport } from './routes/docs/{$slug}[.]md'
 import { Route as DocsSlugRouteImport } from './routes/docs/$slug'
+import { Route as ApiSearchRouteImport } from './routes/api/search'
+import { Route as DocsCliChar123slugChar125DotmdRouteImport } from './routes/docs/cli/{$slug}[.]md'
+import { Route as DocsCliSlugRouteImport } from './routes/docs/cli/$slug'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsFullDottxtRoute = LlmsFullDottxtRouteImport.update({
+  id: '/llms-full.txt',
+  path: '/llms-full.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsDotmdRoute = DocsDotmdRouteImport.update({
+  id: '/docs.md',
+  path: '/docs.md',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -23,44 +51,160 @@ const DocsIndexRoute = DocsIndexRouteImport.update({
   path: '/docs/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsChar123slugChar125DotmdRoute =
+  DocsChar123slugChar125DotmdRouteImport.update({
+    id: '/docs/{$slug}.md',
+    path: '/docs/{$slug}.md',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DocsSlugRoute = DocsSlugRouteImport.update({
   id: '/docs/$slug',
   path: '/docs/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSearchRoute = ApiSearchRouteImport.update({
+  id: '/api/search',
+  path: '/api/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsCliChar123slugChar125DotmdRoute =
+  DocsCliChar123slugChar125DotmdRouteImport.update({
+    id: '/docs/cli/{$slug}.md',
+    path: '/docs/cli/{$slug}.md',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DocsCliSlugRoute = DocsCliSlugRouteImport.update({
+  id: '/docs/cli/$slug',
+  path: '/docs/cli/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/docs.md': typeof DocsDotmdRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/search': typeof ApiSearchRoute
   '/docs/$slug': typeof DocsSlugRoute
+  '/docs/{$slug}.md': typeof DocsChar123slugChar125DotmdRoute
   '/docs/': typeof DocsIndexRoute
+  '/docs/cli/$slug': typeof DocsCliSlugRoute
+  '/docs/cli/{$slug}.md': typeof DocsCliChar123slugChar125DotmdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/docs.md': typeof DocsDotmdRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/search': typeof ApiSearchRoute
   '/docs/$slug': typeof DocsSlugRoute
+  '/docs/{$slug}.md': typeof DocsChar123slugChar125DotmdRoute
   '/docs': typeof DocsIndexRoute
+  '/docs/cli/$slug': typeof DocsCliSlugRoute
+  '/docs/cli/{$slug}.md': typeof DocsCliChar123slugChar125DotmdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/docs.md': typeof DocsDotmdRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/search': typeof ApiSearchRoute
   '/docs/$slug': typeof DocsSlugRoute
+  '/docs/{$slug}.md': typeof DocsChar123slugChar125DotmdRoute
   '/docs/': typeof DocsIndexRoute
+  '/docs/cli/$slug': typeof DocsCliSlugRoute
+  '/docs/cli/{$slug}.md': typeof DocsCliChar123slugChar125DotmdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/docs/$slug' | '/docs/'
+  fullPaths:
+    | '/'
+    | '/docs.md'
+    | '/llms-full.txt'
+    | '/llms.txt'
+    | '/sitemap.xml'
+    | '/api/search'
+    | '/docs/$slug'
+    | '/docs/{$slug}.md'
+    | '/docs/'
+    | '/docs/cli/$slug'
+    | '/docs/cli/{$slug}.md'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/docs/$slug' | '/docs'
-  id: '__root__' | '/' | '/docs/$slug' | '/docs/'
+  to:
+    | '/'
+    | '/docs.md'
+    | '/llms-full.txt'
+    | '/llms.txt'
+    | '/sitemap.xml'
+    | '/api/search'
+    | '/docs/$slug'
+    | '/docs/{$slug}.md'
+    | '/docs'
+    | '/docs/cli/$slug'
+    | '/docs/cli/{$slug}.md'
+  id:
+    | '__root__'
+    | '/'
+    | '/docs.md'
+    | '/llms-full.txt'
+    | '/llms.txt'
+    | '/sitemap.xml'
+    | '/api/search'
+    | '/docs/$slug'
+    | '/docs/{$slug}.md'
+    | '/docs/'
+    | '/docs/cli/$slug'
+    | '/docs/cli/{$slug}.md'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DocsDotmdRoute: typeof DocsDotmdRoute
+  LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiSearchRoute: typeof ApiSearchRoute
   DocsSlugRoute: typeof DocsSlugRoute
+  DocsChar123slugChar125DotmdRoute: typeof DocsChar123slugChar125DotmdRoute
   DocsIndexRoute: typeof DocsIndexRoute
+  DocsCliSlugRoute: typeof DocsCliSlugRoute
+  DocsCliChar123slugChar125DotmdRoute: typeof DocsCliChar123slugChar125DotmdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms-full.txt': {
+      id: '/llms-full.txt'
+      path: '/llms-full.txt'
+      fullPath: '/llms-full.txt'
+      preLoaderRoute: typeof LlmsFullDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs.md': {
+      id: '/docs.md'
+      path: '/docs.md'
+      fullPath: '/docs.md'
+      preLoaderRoute: typeof DocsDotmdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -75,6 +219,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/{$slug}.md': {
+      id: '/docs/{$slug}.md'
+      path: '/docs/{$slug}.md'
+      fullPath: '/docs/{$slug}.md'
+      preLoaderRoute: typeof DocsChar123slugChar125DotmdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/docs/$slug': {
       id: '/docs/$slug'
       path: '/docs/$slug'
@@ -82,13 +233,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/search': {
+      id: '/api/search'
+      path: '/api/search'
+      fullPath: '/api/search'
+      preLoaderRoute: typeof ApiSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/cli/{$slug}.md': {
+      id: '/docs/cli/{$slug}.md'
+      path: '/docs/cli/{$slug}.md'
+      fullPath: '/docs/cli/{$slug}.md'
+      preLoaderRoute: typeof DocsCliChar123slugChar125DotmdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/cli/$slug': {
+      id: '/docs/cli/$slug'
+      path: '/docs/cli/$slug'
+      fullPath: '/docs/cli/$slug'
+      preLoaderRoute: typeof DocsCliSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DocsDotmdRoute: DocsDotmdRoute,
+  LlmsFullDottxtRoute: LlmsFullDottxtRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiSearchRoute: ApiSearchRoute,
   DocsSlugRoute: DocsSlugRoute,
+  DocsChar123slugChar125DotmdRoute: DocsChar123slugChar125DotmdRoute,
   DocsIndexRoute: DocsIndexRoute,
+  DocsCliSlugRoute: DocsCliSlugRoute,
+  DocsCliChar123slugChar125DotmdRoute: DocsCliChar123slugChar125DotmdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

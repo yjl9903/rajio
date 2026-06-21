@@ -18,15 +18,54 @@ type DocModule = {
   toc: [];
 };
 
-const docs = Object.entries(
+const docEntries = Object.entries(
   import.meta.glob<DocModule>('../content/docs/**/*.{md,mdx}', {
     eager: true,
     query: {
       collection: 'docs'
     }
   })
-).map(([path, doc]) => {
+);
+
+const rawDocEntries = new Map(
+  Object.entries(
+    import.meta.glob<string>('../content/docs/**/*.{md,mdx}', {
+      eager: true,
+      import: 'default',
+      query: '?raw'
+    })
+  ).map(([path, body]) => [path.replace('../content/docs/', ''), body])
+);
+
+function toDocsUrl(path: string) {
+  const slug = path.replace(/\.(md|mdx)$/, '');
+
+  if (slug === 'index') return '/docs';
+
+  return `/docs/${slug}`;
+}
+
+export const docsPages = docEntries.map(([path, doc]) => {
   const virtualPath = path.replace('../content/docs/', '');
+
+  return {
+    description: doc.frontmatter.description,
+    path: virtualPath,
+    raw: rawDocEntries.get(virtualPath) ?? '',
+    title: doc.frontmatter.title,
+    url: toDocsUrl(virtualPath)
+  };
+});
+
+export function getDocMarkdown(slugs?: string[]) {
+  const slug = slugs?.join('/') ?? 'index';
+
+  return docsPages.find((page) => page.path.replace(/\.(md|mdx)$/, '') === slug)?.raw;
+}
+
+const docs = docEntries.map(([path, doc]) => {
+  const virtualPath = path.replace('../content/docs/', '');
+  const raw = rawDocEntries.get(virtualPath) ?? '';
 
   return {
     type: 'page' as const,
@@ -41,7 +80,7 @@ const docs = Object.entries(
         path: virtualPath,
         fullPath: virtualPath
       },
-      getText: async () => '',
+      getText: async () => raw,
       getMDAST: async () => {
         throw new Error('MDAST is not generated for the landing docs.');
       }

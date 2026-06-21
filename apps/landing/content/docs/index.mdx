@@ -1,14 +1,117 @@
 ---
-title: Rajio 文档
-description: Rajio 广播翻译工作流文档。
+title: 快速开始
+description: 从一个日语视频文件开始，让 Agent 使用 Rajio 产出中文字幕。
 ---
 
-# Rajio 文档
+# 快速开始
 
-Rajio 是一个 TypeScript CLI，用来把日语声优广播音频整理成可审校的转写稿、中文翻译和字幕文件。
+Rajio 帮助 Agent 为日语视频制作简体中文字幕。
 
-## 可以完成什么
+<Steps>
 
-- 基于会话目录的转写和翻译流程，任务中断后可以继续。
-- 生成结构清晰的分段文件，方便人工或 Agent 审校。
-- 导出可用于发布的 SRT 和 ASS 字幕。
+<Step>
+
+## 安装 Rajio Skill
+
+先复制下面的安装 prompt 给你使用的 Agent。安装完成后，再进入下一步处理视频。
+
+<Tabs items={['Codex', 'Claude Code', '其他 Agent']}>
+<Tab>
+
+```text
+请用 skill-installer 安装 Rajio skill。
+
+GitHub 仓库：https://github.com/yjl9903/rajio
+```
+
+</Tab>
+<Tab>
+
+```text
+请在 Claude Code 中安装 Rajio skill。
+
+GitHub 仓库：https://github.com/yjl9903/rajio
+```
+
+</Tab>
+<Tab>
+
+```text
+请安装 Rajio skill。
+
+GitHub 仓库：https://github.com/yjl9903/rajio
+```
+
+</Tab>
+</Tabs>
+
+</Step>
+
+<Step>
+
+## 准备视频和环境变量
+
+新建一个空目录，把要处理的视频放进去，并复制这个目录的完整路径：
+
+```text
+/Users/me/videos/rajio-demo
+```
+
+目录里可以先放一个 `description.md`，用 frontmatter 指向同目录的视频文件，并补充标题、原始链接、角色名、节目名、术语或固定译名：
+
+```md
+---
+media: ./input.mp4
+---
+
+# 视频标题
+
+- 原始链接：
+- 角色、节目、术语、固定译名：
+- 字幕风格：自然、简洁，适合 B 站观看
+```
+
+在同一个目录的 `.env` 里放这些密钥：
+
+```bash
+OPENAI_API_KEY="..."
+OPENAI_BASE_URL="..."
+ELEVENLABS_API_KEY="..."
+```
+
+此时 `rajio-demo` 目录里至少有这 3 个文件：
+
+```text
+rajio-demo/
+  input.mp4
+  description.md
+  .env
+```
+
+</Step>
+
+<Step>
+
+## 运行 Rajio 日语字幕翻译工作流
+
+Rajio skill 安装完成后，把下面的运行 prompt 发给 Agent：
+
+```text
+请使用 rajio skill，为这个会话工作区里的日语视频生成中文字幕。
+
+会话工作区：/Users/me/videos/rajio-demo
+我同意将音频上传到配置的转写服务商进行语音识别。
+请完成转写、校对、翻译、检查，并导出 SRT/ASS 字幕。
+```
+
+</Step>
+
+<Step>
+
+## 等待结果
+
+处理完成后，你会得到一份完成转写、中文翻译和质量检查的字幕成果，通常包括可直接导入播放器或投稿后台的 `SRT` / `ASS` 文件，以及保留完整过程的 Rajio 会话工作区。需要复查时，把具体片段、时间点或字幕文件发回给 Agent 继续修改。
+
+</Step>
+
+</Steps>
