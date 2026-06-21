@@ -1,8 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 import { RajioDocsPage } from '../../docs-page';
 import { source } from '../../source';
 
 export const Route = createFileRoute('/docs/$slug')({
+  loader: ({ params }) => {
+    if (!source.getPage([params.slug])) throw notFound();
+  },
   head: ({ params }) => ({
     meta: [
       {
