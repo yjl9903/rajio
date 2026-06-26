@@ -60,7 +60,7 @@ export interface TranscriptionCliOptions {
 }
 
 export interface SessionState {
-  schema_version: 1;
+  rajio_version: string;
   session_id: string;
   created_at: string;
   updated_at: string;

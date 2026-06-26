@@ -1,8 +1,8 @@
 import { breadc } from 'breadc';
 
-import { version, description } from '../package.json' with { type: 'json' };
 import { registerClipCommands } from './clips/commands.js';
 import { printDoctorChecks, runDoctor } from './doctor.js';
+import { rajioDescription, rajioVersion } from './package.js';
 import { registerSegmentCommands } from './segments/commands.js';
 import {
   checkRajio,
@@ -24,7 +24,7 @@ import { resolveAudioChunkOptions } from './audio/index.js';
 installBrokenPipeHandler();
 wrapConsoleLogger();
 
-const app = breadc('rajio', { version, description });
+const app = breadc('rajio', { version: rajioVersion, description: rajioDescription });
 
 app
   .command('<target>', 'Run or resume a rajio subtitle session')

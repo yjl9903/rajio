@@ -276,14 +276,6 @@ async function checkSession(
   checkedSegments: Set<string>
 ): Promise<void> {
   const state = session.state;
-  if (state.schema_version !== 1) {
-    issues.push({
-      file: session.path,
-      level: 'fatal',
-      code: 'invalid_schema_version',
-      message: 'schema_version must be 1.'
-    });
-  }
   if (!CURRENT_STAGES.includes(state.current_stage)) {
     issues.push({
       file: session.path,

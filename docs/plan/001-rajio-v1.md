@@ -210,7 +210,7 @@ descriptive metadata, runtime config, prompts, `OPENAI_API_KEY`, OpenAI request 
 or agent execution fields.
 
 ```toml
-schema_version = 1
+rajio_version = "0.2.0"
 session_id = "20260605-rajio-example"
 created_at = "2026-06-05T12:00:00+08:00"
 updated_at = "2026-06-05T12:30:00+08:00"

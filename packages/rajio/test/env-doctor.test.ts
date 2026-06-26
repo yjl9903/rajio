@@ -3,9 +3,9 @@ import path from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { version as packageVersion } from '../package.json' with { type: 'json' };
 import { isElevenLabsProbeSuccessError, runDoctor, type DoctorDeps } from '../src/doctor.js';
 import { Session } from '../src/index.js';
+import { rajioVersion } from '../src/package.js';
 import { readRuntimeConfig } from '../src/utils/env.js';
 import type { RuntimeConfig } from '../src/types.js';
 import { tempDir } from './helpers.js';
@@ -131,7 +131,7 @@ describe('doctor', () => {
     expect(checkByName(result, 'rajio')).toEqual({
       name: 'rajio',
       status: 'pass',
-      message: `v${packageVersion} is up to date`
+      message: `v${rajioVersion} is up to date`
     });
     expect(result.checks.filter((check) => check.name === '.env')).toEqual([
       { name: '.env', status: 'pass', message: `Loaded ${path.join(cwd, '.env')}` },
@@ -310,7 +310,7 @@ describe('doctor', () => {
     expect(checkByName(result, 'rajio')).toEqual({
       name: 'rajio',
       status: 'warn',
-      message: `v${packageVersion} is outdated; latest is v999.0.0`
+      message: `v${rajioVersion} is outdated; latest is v999.0.0`
     });
   });
 
@@ -333,7 +333,7 @@ describe('doctor', () => {
     expect(checkByName(result, 'rajio')).toEqual({
       name: 'rajio',
       status: 'warn',
-      message: `v${packageVersion}; update check failed`,
+      message: `v${rajioVersion}; update check failed`,
       detail: 'network down'
     });
   });
@@ -347,7 +347,7 @@ function doctorDeps(overrides: DoctorDeps = {}): DoctorDeps {
       stdout: `${command} version test`
     })) as never,
     createCodex: () => undefined,
-    getLatestRajioVersion: async () => packageVersion,
+    getLatestRajioVersion: async () => rajioVersion,
     nodeVersion: '24.1.0',
     ...overrides
   };

@@ -928,33 +928,33 @@ describe('segments validation and subtitle rendering', () => {
       {
         file: path.join(sessionDir, 'session.toml'),
         level: 'fatal' as const,
-        code: 'invalid_schema_version',
-        message: 'schema_version must be 1.'
+        code: 'invalid_current_stage',
+        message: 'Invalid current_stage: broken.'
       }
     ];
 
     expect(filterCheckIssues(issues, { level: 'fatal', currentStage: 'translation_work' })).toEqual(
-      [expect.objectContaining({ code: 'invalid_schema_version' })]
+      [expect.objectContaining({ code: 'invalid_current_stage' })]
     );
     expect(
       filterCheckIssues(issues, { level: 'error', currentStage: 'translation_work' }).map(
         (issue) => issue.code
       )
-    ).toEqual(['zh_line_hard_limit', 'zh_terminal_punctuation', 'invalid_schema_version']);
+    ).toEqual(['zh_line_hard_limit', 'zh_terminal_punctuation', 'invalid_current_stage']);
     expect(
       filterCheckIssues(issues, { stage: 'translation', language: 'ja' }).map((issue) => issue.code)
-    ).toEqual(['subtitle_gap_short', 'ja_line_hard_limit', 'invalid_schema_version']);
+    ).toEqual(['subtitle_gap_short', 'ja_line_hard_limit', 'invalid_current_stage']);
     expect(filterCheckIssues(issues, { stage: 'transcript' }).map((issue) => issue.code)).toEqual([
       'ja_line_hard_limit',
       'ja_terminal_punctuation',
       'duration_too_short',
-      'invalid_schema_version'
+      'invalid_current_stage'
     ]);
     expect(() => filterCheckIssues(issues, { stage: 'transcript', language: 'zh' })).toThrow(
       'transcript check supports only --language ja.'
     );
     expect(filterCheckIssues(issues, { stage: 'audio' })).toEqual([
-      expect.objectContaining({ code: 'invalid_schema_version' })
+      expect.objectContaining({ code: 'invalid_current_stage' })
     ]);
 
     const scope = resolveCheckScope({ currentStage: 'translation_work' });

@@ -5,7 +5,7 @@ import { Codex } from '@openai/codex-sdk';
 import { execa } from 'execa';
 import OpenAI from 'openai';
 
-import { version as packageVersion } from '../package.json' with { type: 'json' };
+import { rajioVersion } from './package.js';
 import type { Session } from './session/index.js';
 import { pathExists } from './utils/fs.js';
 import { readRuntimeConfig } from './utils/env.js';
@@ -111,12 +111,12 @@ async function collectEnvFiles(cwd: string, sessionDir: string): Promise<string[
 async function cliVersionCheck(deps: DoctorDeps): Promise<DoctorCheck> {
   try {
     const latestVersion = await (deps.getLatestRajioVersion ?? getLatestRajioVersion)();
-    const comparison = compareSemverCore(packageVersion, latestVersion);
+    const comparison = compareSemverCore(rajioVersion, latestVersion);
     if (comparison === undefined) {
       return {
         name: 'rajio',
         status: 'warn',
-        message: `v${packageVersion}; update check failed`,
+        message: `v${rajioVersion}; update check failed`,
         detail: `Invalid version returned by npm registry: ${latestVersion}`
       };
     }
@@ -124,19 +124,19 @@ async function cliVersionCheck(deps: DoctorDeps): Promise<DoctorCheck> {
       return {
         name: 'rajio',
         status: 'warn',
-        message: `v${packageVersion} is outdated; latest is v${latestVersion}`
+        message: `v${rajioVersion} is outdated; latest is v${latestVersion}`
       };
     }
     return {
       name: 'rajio',
       status: 'pass',
-      message: `v${packageVersion} is up to date`
+      message: `v${rajioVersion} is up to date`
     };
   } catch (error) {
     return {
       name: 'rajio',
       status: 'warn',
-      message: `v${packageVersion}; update check failed`,
+      message: `v${rajioVersion}; update check failed`,
       detail: formatError(error)
     };
   }

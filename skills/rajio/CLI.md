@@ -71,8 +71,9 @@ rajio <target> [options]
 
 Target resolution:
 
-- Existing session directory: read `session.toml`; reuse `[input].media` unless
-  `--media <path>` is supplied.
+- Existing session directory: read `session.toml`; top-level `rajio_version` must
+  exactly match the running CLI version, otherwise you may need to rebuild the session.
+  Reuse `[input].media` unless `--media <path>` is supplied.
 - New directory target: initialize from the directory's single description markdown,
   description `media` frontmatter, or single media file.
 - Description markdown target: use the markdown file's parent directory as the session
@@ -766,7 +767,8 @@ target is required. If any check fails, process exit code is `1`.
 Run `doctor` before automatic transcription/export stages or when provider, ffmpeg, or
 environment setup looks misconfigured. Also compare the reported CLI version with
 the current [SKILL.md](SKILL.md) frontmatter `metadata.version` before automatic
-stages.
+stages. Existing sessions require `session.toml` top-level `rajio_version` to match the
+running CLI version; if it does not match, you may need to rebuild the session.
 
 ## Clean
 

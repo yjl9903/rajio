@@ -4,6 +4,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { Session } from '../src/index.js';
+import { rajioVersion } from '../src/package.js';
 import { checkRajio } from '../src/session/check.js';
 import { readDescription } from '../src/session/description.js';
 import { preparedSession, tempDir } from './helpers.js';
@@ -23,6 +24,28 @@ describe('session target resolution', () => {
     expect(session.mediaPath).toBe(path.join(dir, 'video.mp4'));
     expect(session.description.frontmatter.title).toBe('Example');
     expect(session.description.body).toBe('context');
+    const sessionToml = await readFile(path.join(dir, 'session.toml'), 'utf8');
+    expect(sessionToml).toContain(`rajio_version = "${rajioVersion}"`);
+    expect(sessionToml).not.toContain('schema_version');
+  });
+
+  it('rejects sessions without matching rajio version', async () => {
+    const dir = await preparedSession('transcript_work', {});
+    const sessionPath = path.join(dir, 'session.toml');
+    const sessionToml = await readFile(sessionPath, 'utf8');
+
+    await writeFile(sessionPath, sessionToml.replace(/^rajio_version = .+\n/mu, ''));
+    await expect(Session.loadOrCreate(dir)).rejects.toThrow(
+      `Rajio session version mismatch: undefined. Expected ${rajioVersion}.`
+    );
+
+    await writeFile(
+      sessionPath,
+      sessionToml.replace(/^rajio_version = .+\n/mu, 'rajio_version = "0.0.0"\n')
+    );
+    await expect(Session.loadOrCreate(dir)).rejects.toThrow(
+      `Rajio session version mismatch: 0.0.0. Expected ${rajioVersion}.`
+    );
   });
 
   it('rejects ambiguous directory markdown descriptions', async () => {

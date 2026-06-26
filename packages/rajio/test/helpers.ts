@@ -5,6 +5,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 import { Session } from '../src/index.js';
+import { rajioVersion } from '../src/package.js';
 import { writeSegmentsFile } from '../src/segments/index.js';
 import { sha256File } from '../src/utils/fs.js';
 import { logger } from '../src/utils/logger.js';
@@ -113,7 +114,7 @@ export async function preparedCompleteSession(): Promise<string> {
 
 export function baseSession(currentStage: SessionState['current_stage']): SessionState {
   return {
-    schema_version: 1,
+    rajio_version: rajioVersion,
     session_id: 'test',
     created_at: '2026-06-06T00:00:00.000Z',
     updated_at: '2026-06-06T00:00:00.000Z',

@@ -4,6 +4,7 @@ import path from 'node:path';
 
 import { parse, stringify } from 'smol-toml';
 
+import { rajioVersion } from '../package.js';
 import { readDescription } from '../session/description.js';
 import {
   fromSessionRelative,
@@ -436,7 +437,7 @@ async function assertMediaFileExists(mediaPath: string): Promise<void> {
 function createSessionState(resolved: ResolvedSessionTarget, now: Date): SessionState {
   const createdAt = now.toISOString();
   const state: SessionState = {
-    schema_version: 1,
+    rajio_version: rajioVersion,
     session_id: createSessionId(now),
     created_at: createdAt,
     updated_at: createdAt,
@@ -463,8 +464,11 @@ function parseSession(content: string): SessionState {
 }
 
 function normalizeSession(session: SessionState): SessionState {
-  if (session.schema_version !== 1) {
-    throw new Error(`Unsupported session schema version: ${String(session.schema_version)}`);
+  if (session.rajio_version !== rajioVersion) {
+    throw new Error(
+      `Rajio session version mismatch: ${String(session.rajio_version)}. ` +
+        `Expected ${rajioVersion}.`
+    );
   }
   session.stages = { ...createInitialStages(), ...session.stages };
   if (session.transcription !== undefined) {
