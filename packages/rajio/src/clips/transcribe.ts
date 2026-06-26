@@ -10,11 +10,15 @@ import type {
   StageRunnerDeps,
   TranscriptionConfig
 } from '../types.js';
-import { extractAudioRange, resolveAudioChunkOptions } from '../audio/index.js';
-import { mergeElevenLabsInputs, transcribeWithElevenLabs } from '../transcription/elevenlabs.js';
-import type { TranscriptInputResult } from '../transcription/types.js';
-import { normalizeTranscriptionConfig } from '../transcription/config.js';
-import { formatBytes, formatTimeRange, transcribeCheckpointedInput } from '../transcription/run.js';
+import {
+  createAudioChunksIfNeeded,
+  extractAudioRange,
+  resolveAudioChunkOptions
+} from '../audio/index.js';
+import { normalizeTranscriptionConfig, sameTranscriptionConfig } from '../transcription/config.js';
+import { providerAudioStrategy, transcribeProviderInputs } from '../transcription/provider.js';
+import type { ProviderTranscriptionItem } from '../transcription/provider.js';
+import { formatBytes, formatTimeRange } from '../transcription/run.js';
 import {
   fromSessionRelative,
   pathExists,
@@ -49,9 +53,7 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
   const transcription = normalizeTranscriptionConfig(
     input.transcription ?? input.session.state.transcription
   );
-  if (input.chunking) {
-    resolveAudioChunkOptions(input.chunking);
-  }
+  const chunkOptions = resolveAudioChunkOptions(input.chunking);
   const clipDir = await resolveClipDir(input.session, input.start, input.end);
   const clipPath = path.join(clipDir, 'clip.toml');
   const sourceAudioPath = path.join(clipDir, 'source.m4a');
@@ -66,6 +68,31 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
       end: input.end
     });
     const size = (await stat(sourceAudioPath)).size;
+    const strategy = providerAudioStrategy(transcription);
+    const chunks: Pick<ClipFile, 'strategy' | 'chunking' | 'chunks'> =
+      strategy === 'silence_or_time'
+        ? await createClipChunks({
+            runtime: input.runtime,
+            clipDir,
+            audioPath: sourceAudioPath,
+            sourceStart: input.start,
+            options: chunkOptions
+          })
+        : {
+            strategy,
+            chunks: [
+              {
+                audio: 'source.m4a',
+                checkpoint: 'checkpoints/input-000.toml',
+                start: 0,
+                end: input.end - input.start,
+                absolute_start: input.start,
+                absolute_end: input.end,
+                size,
+                sha256: await sha256File(sourceAudioPath)
+              }
+            ]
+          };
     const now = new Date().toISOString();
     clip = {
       id: path.basename(clipDir),
@@ -79,21 +106,11 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
       provider: transcription.provider,
       model: transcription.model,
       segmenter: transcription.segmenter,
-      strategy: 'single_file',
+      strategy: chunks.strategy,
+      ...(chunks.chunking ? { chunking: chunks.chunking } : {}),
       start: input.start,
       end: input.end,
-      chunks: [
-        {
-          audio: 'source.m4a',
-          checkpoint: 'checkpoints/input-000.toml',
-          start: 0,
-          end: input.end - input.start,
-          absolute_start: input.start,
-          absolute_end: input.end,
-          size,
-          sha256: await sha256File(sourceAudioPath)
-        }
-      ]
+      chunks: chunks.chunks
     };
     await writeClipFile(clipPath, clip);
   } else {
@@ -121,18 +138,18 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
     transcription,
     logger
   });
-  const inputs = await transcribeClipInputs({
+  const items = await transcribeClipItems({
+    clipDir,
+    clip
+  });
+  const segments = await transcribeProviderInputs({
     session: input.session,
     runtime: input.runtime,
     transcription,
-    clipDir,
-    clip,
-    transcribe: input.deps?.transcribe ?? transcribeWithElevenLabs,
+    items,
+    label: `clip ${clip.id} input`,
+    deps: input.deps,
     logger
-  });
-  const segments = mergeElevenLabsInputs({
-    inputs,
-    generatedAt: new Date().toISOString()
   });
   await writeFileAtomic(path.join(clipDir, clip.segments), stringify(segments));
   clip.updated_at = new Date().toISOString();
@@ -141,6 +158,36 @@ export async function transcribeClip(input: ClipTranscribeInput): Promise<ClipFi
     `clip ${clip.id} wrote ${toSessionRelative(input.session.dir, path.join(clipDir, clip.segments))}.`
   );
   return clip;
+}
+
+async function createClipChunks(input: {
+  runtime: RuntimeConfig;
+  clipDir: string;
+  audioPath: string;
+  sourceStart: number;
+  options: ReturnType<typeof resolveAudioChunkOptions>;
+}): Promise<Pick<ClipFile, 'strategy' | 'chunking' | 'chunks'>> {
+  const chunksDir = path.join(input.clipDir, 'chunks');
+  const { chunks, chunking } = await createAudioChunksIfNeeded(
+    input.runtime,
+    input.audioPath,
+    chunksDir,
+    input.options
+  );
+  return {
+    strategy: 'silence_or_time',
+    chunking,
+    chunks: chunks.map((chunk, index) => ({
+      audio: toSessionRelative(input.clipDir, chunk.audioPath),
+      checkpoint: `checkpoints/input-${String(index).padStart(3, '0')}.toml`,
+      start: chunk.start,
+      end: chunk.end,
+      absolute_start: input.sourceStart + chunk.start,
+      absolute_end: input.sourceStart + chunk.end,
+      size: chunk.size,
+      sha256: chunk.sha256
+    }))
+  };
 }
 
 async function resolveClipDir(session: Session, start: number, end: number): Promise<string> {
@@ -165,72 +212,38 @@ async function resolveClipDir(session: Session, start: number, end: number): Pro
   throw new Error(`Could not allocate a unique clip id for ${baseId}.`);
 }
 
-async function transcribeClipInputs(input: {
-  session: Session;
-  runtime: RuntimeConfig;
-  transcription: TranscriptionConfig;
+async function transcribeClipItems(input: {
   clipDir: string;
   clip: ClipFile;
-  transcribe: NonNullable<StageRunnerDeps['transcribe']>;
-  logger: ClipLogger;
-}): Promise<TranscriptInputResult[]> {
-  const results: TranscriptInputResult[] = [];
+}): Promise<ProviderTranscriptionItem[]> {
+  const items: ProviderTranscriptionItem[] = [];
   for (const [index, chunk] of input.clip.chunks.entries()) {
-    results.push(
-      await transcribeClipInput({
-        ...input,
-        chunk,
-        index,
-        totalInputs: input.clip.chunks.length
-      })
-    );
+    const audioPath = fromSessionRelative(input.clipDir, chunk.audio);
+    await validateClipAudio(audioPath, chunk);
+    items.push({
+      index,
+      totalInputs: input.clip.chunks.length,
+      audioPath,
+      checkpointAudio: chunk.audio,
+      checkpointBaseDir: input.clipDir,
+      checkpointPath: fromSessionRelative(input.clipDir, chunk.checkpoint),
+      errorPath: fromSessionRelative(input.clipDir, chunk.checkpoint).replace(
+        /\.toml$/,
+        '.error.log'
+      ),
+      start: chunk.absolute_start,
+      end: chunk.absolute_end
+    });
   }
-  return results.sort((a, b) => a.index - b.index);
+  return items;
 }
 
 function sameClipTranscription(clip: ClipFile, transcription: TranscriptionConfig): boolean {
-  return (
-    (clip.provider ?? 'elevenlabs') === transcription.provider &&
-    clip.model === transcription.model &&
-    (clip.segmenter ?? 'integrated') === transcription.segmenter
-  );
-}
-
-async function transcribeClipInput(input: {
-  session: Session;
-  runtime: RuntimeConfig;
-  transcription: TranscriptionConfig;
-  clipDir: string;
-  clip: ClipFile;
-  chunk: ClipChunkMetadata;
-  index: number;
-  totalInputs: number;
-  transcribe: NonNullable<StageRunnerDeps['transcribe']>;
-  logger: ClipLogger;
-}): Promise<TranscriptInputResult> {
-  const checkpointPath = fromSessionRelative(input.clipDir, input.chunk.checkpoint);
-  const errorPath = checkpointPath.replace(/\.toml$/, '.error.log');
-  const audioPath = fromSessionRelative(input.clipDir, input.chunk.audio);
-  await validateClipAudio(audioPath, input.chunk);
-  return transcribeCheckpointedInput({
-    session: input.session,
-    runtime: input.runtime,
-    transcription: input.transcription,
-    item: {
-      index: input.index,
-      totalInputs: input.totalInputs,
-      audioPath,
-      checkpointAudio: input.chunk.audio,
-      checkpointBaseDir: input.clipDir,
-      start: input.chunk.absolute_start,
-      end: input.chunk.absolute_end
-    },
-    checkpointPath,
-    errorPath,
-    label: `clip ${input.clip.id} input`,
-    transcribe: input.transcribe,
-    logger: input.logger
-  });
+  try {
+    return sameTranscriptionConfig(normalizeTranscriptionConfig(clip), transcription);
+  } catch {
+    return false;
+  }
 }
 
 async function validateClipAudio(audioPath: string, chunk: ClipChunkMetadata): Promise<void> {

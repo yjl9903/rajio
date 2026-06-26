@@ -1,6 +1,7 @@
 import { mkdir, stat } from 'node:fs/promises';
 
 import {
+  createAudioChunksIfNeeded,
   extractAudioFile,
   mediaDurationFromMetadata,
   probeMediaMetadata,
@@ -9,6 +10,7 @@ import {
 import { pathExists, sha256File, toSessionRelative, writeJson } from '../../utils/fs.js';
 import type { AudioChunkOptions, RuntimeConfig, TranscriptionConfig } from '../../types.js';
 import type { Session } from '../../session/index.js';
+import { providerAudioStrategy } from '../../transcription/provider.js';
 
 export async function runAudioStage(input: {
   session: Session;
@@ -17,14 +19,7 @@ export async function runAudioStage(input: {
   chunking?: AudioChunkOptions;
 }): Promise<void> {
   const { session, runtime } = input;
-  if (input.transcription.provider !== 'elevenlabs') {
-    throw new Error(`Transcription provider "${input.transcription.provider}" is not supported.`);
-  }
-
-  // Validate explicit chunk options even though ElevenLabs uses a single-file strategy.
-  if (input.chunking) {
-    resolveAudioChunkOptions(input.chunking);
-  }
+  const chunkOptions = resolveAudioChunkOptions(input.chunking);
 
   await mkdir(session.artifact('audio'), { recursive: true });
   const metadataPath = session.artifact('audio', 'metadata.json');
@@ -58,15 +53,44 @@ export async function runAudioStage(input: {
   const audioSha256 = await sha256File(audioPath);
   session.setMediaHash(mediaHash);
   const currentStage = session.stage('audio');
-  session.state.stages.audio = {
+  const baseStage = {
     status: currentStage.status,
     ...(typeof currentStage.started_at === 'string' ? { started_at: currentStage.started_at } : {}),
     metadata: toSessionRelative(session.dir, metadataPath),
     audio: toSessionRelative(session.dir, audioPath),
     audio_size: audioSize,
     audio_sha256: audioSha256,
-    strategy: 'single_file',
     duration: mediaDurationFromMetadata(metadata),
     media_sha256: mediaHash
+  };
+  const strategy = providerAudioStrategy(input.transcription);
+  if (strategy === 'single_file') {
+    session.state.stages.audio = {
+      ...baseStage,
+      strategy
+    };
+    return;
+  }
+
+  const chunksDir = session.artifact('audio', 'chunks');
+  const { chunks, chunking } = await createAudioChunksIfNeeded(
+    runtime,
+    audioPath,
+    chunksDir,
+    chunkOptions
+  );
+  session.state.stages.audio = {
+    ...baseStage,
+    strategy,
+    chunks_dir: toSessionRelative(session.dir, chunksDir),
+    chunk_count: chunks.length,
+    chunking,
+    chunks: chunks.map((chunk) => ({
+      audio: toSessionRelative(session.dir, chunk.audioPath),
+      start: chunk.start,
+      end: chunk.end,
+      size: chunk.size,
+      sha256: chunk.sha256
+    }))
   };
 }

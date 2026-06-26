@@ -44,12 +44,13 @@ export interface SessionAudioChunk {
   sha256: string;
 }
 
-export type TranscriptionProviderName = 'elevenlabs';
+export type TranscriptionProviderName = 'elevenlabs' | 'openai';
+export type TranscriptionModelName = 'scribe_v2' | 'whisper-1';
 export type TranscriptionSegmenterName = 'integrated';
 
 export interface TranscriptionConfig {
   provider: TranscriptionProviderName;
-  model: 'scribe_v2';
+  model: TranscriptionModelName;
   segmenter: TranscriptionSegmenterName;
 }
 

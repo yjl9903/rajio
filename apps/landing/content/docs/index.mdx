@@ -74,10 +74,14 @@ media: ./input.mp4
 在同一个目录的 `.env` 里放这些密钥：
 
 ```bash
+ELEVENLABS_API_KEY="..."
 OPENAI_API_KEY="..."
 OPENAI_BASE_URL="..."
-ELEVENLABS_API_KEY="..."
 ```
+
+默认转写服务商是 ElevenLabs，需要 `ELEVENLABS_API_KEY`。如果你在
+`description.md` 中配置 `transcription.provider: openai`，则需要 `OPENAI_API_KEY`，并可选设置
+`OPENAI_BASE_URL`。
 
 此时 `rajio-demo` 目录里至少有这 3 个文件：
 

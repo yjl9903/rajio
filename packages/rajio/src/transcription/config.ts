@@ -61,20 +61,26 @@ export function resolveClipTranscriptionConfig(input: {
 export function normalizeTranscriptionConfig(value: unknown): TranscriptionConfig {
   const input = isRecord(value) ? value : {};
   const provider = input.provider ?? DEFAULT_TRANSCRIPTION_CONFIG.provider;
-  const model = input.model ?? DEFAULT_TRANSCRIPTION_CONFIG.model;
-  const segmenter = input.segmenter ?? DEFAULT_TRANSCRIPTION_CONFIG.segmenter;
 
-  if (provider !== 'elevenlabs') {
+  if (provider !== 'elevenlabs' && provider !== 'openai') {
     throw new Error(`Transcription provider "${String(provider)}" is not supported.`);
   }
-  if (model !== 'scribe_v2') {
-    throw new Error(`Transcription model "${String(model)}" is not supported.`);
-  }
+
+  const model = input.model ?? (provider === 'openai' ? 'whisper-1' : 'scribe_v2');
+  const segmenter = input.segmenter ?? DEFAULT_TRANSCRIPTION_CONFIG.segmenter;
   if (segmenter !== 'integrated') {
     throw new Error(`Transcription segmenter "${String(segmenter)}" is not supported.`);
   }
+  if (
+    (provider === 'elevenlabs' && model !== 'scribe_v2') ||
+    (provider === 'openai' && model !== 'whisper-1')
+  ) {
+    throw new Error(
+      `Transcription model "${String(model)}" is not supported for provider "${provider}".`
+    );
+  }
 
-  return { provider, model, segmenter };
+  return { provider, model: model as TranscriptionConfig['model'], segmenter };
 }
 
 export function sameTranscriptionConfig(

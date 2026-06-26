@@ -38,10 +38,11 @@ Respect privacy and provider boundaries:
 
 - Make the privacy boundary explicit before transcription. Rajio uploads audio to the configured
   transcription provider; start transcription only after the user authorizes that upload.
-- During `translation_work`, do not use the OpenAI-compatible provider configured in
-  `.env` as a machine-translation service. Sub-agents produce the first-draft batch
-  translations from the provided context; the main agent reviews, merges, validates, and
-  performs the required full-file Chinese refinement.
+- During `translation_work`, do not use manual AI/API calls as a bulk machine-translation
+  service for whole subtitle ranges. This does not forbid using the configured ASR provider
+  for transcription. Sub-agents produce the first-draft batch translations from the provided
+  context; the main agent reviews, merges, validates, and performs the required full-file
+  Chinese refinement.
 
 Respect manual-stage ownership:
 
@@ -83,8 +84,8 @@ Define manual review strictly:
 
 Respect file boundaries:
 
-- Never edit `transcript/raw/segments.toml`, `transcript/raw/checkpoints/*.toml`, or
-  `transcript/raw/chunks/*.toml`. Raw transcript files are references.
+- Never edit `transcript/raw/segments.toml` or `transcript/raw/checkpoints/*.toml`. Raw
+  transcript files are references.
 - Edit only the active manual work file, `description.md`, and session-local patch or
   review artifacts: `transcript/work/segments.toml`, `translation/work/segments.toml`,
   `description.md`, and files under session-local `patches/` or clip review directories.
@@ -137,6 +138,10 @@ uncertainty in `description.md`, and revisit it when transcript context reveals 
 For complete command syntax, examples, output formats, segment patch shape, clip artifact
 details, and environment variables, read [CLI.md](CLI.md#rajio-cli-reference).
 
+For ASR provider configuration, chunk/checkpoint artifacts, and provider-specific `doctor`
+behavior, read [references/configuration.md](references/configuration.md) only when changing
+transcription config or debugging provider issues.
+
 Check whether `rajio` is available:
 
 ```bash
@@ -183,10 +188,8 @@ Audio chunk options:
 - `--chunk-silence-noise <db>`: ffmpeg `silencedetect` threshold. Default `-35`.
 - `--chunk-silence-duration <seconds>`: minimum silence duration. Default `0.4`.
 
-rajio keeps both `single_file` and chunking audio strategies. With the current
-ElevenLabs/scribe_v2/integrated flow, rajio validates these options for CLI compatibility but
-selects `strategy = "single_file"` and does not write `stages.audio.chunking` or
-`stages.audio.chunks[]`. Future transcription models may select the chunking strategy again.
+The selected transcription provider decides whether these options produce local chunk artifacts.
+For provider-specific behavior, read [references/configuration.md](references/configuration.md).
 
 ### Segments
 
@@ -448,8 +451,8 @@ Expected result: rajio creates or reads `session.toml`, extracts audio, transcri
 Japanese, writes raw transcript artifacts, creates `transcript/work/segments.toml`, and
 stops at `transcript_work`.
 
-Wait for `transcript/raw/checkpoints/input-000.toml` or
-`transcript/raw/checkpoints/input-000.error.log`. Do not restart while requests may still be in
+Wait for `transcript/raw/checkpoints/input-*.toml` or
+`transcript/raw/checkpoints/input-*.error.log`. Do not restart while requests may still be in
 flight unless there is a clear CLI/provider failure.
 
 Treat automatically created work segments as a draft.
@@ -859,7 +862,7 @@ Before reporting completion:
   errors, fix the relevant work file before committing.
 - If a committed manual stage becomes `dirty`, inspect the changed work and rerun
   `--commit` only after it passes manual review and validation.
-- If transcription fails, inspect `transcript/raw/checkpoints/input-000.error.log`, check
+- If transcription fails, inspect `transcript/raw/checkpoints/input-*.error.log`, check
   credentials, provider access, media path, ffmpeg, and ffprobe, report the likely cause and
   recommended next step to the user, then pause work. Do not retry transcription, reset
   transcription artifacts, or continue downstream stages unless the user explicitly asks for it.

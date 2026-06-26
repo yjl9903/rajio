@@ -65,7 +65,6 @@ export async function transcribeCheckpointedInput(input: {
       audioPath: fromSessionRelative(item.checkpointBaseDir, checkpoint.audio),
       start: checkpoint.start,
       end: checkpoint.end,
-      transcription: input.transcription,
       response: checkpoint.response
     };
   }
@@ -123,7 +122,6 @@ export async function transcribeCheckpointedInput(input: {
       audioPath: item.audioPath,
       start: item.start,
       end: item.end,
-      transcription: input.transcription,
       response
     };
   } catch (error) {

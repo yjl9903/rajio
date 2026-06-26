@@ -1,11 +1,11 @@
 import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
 
-import type { Segment, SegmentWord, SegmentsFile } from '../types.js';
-import type { TranscribeInput, TranscriptInputResult } from './types.js';
-import { buildTranscriptFile, isRecord, segmentWords } from './utils.js';
+import type { Segment, SegmentWord } from '../types.js';
+import type { TranscribeInput } from './types.js';
+import { isRecord, segmentWords } from './utils.js';
 
-export const ELEVENLABS_TRANSCRIPTION_MODEL = 'scribe_v2';
-export const ELEVENLABS_TRANSCRIPTION_LANGUAGE = 'ja';
+const ELEVENLABS_TRANSCRIPTION_MODEL = 'scribe_v2';
+const ELEVENLABS_TRANSCRIPTION_LANGUAGE = 'ja';
 
 export async function transcribeWithElevenLabs(input: TranscribeInput): Promise<unknown> {
   if (!input.runtime.elevenlabsApiKey) {
@@ -15,20 +15,10 @@ export async function transcribeWithElevenLabs(input: TranscribeInput): Promise<
   const client = new ElevenLabsClient({ apiKey: input.runtime.elevenlabsApiKey });
   return client.speechToText.convert({
     file: { path: input.audioPath },
-    modelId: input.transcription.model,
+    modelId: ELEVENLABS_TRANSCRIPTION_MODEL,
     languageCode: ELEVENLABS_TRANSCRIPTION_LANGUAGE,
     diarize: true,
     timestampsGranularity: 'word'
-  });
-}
-
-export function mergeElevenLabsInputs(input: {
-  inputs: TranscriptInputResult[];
-  generatedAt: string;
-}): SegmentsFile {
-  return buildTranscriptFile({
-    ...input,
-    normalize: normalizeElevenLabsTranscript
   });
 }
 

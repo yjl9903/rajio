@@ -39,7 +39,8 @@ import {
   resolveCheckScope
 } from '../src/session/check.js';
 import { renderAss, renderSrt } from '../src/workflow/subtitles.js';
-import { mergeElevenLabsInputs } from '../src/transcription/elevenlabs.js';
+import { normalizeElevenLabsTranscript } from '../src/transcription/elevenlabs.js';
+import { buildTranscriptFile } from '../src/transcription/utils.js';
 import type { SegmentsFile } from '../src/types.js';
 import {
   preparedCompleteSession,
@@ -1227,7 +1228,7 @@ describe('segments validation and subtitle rendering', () => {
   });
 
   it('merges ElevenLabs transcript words into raw segments', () => {
-    const file = mergeElevenLabsInputs({
+    const file = buildTranscriptFile({
       generatedAt: '2026-06-06T00:00:00.000Z',
       inputs: [
         {
@@ -1235,18 +1236,14 @@ describe('segments validation and subtitle rendering', () => {
           audioPath: 'audio/extracted.m4a',
           start: 10,
           end: 11,
-          transcription: {
-            provider: 'elevenlabs',
-            model: 'scribe_v2',
-            segmenter: 'integrated'
-          },
           response: {
             words: [
               { text: 'こんにちは', start: 0.4, end: 1, speaker_id: 'speaker_0', type: 'word' }
             ]
           }
         }
-      ]
+      ],
+      normalize: normalizeElevenLabsTranscript
     });
 
     expect(file.segments).toEqual([

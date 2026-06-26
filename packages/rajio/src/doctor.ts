@@ -11,6 +11,7 @@ import { pathExists } from './utils/fs.js';
 import { readRuntimeConfig } from './utils/env.js';
 import type { RuntimeConfig } from './types.js';
 import { taggedLogger } from './utils/logger.js';
+import { normalizeTranscriptionConfig } from './transcription/config.js';
 
 const REQUIRED_NODE_MAJOR = 24;
 const CHECK_TIMEOUT_MS = 10000;
@@ -61,7 +62,7 @@ export async function runDoctor(
   checks.push(nodeCheck(deps.nodeVersion ?? process.versions.node));
   checks.push(...envFilesChecks(envFiles));
   checks.push(baseUrlCheck(runtime));
-  checks.push(await elevenLabsConnectivityCheck(runtime, deps));
+  checks.push(await transcriptionConnectivityCheck(session, runtime, deps));
   checks.push(await openAIConnectivityCheck(runtime, deps));
   checks.push(await commandVersionCheck('ffmpeg', runtime.ffmpegBin, deps));
   checks.push(await commandVersionCheck('ffprobe', runtime.ffprobeBin, deps));
@@ -176,6 +177,46 @@ async function openAIConnectivityCheck(
       name: 'openai',
       status: 'warn',
       message: 'OpenAI API check failed',
+      detail: formatError(error)
+    };
+  }
+}
+
+async function transcriptionConnectivityCheck(
+  session: Session,
+  runtime: RuntimeConfig,
+  deps: DoctorDeps
+): Promise<DoctorCheck> {
+  const transcription = normalizeTranscriptionConfig(session.state.transcription);
+  if (transcription.provider === 'openai') {
+    return openAITranscriptionConnectivityCheck(runtime, deps);
+  }
+  return elevenLabsConnectivityCheck(runtime, deps);
+}
+
+async function openAITranscriptionConnectivityCheck(
+  runtime: RuntimeConfig,
+  deps: DoctorDeps
+): Promise<DoctorCheck> {
+  if (!runtime.openaiApiKey) {
+    return {
+      name: 'transcription',
+      status: 'fail',
+      message: 'OPENAI_API_KEY is not set'
+    };
+  }
+  try {
+    await (deps.checkOpenAI ?? checkOpenAIConnectivity)(runtime);
+    return {
+      name: 'transcription',
+      status: 'pass',
+      message: 'OpenAI transcription API is reachable'
+    };
+  } catch (error) {
+    return {
+      name: 'transcription',
+      status: 'fail',
+      message: 'OpenAI transcription API check failed',
       detail: formatError(error)
     };
   }

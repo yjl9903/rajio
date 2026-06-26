@@ -1,5 +1,7 @@
 # ElevenLabs Doctor Probe Plan
 
+后续被 `027` 扩展为 provider-aware doctor。
+
 ## Summary
 
 Make `rajio doctor` validate `ELEVENLABS_API_KEY` with a no-upload ElevenLabs Speech-to-Text API

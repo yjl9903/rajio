@@ -15,8 +15,7 @@ raw transcript files are read-only references, and clip transcripts are review a
 - Edit only manual work files through `rajio segments`: `transcript/work/segments.toml`
   with `--stage transcript`, or `translation/work/segments.toml` with
   `--stage translation`.
-- Do not edit `transcript/raw/segments.toml`, `transcript/raw/checkpoints/*.toml`, or
-  `transcript/raw/chunks/*.toml`.
+- Do not edit `transcript/raw/segments.toml` or `transcript/raw/checkpoints/*.toml`.
 - Use `rajio clips` only to independently retranscribe difficult source-video ranges
   for comparison. Clip output never updates the main transcript automatically.
 - Use `rajio check` to validate file shape and common segment issues. It is a quality
@@ -35,17 +34,8 @@ If it is not installed, run the same commands through `npx rajio ...`.
 
 ## Environment
 
-rajio reads these environment variables:
-
-- `OPENAI_API_KEY`
-- `OPENAI_BASE_URL`
-- `ELEVENLABS_API_KEY`
-- `FFMPEG_PATH`
-- `FFPROBE_PATH`
-
-When a command needs runtime configuration, rajio loads `.env` from the command cwd,
-then loads `.env` from the resolved session directory. Later files override earlier
-values, so priority is:
+When a command needs runtime configuration, rajio loads `.env` from the command cwd, then loads
+`.env` from the resolved session directory. Later files override earlier values, so priority is:
 
 ```text
 session .env > cwd .env > process environment
@@ -53,6 +43,9 @@ session .env > cwd .env > process environment
 
 Transcription commands upload audio to the configured transcription provider.
 Follow the privacy rule in [SKILL.md](SKILL.md) before starting transcription.
+
+For environment variables, provider-specific configuration, chunk artifacts, and doctor behavior,
+read [references/configuration.md](references/configuration.md).
 
 ## Targets
 
@@ -184,10 +177,15 @@ Audio chunk options:
 - `--chunk-silence-duration <seconds>`: ffmpeg `silencedetect` minimum silence
   duration. Default `0.4`; must be non-negative.
 
-`--chunk-target + --chunk-boundary-search` must be at most `1350` seconds. rajio keeps both
-`single_file` and chunking audio strategies. With the current ElevenLabs/scribe_v2/integrated
-flow, these options are validated but the audio stage records `strategy = "single_file"` and does
-not write `stages.audio.chunking` or `stages.audio.chunks[]`.
+`--chunk-target + --chunk-boundary-search` must be at most `1350` seconds.
+
+The selected transcription provider decides whether these options produce local chunk
+artifacts. Read [references/configuration.md](references/configuration.md) before
+changing provider or debugging audio artifact differences.
+
+Transcription provider option:
+
+- `--transcription-provider <provider>`: override the ASR provider.
 
 ## Segments Commands
 
@@ -575,9 +573,7 @@ rajio clips show /path/to/session clip-120000-180000 --json
 ### clips transcribe
 
 ```bash
-rajio clips transcribe /path/to/session \
-  --start 120 --end 180 --label noisy-overlap \
-  --chunk-target 300
+rajio clips transcribe /path/to/session --start 120 --end 180 --label noisy-overlap --chunk-target 300
 ```
 
 Required options are `--start` and `--end`, in source-video seconds. The range is
@@ -586,14 +582,14 @@ Required options are `--start` and `--end`, in source-video seconds. The range i
 `clips transcribe`:
 
 - extracts the source media range to `clips/<clip-id>/source.m4a`
-- uploads that source audio to ASR for the current ElevenLabs/scribe_v2/integrated flow
-- writes successful checkpoints to `checkpoints/input-000.toml`
-- writes failed logs to `checkpoints/input-000.error.log`
+- uploads audio inputs to the configured ASR provider
+- writes successful checkpoints to `checkpoints/input-*.toml`
+- writes failed logs to `checkpoints/input-*.error.log`
 - writes absolute source-video transcript times to `clips/<clip-id>/segments.toml`
 - resumes by reusing a matching checkpoint and retrying failed or missing checkpoints
 
-It accepts the same chunk options as the default command for strategy compatibility, but current
-ElevenLabs clip transcription uses `strategy = "single_file"`.
+It accepts the same chunk options as the default command. The selected provider decides whether
+the clip uses one input or local chunks.
 
 Clip directory shape:
 
@@ -760,9 +756,10 @@ rajio doctor /path/to/session
 ```
 
 `rajio doctor` reports the rajio CLI version and update status, then checks session runtime
-readiness: `.env` loading, ElevenLabs Speech-to-Text API reachability for ElevenLabs transcription,
-OpenAI/Codex readiness where relevant, ffmpeg, ffprobe, and Node.js version expectations. The
-target is required. If any check fails, process exit code is `1`.
+readiness: `.env` loading, selected transcription provider access, OpenAI/Codex readiness where
+relevant, ffmpeg, ffprobe, and Node.js version expectations. The target is required. If any check
+fails, process exit code is `1`. Provider-specific doctor behavior is documented in
+[references/configuration.md](references/configuration.md).
 
 Run `doctor` before automatic transcription/export stages or when provider, ffmpeg, or
 environment setup looks misconfigured. Also compare the reported CLI version with

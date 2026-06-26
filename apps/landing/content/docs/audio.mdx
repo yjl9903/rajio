@@ -5,13 +5,15 @@ description: Rajio 音频 ASR 提供商和切分参数。
 
 # 音频处理
 
-Rajio 会先从视频中提取音频，再交给配置的 ASR 提供商转写。目前内置支持 ElevenLabs。
+Rajio 会先从视频中提取音频，再交给配置的 ASR 提供商转写。目前内置支持
+ElevenLabs 和 OpenAI-compatible Whisper。
 
 ## ASR 提供商
 
 | 提供商       | 当前模型    | 分段器       | 环境变量             |
 | ------------ | ----------- | ------------ | -------------------- |
 | `elevenlabs` | `scribe_v2` | `integrated` | `ELEVENLABS_API_KEY` |
+| `openai`     | `whisper-1` | `integrated` | `OPENAI_API_KEY`     |
 
 ### ElevenLabs
 
@@ -38,22 +40,41 @@ transcription:
 也可以在命令行临时覆盖：
 
 ```bash
-rajio /path/to/session \
-  --transcription-provider elevenlabs \
-  --transcription-model scribe_v2 \
-  --transcription-segmenter integrated
+rajio /path/to/session --transcription-provider elevenlabs
+```
+
+### OpenAI-compatible Whisper
+
+OpenAI-compatible 转写使用 `whisper-1`，同样固定识别日语音频。适合已有 OpenAI-compatible
+API 配置，或想复用 `OPENAI_BASE_URL` 代理服务的场景。
+
+```bash
+OPENAI_API_KEY="..."
+OPENAI_BASE_URL="https://api.example.com/v1"
+```
+
+```md
+---
+media: ./input.mp4
+transcription:
+  provider: openai
+  model: whisper-1
+  segmenter: integrated
+---
+```
+
+也可以在命令行临时覆盖：
+
+```bash
+rajio /path/to/session --transcription-provider openai
 ```
 
 ## 音频切分参数
 
-当前 ElevenLabs `scribe_v2` 流程默认使用单文件转写，但 CLI 仍保留切分参数，方便未来切换服务商。
+ElevenLabs `scribe_v2` 默认使用单文件转写。OpenAI `whisper-1` 使用本地切分，避免超过上传限制。
 
 ```bash
-rajio /path/to/session \
-  --chunk-target 600 \
-  --chunk-boundary-search 90 \
-  --chunk-silence-noise -35 \
-  --chunk-silence-duration 0.4
+rajio /path/to/session --chunk-target 600 --chunk-boundary-search 90 --chunk-silence-noise -35 --chunk-silence-duration 0.4
 ```
 
 | 参数                       | 默认值 | 说明                           |
@@ -62,3 +83,6 @@ rajio /path/to/session \
 | `--chunk-boundary-search`  | `90`   | 在切点附近寻找静音的窗口秒数。 |
 | `--chunk-silence-noise`    | `-35`  | ffmpeg 静音阈值。              |
 | `--chunk-silence-duration` | `0.4`  | 最短静音时长。                 |
+
+`--chunk-target + --chunk-boundary-search` 不能超过 `1350` 秒。OpenAI provider 会把切分结果写入
+`audio/chunks/`；ElevenLabs provider 不写本地 chunk metadata。

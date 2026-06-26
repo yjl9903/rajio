@@ -25,21 +25,20 @@ rajio clips transcribe <target> [options]
 rajio clips transcribe /path/to/session --start 120 --end 135
 rajio clips transcribe /path/to/session --start 120 --end 135 --label noisy-overlap
 rajio clips transcribe /path/to/session --start 120 --end 135 --transcription-provider elevenlabs
+rajio clips transcribe /path/to/session --start 120 --end 135 --transcription-provider openai
 ```
 
-| 参数                                    | 说明                                       |
-| --------------------------------------- | ------------------------------------------ |
-| `<target>`                              | 已有会话工作区或可解析到会话工作区的路径。 |
-| `--start <seconds>`                     | clip 起点，源媒体绝对秒数。                |
-| `--end <seconds>`                       | clip 终点，源媒体绝对秒数。                |
-| `--label <name>`                        | 可选标签，便于之后识别。                   |
-| `--chunk-target <seconds>`              | 本地音频切片目标秒数，默认 `600`。         |
-| `--chunk-boundary-search <seconds>`     | 静音边界搜索窗口，默认 `90`。              |
-| `--chunk-silence-noise <db>`            | ffmpeg 静音阈值，默认 `-35`。              |
-| `--chunk-silence-duration <seconds>`    | ffmpeg 最短静音时长，默认 `0.4`。          |
-| `--transcription-provider <provider>`   | 覆盖转写服务商，当前支持 `elevenlabs`。    |
-| `--transcription-model <model>`         | 覆盖转写模型，当前支持 `scribe_v2`。       |
-| `--transcription-segmenter <segmenter>` | 覆盖转写分段器，当前支持 `integrated`。    |
+| 参数                                  | 说明                                            |
+| ------------------------------------- | ----------------------------------------------- |
+| `<target>`                            | 已有会话工作区或可解析到会话工作区的路径。      |
+| `--start <seconds>`                   | clip 起点，源媒体绝对秒数。                     |
+| `--end <seconds>`                     | clip 终点，源媒体绝对秒数。                     |
+| `--label <name>`                      | 可选标签，便于之后识别。                        |
+| `--chunk-target <seconds>`            | 本地音频切片目标秒数，默认 `600`。              |
+| `--chunk-boundary-search <seconds>`   | 静音边界搜索窗口，默认 `90`。                   |
+| `--chunk-silence-noise <db>`          | ffmpeg 静音阈值，默认 `-35`。                   |
+| `--chunk-silence-duration <seconds>`  | ffmpeg 最短静音时长，默认 `0.4`。               |
+| `--transcription-provider <provider>` | 覆盖转写服务商，支持 `elevenlabs` 和 `openai`。 |
 
 该命令会上传截取音频到配置的转写服务商，执行前需要用户授权。
 
@@ -55,6 +54,9 @@ clips/
       input-000.error.log
     segments.toml
 ```
+
+使用 OpenAI provider 时，clip 还会写入 `chunks/` 本地音频切片；转写中间结果仍写入
+`checkpoints/`。
 
 ## list
 

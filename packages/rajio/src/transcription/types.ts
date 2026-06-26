@@ -13,6 +13,5 @@ export interface TranscriptInputResult {
   audioPath: string;
   start: number;
   end: number;
-  transcription: TranscriptionConfig;
   response: unknown;
 }

@@ -246,6 +246,30 @@ describe('doctor', () => {
     });
   });
 
+  it('checks OpenAI transcription provider without ElevenLabs credentials', async () => {
+    const cwd = await tempDir();
+    process.env.OPENAI_API_KEY = 'from-process';
+    delete process.env.ELEVENLABS_API_KEY;
+    const session = await Session.load(cwd);
+    session.state.transcription = {
+      provider: 'openai',
+      model: 'whisper-1',
+      segmenter: 'integrated'
+    };
+
+    const result = await runDoctor(session, {
+      cwd,
+      deps: doctorDeps()
+    });
+
+    expect(result.ok).toBe(true);
+    expect(checkByName(result, 'transcription')).toEqual({
+      name: 'transcription',
+      status: 'pass',
+      message: 'OpenAI transcription API is reachable'
+    });
+  });
+
   it('accepts ElevenLabs invalid UID as a successful no-upload probe', () => {
     expect(isElevenLabsProbeSuccessError({ statusCode: 404 })).toBe(true);
     expect(

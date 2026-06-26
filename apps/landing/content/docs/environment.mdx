@@ -13,18 +13,20 @@ description: Rajio 运行前需要准备的密钥和本地工具路径。
 会话工作区 .env > 当前工作目录 .env > 进程环境变量
 ```
 
-| 名称                 | 必填          | 用途                               |
-| -------------------- | ------------- | ---------------------------------- |
-| `ELEVENLABS_API_KEY` | 是            | 当前转写服务使用。转写会上传音频。 |
-| `OPENAI_API_KEY`     | 视 Agent 而定 | OpenAI-compatible API 密钥。       |
-| `OPENAI_BASE_URL`    | 否            | 使用代理或兼容服务时设置。         |
-| `FFMPEG_PATH`        | 否            | 指定 `ffmpeg` 路径。               |
-| `FFPROBE_PATH`       | 否            | 指定 `ffprobe` 路径。              |
+| 名称                 | 必填               | 用途                                        |
+| -------------------- | ------------------ | ------------------------------------------- |
+| `ELEVENLABS_API_KEY` | 使用 ElevenLabs 时 | ElevenLabs 转写密钥。转写会上传音频。       |
+| `OPENAI_API_KEY`     | 使用 OpenAI ASR 时 | OpenAI-compatible API 密钥，也供 Agent 用。 |
+| `OPENAI_BASE_URL`    | 否                 | 使用代理或 OpenAI-compatible 服务时设置。   |
+| `FFMPEG_PATH`        | 否                 | 指定 `ffmpeg` 路径。                        |
+| `FFPROBE_PATH`       | 否                 | 指定 `ffprobe` 路径。                       |
 
 边界说明：
 
-- `ELEVENLABS_API_KEY` 只用于语音转写。开始转写前，Agent 必须确认你同意上传音频。
-- `OPENAI_API_KEY` / `OPENAI_BASE_URL` 给 Agent 或 OpenAI-compatible API 使用，不应该被当作整段字幕的机器翻译服务直接批量调用。
+- `ELEVENLABS_API_KEY` 只在 `provider = "elevenlabs"` 时用于语音转写。
+- `OPENAI_API_KEY` / `OPENAI_BASE_URL` 在 `provider = "openai"` 时用于 OpenAI-compatible 语音转写，也可能供 Agent 或人工 AI 阶段使用。
+- 开始转写前，Agent 必须确认你同意把音频上传到选定的转写服务商。
+- OpenAI-compatible API 不应该被当作整段字幕的机器翻译服务直接批量调用。
 - `FFMPEG_PATH` / `FFPROBE_PATH` 只在系统 PATH 找不到对应命令，或你想固定版本时设置。
 
 检查配置：

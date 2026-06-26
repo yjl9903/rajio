@@ -11,7 +11,7 @@ rajio doctor <target>
 
 ## 用途
 
-`doctor` 检查当前会话运行 Rajio 所需的环境是否可用，包括 CLI 版本、Node.js、`.env`、ElevenLabs、OpenAI、ffmpeg、ffprobe 和 Codex。
+`doctor` 检查当前会话运行 Rajio 所需的环境是否可用，包括 CLI 版本、Node.js、`.env`、转写服务商、OpenAI、ffmpeg、ffprobe 和 Codex。
 
 ## 典型用法
 
@@ -33,8 +33,8 @@ rajio doctor /path/to/session.toml
 - 不修改会话文件。
 - 会请求 npm registry 检查 Rajio 最新版本。
 - 会读取当前工作目录 `.env` 和会话工作区 `.env`。
-- 会探测 ElevenLabs Speech-to-Text API。
-- 如果设置了 `OPENAI_API_KEY`，会探测 OpenAI API。
+- 会按会话的 `[transcription]` 配置探测转写服务商：ElevenLabs 或 OpenAI-compatible API。
+- 如果设置了 `OPENAI_API_KEY`，还会探测人工 AI 阶段使用的 OpenAI API。
 - 会运行 `ffmpeg -version` 和 `ffprobe -version`。
 - 如果设置了 `OPENAI_API_KEY`，会初始化 `@openai/codex-sdk`。
 - 任一 `fail` 检查会让退出码变为 `1`。
@@ -50,6 +50,7 @@ Agent 通常在自动转写前运行一次，或在用户的 `.env`、ffmpeg、N
 ## 注意事项
 
 - Node.js 要求 `>=24`。
-- `ELEVENLABS_API_KEY` 缺失是失败，因为当前转写服务依赖 ElevenLabs。
-- `OPENAI_API_KEY` 缺失是 warning，代表人工 AI 阶段相关能力不可用。
+- 使用 ElevenLabs 转写时，`ELEVENLABS_API_KEY` 缺失是失败。
+- 使用 OpenAI 转写时，`OPENAI_API_KEY` 缺失是失败。
+- 没有选择 OpenAI 转写时，`OPENAI_API_KEY` 缺失是 warning，代表人工 AI 阶段相关能力不可用。
 - 网络不可用时，版本检查或服务商检查可能 warning/fail；这不代表本地文件一定损坏。

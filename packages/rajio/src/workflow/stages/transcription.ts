@@ -10,13 +10,9 @@ import {
   toSessionRelative,
   writeFileAtomic
 } from '../../utils/fs.js';
-import { mergeElevenLabsInputs, transcribeWithElevenLabs } from '../../transcription/elevenlabs.js';
-import type { TranscriptInputResult } from '../../transcription/types.js';
-import {
-  formatBytes,
-  formatTimeRange,
-  transcribeCheckpointedInput
-} from '../../transcription/run.js';
+import { transcribeProviderInputs } from '../../transcription/provider.js';
+import type { ProviderTranscriptionItem } from '../../transcription/provider.js';
+import { formatBytes, formatTimeRange } from '../../transcription/run.js';
 import type {
   RuntimeConfig,
   SessionAudioChunk,
@@ -51,7 +47,6 @@ export async function runTranscriptRawStage(input: {
   const segmentsPath = session.artifact('transcript', 'raw', 'segments.toml');
   const checkpointsDir = session.artifact('transcript', 'raw', 'checkpoints');
   const audioInputs = await collectAudioInputs(session);
-  const transcribe = deps.transcribe ?? transcribeWithElevenLabs;
   const logger = taggedLogger('transcript_raw');
 
   await mkdir(checkpointsDir, { recursive: true });
@@ -59,25 +54,16 @@ export async function runTranscriptRawStage(input: {
     await clearTranscriptionCheckpointFiles(checkpointsDir);
   }
   await printTranscriptionUploadNotice(transcription, audioInputs, logger);
-  const inputs: TranscriptInputResult[] = [];
-  for (const audioInput of audioInputs) {
-    inputs.push(
-      await transcribeInput({
-        session,
-        runtime,
-        transcription,
-        checkpointsDir,
-        audioInput,
-        transcribe,
-        logger,
-        totalInputs: audioInputs.length
-      })
-    );
-  }
-
-  const segments = mergeElevenLabsInputs({
-    inputs,
-    generatedAt: new Date().toISOString()
+  const segments = await transcribeProviderInputs({
+    session,
+    runtime,
+    transcription,
+    items: audioInputs.map((audioInput) =>
+      providerTranscriptionItem(session, checkpointsDir, audioInput, audioInputs.length)
+    ),
+    label: 'input',
+    deps,
+    logger
   });
   await writeFileAtomic(segmentsPath, stringify(segments));
   const inputAudio = session.stage('audio').audio;
@@ -87,7 +73,7 @@ export async function runTranscriptRawStage(input: {
   session.updateStage('transcript_raw', {
     input_audio: inputAudio,
     checkpoints_dir: toSessionRelative(session.dir, checkpointsDir),
-    input_count: inputs.length,
+    input_count: audioInputs.length,
     segments: toSessionRelative(session.dir, segmentsPath),
     segments_sha256: await sha256File(segmentsPath)
   });
@@ -189,38 +175,23 @@ async function validateAndNormalizeAudioChunk(
   };
 }
 
-async function transcribeInput(input: {
-  session: Session;
-  runtime: RuntimeConfig;
-  transcription: TranscriptionConfig;
-  checkpointsDir: string;
-  audioInput: AudioTranscriptionInput;
-  totalInputs: number;
-  transcribe: NonNullable<StageRunnerDeps['transcribe']>;
-  logger: TranscriptionLogger;
-}): Promise<TranscriptInputResult> {
-  const checkpointPath = inputCheckpointPath(input.checkpointsDir, input.audioInput.index);
-  const errorPath = inputErrorPath(input.checkpointsDir, input.audioInput.index);
-  const checkpointAudio = toSessionRelative(input.session.dir, input.audioInput.audioPath);
-  return transcribeCheckpointedInput({
-    session: input.session,
-    runtime: input.runtime,
-    transcription: input.transcription,
-    item: {
-      index: input.audioInput.index,
-      totalInputs: input.totalInputs,
-      audioPath: input.audioInput.audioPath,
-      checkpointAudio,
-      checkpointBaseDir: input.session.dir,
-      start: input.audioInput.start,
-      end: input.audioInput.end
-    },
-    checkpointPath,
-    errorPath,
-    label: 'input',
-    transcribe: input.transcribe,
-    logger: input.logger
-  });
+function providerTranscriptionItem(
+  session: Session,
+  checkpointsDir: string,
+  audioInput: AudioTranscriptionInput,
+  totalInputs: number
+): ProviderTranscriptionItem {
+  return {
+    index: audioInput.index,
+    totalInputs,
+    audioPath: audioInput.audioPath,
+    checkpointAudio: toSessionRelative(session.dir, audioInput.audioPath),
+    checkpointBaseDir: session.dir,
+    checkpointPath: inputCheckpointPath(checkpointsDir, audioInput.index),
+    errorPath: inputErrorPath(checkpointsDir, audioInput.index),
+    start: audioInput.start,
+    end: audioInput.end
+  };
 }
 
 async function clearTranscriptionCheckpointFiles(dir: string): Promise<void> {

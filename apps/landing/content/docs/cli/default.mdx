@@ -33,23 +33,21 @@ rajio /path/to/session --full
 
 ## 参数
 
-| 参数                                    | 说明                                                                                                      |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `<target>`                              | 必填。媒体文件、会话工作区、`session.toml` 或描述 Markdown。                                              |
-| `--media <path>`                        | 本次调用的媒体路径覆盖。新会话会写入 `session.toml`；已有会话只影响本次解析。                             |
-| `--continue <mode>`                     | `until-manual` 或 `step`，默认 `until-manual`。                                                           |
-| `--commit`                              | 提交当前人工阶段，通过检查后记录 work segments hash 并进入下一阶段。                                      |
-| `--full`                                | 尽可能运行剩余自动阶段；遇到人工阶段仍会停下等待人工处理。                                                |
-| `--reset <stage>`                       | 从指定阶段重新生成，合法值是 `audio`、`transcript_raw`、`transcript_work`、`translation_work`、`export`。 |
-| `--chunk-target <seconds>`              | 本地音频切片目标秒数，默认 `600`，最小 `60`。                                                             |
-| `--chunk-boundary-search <seconds>`     | 在目标切点附近寻找静音的窗口秒数，默认 `90`，范围 `0..300`。                                              |
-| `--chunk-silence-noise <db>`            | ffmpeg `silencedetect` 静音阈值，默认 `-35`。                                                             |
-| `--chunk-silence-duration <seconds>`    | ffmpeg `silencedetect` 最短静音时长，默认 `0.4`，不能为负。                                               |
-| `--transcription-provider <provider>`   | 覆盖转写服务商。当前源码类型只支持 `elevenlabs`。                                                         |
-| `--transcription-model <model>`         | 覆盖转写模型。当前源码类型只支持 `scribe_v2`。                                                            |
-| `--transcription-segmenter <segmenter>` | 覆盖转写分段器。当前源码类型只支持 `integrated`。                                                         |
+| 参数                                  | 说明                                                                                                      |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `<target>`                            | 必填。媒体文件、会话工作区、`session.toml` 或描述 Markdown。                                              |
+| `--media <path>`                      | 本次调用的媒体路径覆盖。新会话会写入 `session.toml`；已有会话只影响本次解析。                             |
+| `--continue <mode>`                   | `until-manual` 或 `step`，默认 `until-manual`。                                                           |
+| `--commit`                            | 提交当前人工阶段，通过检查后记录 work segments hash 并进入下一阶段。                                      |
+| `--full`                              | 尽可能运行剩余自动阶段；遇到人工阶段仍会停下等待人工处理。                                                |
+| `--reset <stage>`                     | 从指定阶段重新生成，合法值是 `audio`、`transcript_raw`、`transcript_work`、`translation_work`、`export`。 |
+| `--chunk-target <seconds>`            | 本地音频切片目标秒数，默认 `600`，最小 `60`。                                                             |
+| `--chunk-boundary-search <seconds>`   | 在目标切点附近寻找静音的窗口秒数，默认 `90`，范围 `0..300`。                                              |
+| `--chunk-silence-noise <db>`          | ffmpeg `silencedetect` 静音阈值，默认 `-35`。                                                             |
+| `--chunk-silence-duration <seconds>`  | ffmpeg `silencedetect` 最短静音时长，默认 `0.4`，不能为负。                                               |
+| `--transcription-provider <provider>` | 覆盖转写服务商。支持 `elevenlabs` 和 `openai`。                                                           |
 
-`--chunk-target + --chunk-boundary-search` 不能超过 `1350` 秒。当前 ElevenLabs `scribe_v2` integrated 流程会校验切片参数，但自动转写策略使用 `single_file`。
+`--chunk-target + --chunk-boundary-search` 不能超过 `1350` 秒。ElevenLabs `scribe_v2` 会校验切片参数，但自动转写策略使用 `single_file`；OpenAI `whisper-1` 会使用本地音频切分。
 
 ## 产物或副作用
 

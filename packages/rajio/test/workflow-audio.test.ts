@@ -18,6 +18,11 @@ const transcription = {
   model: 'scribe_v2',
   segmenter: 'integrated'
 } as const;
+const openAITranscription = {
+  provider: 'openai',
+  model: 'whisper-1',
+  segmenter: 'integrated'
+} as const;
 
 describe('audio stage', () => {
   it('uses nearby silence boundaries instead of fixed timestamps', () => {
@@ -137,6 +142,34 @@ describe('audio stage', () => {
 
     expect(session.stage('audio').strategy).toBe('single_file');
     expect(session.stage('audio').chunks).toBeUndefined();
+  });
+
+  it('records local chunks for OpenAI transcription', async () => {
+    const dir = await preparedSession('audio', {});
+    const ffmpegBin = await fakeFfmpegBin();
+    const ffprobeBin = await fakeFfprobeJsonBin(1);
+    const session = await Session.loadOrCreate(dir);
+
+    await runAudioStage({
+      session,
+      runtime: { ffmpegBin, ffprobeBin },
+      transcription: openAITranscription,
+      chunking: { targetSeconds: 120, boundarySearchSeconds: 0 }
+    });
+
+    expect(session.stage('audio')).toMatchObject({
+      strategy: 'silence_or_time',
+      chunks_dir: 'audio/chunks',
+      chunk_count: 1,
+      chunks: [
+        {
+          audio: 'audio/chunks/chunk-000.m4a',
+          start: 0,
+          end: 1,
+          size: 5
+        }
+      ]
+    });
   });
 });
 

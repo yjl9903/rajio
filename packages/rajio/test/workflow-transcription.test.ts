@@ -6,18 +6,22 @@ import { describe, expect, it, vi } from 'vitest';
 import { Session } from '../src/index.js';
 import { readSegmentsFile, writeSegmentsFile } from '../src/segments/index.js';
 import { runTranscriptRawStage } from '../src/workflow/stages/transcription.js';
-import {
-  mergeElevenLabsInputs,
-  normalizeElevenLabsTranscript
-} from '../src/transcription/elevenlabs.js';
+import { normalizeElevenLabsTranscript } from '../src/transcription/elevenlabs.js';
+import { normalizeOpenAITranscript } from '../src/transcription/openai.js';
 import { resolveWorkflowTranscriptionConfig } from '../src/transcription/config.js';
 import { startTranscriptionHeartbeat } from '../src/transcription/run.js';
+import { buildTranscriptFile } from '../src/transcription/utils.js';
 import { sha256File } from '../src/utils/fs.js';
 import { baseSession, fakeFfprobeBin, preparedSession, tempDir } from './helpers.js';
 
 const transcription = {
   provider: 'elevenlabs',
   model: 'scribe_v2',
+  segmenter: 'integrated'
+} as const;
+const openAITranscription = {
+  provider: 'openai',
+  model: 'whisper-1',
   segmenter: 'integrated'
 } as const;
 
@@ -101,8 +105,8 @@ describe('transcript raw stage', () => {
     ]);
   });
 
-  it('merges single transcription inputs', () => {
-    const file = mergeElevenLabsInputs({
+  it('builds single ElevenLabs transcription inputs', () => {
+    const file = buildTranscriptFile({
       generatedAt: '2026-06-09T00:00:00.000Z',
       inputs: [
         {
@@ -110,12 +114,79 @@ describe('transcript raw stage', () => {
           audioPath: 'audio/extracted.m4a',
           start: 5,
           end: 10,
-          transcription,
           response: {
             words: [{ text: 'はい', start: 0, end: 0.5, speaker_id: 'speaker_0', type: 'word' }]
           }
         }
-      ]
+      ],
+      normalize: normalizeElevenLabsTranscript
+    });
+
+    expect(file.segments[0]).toMatchObject({
+      id: '1-s1',
+      start: 5,
+      end: 5.5,
+      speaker: 'speaker_0',
+      ja: 'はい'
+    });
+  });
+
+  it('maps OpenAI words and segment fallbacks to raw segments', () => {
+    expect(
+      normalizeOpenAITranscript(
+        {
+          words: [
+            { word: 'こんにちは', start: 0, end: 0.5 },
+            { word: '。', start: 0.5, end: 0.6 }
+          ]
+        },
+        { offset: 7, idPrefix: '2' }
+      )
+    ).toEqual([
+      {
+        id: '2-s1',
+        start: 7,
+        end: 7.6,
+        speaker: 'speaker_0',
+        ja: 'こんにちは。',
+        words: [
+          { text: 'こんにちは', start: 7, end: 7.5, speaker: 'speaker_0', type: 'word' },
+          { text: '。', start: 7.5, end: 7.6, speaker: 'speaker_0', type: 'word' }
+        ]
+      }
+    ]);
+
+    expect(
+      normalizeOpenAITranscript(
+        { segments: [{ text: ' はい ', start: 1, end: 2 }] },
+        { offset: 7, idPrefix: '2' }
+      )
+    ).toEqual([
+      {
+        id: '2-s1',
+        start: 8,
+        end: 9,
+        speaker: 'speaker_0',
+        ja: 'はい'
+      }
+    ]);
+  });
+
+  it('builds OpenAI transcription inputs', () => {
+    const file = buildTranscriptFile({
+      generatedAt: '2026-06-09T00:00:00.000Z',
+      inputs: [
+        {
+          index: 0,
+          audioPath: 'audio/chunks/chunk-000.m4a',
+          start: 5,
+          end: 10,
+          response: {
+            words: [{ word: 'はい', start: 0, end: 0.5 }]
+          }
+        }
+      ],
+      normalize: normalizeOpenAITranscript
     });
 
     expect(file.segments[0]).toMatchObject({
@@ -153,7 +224,15 @@ describe('transcript raw stage', () => {
         cli: { model: 'unsupported' },
         target: '/tmp/session'
       })
-    ).toThrow('Transcription model "unsupported" is not supported.');
+    ).toThrow('Transcription model "unsupported" is not supported for provider "elevenlabs".');
+
+    expect(
+      resolveWorkflowTranscriptionConfig({
+        state: baseSession('audio'),
+        description: { body: '', frontmatter: { transcription: { provider: 'openai' } } },
+        target: '/tmp/session'
+      })
+    ).toEqual(openAITranscription);
   });
 
   it('transcribes one extracted audio input and resumes matching checkpoints', async () => {

@@ -1,5 +1,7 @@
 # ElevenLabs Provider-Aware Audio And Transcription Plan
 
+后续被 `027` 扩展为 OpenAI provider。
+
 ## Summary
 
 Switch一期 transcription to top-level session config and provider-aware audio strategy. Only

@@ -146,8 +146,7 @@ Treat the ASR output as a draft: verify proper nouns, fixed phrases, speaker bou
 timing, subtitle-unit structure, and dialogue flow instead of making isolated text edits.
 
 Work rules:
-- Never edit transcript/raw/segments.toml, transcript/raw/checkpoints/*.toml, or
-  transcript/raw/chunks/*.toml.
+- Never edit transcript/raw/segments.toml or transcript/raw/checkpoints/*.toml.
 - Do not translate in transcript_work.
 - Manually review every segment in the assigned range in timeline order with neighboring
   context. Use `rajio segments list` range commands to read actual segment text;
@@ -259,10 +258,9 @@ recurring terms, speaker register, omitted subjects, callbacks, and subtitle
 continuity.
 
 Work rules:
-- Do not use the OpenAI-compatible provider configured in `.env` as a
-  machine-translation service.
-- Do not edit transcript/raw/segments.toml, transcript/raw/checkpoints/*.toml, or
-  transcript/raw/chunks/*.toml.
+- Do not use manual AI/API calls as a bulk machine-translation service for whole subtitle
+  ranges. This does not forbid using the configured ASR provider for transcription.
+- Do not edit transcript/raw/segments.toml or transcript/raw/checkpoints/*.toml.
 - Manually review every segment in the assigned range in timeline order with neighboring
   context before writing its `zh`. Use `rajio segments list` range commands to read
   actual segment text; `rajio check` output is only validation support.
