@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "2.53.1",
-    "@openai/codex-sdk": "0.141.0",
+    "@openai/codex-sdk": "0.142.2",
     "breadc": "1.0.0-beta.17",
     "consola": "3.4.2",
     "dotenv": "17.4.2",
