@@ -3,7 +3,7 @@ name: rajio
 description: Use only when explicitly asked to use rajio for Japanese audio/video subtitle translation.
 metadata:
   author: OneKuma
-  version: '0.2.0-beta.2'
+  version: '0.2.0'
 ---
 
 # Rajio
