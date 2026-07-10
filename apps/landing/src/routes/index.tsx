@@ -63,7 +63,6 @@ function HomePage() {
       </header>
 
       <section className="home-hero-card">
-        <div className="home-hero-bg" aria-hidden="true" />
         <div className="home-hero">
           <div className="home-hero-copy">
             <p className="home-kicker">日语视频中文字幕 Agent 工作流</p>
