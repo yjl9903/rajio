@@ -1,4 +1,4 @@
-import { stringWidth } from 'breadc';
+import stringWidth from 'fast-string-width';
 
 import { logger } from '../utils/logger.js';
 import type { ClipListRow } from './types.js';

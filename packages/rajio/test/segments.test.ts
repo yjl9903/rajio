@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-import { stringWidth } from 'breadc';
+import stringWidth from 'fast-string-width';
 import { stringify } from 'smol-toml';
 import { describe, expect, it, vi } from 'vitest';
 

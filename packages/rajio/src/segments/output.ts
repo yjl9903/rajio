@@ -1,4 +1,4 @@
-import { stringWidth } from 'breadc';
+import stringWidth from 'fast-string-width';
 
 import type { IssueLevel, Segment } from '../types.js';
 import { logger } from '../utils/logger.js';
