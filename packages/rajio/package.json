@@ -54,7 +54,7 @@
     "dotenv": "17.4.2",
     "execa": "9.6.1",
     "fast-string-width": "3.0.2",
-    "openai": "6.44.0",
+    "openai": "6.46.0",
     "smol-toml": "1.7.0",
     "yaml": "2.9.0",
     "zod": "4.4.3"
