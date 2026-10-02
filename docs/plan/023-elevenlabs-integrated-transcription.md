@@ -63,6 +63,13 @@ Refactor code layout:
   `timestamps_granularity=word`.
 - Set `timeoutInSeconds=1200` (20 minutes) explicitly for transcription requests in both the main
   workflow and clips. Long-running requests can exceed the SDK's 240-second default.
+- Inject a dedicated Undici dispatcher with `headersTimeout=1200000` and `bodyTimeout=1200000`
+  milliseconds; the SDK timeout alone does not override the transport's 300-second defaults.
+  Destroy the dispatcher when transcription finishes or fails. Keep the original fetch/body-read
+  errors before the SDK flattens them, and include cause chains and error codes in checkpoint error
+  logs. Existing sessions and checkpoints require no migration.
+- Use Undici 8's `Dispatcher1Wrapper` to adapt the dedicated Agent to Node's built-in fetch handler
+  contract while retaining the SDK's existing request-body implementation.
 - Store TOML-compatible response snapshot in checkpoint; dropped `null` fields are acceptable.
 - Raw `segments.toml` keeps `segments[].words`.
 - `transcript_work` drops `words`; translation/export ignore them.

@@ -198,8 +198,17 @@ function pad(value: number, length: number): string {
 }
 
 function formatError(error: unknown): string {
-  if (error instanceof Error) {
-    return `${error.message}\n${error.stack ?? ''}`.trim();
+  const details: string[] = [];
+  const seen = new Set<unknown>();
+  while (error !== undefined && !seen.has(error)) {
+    seen.add(error);
+    if (!(error instanceof Error)) {
+      details.push(String(error));
+      break;
+    }
+    const code = 'code' in error ? ` [${String(error.code)}]` : '';
+    details.push(`${error.name}${code}: ${error.message}\n${error.stack ?? ''}`.trim());
+    error = error.cause;
   }
-  return String(error);
+  return details.join('\nCaused by: ');
 }

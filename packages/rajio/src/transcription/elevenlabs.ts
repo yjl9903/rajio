@@ -1,4 +1,5 @@
 import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
+import { Agent, Dispatcher1Wrapper } from 'undici';
 
 import type { Segment, SegmentWord } from '../types.js';
 import type { TranscribeInput } from './types.js';
@@ -6,23 +7,66 @@ import { isRecord, segmentWords } from './utils.js';
 
 const ELEVENLABS_TRANSCRIPTION_MODEL = 'scribe_v2';
 const ELEVENLABS_TRANSCRIPTION_LANGUAGE = 'ja';
+const TRANSCRIPTION_TIMEOUT_SECONDS = 1200;
 
 export async function transcribeWithElevenLabs(input: TranscribeInput): Promise<unknown> {
   if (!input.runtime.elevenlabsApiKey) {
     throw new Error('ELEVENLABS_API_KEY is not set.');
   }
 
-  const client = new ElevenLabsClient({ apiKey: input.runtime.elevenlabsApiKey });
-  return client.speechToText.convert(
-    {
-      file: { path: input.audioPath },
-      modelId: ELEVENLABS_TRANSCRIPTION_MODEL,
-      languageCode: ELEVENLABS_TRANSCRIPTION_LANGUAGE,
-      diarize: true,
-      timestampsGranularity: 'word'
-    },
-    { timeoutInSeconds: 1200 }
+  // Node's built-in fetch can still use the legacy dispatcher handler contract.
+  const dispatcher = new Dispatcher1Wrapper(
+    new Agent({
+      headersTimeout: TRANSCRIPTION_TIMEOUT_SECONDS * 1000,
+      bodyTimeout: TRANSCRIPTION_TIMEOUT_SECONDS * 1000
+    })
   );
+  let transportError: unknown;
+  const client = new ElevenLabsClient({
+    apiKey: input.runtime.elevenlabsApiKey,
+    fetch: async (url, init) => {
+      transportError = undefined;
+      try {
+        const options: RequestInit = {
+          ...init,
+          // The wrapper bridges Undici 8 to the older dispatcher type in Node's fetch typings.
+          dispatcher: dispatcher as unknown as RequestInit['dispatcher']
+        };
+        const response = await fetch(url, options);
+        // The SDK reads JSON via text() and otherwise discards transport error causes.
+        const readText = response.text.bind(response);
+        return Object.assign(response, {
+          text: async () => {
+            try {
+              return await readText();
+            } catch (error) {
+              transportError = error;
+              throw error;
+            }
+          }
+        });
+      } catch (error) {
+        transportError = error;
+        throw error;
+      }
+    }
+  });
+  try {
+    return await client.speechToText.convert(
+      {
+        file: { path: input.audioPath },
+        modelId: ELEVENLABS_TRANSCRIPTION_MODEL,
+        languageCode: ELEVENLABS_TRANSCRIPTION_LANGUAGE,
+        diarize: true,
+        timestampsGranularity: 'word'
+      },
+      { timeoutInSeconds: TRANSCRIPTION_TIMEOUT_SECONDS }
+    );
+  } catch (error) {
+    throw transportError ?? error;
+  } finally {
+    await dispatcher.destroy();
+  }
 }
 
 export function normalizeElevenLabsTranscript(
