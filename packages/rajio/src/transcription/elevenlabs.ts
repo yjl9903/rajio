@@ -13,13 +13,16 @@ export async function transcribeWithElevenLabs(input: TranscribeInput): Promise<
   }
 
   const client = new ElevenLabsClient({ apiKey: input.runtime.elevenlabsApiKey });
-  return client.speechToText.convert({
-    file: { path: input.audioPath },
-    modelId: ELEVENLABS_TRANSCRIPTION_MODEL,
-    languageCode: ELEVENLABS_TRANSCRIPTION_LANGUAGE,
-    diarize: true,
-    timestampsGranularity: 'word'
-  });
+  return client.speechToText.convert(
+    {
+      file: { path: input.audioPath },
+      modelId: ELEVENLABS_TRANSCRIPTION_MODEL,
+      languageCode: ELEVENLABS_TRANSCRIPTION_LANGUAGE,
+      diarize: true,
+      timestampsGranularity: 'word'
+    },
+    { timeoutInSeconds: 1200 }
+  );
 }
 
 export function normalizeElevenLabsTranscript(

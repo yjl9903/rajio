@@ -61,6 +61,8 @@ Refactor code layout:
 - Runtime config reads `ELEVENLABS_API_KEY`.
 - Call ElevenLabs STT with `model_id=scribe_v2`, `language_code=ja`, `diarize=true`,
   `timestamps_granularity=word`.
+- Set `timeoutInSeconds=1200` (20 minutes) explicitly for transcription requests in both the main
+  workflow and clips. Long-running requests can exceed the SDK's 240-second default.
 - Store TOML-compatible response snapshot in checkpoint; dropped `null` fields are acceptable.
 - Raw `segments.toml` keeps `segments[].words`.
 - `transcript_work` drops `words`; translation/export ignore them.
