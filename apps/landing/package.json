@@ -13,7 +13,7 @@
   "dependencies": {
     "@tanstack/react-router": "1.170.38",
     "@tanstack/react-start": "1.168.57",
-    "@vitejs/plugin-react": "6.0.3",
+    "@vitejs/plugin-react": "6.1.1",
     "fumadocs-core": "16.10.5",
     "fumadocs-mdx": "15.0.12",
     "fumadocs-ui": "16.10.5",
