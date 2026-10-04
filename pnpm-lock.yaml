@@ -240,8 +240,8 @@ importers:
   packages/rajio:
     dependencies:
       '@elevenlabs/elevenlabs-js':
-        specifier: 2.57.0
-        version: 2.57.0
+        specifier: 2.70.0
+        version: 2.70.0
       '@openai/codex-sdk':
         specifier: 0.142.2
         version: 0.142.2
@@ -424,8 +424,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@elevenlabs/elevenlabs-js@2.57.0':
-    resolution: {integrity: sha512-7jjv7ELa7Ii2J6lKeknNa3qMr9HjwLXyhBhcs9JWdk9tM5jQLWql3dLsIRHjhA7noxN6+T0ZGTzFuWZ3PqUr3Q==}
+  '@elevenlabs/elevenlabs-js@2.70.0':
+    resolution: {integrity: sha512-7HH/PTliPIItBlRcWF3DLzr6FKpVdlKBLE1XVnOA2KKLF3r8lRB54ZHcBRje7sP97wGfalWuC2XpKbKWMMrGyQ==}
     engines: {node: '>=18.0.0'}
 
   '@emnapi/core@1.11.1':
@@ -3673,7 +3673,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@elevenlabs/elevenlabs-js@2.57.0':
+  '@elevenlabs/elevenlabs-js@2.70.0':
     dependencies:
       command-exists: 1.2.9
       node-fetch: 2.7.0
