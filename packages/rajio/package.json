@@ -47,16 +47,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@elevenlabs/elevenlabs-js": "2.57.0",
+    "@elevenlabs/elevenlabs-js": "2.70.0",
     "breadc": "1.0.0-beta.21",
     "consola": "3.4.2",
     "execa": "9.6.1",
     "fast-string-width": "3.0.2",
-    "openai": "6.46.0",
-    "smol-toml": "1.7.0",
+    "openai": "6.49.0",
+    "smol-toml": "1.9.0",
     "undici": "8.11.2",
-    "yaml": "2.9.0",
-    "zod": "4.4.3"
+    "yaml": "2.9.1",
+    "zod": "4.6.5"
   },
   "engines": {
     "node": ">=v24.0.0"
