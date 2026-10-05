@@ -1,4 +1,4 @@
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -22,6 +22,54 @@ let cliImportCounter = 0;
 describe('cli explicit targets', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it('keeps stdout empty and reports exit code 1 when a later frame produces no image', async () => {
+    vi.useRealTimers();
+    const dir = await tempDir();
+    await writeFile(path.join(dir, 'video.mp4'), 'fixture');
+    const ffprobe = path.join(dir, 'ffprobe');
+    const ffmpeg = path.join(dir, 'ffmpeg');
+    await writeFile(
+      ffprobe,
+      '#!/usr/bin/env node\nconsole.log(JSON.stringify({streams:[{codec_type:"video"}],format:{duration:"4"}}));\n'
+    );
+    await writeFile(
+      ffmpeg,
+      '#!/usr/bin/env node\nconst fs = require("node:fs");\nif (process.argv[process.argv.indexOf("-ss") + 1] === "0") fs.writeFileSync(process.argv.at(-1), "PNG fixture");\n'
+    );
+    await chmod(ffprobe, 0o755);
+    await chmod(ffmpeg, 0o755);
+    process.env.FFPROBE_PATH = ffprobe;
+    process.env.FFMPEG_PATH = ffmpeg;
+    await mkdir(path.join(dir, 'frames', 'capture-existing'), { recursive: true });
+    const result = await runCliSideEffect([
+      'frames',
+      path.join(dir, 'video.mp4'),
+      '--at',
+      '0,3.99',
+      '--json'
+    ]);
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toBe('');
+    expect(result.stderr).toContain('No video frame was produced at requested time 3.99 seconds');
+    expect(await readdir(path.join(dir, 'frames'))).toEqual(['capture-existing']);
+    expect(await readdir(dir)).not.toContain('session.toml');
+  });
+
+  it('reports frames input failures through stderr without stdout', async () => {
+    for (const options of [
+      [],
+      ['--at', 'NaN'],
+      ['--at', '0', '--count', '1'],
+      ['--start', '0', '--end', '1'],
+      ['--at', '0', '--output-dir', '/tmp']
+    ]) {
+      const result = await runCliSideEffect(['frames', '/missing', ...options]);
+      expect(result.exitCode).toBe(1);
+      expect(result.stdout).toBe('');
+      expect(result.stderr.length).toBeGreaterThan(0);
+    }
   });
 
   it('aggregates invalid Zod inputs before session resolution', async () => {
@@ -86,6 +134,7 @@ describe('cli explicit targets', () => {
       ],
       [['check'], ['counts', 'unused_skip_check']],
       [['doctor'], ['no-upload', 'ELEVENLABS_API_KEY']],
+      [['frames'], ['--at', '--count', '--json', 'frames/capture-', 'requested positions']],
       [['clean'], ['description.md', 'clips/']]
     ] as const;
     for (const [command, expected] of cases) {

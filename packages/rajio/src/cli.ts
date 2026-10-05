@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { numberInput, issueLevelInput } from './utils/cast.js';
 
 import { registerClipCommands } from './clips/commands.js';
+import { registerFrameCommands } from './frames/commands.js';
 import { printDoctorChecks, runDoctor } from './doctor.js';
 import { rajioDescription, rajioVersion } from './package.js';
 import { registerSegmentCommands } from './segments/commands.js';
@@ -164,6 +165,7 @@ If media changed, reset audio first.`,
 
 registerSegmentCommands(app);
 registerClipCommands(app);
+registerFrameCommands(app);
 
 app
   .command('check', {

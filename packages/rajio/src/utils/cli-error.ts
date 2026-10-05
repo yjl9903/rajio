@@ -4,6 +4,7 @@ const topLevelCommandUsage = new Map([
   ['check', 'rajio check <target>'],
   ['doctor', 'rajio doctor <target>'],
   ['clean', 'rajio clean <target>'],
+  ['frames', 'rajio frames <target>'],
   ['segments', 'rajio segments <command> <target>'],
   ['clips', 'rajio clips <command> <target>']
 ]);

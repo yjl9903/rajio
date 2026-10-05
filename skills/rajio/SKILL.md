@@ -103,6 +103,9 @@ Use rajio tools deliberately:
 - Use `rajio clips` commands for difficult source-video ranges that need independent
   retranscription for comparison. Clip outputs are sidecar review artifacts only; do not
   treat them as automatic replacements for `transcript/work/segments.toml`.
+- Use `rajio frames` when audio and notes cannot resolve on-screen names, text, objects,
+  or actions. Request a few relevant time points or a short range, then inspect the
+  returned images. Do not scan the full video by default.
 - Record intentional subtitle QA `error` exceptions with per-segment `skip_checks` in the
   work-stage `segments.toml`. Every skip must name the exact issue code and include a
   reason. Never skip `fatal` data/file/schema/timeline issues, unfinished translation, or
@@ -145,6 +148,7 @@ rajio segments --help
 rajio segments list --help
 rajio segments apply --help
 rajio clips --help
+rajio frames --help
 rajio check --help
 rajio doctor --help
 ```

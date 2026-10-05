@@ -18,7 +18,7 @@ function parseError(argv: string[]): InputError {
 
 describe('CLI error formatting', () => {
   it('suggests the correct order for misplaced commands', () => {
-    for (const command of ['check', 'doctor', 'clean', 'segments', 'clips']) {
+    for (const command of ['check', 'doctor', 'clean', 'segments', 'clips', 'frames']) {
       const argv = ['/path/session', command];
       expect(formatCliError(parseError(argv), argv)).toContain('command order looks wrong.');
       expect(formatCliError(parseError(argv), argv)).toContain(`Use: rajio ${command}`);
