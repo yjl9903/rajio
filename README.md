@@ -1,6 +1,6 @@
 # Rajio ラジオ
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yjl9903/rajio)
+[![Ask DeepWiki](https://raw.githubusercontent.com/yjl9903/Breadc/main/assets/deepwiki.svg)](https://deepwiki.com/yjl9903/Breadc)
 [![version](https://img.shields.io/npm/v/rajio?label=Rajio)](https://www.npmjs.com/package/rajio)
 [![CI](https://github.com/yjl9903/rajio/actions/workflows/ci.yml/badge.svg)](https://github.com/yjl9903/rajio/actions/workflows/ci.yml)
 
