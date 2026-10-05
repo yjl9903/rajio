@@ -34,9 +34,9 @@ Before spawning a worker, provide:
   style, and uncertainty
 - output format expected by the main agent
 
-Workers must follow the provided prompt and read referenced [SKILL.md](SKILL.md) and
-[CLI.md](CLI.md#rajio-cli-reference) sections when the prompt names them, or whenever
-validation rules, QA rules, or command syntax are unclear.
+Workers must follow the provided prompt and read relevant [SKILL.md](SKILL.md) sections
+when validation or QA rules are unclear. Read the installed leaf-command `--help` when
+command syntax, patch fields, or output structure is unclear.
 
 ### Worker Output
 
@@ -85,8 +85,8 @@ Workers may use these commands when needed:
   editing files.
 - `rajio segments apply --dry-run`: preview a patch, inspect affected rows, and review
   remaining check issues without writing changes. When using `--verbose --json`, pipe the
-  output through `jq` to select the fields you need; see [CLI.md](CLI.md#segments-apply)
-  for the output structure and example filter.
+  output through `jq` to select the fields you need; read `rajio segments apply --help`
+  for the output structure and examples.
 - `rajio clips list/show`: find and inspect existing clips for the assigned time range.
 - `rajio clips transcribe`: transcribe difficult, noisy, overlapped, or suspicious audio
   ranges. Clip output is reference material only; workers still need to decide the final
@@ -132,8 +132,8 @@ Read before work:
   requirements and acceptance criteria
 - [SKILL.md](SKILL.md#subtitle-qa-rules) for subtitle QA thresholds and the rule that
   readability and correctness outrank mechanical warning cleanup
-- [CLI.md](CLI.md#segments-apply), [CLI.md](CLI.md#segments-list), and
-  [CLI.md](CLI.md#clips-commands) for command syntax
+- `rajio segments apply --help`, `rajio segments list --help`, and the relevant
+  `rajio clips <command> --help` for command syntax
 
 Highest principle:
 Make the Japanese transcript accurate, natural, readable, and comfortable as subtitles.
@@ -195,7 +195,7 @@ Write a patch file under `<session>/patches/transcript/`. Name it
 
 Inside the patch file, write `[[operations]]` entries. Use `op = "edit"`,
 `op = "split"`, `op = "merge"`, `op = "insert"`, or `op = "delete"` according to
-[CLI.md](CLI.md#segments-apply).
+the patch contract in `rajio segments apply --help`.
 
 After writing the patch file, run
 `rajio segments apply <session> <patch> --stage transcript --dry-run`. Use the check
@@ -242,8 +242,8 @@ Read before work:
 - [SKILL.md](SKILL.md#4-refine-chinese-subtitles) for the later main-agent refinement
   standard; use it as quality direction, but leave global multi-round refinement to the
   main agent
-- [CLI.md](CLI.md#segments-apply), [CLI.md](CLI.md#segments-list), and
-  [CLI.md](CLI.md#clips-commands) for command syntax
+- `rajio segments apply --help`, `rajio segments list --help`, and the relevant
+  `rajio clips <command> --help` for command syntax
 
 Highest principle:
 Create accurate, natural, comfortable Simplified Chinese subtitles. Preserve meaning,

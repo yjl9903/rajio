@@ -95,7 +95,7 @@ Respect file boundaries:
 
 Use rajio tools deliberately:
 
-- Use `rajio check` as documented in the CLI section before commits and final reporting,
+- Use `rajio check` using its installed CLI help before commits and final reporting,
   while remembering it is not a substitute for manual QA.
 - Use `rajio segments` commands for stable targeted edits to work-stage `segments.toml`:
   list/filter segments, edit fields, split/merge subtitle units, and delete semantically
@@ -133,240 +133,36 @@ Use rajio tools deliberately:
 If optional metadata is missing, proceed with filename-based defaults, record the
 uncertainty in `description.md`, and revisit it when transcript context reveals more.
 
-## CLI Quick Reference
+## CLI Discovery
 
-For complete command syntax, examples, output formats, segment patch shape, clip artifact
-details, and environment variables, read [CLI.md](CLI.md#rajio-cli-reference).
-
-For ASR provider configuration, chunk/checkpoint artifacts, and provider-specific `doctor`
-behavior, read [references/configuration.md](references/configuration.md) only when changing
-transcription config or debugging provider issues.
-
-Check whether `rajio` is available:
+Check availability with `command -v rajio`; if unavailable, use `npx rajio ...`.
+Read installed CLI help for command syntax, defaults, constraints, patch formats, output
+structures, and provider configuration:
 
 ```bash
-command -v rajio
+rajio --help
+rajio segments --help
+rajio segments list --help
+rajio segments apply --help
+rajio clips --help
+rajio check --help
+rajio doctor --help
 ```
 
-If it is not installed, run commands through `npx rajio ...`.
+Read the relevant leaf-command help before unfamiliar operations. The installed CLI is
+the source of truth for command contracts. Use `--json` for machine-readable output;
+pipe verbose JSON through `jq` to inspect only needed fields. Pass `--stage` explicitly
+for manual segment work, and write batch patches under session-local `patches/`.
 
-### Command Overview
-
-Use the installed CLI:
-
-```bash
-rajio <target> [options]
-rajio segments <command> <target> --stage transcript
-rajio clips <command> <target>
-rajio check <target>
-rajio doctor <target>
-```
-
-### Default Command
-
-The default command drives the whole session workflow.
-
-Default command media option:
-
-- `--media <path>`: invocation-only media override.
-
-Default command workflow controls:
-
-- `--continue=until-manual`: run automatic stages until the next manual stage.
-- `--continue=step`: run one automatic stage.
-- `--commit`: commit the current manual stage after validating its work file.
-- `--reset <stage>`: regenerate from `audio`, `transcript_raw`, `transcript_work`,
-  `translation_work`, or `export`.
-- `--full`: runs automatic stages only; manual stages still require sub-agent batch work
-  and `--commit`.
-
-Audio chunk options:
-
-- `--chunk-target <seconds>`: local audio chunk target. Default `600`, minimum `60`.
-- `--chunk-boundary-search <seconds>`: silence search window around the target cut point.
-  Default `90`, range `0..300`.
-- `--chunk-silence-noise <db>`: ffmpeg `silencedetect` threshold. Default `-35`.
-- `--chunk-silence-duration <seconds>`: minimum silence duration. Default `0.4`.
-
-The selected transcription provider decides whether these options produce local chunk artifacts.
-For provider-specific behavior, read [references/configuration.md](references/configuration.md).
-
-### Segments
-
-Most `rajio segments` commands print affected segment rows. `segments apply` is the
-exception: by default it prints operation counts plus patch-scoped check feedback. Agents
-should default to `--json` for parseable output. When using verbose JSON, pipe the output
-through `jq` to select only the fields you need instead of reading the full raw payload.
-See [CLI.md](CLI.md#segments-commands) for JSON structures.
-
-Segment command examples:
-
-```bash
-rajio segments list /path/to/session --json --stage transcript
-rajio segments list /path/to/session --json --stage transcript --id 12
-rajio segments list /path/to/session --json --stage transcript --id 12,15,19
-rajio segments list /path/to/session --json --stage transcript --id 12,15,19 --around 3
-rajio segments list /path/to/session --json --stage transcript --offset 100 --limit 50
-rajio segments list /path/to/session --json --stage transcript --start 600 --end 660
-rajio segments list /path/to/session --json --stage translation --issues empty_zh,zh_line_hard_limit
-rajio segments list /path/to/session --json --stage translation --issues duration_too_long --level error
-rajio segments list /path/to/session --json --stage translation --issues empty_zh --offset 100 --limit 50
-rajio segments apply /path/to/session patch.toml --json --stage translation
-rajio segments apply /path/to/session --json --stage translation <<'EOF'
-[[operations]]
-op = "edit"
-segment_id = "12"
-zh = "修正后的中文字幕"
-EOF
-rajio segments edit /path/to/session 12 --json --stage transcript --start 10.2 --end 13.4 --speaker A --ja "修正した日本語"
-rajio segments edit /path/to/session 12 --json --stage transcript --ja "修正した日本語" --dry-run
-rajio segments split /path/to/session 12 --json --stage transcript --at 11.8 --gap 0.05 --id1 12.1 --id2 12.2 --ja1 "前半の日本語" --ja2 "後半の日本語" --speaker1 A --speaker2 B
-rajio segments merge /path/to/session 12.1 12.2 --json --stage transcript --id 12 --ja "結合した日本語" --speaker A,B
-rajio segments insert /path/to/session 12.5 --json --stage transcript --start 42.0 --end 43.2 --speaker A --ja "追加された字幕"
-rajio segments delete /path/to/session 13 --json --stage transcript
-```
-
-In `segments` commands, pass `/path/to/session` after the segment subcommand. Replace
-`--stage transcript` with `--stage translation` for `translation/work/segments.toml`.
-Segment ids must be non-empty, trimmed strings without commas.
-
-`segments list` selects rows by id, time range, validation issue, or plain pagination:
-
-- `--id <ids>`: show a comma-separated id list in requested order. Segment ids
-  themselves must not contain commas.
-- `--id <ids> --around <count>`: show surrounding context for each requested id,
-  deduplicated in timeline order.
-- `--start <time> --end <time>`: show segments whose `start` time is in `[start, end)`.
-- `--issues <codes>`: show segments matching validation codes such as `invalid_time`,
-  `ja_line_hard_limit`, or `empty_zh`; add `--level error` to exclude warning-level
-  matches for soft-or-hard codes like duration and reading speed. Add `--offset` and
-  `--limit` to page through issue matches.
-- `--offset <count> --limit <count>`: show a zero-based window after any issue filtering;
-  omit `--limit` to read from offset to the end. Do not combine with `--id`, `--around`,
-  or `--start/--end`.
-
-`segments apply <target> [file]` applies an ordered TOML patch as the batch form of `edit`,
-`split`, `merge`, `insert`, and `delete`. Pass a file path, or omit `[file]` only when providing
-stdin in the same shell command, such as `<<'EOF' ... EOF`. For batch work, prefer a patch file
-under a session-local `patches/` directory. Normal apply writes the patched segments, then
-runs patch-scoped check feedback. `--dry-run` validates the patch, previews affected output,
-and runs the same checks without writing changes. Use `--verbose --json` with `jq` when you
-need affected segment rows and their remaining issues.
-
-```toml
-created_by = "worker-a"
-start = 120.0
-end = 180.0
-
-[[operations]]
-op = "edit"
-segment_id = "12"
-zh = "修正后的中文字幕"
-
-[[operations]]
-op = "edit"
-segment_id = "title"
-skip_checks = [
-  { code = "zh_repeated_punctuation", reason = "Official title spelling." },
-  { code = "zh_line_hard_limit", reason = "Official title should stay on one line." }
-]
-
-[[operations]]
-op = "split"
-source_id = "long"
-gap = 0.05
-
-[[operations.replacements]]
-segment_id = "long.1"
-start = 10.0
-end = 13.2
-speaker = "A"
-ja = "前半の日本語"
-zh = "前半中文字幕"
-
-[[operations.replacements]]
-segment_id = "long.2"
-start = 13.2
-end = 16.0
-speaker = "A"
-ja = "後半の日本語"
-zh = "后半中文字幕"
-
-[[operations]]
-op = "merge"
-source_ids = ["13.1", "13.2"]
-merged_id = "13"
-speaker = "A,B"
-ja = "結合した日本語"
-zh = "合并后的中文字幕"
-
-[[operations]]
-op = "insert"
-segment_id = "13.5"
-start = 16.2
-end = 17.0
-speaker = "A"
-ja = "追加された字幕"
-zh = "新增字幕"
-
-[[operations]]
-op = "delete"
-segment_id = "14"
-```
-
-### Clips
-
-Clip command examples:
-
-```bash
-rajio clips transcribe /path/to/session --start 120 --end 180 --label noisy-overlap
-rajio clips list /path/to/session --json
-rajio clips show /path/to/session clip-120000-180000 --json
-```
-
-Use clips when an initial transcription has a complex, noisy, overlapped, or error-prone
-time range that should be independently recognized for comparison. `clips list` prints
-only clip rows; `clips show` prints only that clip's `segments.toml`. Agents should
-default to `--json` for `clips list` and `clips show`; otherwise output is a
-human-readable table. See [CLI.md](CLI.md#clips-commands) for JSON structures.
-
-### Check
-
-Use `rajio check` before committing manual stages and before final reporting. It validates
-session shape, timeline integrity, required text, and subtitle QA heuristics, but it does
-not replace semantic review for ASR mistakes, names, terms, context, translation quality,
-or editorial polish. Treat the levels as follows:
-
-- `fatal`: invalid data or session state; fix before proceeding.
-- `error`: a problem that seriously hurts subtitle readability in ordinary cases; fix it
-  unless a specific reviewed exception is better for accuracy or viewing comfort.
-- `warning`: a recommendation; inspect it and make a local editorial decision instead of
-  mechanically fixing or mechanically ignoring it.
-
-Passing `rajio check`, including with zero `fatal`/`error` issues, does not mean the
-subtitles are polished. It only means the work has passed the baseline data and subtitle
-heuristic checks.
-
-Use `--json` for machine-readable output; pipe it to `jq` when you need to extract fields
-or slice down the output. See [CLI.md](CLI.md#check) for JSON structures.
-
-- `rajio check /path/to/session --json --level error`: show blocking `fatal` and `error`
-  issues.
-- `rajio check /path/to/session --json --stage transcript --language ja`: check transcript
-  work Japanese QA. Transcript checks only support `ja`.
-- `rajio check /path/to/session --json --stage translation`: check translation work Chinese QA;
-  `zh` is the default language for translation.
-- `rajio check /path/to/session --json --stage translation --language ja`: inspect Japanese
-  subtitle QA inherited into `translation/work/segments.toml`.
-- Add `--verbose` only when you need full sorted `issues`, such as locating exact
-  segment IDs and issue codes before adding `skip_checks`. When using verbose JSON, pipe
-  it through `jq` to inspect only the fields you need instead of reading the full raw
-  payload.
+Use `rajio check` before manual commits and final reporting. Inspect warnings and reviewed
+exceptions in context; passing checks does not replace semantic proofreading or Chinese
+refinement. Use clips to compare difficult ASR ranges, then decide edits manually.
+Run `clean` only when the user explicitly asks to discard generated workflow artifacts.
 
 ## Subtitle QA Rules
 
 These are the subtitle QA thresholds enforced by `rajio check`; severity, stage, and
-language filtering follow the Check section above.
+language filtering follow `rajio check --help`.
 
 | Rule                 | Warning                                                 | Error                                                                                                                                     |
 | -------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -501,7 +297,7 @@ Proofread flow:
 
 Transcript review requirements:
 
-- Use the segment commands documented in the CLI section with `--stage transcript` for
+- Use the segment commands described by the relevant leaf-command help with `--stage transcript` for
   transcript inspection, patch review, patch application, and validation.
 - Do not translate in this stage; only correct and polish the Japanese transcript.
 - The main agent's proofread and polish pass must be the manual review defined in
@@ -515,11 +311,11 @@ Transcript review requirements:
 For complex, noisy, overlapped, or suspicious ASR ranges, the main agent or a sub-agent may
 use `rajio clips transcribe` to retranscribe the original media time range as sidecar
 evidence. Then use
-`rajio clips list --json` and `rajio clips show <id> --json` to compare the alternate
+`rajio clips list <session> --json` and `rajio clips show <session> <id> --json` to compare the alternate
 transcript against `transcript/work/segments.toml`. Clip output is reference material; do
 not treat it as an automatic replacement.
 
-Validate often with `rajio check` as documented in the CLI section. This only checks data
+Validate often with `rajio check` using its installed CLI help. This only checks data
 shape, timing, required fields, and subtitle limits; before committing, still polish the
 content semantically against the acceptance criteria below.
 
@@ -601,7 +397,7 @@ Initial translation flow:
 
 Translation review requirements:
 
-- Use the segment commands documented in the CLI section with `--stage translation` for
+- Use the segment commands described by the relevant leaf-command help with `--stage translation` for
   translation inspection, patch review, patch application, and validation.
 - Fill or refine translated subtitle text in `zh`; keep Japanese corrections limited to
   transcript issues found while translating.
@@ -632,10 +428,10 @@ terminology or future batches.
 
 If a translation problem points back to an uncertain or messy source-audio range, use
 `rajio clips transcribe` for that original media time range and inspect it with
-`rajio clips show <id> --json`. Use the sidecar transcript as a second reference before
+`rajio clips show <session> <id> --json`. Use the sidecar transcript as a second reference before
 editing the committed transcript and reconciling the translation.
 
-Validate often with `rajio check` as documented in the CLI section. This only checks data
+Validate often with `rajio check` using its installed CLI help. This only checks data
 shape, timing, required fields, and subtitle limits; before committing, still polish the
 content semantically against the acceptance criteria below.
 
@@ -832,7 +628,7 @@ Expected final output:
 
 Before reporting completion:
 
-1. Run `rajio check` as documented in the CLI section.
+1. Run `rajio check` using its installed CLI help.
 2. Treat the result as data validation only.
 3. Confirm `session.toml` is not stuck in `failed`, `dirty`, or an unexpected manual stage.
 4. Confirm expected output files exist under `output/`.

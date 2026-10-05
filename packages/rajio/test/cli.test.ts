@@ -1,12 +1,14 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import { breadc } from 'breadc';
+import { breadc, ErrorCode, InputError } from 'breadc';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { Session } from '../src/session/index.js';
 import { registerClipCommands } from '../src/clips/commands.js';
+import { parseSegmentPatch } from '../src/segments/apply.js';
 import { registerSegmentCommands } from '../src/segments/commands.js';
 import { writeSegmentsFile } from '../src/segments/index.js';
 import { logger } from '../src/utils/logger.js';
@@ -20,6 +22,130 @@ let cliImportCounter = 0;
 describe('cli explicit targets', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it('aggregates invalid Zod inputs before session resolution', async () => {
+    const error = await createCommandApp()
+      .run([
+        'segments',
+        'list',
+        '/missing/session',
+        '--stage',
+        'invalid',
+        '--start',
+        'Infinity',
+        '--limit',
+        '1.5'
+      ])
+      .catch((error: unknown) => error);
+    expect(error).toBeInstanceOf(InputError);
+    expect((error as InputError).issues.map((issue) => issue.code)).toEqual([
+      ErrorCode.INVALID_OPTION_VALUE,
+      ErrorCode.INVALID_OPTION_VALUE,
+      ErrorCode.INVALID_OPTION_VALUE
+    ]);
+  });
+
+  it('rejects missing option values and duplicate flags before session resolution', async () => {
+    await expect(
+      createCommandApp().run(['segments', 'list', '/missing/session', '--id'])
+    ).rejects.toMatchObject({
+      issues: [expect.objectContaining({ code: ErrorCode.MISSING_OPTION_VALUE })]
+    });
+    await expect(
+      createCommandApp().run(['clips', 'list', '/missing/session', '--json', '--json'])
+    ).rejects.toMatchObject({
+      issues: [expect.objectContaining({ code: ErrorCode.DUPLICATE_OPTION })]
+    });
+  });
+
+  it('rejects actual passthrough values separately from redundant positionals', async () => {
+    await expect(
+      createCommandApp().run(['segments', 'list', '/missing/session', '--', 'extra'])
+    ).rejects.toThrow('Unexpected argument: extra');
+  });
+
+  it('prints root, parent, and leaf help without creating a session', async () => {
+    vi.useRealTimers();
+    logger.level = Number.POSITIVE_INFINITY;
+    const dir = await tempDir();
+    const load = vi.spyOn(Session, 'load');
+    const loadOrCreate = vi.spyOn(Session, 'loadOrCreate');
+    const output = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const cases = [
+      [[], ['session .env', 'full extracted audio', '--continue']],
+      [['segments'], ['segments list', 'segments apply']],
+      [['clips'], ['clips transcribe', 'clips show']],
+      [
+        ['segments', 'list'],
+        ['stats', '--around']
+      ],
+      [
+        ['segments', 'apply'],
+        ['[[operations]]', 'skip_checks', 'replacements']
+      ],
+      [['check'], ['counts', 'unused_skip_check']],
+      [['doctor'], ['no-upload', 'ELEVENLABS_API_KEY']],
+      [['clean'], ['description.md', 'clips/']]
+    ] as const;
+    for (const [command, expected] of cases) {
+      output.mockClear();
+      const result = await runCliSideEffect([...command, '--help']);
+      expect(result.exitCode).toBeUndefined();
+      const help = result.stdout + output.mock.calls.map((call) => call.join(' ')).join('\n');
+      for (const text of expected) expect(help).toContain(text);
+      const headings =
+        command.length === 1 && ['segments', 'clips'].includes(command[0])
+          ? ['Usage:', 'Commands:', 'Options:']
+          : ['Usage:', 'Arguments:', 'Options:', 'Examples:'];
+      for (const heading of headings) {
+        expect(
+          help
+            .split('\n')
+            .filter((line) => line.trim() === heading || line.startsWith(`${heading} `))
+        ).toHaveLength(1);
+      }
+      if (command.length === 0) {
+        expect(help).not.toContain('The default command is:');
+        expect(help).not.toContain('Clip directory shape:');
+        expect(help).not.toContain('transcript/raw/checkpoints');
+        const intro = help.split('Usage:')[0];
+        expect(intro).not.toContain('--continue');
+        expect(intro).not.toContain('rajio /path/to/session');
+      }
+      if (command.join(' ') === 'segments apply') {
+        const patchExample = help.split('Patch example:')[1].match(/```toml\n([\s\S]*?)\n\s*```/);
+        expect(patchExample).not.toBeNull();
+        expect(parseSegmentPatch(patchExample![1]).operations).toHaveLength(6);
+        expect(help.indexOf('Usage:')).toBeLessThan(help.indexOf('Patch example:'));
+      }
+      if (command.join(' ') === 'segments list') {
+        expect(help).not.toContain('--dry-run');
+        expect(help).not.toContain('patch-scoped');
+        expect(help).not.toContain('[[operations]]');
+      }
+    }
+    for (const command of ['edit', 'insert', 'split', 'merge', 'delete']) {
+      const result = await runCliSideEffect(['segments', command, '--help']);
+      expect(result.exitCode).toBeUndefined();
+    }
+    for (const command of ['transcribe', 'list', 'show']) {
+      const result = await runCliSideEffect(['clips', command, '--help']);
+      expect(result.exitCode).toBeUndefined();
+    }
+    expect(load).not.toHaveBeenCalled();
+    expect(loadOrCreate).not.toHaveBeenCalled();
+    expect(await readdir(dir)).toEqual([]);
+  });
+
+  it('keeps parser diagnostics with help but skips business casts', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    expect(
+      (await runCliSideEffect(['check', '--start', 'invalid', '--help'])).exitCode
+    ).toBeUndefined();
+    const result = await runCliSideEffect(['check', '--start', '--help']);
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain('Missing required option value');
   });
 
   it('lists segments with target as the first positional argument', async () => {
@@ -180,7 +306,7 @@ describe('cli explicit targets', () => {
         '--level',
         'all'
       ])
-    ).rejects.toThrow('--level must be "fatal", "error", or "warning".');
+    ).rejects.toThrow('--level:');
     await expect(
       createCommandApp().run([
         'segments',
@@ -249,7 +375,9 @@ describe('cli explicit targets', () => {
 
     await expect(
       createCommandApp().run(['segments', 'list', dir, '--stage', 'transcript', '--id', '1', '2'])
-    ).rejects.toThrow('Unexpected argument: 2');
+    ).rejects.toMatchObject({
+      issues: [expect.objectContaining({ code: ErrorCode.UNEXPECTED_ARGUMENTS, values: ['2'] })]
+    });
   });
 
   it('applies a patch with target before patch path', async () => {

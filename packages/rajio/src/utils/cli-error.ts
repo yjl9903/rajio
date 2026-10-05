@@ -1,3 +1,5 @@
+import { ErrorCode, InputError } from 'breadc';
+
 const topLevelCommandUsage = new Map([
   ['check', 'rajio check <target>'],
   ['doctor', 'rajio doctor <target>'],
@@ -7,16 +9,21 @@ const topLevelCommandUsage = new Map([
 ]);
 
 export function formatCliError(error: unknown, argv: string[] = []): string {
-  const commandOrderHint = formatMisorderedCommandError(error, argv);
-  if (commandOrderHint) {
-    return commandOrderHint;
-  }
-
-  if (isMissingTargetError(error)) {
-    return [
-      `target is required.`,
-      `Usage: rajio ${error.context?.command?.spec ?? '<target>'}`
-    ].join('\n');
+  if (error instanceof InputError) {
+    return error.issues
+      .map((issue) => {
+        if (issue.code === ErrorCode.UNEXPECTED_ARGUMENTS) {
+          return formatMisorderedCommandError(argv) ?? issue.message;
+        }
+        if (issue.code === ErrorCode.MISSING_ARGUMENT && issue.argument.name === 'target') {
+          const command = error.context?.command;
+          const argumentsSpec = command?._arguments.map((argument) => argument.spec).join(' ');
+          const usage = [command?.spec, argumentsSpec || '<target>'].filter(Boolean).join(' ');
+          return `target is required.\nUsage: rajio ${usage}`;
+        }
+        return issue.message;
+      })
+      .join('\n');
   }
 
   if (isErrnoError(error) && error.code === 'ENOENT') {
@@ -32,8 +39,8 @@ export function formatCliError(error: unknown, argv: string[] = []): string {
   return String(error);
 }
 
-function formatMisorderedCommandError(error: unknown, argv: string[]): string | undefined {
-  if (!isUnexpectedArgumentsError(error) || argv.length < 2) {
+function formatMisorderedCommandError(argv: string[]): string | undefined {
+  if (argv.length < 2) {
     return undefined;
   }
   const misplacedCommand = argv.slice(1).find((arg) => topLevelCommandUsage.has(arg));
@@ -83,25 +90,6 @@ function formatTargetResolutionError(message: string): string {
   }
 
   return message;
-}
-
-function isMissingTargetError(error: unknown): error is Error & {
-  context?: { command?: { spec?: string } };
-  cause: { argument?: { name?: string } };
-} {
-  if (!(error instanceof Error)) {
-    return false;
-  }
-  const candidate = error as Error & {
-    cause?: { argument?: { name?: string } };
-  };
-  return (
-    error.message === 'Missing required argument' && candidate.cause?.argument?.name === 'target'
-  );
-}
-
-function isUnexpectedArgumentsError(error: unknown): boolean {
-  return error instanceof Error && error.message === 'Detect unexpected redundant arguments';
 }
 
 function isErrnoError(error: unknown): error is NodeJS.ErrnoException {
