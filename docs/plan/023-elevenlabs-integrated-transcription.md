@@ -61,13 +61,17 @@ Refactor code layout:
 - Runtime config reads `ELEVENLABS_API_KEY`.
 - Call ElevenLabs STT with `model_id=scribe_v2`, `language_code=ja`, `diarize=true`,
   `timestamps_granularity=word`.
-- Set `timeoutInSeconds=1200` (20 minutes) explicitly for transcription requests in both the main
+- Set `timeoutInSeconds=3600` (1 hour) explicitly for transcription requests in both the main
   workflow and clips. Long-running requests can exceed the SDK's 240-second default.
-- Inject a dedicated Undici dispatcher with `headersTimeout=1200000` and `bodyTimeout=1200000`
-  milliseconds; the SDK timeout alone does not override the transport's 300-second defaults.
+- Inject a dedicated Undici dispatcher with `headersTimeout=3660000` and `bodyTimeout=3660000`
+  milliseconds (61 minutes), leaving a 60-second margin beyond the SDK request timeout. The SDK
+  timeout alone does not override the transport's 300-second defaults. The current SDK clears its
+  request timer after receiving response headers; body reads retain the transport inactivity timeout.
   Destroy the dispatcher when transcription finishes or fails. Keep the original fetch/body-read
   errors before the SDK flattens them, and include cause chains and error codes in checkpoint error
-  logs. Existing sessions and checkpoints require no migration.
+  logs. Distinguish fetch failures before response headers, SDK deadline expiry, and body-read
+  failures after an HTTP status was received. Keep SDK HTTP errors with their status and response
+  body. Existing sessions and checkpoints require no migration.
 - Use Undici 8's `Dispatcher1Wrapper` to adapt the dedicated Agent to Node's built-in fetch handler
   contract while retaining the SDK's existing request-body implementation.
 - Store TOML-compatible response snapshot in checkpoint; dropped `null` fields are acceptable.

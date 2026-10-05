@@ -7,7 +7,9 @@ import { isRecord, segmentWords } from './utils.js';
 
 const ELEVENLABS_TRANSCRIPTION_MODEL = 'scribe_v2';
 const ELEVENLABS_TRANSCRIPTION_LANGUAGE = 'ja';
-const TRANSCRIPTION_TIMEOUT_SECONDS = 1200;
+const TRANSCRIPTION_TIMEOUT_SECONDS = 3600;
+// Let the SDK's request deadline fire before the transport's inactivity timeouts.
+const TRANSPORT_TIMEOUT_MS = (TRANSCRIPTION_TIMEOUT_SECONDS + 60) * 1000;
 
 export async function transcribeWithElevenLabs(input: TranscribeInput): Promise<unknown> {
   if (!input.runtime.elevenlabsApiKey) {
@@ -17,8 +19,8 @@ export async function transcribeWithElevenLabs(input: TranscribeInput): Promise<
   // Node's built-in fetch can still use the legacy dispatcher handler contract.
   const dispatcher = new Dispatcher1Wrapper(
     new Agent({
-      headersTimeout: TRANSCRIPTION_TIMEOUT_SECONDS * 1000,
-      bodyTimeout: TRANSCRIPTION_TIMEOUT_SECONDS * 1000
+      headersTimeout: TRANSPORT_TIMEOUT_MS,
+      bodyTimeout: TRANSPORT_TIMEOUT_MS
     })
   );
   let transportError: unknown;
@@ -40,13 +42,21 @@ export async function transcribeWithElevenLabs(input: TranscribeInput): Promise<
             try {
               return await readText();
             } catch (error) {
-              transportError = error;
+              transportError = new Error(
+                `ElevenLabs response body read failed after receiving HTTP ${response.status}.`,
+                { cause: error }
+              );
               throw error;
             }
           }
         });
       } catch (error) {
-        transportError = error;
+        transportError = new Error(
+          init?.signal?.aborted && init.signal.reason === 'timeout'
+            ? `ElevenLabs SDK request timed out after ${TRANSCRIPTION_TIMEOUT_SECONDS} seconds before receiving HTTP response headers.`
+            : 'ElevenLabs fetch failed before receiving HTTP response headers.',
+          { cause: error }
+        );
         throw error;
       }
     }
