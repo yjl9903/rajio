@@ -2,6 +2,7 @@ import { chmod, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { stripVTControlCharacters } from 'node:util';
 
 import { breadc, ErrorCode, InputError } from 'breadc';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -141,7 +142,9 @@ describe('cli explicit targets', () => {
       output.mockClear();
       const result = await runCliSideEffect([...command, '--help']);
       expect(result.exitCode).toBeUndefined();
-      const help = result.stdout + output.mock.calls.map((call) => call.join(' ')).join('\n');
+      const help = stripVTControlCharacters(
+        result.stdout + output.mock.calls.map((call) => call.join(' ')).join('\n')
+      );
       for (const text of expected) expect(help).toContain(text);
       const headings =
         command.length === 1 && ['segments', 'clips'].includes(command[0])
