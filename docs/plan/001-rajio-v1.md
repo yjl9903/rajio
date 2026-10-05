@@ -36,7 +36,7 @@ rajio check <target>
 
 `check` validates `session.toml` and every `segments.toml` under `transcript/` and
 `translation/`, then filters the displayed result to global `fatal` issues plus the target
-stage/language subtitle QA. It is intended for humans and Codex agents to verify file
+stage/language subtitle QA. It is intended for humans and external agents to verify file
 shape, session references, and editable work before committing a manual stage. Raw ASR
 output under `transcript/raw/segments.toml` is parsed for global fatal issues, but is not a
 subtitle QA target.
@@ -59,13 +59,6 @@ Options:
 - Per-segment `skip_checks` in `segments.toml` mark intentional subtitle QA `error`
   exceptions with exact issue codes and reasons. See
   `docs/plan/012-segment-skip-checks.md`.
-- Current implementation note: the CLI `--agent` entrypoint has been temporarily removed.
-- `--agent=codex|false`: currently only `codex` is supported. If `--commit` and
-  `--agent=codex` are both present, run agent flow.
-- `--full`: run all remaining stages automatically. Manual stages use Codex by default.
-  With `--agent=false`, transcript proofread and polish can be skipped, but translation
-  still stops at `translation_work` because Chinese text must be produced by a human or
-  Codex agent.
 - `--reset <stage>`: regenerate from a stage. Valid stages are `audio`,
   `transcript_raw`, `transcript_work`, `translation_work`, and `export`.
 
@@ -169,11 +162,9 @@ session/
         chunk-000.error.log
     work/
       segments.toml
-      agent-output.jsonl
   translation/
     work/
       segments.toml
-      agent-output.jsonl
   output/
     *.ja.srt
     *.zh.srt
@@ -189,13 +180,11 @@ session/
   transcription round.
 - `transcript/raw/chunks/*.error.log` stores the timestamp and error text for failed chunk
   requests. Failed chunks do not produce checkpoint TOML and are retried on the next run.
-- `work` is editable by humans or Codex agent and can be committed with the session.
+- `work` is editable by humans or external agents and can be committed with the session.
 - Commit does not copy to `final`; `session.toml` records the hash of the corresponding
   `work/segments.toml`.
 - If `work/segments.toml` changes after commit, the stage becomes dirty. Downstream
   stages must refuse to read it until it is committed again.
-- Codex prompts are not persisted. `agent-output.jsonl` stores Codex SDK streamed events
-  and is rotated before rerunning an agent.
 - `session.toml` does not record agent execution details. How proofread/polish work was
   performed is not workflow state.
 - Do not keep request-level OpenAI records: no request IDs, request paths, or per-request
@@ -311,8 +300,6 @@ Rules:
 - Per-segment `skip_checks` allow manually confirmed subtitle QA `error` issues to be
   recorded in the work file. Dirty manual work is refreshed and retargeted by the workflow
   entrypoint; it is not a `rajio check` fatal issue.
-- `--agent=codex` runs Codex, writes JSONL output, then commits. On failure, the stage is
-  `failed` and does not advance.
 
 ## Workflow
 
@@ -331,12 +318,12 @@ Rules:
    merge, write `transcript/raw/segments.toml`, and initialize
    `transcript/work/segments.toml` as a direct copy for manual proofread and subtitle timing
    edits.
-4. Transcript proofread and polish: human or Codex edits
+4. Transcript proofread and polish: human or external agent edits
    `transcript/work/segments.toml`; `--commit` validates it and records hash.
 5. Translation: create `translation/work/segments.toml` from committed and clean
-   transcript work, preserving per-segment `skip_checks`, then stop for human or Codex to fill
-   `zh`.
-6. Translation commit: human or Codex edits `translation/work/segments.toml`; `--commit`
+   transcript work, preserving per-segment `skip_checks`, then stop for a human or external
+   agent to fill `zh`.
+6. Translation commit: human or external agent edits `translation/work/segments.toml`; `--commit`
    validates it, requires `zh`, and records hash. Remaining intentional subtitle QA
    exceptions must be marked with per-segment `skip_checks`.
 7. Export: read committed and clean translation work and generate Japanese SRT, Chinese
@@ -423,8 +410,6 @@ translation completeness rules are deferred to editable work files.
     `stages.ts`.
   - `transcription.ts` owns the OpenAI-compatible transcription call and response-shape
     normalization because both are coupled to the transcription API surface.
-  - Codex agent invocation remains shared outside individual steps and is called from
-    the manual stage implementation.
 - Subtitle segment parsing, writing, validation, translation cloning, and segment editing
   helpers live under `src/segments/`.
 - `src/index.ts` is only a reserved package entry and currently exports `Session`.
@@ -434,11 +419,6 @@ translation completeness rules are deferred to editable work files.
   - `yaml`: parse description markdown frontmatter.
   - `smol-toml`: read and write `session.toml`.
   - `zod`: validate session and segments schemas.
-- Codex agent invocation:
-  - Use `@openai/codex-sdk` to start a Codex thread with `workingDirectory`,
-    `workspace-write` sandbox, `never` approval policy, and `skipGitRepoCheck`.
-  - Generate the prompt in memory and pass it to the SDK.
-  - Write streamed SDK events to the current stage's `work/agent-output.jsonl`.
 
 ## Implementation Steps
 
@@ -447,17 +427,16 @@ translation completeness rules are deferred to editable work files.
 3. Implement the `breadc` default command and option flow.
 4. Implement `audio`, `transcript_raw`, `transcript_work`, `translation_work`, and
    `export` stages.
-5. Implement Codex agent invocation and `agent-output.jsonl` rotation.
-6. Add unit tests and mock integration tests.
-7. Validate manually with the prepared test video:
+5. Add unit tests and mock integration tests.
+6. Validate manually with the prepared test video:
    `.rajio/夏さく咲く49/春日さくらと乾夏寧の夏もさくらを咲かせたい 第49回【本放送版】.mp4`
 
 ## Tests
 
 - Target parsing: markdown, directory, media file, ambiguous multiple markdown/media files.
-- CLI option combinations: `--continue`, `--commit`, `--agent`, `--full`, `--reset`.
+- CLI option combinations: `--continue`, `--commit`, `--reset`.
 - Environment variable reading and priority.
 - `session.toml` creation, restore, stage advancement, dirty hash detection.
 - `segments.toml` schema and timeline validation.
-- Mocked OpenAI, ffmpeg, ffprobe, and Codex SDK workflow.
+- Mocked OpenAI, ffmpeg, and ffprobe workflow.
 - SRT and ASS export snapshot tests.

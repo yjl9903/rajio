@@ -16,8 +16,7 @@ const originalLoggerLevel = logger.level;
 
 export const baseOptions: CliOptions = {
   continue: 'until-manual',
-  commit: false,
-  full: false
+  commit: false
 };
 
 beforeEach(() => {

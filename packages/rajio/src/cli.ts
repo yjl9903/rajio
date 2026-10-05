@@ -75,7 +75,7 @@ app
   )
   .option(
     '--continue <mode>',
-    'until-manual runs automatic stages until the next manual stage (default). step runs at most one automatic stage unless --full is set.',
+    'until-manual runs automatic stages until the next manual stage (default). step runs at most one automatic stage.',
     {
       default: 'until-manual' as const,
       cast: z.enum(['until-manual', 'step'])
@@ -84,10 +84,6 @@ app
   .option(
     '--commit',
     'Validate and commit the current manual stage, recording the work file hash in session.toml, then continue according to --continue.'
-  )
-  .option(
-    '--full',
-    'Run remaining automatic stages. Manual stages still stop for manual edit and --commit.'
   )
   .option(
     '--reset <stage>',
@@ -150,7 +146,6 @@ If media changed, reset audio first.`,
       media: options.media,
       continue: options.continue,
       commit: options.commit,
-      full: options.full,
       reset: options.reset,
       chunking,
       transcription: {
@@ -322,14 +317,14 @@ function resolveCheckRange(
 
 app
   .command('doctor', {
-    summary: `Check environment, provider, Codex, ffmpeg, and Node.js`,
+    summary: `Check environment, provider, ffmpeg, and Node.js`,
     details: `rajio doctor <target> loads the target session config and checks the selected transcription provider:
 
 - ElevenLabs transcription requires ELEVENLABS_API_KEY. A no-upload GET /v1/models request checks API connectivity only; it does not verify API key validity, transcription permissions, or quota.
 - OpenAI-compatible transcription requires OPENAI_API_KEY and checks the configured OpenAI-compatible API.
-- If OpenAI is not the transcription provider, missing OPENAI_API_KEY is a warning for manual AI/Codex readiness, not a transcription failure.
+- Only the selected transcription provider is checked; ElevenLabs transcription does not require OPENAI_API_KEY.
 
-It also checks CLI version/update status, .env loading, ffmpeg, ffprobe, Node.js, and Codex readiness where relevant. If any check fails, process exit code is 1.
+It also checks CLI version/update status, .env loading, ffmpeg, ffprobe, and Node.js. If any check fails, process exit code is 1.
 
 OPENAI_BASE_URL optionally overrides the OpenAI-compatible API base URL. FFMPEG_PATH and FFPROBE_PATH optionally override the binaries. Existing sessions require session.toml rajio_version to match the running CLI version.`,
     examples: [

@@ -91,7 +91,7 @@ Refactor code layout:
   `single_file` and does not write chunk metadata.
 - `doctor` checks `ELEVENLABS_API_KEY` for the recorded transcription provider. See
   `024-elevenlabs-doctor-probe.md` for the later API reachability probe.
-- OpenAI env remains for Codex/manual workflow use, not transcription provider connectivity.
+- OpenAI environment variables are used only when OpenAI transcription is selected (see plan 027).
 
 ## Test Plan
 

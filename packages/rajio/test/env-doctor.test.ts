@@ -69,7 +69,7 @@ describe('doctor', () => {
     await expect(readFile(path.join(cwd, 'session.toml'), 'utf8')).rejects.toThrow();
   });
 
-  it('checks env files, provider connectivity, Codex, ffmpeg, ffprobe, and Node.js', async () => {
+  it('checks env files, provider connectivity, ffmpeg, ffprobe, and Node.js', async () => {
     const cwd = await tempDir();
     const sessionDir = path.join(cwd, 'session');
     await mkdir(sessionDir);
@@ -99,7 +99,6 @@ describe('doctor', () => {
     const execaMock = vi.fn(async (command: string) => ({
       stdout: `${command} version test`
     }));
-    const seenCodexConfigs: RuntimeConfig[] = [];
     const seenElevenLabsConfigs: RuntimeConfig[] = [];
     const session = await Session.loadOrCreate(sessionDir);
 
@@ -109,9 +108,6 @@ describe('doctor', () => {
         execa: execaMock as never,
         checkElevenLabs: async (runtime) => {
           seenElevenLabsConfigs.push(runtime);
-        },
-        createCodex: (runtime) => {
-          seenCodexConfigs.push(runtime);
         }
       })
     });
@@ -122,15 +118,11 @@ describe('doctor', () => {
       'node',
       '.env',
       '.env',
-      '.env',
       'transcription',
-      'openai',
       'ffmpeg',
-      'ffprobe',
-      'codex'
+      'ffprobe'
     ]);
     expect(execaMock.mock.calls.map((call) => call[0])).toEqual(['session-ffmpeg', 'cwd-ffprobe']);
-    expect(seenCodexConfigs[0]?.openaiApiKey).toBe('from-session');
     expect(seenElevenLabsConfigs[0]?.elevenlabsApiKey).toBe('from-session-elevenlabs');
     expect(checkByName(result, 'rajio')).toEqual({
       name: 'rajio',
@@ -139,14 +131,8 @@ describe('doctor', () => {
     });
     expect(result.checks.filter((check) => check.name === '.env')).toEqual([
       { name: '.env', status: 'pass', message: `Loaded ${path.join(cwd, '.env')}` },
-      { name: '.env', status: 'pass', message: `Loaded ${path.join(sessionDir, '.env')}` },
-      { name: '.env', status: 'pass', message: 'OPENAI_BASE_URL uses https://cwd.example' }
+      { name: '.env', status: 'pass', message: `Loaded ${path.join(sessionDir, '.env')}` }
     ]);
-    expect(checkByName(result, 'openai')).toEqual({
-      name: 'openai',
-      status: 'pass',
-      message: 'OpenAI API is reachable'
-    });
     expect(checkByName(result, 'transcription')).toEqual({
       name: 'transcription',
       status: 'pass',
@@ -159,11 +145,6 @@ describe('doctor', () => {
     expect(checkByName(result, 'ffprobe')).toMatchObject({
       status: 'pass',
       message: 'cwd-ffprobe version test'
-    });
-    expect(checkByName(result, 'codex')).toEqual({
-      name: 'codex',
-      status: 'pass',
-      message: '@openai/codex-sdk is installed and initialized'
     });
   });
 
@@ -193,20 +174,49 @@ describe('doctor', () => {
 
     expect(result.ok).toBe(false);
     expect(result.checks.some((check) => check.message.startsWith('Loaded '))).toBe(false);
-    expect(
-      checkByMessage(result, 'OPENAI_API_KEY is not set; manual AI stages will not work')
-    ).toMatchObject({ status: 'warn' });
     expect(checkByName(result, 'node')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'transcription')).toMatchObject({ status: 'fail' });
-    expect(checkByName(result, 'codex')).toMatchObject({ status: 'warn' });
   });
 
-  it('fails when OpenAI API connectivity fails', async () => {
+  it.each([undefined, 'unused-key'])(
+    'checks only ElevenLabs when the OpenAI key is %s',
+    async (openaiApiKey) => {
+      const cwd = await tempDir();
+      if (openaiApiKey) {
+        process.env.OPENAI_API_KEY = openaiApiKey;
+      } else {
+        delete process.env.OPENAI_API_KEY;
+      }
+      process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
+      const checkOpenAI = vi.fn();
+      const result = await runDoctor(await Session.load(cwd), {
+        cwd,
+        deps: doctorDeps({ checkOpenAI })
+      });
+
+      expect(result.ok).toBe(true);
+      expect(result.checks.every((check) => check.status === 'pass')).toBe(true);
+      expect(result.checks.map((check) => check.name)).toEqual([
+        'rajio',
+        'node',
+        'transcription',
+        'ffmpeg',
+        'ffprobe'
+      ]);
+      expect(checkOpenAI).not.toHaveBeenCalled();
+    }
+  );
+
+  it('fails when OpenAI transcription API connectivity fails', async () => {
     const cwd = await tempDir();
     process.env.OPENAI_API_KEY = 'from-process';
-    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
     const session = await Session.load(cwd);
+    session.state.transcription = {
+      provider: 'openai',
+      model: 'whisper-1',
+      segmenter: 'integrated'
+    };
 
     const result = await runDoctor(session, {
       cwd,
@@ -217,13 +227,34 @@ describe('doctor', () => {
       })
     });
 
-    expect(result.ok).toBe(true);
-    expect(checkByName(result, 'openai')).toEqual({
-      name: 'openai',
-      status: 'warn',
-      message: 'OpenAI API check failed',
+    expect(result.ok).toBe(false);
+    expect(checkByName(result, 'transcription')).toEqual({
+      name: 'transcription',
+      status: 'fail',
+      message: 'OpenAI transcription API check failed',
       detail: 'api down'
     });
+  });
+
+  it('requires an OpenAI key for OpenAI transcription', async () => {
+    const cwd = await tempDir();
+    delete process.env.OPENAI_API_KEY;
+    const session = await Session.load(cwd);
+    session.state.transcription = {
+      provider: 'openai',
+      model: 'whisper-1',
+      segmenter: 'integrated'
+    };
+    const checkOpenAI = vi.fn();
+    const result = await runDoctor(session, { cwd, deps: doctorDeps({ checkOpenAI }) });
+
+    expect(result.ok).toBe(false);
+    expect(checkByName(result, 'transcription')).toEqual({
+      name: 'transcription',
+      status: 'fail',
+      message: 'OPENAI_API_KEY is not set'
+    });
+    expect(checkOpenAI).not.toHaveBeenCalled();
   });
 
   it('fails when ElevenLabs API connectivity fails', async () => {
@@ -261,12 +292,18 @@ describe('doctor', () => {
       segmenter: 'integrated'
     };
 
+    const checkOpenAI = vi.fn(async () => undefined);
+    const checkElevenLabs = vi.fn();
     const result = await runDoctor(session, {
       cwd,
-      deps: doctorDeps()
+      deps: doctorDeps({ checkOpenAI, checkElevenLabs })
     });
 
     expect(result.ok).toBe(true);
+    expect(checkOpenAI).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ openaiApiKey: 'from-process' })
+    );
+    expect(checkElevenLabs).not.toHaveBeenCalled();
     expect(checkByName(result, 'transcription')).toEqual({
       name: 'transcription',
       status: 'pass',
@@ -325,30 +362,6 @@ describe('doctor', () => {
     }
   );
 
-  it('warns when Codex SDK initialization fails without failing doctor', async () => {
-    const cwd = await tempDir();
-    process.env.OPENAI_API_KEY = 'from-process';
-    process.env.ELEVENLABS_API_KEY = 'from-process-elevenlabs';
-    const session = await Session.load(cwd);
-
-    const result = await runDoctor(session, {
-      cwd,
-      deps: doctorDeps({
-        createCodex: () => {
-          throw new Error('sdk unavailable');
-        }
-      })
-    });
-
-    expect(result.ok).toBe(true);
-    expect(checkByName(result, 'codex')).toEqual({
-      name: 'codex',
-      status: 'warn',
-      message: 'Codex SDK check failed',
-      detail: 'sdk unavailable'
-    });
-  });
-
   it('warns when a newer rajio version is available without failing doctor', async () => {
     const cwd = await tempDir();
     process.env.OPENAI_API_KEY = 'from-process';
@@ -400,7 +413,6 @@ function doctorDeps(overrides: DoctorDeps = {}): DoctorDeps {
     execa: vi.fn(async (command: string) => ({
       stdout: `${command} version test`
     })) as never,
-    createCodex: () => undefined,
     getLatestRajioVersion: async () => rajioVersion,
     nodeVersion: '24.1.0',
     ...overrides
@@ -409,12 +421,6 @@ function doctorDeps(overrides: DoctorDeps = {}): DoctorDeps {
 
 function checkByName(result: Awaited<ReturnType<typeof runDoctor>>, name: string) {
   const check = result.checks.find((item) => item.name === name);
-  expect(check).toBeDefined();
-  return check!;
-}
-
-function checkByMessage(result: Awaited<ReturnType<typeof runDoctor>>, message: string) {
-  const check = result.checks.find((item) => item.message === message);
   expect(check).toBeDefined();
   return check!;
 }

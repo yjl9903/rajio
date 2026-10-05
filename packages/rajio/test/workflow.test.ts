@@ -620,7 +620,7 @@ describe('session workflow', () => {
     expect(checked.issues.some((issue) => issue.code === 'overlap')).toBe(true);
   });
 
-  it('waits on manual stages during full runs, then commits and exports', async () => {
+  it('waits on manual stages when resumed, then commits and exports', async () => {
     const dir = await preparedSession('transcript_work', {
       transcript_raw: {
         status: 'done',
@@ -632,7 +632,7 @@ describe('session workflow', () => {
     await runRajio(session, baseOptions);
 
     session = await Session.loadOrCreate(dir);
-    await runRajio(session, { ...baseOptions, full: true });
+    await runRajio(session, baseOptions);
 
     let sessionToml = await readFile(path.join(dir, 'session.toml'), 'utf8');
     expect(sessionToml).toContain('current_stage = "transcript_work"');

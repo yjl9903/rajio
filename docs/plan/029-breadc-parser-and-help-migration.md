@@ -45,7 +45,6 @@ Isolated probes against the published beta.18 and beta.21 packages confirmed:
 | `--number` without its required value  | Can reach the action               | `MISSING_OPTION_VALUE`               |
 | `<target> extra`                       | Extra is placed in `options['--']` | `UNEXPECTED_ARGUMENTS`               |
 | `<target> -- extra`                    | Passthrough                        | Passthrough                          |
-| Repeated `--full`                      | Runtime error                      | `InputError` with `DUPLICATE_OPTION` |
 | `--chunk-silence-noise -35`            | Accepts negative value             | Accepts negative value               |
 
 Beta.21 probes also confirmed that leaf-command help needs no target and executes neither
@@ -62,8 +61,7 @@ the business action nor unrelated casts. A required default `<target>` still mak
    `argument.name`, and `UNEXPECTED_ARGUMENTS`. Format every issue so a useful hint does not
    hide another input problem. Keep filesystem and target-resolution diagnostics separate.
 3. Remove segment/clip `rejectUnknownOption` handlers and their `.allowUnknownOption()`
-   registrations. Remove the top-level argv special case for the removed `--agent` option.
-   Use normal `app.run(argv)` and native unknown-option rejection for all commands.
+   registrations. Use normal `app.run(argv)` and native unknown-option rejection for all commands.
 4. Retain the segments-list prohibition on actual passthrough arguments, renaming its
    helper to make that purpose explicit. Let the parser reject redundant positionals.
 5. Pass Zod schemas directly as `cast` through breadc's Standard Schema support. Replace

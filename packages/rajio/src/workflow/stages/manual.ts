@@ -1,7 +1,6 @@
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
-import { runCodexAgent } from '../agent.js';
 import { generateTranscriptWorkSuggestedPatches } from '../suggested-patches.js';
 import { manualSegmentsPath } from '../stages.js';
 import { fromSessionRelative, pathExists, sha256File, toSessionRelative } from '../../utils/fs.js';
@@ -20,7 +19,7 @@ import {
   validateSegments,
   writeSegmentsFile
 } from '../../segments/index.js';
-import type { ManualStageName, RuntimeConfig } from '../../types.js';
+import type { ManualStageName } from '../../types.js';
 import type { Session } from '../../session/index.js';
 import { taggedLogger } from '../../utils/logger.js';
 
@@ -116,38 +115,8 @@ export async function commitManualStage(input: {
     status: 'committed',
     segments_sha256: await sha256File(segmentsPath),
     committed_at: new Date().toISOString(),
-    completed_at: new Date().toISOString(),
-    force_committed: undefined
+    completed_at: new Date().toISOString()
   });
-}
-
-export async function runAgentAndCommit(input: {
-  session: Session;
-  runtime: RuntimeConfig;
-  stage: ManualStageName;
-}): Promise<void> {
-  const { session, runtime, stage } = input;
-  if (session.stage(stage).status === 'pending') {
-    await setupManualStage({ session, stage });
-  }
-  const state = session.stage(stage);
-  if (typeof state.segments !== 'string') {
-    throw new Error(`${stage} does not have a work segments path.`);
-  }
-  try {
-    await runCodexAgent({
-      sessionDir: session.dir,
-      stage,
-      segmentsPath: state.segments,
-      description: session.description,
-      runtime
-    });
-    await commitManualStage({ session, stage });
-  } catch (error) {
-    session.markFailed(stage, error);
-    await session.save();
-    throw error;
-  }
 }
 
 function segmentListStage(stage: ManualStageName): 'transcript' | 'translation' {

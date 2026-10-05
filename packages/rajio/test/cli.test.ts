@@ -1067,15 +1067,6 @@ describe('cli explicit targets', () => {
     expect(result.exitCode).toBe(1);
   });
 
-  it('rejects removed agent option', async () => {
-    const dir = await tempDir();
-    logger.level = Number.POSITIVE_INFINITY;
-    const result = await runCliSideEffect([dir, '--agent', 'codex']);
-
-    expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain('Unknown option: --agent');
-  });
-
   it('pages segment issue results in json mode', async () => {
     const dir = await preparedSession('translation_work', {
       translation_work: {

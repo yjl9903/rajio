@@ -124,7 +124,6 @@ export interface CliOptions {
   media?: string;
   continue: 'until-manual' | 'step';
   commit: boolean;
-  full: boolean;
   reset?: StageName;
   chunking?: AudioChunkOptions;
   transcription?: TranscriptionCliOptions;

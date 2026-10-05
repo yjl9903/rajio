@@ -78,7 +78,7 @@ async function continueAfterAction(
   deps: WorkflowDeps
 ): Promise<void> {
   const logger = taggedLogger('workflow');
-  const limit = options.continue === 'step' && !options.full ? 1 : Number.POSITIVE_INFINITY;
+  const limit = options.continue === 'step' ? 1 : Number.POSITIVE_INFINITY;
   let steps = 0;
 
   while (steps < limit) {
@@ -98,7 +98,7 @@ async function continueAfterAction(
     }
 
     if (isManualStage(stage)) {
-      await handleManualStage(session, stage, options);
+      await handleManualStage(session, stage);
       logWorkflowStop(session, logger);
       return;
     }
@@ -111,11 +111,7 @@ async function continueAfterAction(
       return;
     }
 
-    if (
-      !options.full &&
-      options.continue === 'until-manual' &&
-      isManualStage(session.currentStage)
-    ) {
+    if (options.continue === 'until-manual' && isManualStage(session.currentStage)) {
       await setupManualStage({ session, stage: session.currentStage });
       taggedLogger(session.currentStage).info(`waiting for manual stage ${session.currentStage}.`);
       logWorkflowStop(session, logger);
@@ -135,19 +131,9 @@ function retargetDirtyManualStage(session: Session): boolean {
   return true;
 }
 
-async function handleManualStage(
-  session: Session,
-  stage: ManualStageName,
-  options: CliOptions
-): Promise<void> {
+async function handleManualStage(session: Session, stage: ManualStageName): Promise<void> {
   if (session.stage(stage).status === 'pending') {
     await setupManualStage({ session, stage });
-  }
-
-  if (options.full) {
-    const stageLogger = taggedLogger(stage);
-    stageLogger.info(`waiting for manual stage ${stage}.`);
-    return;
   }
 
   const stageLogger = taggedLogger(stage);

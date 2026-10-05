@@ -1,7 +1,6 @@
 import path from 'node:path';
 
 import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
-import { Codex } from '@openai/codex-sdk';
 import { execa } from 'execa';
 import OpenAI from 'openai';
 
@@ -35,7 +34,6 @@ export interface DoctorDeps {
   execa?: typeof execa;
   checkElevenLabs?: (runtime: RuntimeConfig) => Promise<void>;
   checkOpenAI?: (runtime: RuntimeConfig) => Promise<void>;
-  createCodex?: (runtime: RuntimeConfig) => void;
   getLatestRajioVersion?: () => Promise<string>;
   nodeVersion?: string;
 }
@@ -60,12 +58,12 @@ export async function runDoctor(
   checks.push(await cliVersionCheck(deps));
   checks.push(nodeCheck(deps.nodeVersion ?? process.versions.node));
   checks.push(...envFilesChecks(envFiles));
-  checks.push(baseUrlCheck(runtime));
+  if (normalizeTranscriptionConfig(session.state.transcription).provider === 'openai') {
+    checks.push(baseUrlCheck(runtime));
+  }
   checks.push(await transcriptionConnectivityCheck(session, runtime, deps));
-  checks.push(await openAIConnectivityCheck(runtime, deps));
   checks.push(await commandVersionCheck('ffmpeg', runtime.ffmpegBin, deps));
   checks.push(await commandVersionCheck('ffprobe', runtime.ffprobeBin, deps));
-  checks.push(codexCheck(runtime, deps));
 
   return {
     ok: checks.every((check) => check.status !== 'fail'),
@@ -151,34 +149,6 @@ function envFilesChecks(envFiles: string[]): DoctorCheck[] {
     status: 'pass',
     message: `Loaded ${filePath}`
   }));
-}
-
-async function openAIConnectivityCheck(
-  runtime: RuntimeConfig,
-  deps: DoctorDeps
-): Promise<DoctorCheck> {
-  if (!runtime.openaiApiKey) {
-    return {
-      name: 'openai',
-      status: 'warn',
-      message: 'OPENAI_API_KEY is not set; manual AI stages will not work'
-    };
-  }
-  try {
-    await (deps.checkOpenAI ?? checkOpenAIConnectivity)(runtime);
-    return {
-      name: 'openai',
-      status: 'pass',
-      message: 'OpenAI API is reachable'
-    };
-  } catch (error) {
-    return {
-      name: 'openai',
-      status: 'warn',
-      message: 'OpenAI API check failed',
-      detail: formatError(error)
-    };
-  }
 }
 
 async function transcriptionConnectivityCheck(
@@ -307,32 +277,6 @@ async function commandVersionCheck(
   }
 }
 
-function codexCheck(runtime: RuntimeConfig, deps: DoctorDeps): DoctorCheck {
-  if (!runtime.openaiApiKey) {
-    return {
-      name: 'codex',
-      status: 'warn',
-      message: 'Skipped Codex check because OPENAI_API_KEY is missing'
-    };
-  }
-
-  try {
-    (deps.createCodex ?? createCodex)(runtime);
-    return {
-      name: 'codex',
-      status: 'pass',
-      message: '@openai/codex-sdk is installed and initialized'
-    };
-  } catch (error) {
-    return {
-      name: 'codex',
-      status: 'warn',
-      message: 'Codex SDK check failed',
-      detail: formatError(error)
-    };
-  }
-}
-
 async function getLatestRajioVersion(): Promise<string> {
   const response = await fetch(NPM_RAJIO_LATEST_URL, {
     headers: { accept: 'application/json' },
@@ -346,13 +290,6 @@ async function getLatestRajioVersion(): Promise<string> {
     throw new Error('npm registry response is missing version');
   }
   return data.version;
-}
-
-function createCodex(runtime: RuntimeConfig): void {
-  new Codex({
-    apiKey: runtime.openaiApiKey,
-    baseUrl: runtime.openaiBaseUrl
-  });
 }
 
 async function checkOpenAIConnectivity(runtime: RuntimeConfig): Promise<void> {

@@ -28,7 +28,6 @@ rajio /path/to/video.mp4 --continue=until-manual
 rajio /path/to/session --continue=step
 rajio /path/to/session --commit --continue=until-manual
 rajio /path/to/session --reset transcript_raw
-rajio /path/to/session --full
 ```
 
 ## 参数
@@ -39,7 +38,6 @@ rajio /path/to/session --full
 | `--media <path>`                      | 本次调用的媒体路径覆盖。新会话会写入 `session.toml`；已有会话只影响本次解析。                             |
 | `--continue <mode>`                   | `until-manual` 或 `step`，默认 `until-manual`。                                                           |
 | `--commit`                            | 提交当前人工阶段，通过检查后记录 work segments hash 并进入下一阶段。                                      |
-| `--full`                              | 尽可能运行剩余自动阶段；遇到人工阶段仍会停下等待人工处理。                                                |
 | `--reset <stage>`                     | 从指定阶段重新生成，合法值是 `audio`、`transcript_raw`、`transcript_work`、`translation_work`、`export`。 |
 | `--chunk-target <seconds>`            | 本地音频切片目标秒数，默认 `600`，最小 `60`。                                                             |
 | `--chunk-boundary-search <seconds>`   | 在目标切点附近寻找静音的窗口秒数，默认 `90`，范围 `0..300`。                                              |
@@ -73,6 +71,5 @@ Agent 通常先运行到人工阶段，再用 `segments list/apply/check` 完成
 ## 注意事项
 
 - `--commit` 只提交当前人工阶段；如果当前阶段不是人工阶段，它不会替代自动阶段运行。
-- `--full` 不会自动完成 `transcript_work` 或 `translation_work` 的人工审校。
 - 人工 work 文件被提交后又发生变化，Rajio 会把该阶段标记为 `dirty` 并重新定位到该人工阶段。
 - 转写会上传音频到配置的转写服务商，执行前应确认用户授权。
