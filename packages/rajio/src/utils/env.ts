@@ -1,6 +1,6 @@
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-
-import dotenv from 'dotenv';
+import { parseEnv } from 'node:util';
 
 import { pathExists } from './fs.js';
 import type { RuntimeConfig } from '../types.js';
@@ -26,5 +26,5 @@ async function loadEnvFile(filePath: string): Promise<void> {
   if (!(await pathExists(filePath))) {
     return;
   }
-  dotenv.config({ path: filePath, override: true, quiet: true });
+  Object.assign(process.env, parseEnv(await readFile(filePath, 'utf8')));
 }

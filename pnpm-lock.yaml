@@ -273,9 +273,6 @@ importers:
       consola:
         specifier: 3.4.2
         version: 3.4.2
-      dotenv:
-        specifier: 17.4.2
-        version: 17.4.2
       execa:
         specifier: 9.6.1
         version: 9.6.1
@@ -2013,10 +2010,6 @@ packages:
   diff@8.0.4:
     resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
     engines: {node: '>=0.3.1'}
-
-  dotenv@17.4.2:
-    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
-    engines: {node: '>=12'}
 
   dts-resolver@3.0.0:
     resolution: {integrity: sha512-1T1f+z+4tl9XD+m+0HBgWoL/nm0bOIffyWaUuUSBlFg/86IWvfx+wjNaO/ybU0AJzG9/Mi5hBUgGV6zCmWEN7Q==}
@@ -5008,8 +5001,6 @@ snapshots:
       dequal: 2.0.3
 
   diff@8.0.4: {}
-
-  dotenv@17.4.2: {}
 
   dts-resolver@3.0.0: {}
 
