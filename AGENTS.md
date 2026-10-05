@@ -23,6 +23,11 @@ Save new agreed plans under `docs/plan/` with numbered kebab-case names, for exa
 `001-rajio-v1.md`. If behavior changes during implementation, update the plan instead of leaving it
 stale.
 
+## Documentation Boundaries
+
+`README.md` is user-facing; edit it only with explicit user authorization.
+Keep implementation details and design decisions in `docs/plan/`.
+
 ## Implementation Principles
 
 When designing or implementing changes that affect historical behavior, ask the user whether backward
