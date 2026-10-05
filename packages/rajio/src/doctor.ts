@@ -16,7 +16,6 @@ import { normalizeTranscriptionConfig } from './transcription/config.js';
 const REQUIRED_NODE_MAJOR = 24;
 const CHECK_TIMEOUT_MS = 10000;
 const NPM_RAJIO_LATEST_URL = 'https://registry.npmjs.org/rajio/latest';
-const ELEVENLABS_PROBE_TRANSCRIPT_ID = 'rajio-doctor-probe';
 
 export type DoctorStatus = 'pass' | 'warn' | 'fail';
 
@@ -238,7 +237,7 @@ async function elevenLabsConnectivityCheck(
     return {
       name: 'transcription',
       status: 'pass',
-      message: 'ElevenLabs Speech-to-Text API is reachable'
+      message: 'ElevenLabs API is reachable'
     };
   } catch (error) {
     return {
@@ -367,47 +366,7 @@ async function checkOpenAIConnectivity(runtime: RuntimeConfig): Promise<void> {
 
 async function checkElevenLabsConnectivity(runtime: RuntimeConfig): Promise<void> {
   const client = new ElevenLabsClient({ apiKey: runtime.elevenlabsApiKey });
-  try {
-    await client.speechToText.transcripts.get(ELEVENLABS_PROBE_TRANSCRIPT_ID, {
-      timeoutInSeconds: CHECK_TIMEOUT_MS / 1000
-    });
-  } catch (error) {
-    if (isElevenLabsProbeSuccessError(error)) {
-      return;
-    }
-    throw error;
-  }
-}
-
-export function isElevenLabsProbeSuccessError(error: unknown): boolean {
-  return isHttpStatus(error, 404) || isElevenLabsInvalidUidError(error);
-}
-
-function isElevenLabsInvalidUidError(error: unknown): boolean {
-  const body = getErrorBody(error);
-  const detail = isRecord(body) ? body.detail : undefined;
-  if (!isRecord(detail)) {
-    return false;
-  }
-  return detail.status === 'invalid_uid' || detail.code === 'invalid_uid';
-}
-
-function getErrorBody(error: unknown): unknown {
-  if (isRecord(error)) {
-    return error.body;
-  }
-  return undefined;
-}
-
-function isHttpStatus(error: unknown, statusCode: number): boolean {
-  if (!isRecord(error)) {
-    return false;
-  }
-  return error.statusCode === statusCode;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  await client.models.list({ timeoutInSeconds: CHECK_TIMEOUT_MS / 1000 });
 }
 
 function compareSemverCore(left: string, right: string): number | undefined {

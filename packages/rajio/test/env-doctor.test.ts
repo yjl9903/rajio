@@ -1,9 +1,9 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { isElevenLabsProbeSuccessError, runDoctor, type DoctorDeps } from '../src/doctor.js';
+import { runDoctor, type DoctorDeps } from '../src/doctor.js';
 import { Session } from '../src/index.js';
 import { rajioVersion } from '../src/package.js';
 import { readRuntimeConfig } from '../src/utils/env.js';
@@ -47,6 +47,10 @@ describe('runtime environment', () => {
 });
 
 describe('doctor', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it('runs against a plain directory without creating or discovering a session', async () => {
     const cwd = await tempDir();
     await writeFile(path.join(cwd, 'a.md'), '');
@@ -146,7 +150,7 @@ describe('doctor', () => {
     expect(checkByName(result, 'transcription')).toEqual({
       name: 'transcription',
       status: 'pass',
-      message: 'ElevenLabs Speech-to-Text API is reachable'
+      message: 'ElevenLabs API is reachable'
     });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({
       status: 'pass',
@@ -270,30 +274,56 @@ describe('doctor', () => {
     });
   });
 
-  it('accepts ElevenLabs invalid UID as a successful no-upload probe', () => {
-    expect(isElevenLabsProbeSuccessError({ statusCode: 404 })).toBe(true);
-    expect(
-      isElevenLabsProbeSuccessError({
-        statusCode: 400,
-        body: {
-          detail: {
-            status: 'invalid_uid',
-            message: 'An invalid ID has been received'
-          }
-        }
-      })
-    ).toBe(true);
-    expect(
-      isElevenLabsProbeSuccessError({
-        statusCode: 401,
-        body: {
-          detail: {
-            status: 'missing_permissions'
-          }
-        }
-      })
-    ).toBe(false);
+  it('checks ElevenLabs connectivity with a successful models request', async () => {
+    const cwd = await tempDir();
+    process.env.ELEVENLABS_API_KEY = 'test-key';
+    const fetchMock = vi.fn().mockResolvedValue(Response.json([]));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await runDoctor(await Session.load(cwd), {
+      cwd,
+      deps: doctorDeps({ checkElevenLabs: undefined })
+    });
+
+    expect(result.ok).toBe(true);
+    expect(checkByName(result, 'transcription')).toEqual({
+      name: 'transcription',
+      status: 'pass',
+      message: 'ElevenLabs API is reachable'
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, options] = fetchMock.mock.calls[0]!;
+    expect(url).toBe('https://api.elevenlabs.io/v1/models');
+    expect(options.method).toBe('GET');
+    expect(new Headers(options.headers).get('xi-api-key')).toBe('test-key');
+    expect(options.body).toBeUndefined();
   });
+
+  it.each([400, 401, 404])(
+    'fails when the ElevenLabs models request returns %s',
+    async (status) => {
+      const cwd = await tempDir();
+      process.env.ELEVENLABS_API_KEY = 'test-key';
+      vi.stubGlobal(
+        'fetch',
+        vi
+          .fn()
+          .mockResolvedValue(Response.json({ detail: { message: 'Request failed' } }, { status }))
+      );
+
+      const result = await runDoctor(await Session.load(cwd), {
+        cwd,
+        deps: doctorDeps({ checkElevenLabs: undefined })
+      });
+
+      expect(result.ok).toBe(false);
+      expect(checkByName(result, 'transcription')).toMatchObject({
+        status: 'fail',
+        message: 'ElevenLabs API check failed',
+        detail: expect.stringContaining('Request failed')
+      });
+    }
+  );
 
   it('warns when Codex SDK initialization fails without failing doctor', async () => {
     const cwd = await tempDir();
