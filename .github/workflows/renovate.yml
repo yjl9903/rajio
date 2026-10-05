@@ -110,8 +110,9 @@ jobs:
               rebase_with_main_winning
             fi
 
-            # CI defaults to a frozen lockfile, so explicitly allow regeneration.
-            pnpm install --no-frozen-lockfile
+            # Refresh only the lockfile; lifecycle scripts can rewrite tracked files
+            # (for example, landing's prepare script generates worker types).
+            pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile
 
             if ! git diff --quiet -- . ':(exclude)pnpm-lock.yaml'; then
               echo "::error::pnpm install changed files other than pnpm-lock.yaml."
