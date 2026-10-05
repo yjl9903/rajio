@@ -264,8 +264,8 @@ importers:
         specifier: 6.46.0
         version: 6.46.0(ws@8.21.0)(zod@4.4.3)
       smol-toml:
-        specifier: 1.7.0
-        version: 1.7.0
+        specifier: 1.9.0
+        version: 1.9.0
       undici:
         specifier: 8.11.2
         version: 8.11.2
@@ -3433,8 +3433,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  smol-toml@1.7.0:
-    resolution: {integrity: sha512-aqVvWoyO21L23mb+drl4RmMXbf6N7FdHjAhTRA9ZBL7apWBgfWC16KjrASI+1p9GAroljyMHj6fK67i0UiTNvQ==}
+  smol-toml@1.9.0:
+    resolution: {integrity: sha512-hpd+HLON7HdZXqYchMM/+LaTTbdK0AU3NngIJ4KVyWbY9bfQqdL9cD+4yf6dUoU2Ap4VsU0JkQi6FxAI1B2mXQ==}
     engines: {node: '>= 18'}
 
   source-map-js@1.2.1:
@@ -7047,7 +7047,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  smol-toml@1.7.0: {}
+  smol-toml@1.9.0: {}
 
   source-map-js@1.2.1: {}
 
