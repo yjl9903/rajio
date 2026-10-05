@@ -83,3 +83,4 @@ session/
 - Silence boundary search is always enabled.
 - `session.toml` and `clip.toml` are the sources of truth for normal chunks and clip chunks.
 - Clip retranscription is review-only; no auto merge/replace is implemented.
+- Clip failures do not block the main workflow.

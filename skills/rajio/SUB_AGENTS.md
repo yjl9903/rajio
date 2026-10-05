@@ -90,7 +90,7 @@ Workers may use these commands when needed:
 - `rajio clips list/show`: find and inspect existing clips for the assigned time range.
 - `rajio clips transcribe`: transcribe difficult, noisy, overlapped, or suspicious audio
   ranges. Clip output is reference material only; workers still need to decide the final
-  segment text.
+  segment text. Clip failures do not block the assigned batch.
 
 Forbidden commands and actions:
 
@@ -159,6 +159,7 @@ Work rules:
 - If the source is too uncertain, inspect clips and use `rajio clips transcribe` for
   difficult, noisy, overlapped, or suspicious audio ranges instead of guessing. Treat clip
   transcription as reference material only.
+- If clip transcription fails, skip it and continue the assigned batch.
 - Use `rajio segments apply --dry-run` feedback to improve the patch and transcript
   polish, not just to report issues.
 - Keep iterating until the transcript dry-run reports `fatal = 0` and `error = 0` for
@@ -309,6 +310,7 @@ Command boundaries:
   `rajio clips list/show/transcribe` when needed.
 - Use `rajio clips transcribe` only for difficult, noisy, overlapped, or suspicious audio
   ranges. Clip output is reference material only; decide the final subtitle text yourself.
+- If clip transcription fails, skip it and continue the assigned batch.
 - Do not run rajio default commands that advance, reset, or export the session.
 - Do not run rajio clean commands.
 - Do not run non-dry-run `rajio segments apply` or other `rajio segments` commands that

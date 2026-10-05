@@ -22,7 +22,7 @@ export function registerClipCommands(app: RajioApp): void {
       summary: `Transcribe a source media time range as a review clip`,
       details: `Clips are sidecar retranscription artifacts for difficult source-video ranges. They do not modify workflow stage state, transcript/raw/segments.toml, or transcript/work/segments.toml.
 
-Audio is uploaded to the configured ASR provider. Transcript times are absolute source-video times. Matching checkpoints are reused; failed or missing checkpoints are retried.
+Audio is uploaded to the configured ASR provider. Transcript times are absolute source-video times. Matching checkpoints are reused; failed or missing checkpoints are retried. Clip failures do not block the main workflow.
 
 Clip directory shape:
 

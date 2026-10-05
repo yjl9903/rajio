@@ -658,13 +658,15 @@ Before reporting completion:
   errors, fix the relevant work file before committing.
 - If a committed manual stage becomes `dirty`, inspect the changed work and rerun
   `--commit` only after it passes manual review and validation.
-- If transcription fails, inspect `transcript/raw/checkpoints/input-*.error.log`, check
+- If the main workflow's `transcript_raw` stage fails, inspect
+  `transcript/raw/checkpoints/input-*.error.log`, check
   credentials, provider access, media path, ffmpeg, and ffprobe, report the likely cause and
-  recommended next step to the user, then pause work. Do not retry transcription, reset
-  transcription artifacts, or continue downstream stages unless the user explicitly asks for it.
+  recommended next step to the user, then pause work. Do not retry main transcription, reset
+  its artifacts, or continue downstream stages unless the user explicitly asks for it.
   A matching completed checkpoint is reused on retry; use `--reset transcript_raw` only when the
   user asks to start a full new transcription round.
-- If the user asks to retry an earlier workflow step, run the default command with
+- Clip failures do not block the main workflow.
+- If the user asks to retry an earlier main workflow step, run the default command with
   `--reset`: `--reset audio` retries audio extraction, `--reset transcript_raw` reruns
   transcription generation, `--reset transcript_work` regenerates the transcript
   work file, `--reset translation_work` regenerates the translation draft, and
