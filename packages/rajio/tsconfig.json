@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "include": [
     "src/**/*.ts",
-    "test/**/*.ts"
+    "test/**/*.ts",
+    "tsdown.config.ts"
   ],
   "exclude": [
     "dist"

@@ -1,0 +1,9 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/skills/rajio/**"],
+      "outputs": ["$TURBO_EXTENDS$", "skills/**"]
+    }
+  }
+}
