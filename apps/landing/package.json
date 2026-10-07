@@ -3,12 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "deploy": "wrangler deploy",
-    "dev": "vite dev --port 3000",
-    "prepare": "wrangler types",
+    "build": "cf build",
+    "deploy": "cf deploy",
+    "dev": "cf dev",
     "preview": "vite preview",
-    "typecheck": "fumadocs-mdx && tsc --noEmit"
+    "typecheck": "cf workers types && fumadocs-mdx && tsc --noEmit"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.41",
@@ -22,9 +21,9 @@
     "tslib": "2.8.1"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.62.5",
+    "@cloudflare/vite-plugin": "2.0.0-beta.sha-52b0dc0e9",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "wrangler": "4.147.0"
+    "cf": "1.0.0-beta.13"
   }
 }

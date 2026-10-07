@@ -10,6 +10,12 @@
         "dist/**"
       ]
     },
+    "@rajio/landing#build": {
+      "outputs": [
+        ".cloudflare/output/**",
+        ".cloudflare/types/**"
+      ]
+    },
     "typecheck": {
       "dependsOn": [
         "^build"

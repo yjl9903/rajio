@@ -110,8 +110,7 @@ jobs:
               rebase_with_main_winning
             fi
 
-            # Refresh only the lockfile; lifecycle scripts can rewrite tracked files
-            # (for example, landing's prepare script generates worker types).
+            # Refresh only the lockfile without running package lifecycle scripts.
             pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile
 
             if ! git diff --quiet -- . ':(exclude)pnpm-lock.yaml'; then

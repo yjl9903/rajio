@@ -15,7 +15,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "worker-configuration.d.ts",
+    "cloudflare.config.ts",
+    ".cloudflare/types/**/*.d.ts",
     "source.config.ts"
   ]
 }

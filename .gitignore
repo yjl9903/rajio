@@ -12,6 +12,7 @@ dist
 .turbo
 .tanstack
 .wrangler
+.cloudflare
 .output
 .data
 .source

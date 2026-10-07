@@ -6,6 +6,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [cloudflare({ viteEnvironment: { name: 'ssr' } }), mdx(), tanstackStart(), react()],
+  server: {
+    port: 3000
+  },
   resolve: {
     tsconfigPaths: true
   }
