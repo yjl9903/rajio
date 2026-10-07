@@ -50,11 +50,19 @@ export function fromSessionRelative(sessionDir: string, value: string): string {
 }
 
 export function sanitizeFileStem(value: string): string {
-  return (
-    value
-      .replace(/[\\/:*?"<>|]/g, '_')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, 120) || 'subtitle'
-  );
+  const sanitized = value
+    .replace(/[\\/:*?"<>|]/g, '_')
+    .replace(/\s+/g, ' ')
+    .trim();
+  let stem = '';
+  let bytes = 0;
+  // Budget bytes, not characters, leaving room for extensions and atomic-write suffixes.
+  for (const char of sanitized) {
+    bytes += Buffer.byteLength(char, 'utf8');
+    if (bytes > 120) {
+      break;
+    }
+    stem += char;
+  }
+  return stem || 'subtitle';
 }

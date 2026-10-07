@@ -90,13 +90,17 @@ export function assertSegmentId(id: string): void {
   }
 }
 
+const subtitleTextSchema = z
+  .string()
+  .refine((text) => !text.includes('\0'), 'subtitle text must not contain NUL characters.');
+
 export const segmentSchema = z.object({
   id: segmentIdSchema,
   start: z.number().nonnegative(),
   end: z.number().positive(),
   speaker: z.string().min(1),
-  ja: z.string(),
-  zh: z.string().optional(),
+  ja: subtitleTextSchema,
+  zh: subtitleTextSchema.optional(),
   notes: z.string().optional(),
   flags: z.array(z.string()).optional(),
   skip_checks: z.array(segmentSkipCheckSchema).optional(),
@@ -404,7 +408,7 @@ function validateTextLines(
   }
 
   const limits = TEXT_LIMITS[language];
-  const lines = value.split(/\r?\n/);
+  const lines = value.split(/\r\n|[\r\n]/);
   if (lines.length > limits.hardLines) {
     issues.push({
       level: 'error',

@@ -1,8 +1,9 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import {
   fromSessionRelative,
+  pathExists,
   sanitizeFileStem,
   toSessionRelative,
   writeFileAtomic
@@ -15,6 +16,7 @@ import {
 } from '../../segments/index.js';
 import { renderAss, renderSrt } from '../subtitles.js';
 import type { Session } from '../../session/index.js';
+import { mediaVideoDimensionsFromMetadata } from '../../audio/index.js';
 
 export async function runExportStage(session: Session): Promise<void> {
   const translation = session.stage('translation_work');
@@ -37,10 +39,17 @@ export async function runExportStage(session: Session): Promise<void> {
   const jaSrt = path.join(outputDir, `${stem}.ja.srt`);
   const zhSrt = path.join(outputDir, `${stem}.zh.srt`);
   const bilingualAss = path.join(outputDir, `${stem}.ja-zh.ass`);
+  const metadata = session.stage('audio').metadata;
+  const metadataPath =
+    typeof metadata === 'string' ? fromSessionRelative(session.dir, metadata) : undefined;
+  const dimensions =
+    metadataPath && (await pathExists(metadataPath))
+      ? mediaVideoDimensionsFromMetadata(JSON.parse(await readFile(metadataPath, 'utf8')))
+      : undefined;
 
   await writeFileAtomic(jaSrt, renderSrt(segments, 'ja'));
   await writeFileAtomic(zhSrt, renderSrt(segments, 'zh'));
-  await writeFileAtomic(bilingualAss, renderAss(segments, title));
+  await writeFileAtomic(bilingualAss, renderAss(segments, title, dimensions));
 
   session.updateStage('export', {
     ja_srt: toSessionRelative(session.dir, jaSrt),

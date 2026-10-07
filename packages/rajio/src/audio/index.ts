@@ -55,6 +55,31 @@ export function mediaDurationFromMetadata(value: unknown): number | undefined {
   return Number.isFinite(duration) && duration > 0 ? duration : undefined;
 }
 
+export function mediaVideoDimensionsFromMetadata(
+  value: unknown
+): { width: number; height: number } | undefined {
+  const streams = isRecord(value) && Array.isArray(value.streams) ? value.streams : [];
+  for (const stream of streams) {
+    if (!isRecord(stream) || stream.codec_type !== 'video') continue;
+    const disposition = isRecord(stream.disposition) ? stream.disposition : {};
+    if (disposition.attached_pic || disposition.timed_thumbnails || disposition.still_image)
+      continue;
+    const width = Number(stream.width);
+    const height = Number(stream.height);
+    if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0)
+      continue;
+
+    const sideData = Array.isArray(stream.side_data_list) ? stream.side_data_list : [];
+    const displayMatrix = sideData.find(
+      (data) => isRecord(data) && data.side_data_type === 'Display Matrix'
+    );
+    const tags = isRecord(stream.tags) ? stream.tags : {};
+    const rotation = Number(displayMatrix?.rotation ?? tags.rotate ?? 0);
+    return Math.abs(rotation) % 180 === 90 ? { width: height, height: width } : { width, height };
+  }
+  return undefined;
+}
+
 export function resolveAudioChunkOptions(
   options: AudioChunkOptions = {}
 ): ResolvedAudioChunkOptions {
