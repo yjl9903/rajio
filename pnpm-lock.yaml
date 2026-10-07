@@ -265,8 +265,8 @@ importers:
   packages/rajio:
     dependencies:
       '@elevenlabs/elevenlabs-js':
-        specifier: 2.70.0
-        version: 2.70.0
+        specifier: 2.71.0
+        version: 2.71.0
       breadc:
         specifier: 1.0.0-beta.21
         version: 1.0.0-beta.21
@@ -477,8 +477,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@elevenlabs/elevenlabs-js@2.70.0':
-    resolution: {integrity: sha512-7HH/PTliPIItBlRcWF3DLzr6FKpVdlKBLE1XVnOA2KKLF3r8lRB54ZHcBRje7sP97wGfalWuC2XpKbKWMMrGyQ==}
+  '@elevenlabs/elevenlabs-js@2.71.0':
+    resolution: {integrity: sha512-TI4rj95rk1JzuinnlP2bR839IUdv4ZVaP1fHqAIxtQoSHU8y66gqy2o4XXEna+E801fGlrUos/pdLr2GSz6HQg==}
     engines: {node: '>=18.0.0'}
 
   '@emnapi/runtime@1.11.3':
@@ -3605,7 +3605,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@elevenlabs/elevenlabs-js@2.70.0':
+  '@elevenlabs/elevenlabs-js@2.71.0':
     dependencies:
       command-exists: 1.2.9
       node-fetch: 2.7.0
