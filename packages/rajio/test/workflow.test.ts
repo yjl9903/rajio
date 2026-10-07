@@ -1,7 +1,7 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { stringify } from 'smol-toml';
+import { parse, stringify } from 'smol-toml';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Session } from '../src/index.js';
@@ -1489,36 +1489,48 @@ describe('session workflow', () => {
 
   it('resets to raw transcription and regenerates the single input checkpoint', async () => {
     const dir = await preparedCompleteSession();
+    const transcription = {
+      provider: 'elevenlabs',
+      model: 'scribe_v2',
+      segmenter: 'integrated'
+    } as const;
+    const checkpointPath = path.join(dir, 'transcript/raw/checkpoints/input-000.toml');
     await mkdir(path.join(dir, 'audio'), { recursive: true });
-    await mkdir(path.join(dir, 'transcript/raw/chunks'), { recursive: true });
+    await mkdir(path.dirname(checkpointPath), { recursive: true });
     await writeFile(path.join(dir, 'audio/extracted.m4a'), 'audio');
     await writeFile(
-      path.join(dir, 'transcript/raw/chunks/chunk-000.toml'),
-      [
-        'version = 1',
-        'status = "done"',
-        'chunk_index = 0',
-        'audio = "audio/extracted.m4a"',
-        'start = 0',
-        'end = 1',
-        'model = "old"',
-        'started_at = "2026-06-05T00:00:00.000Z"',
-        'completed_at = "2026-06-05T00:00:00.000Z"',
-        '',
-        '[[response.segments]]',
-        'id = "old"',
-        'start = 0',
-        'end = 0.5',
-        'speaker = "A"',
-        'text = "old checkpoint"'
-      ].join('\n')
+      checkpointPath,
+      stringify({
+        version: 1,
+        status: 'done',
+        input_index: 0,
+        audio: 'audio/extracted.m4a',
+        start: 0,
+        end: 1,
+        ...transcription,
+        started_at: '2026-06-05T00:00:00.000Z',
+        completed_at: '2026-06-05T00:00:00.000Z',
+        response: {
+          words: [
+            {
+              text: 'cached transcript',
+              start: 0,
+              end: 0.5,
+              speaker_id: 'speaker_0',
+              type: 'word'
+            }
+          ]
+        }
+      })
     );
 
     const session = await Session.loadOrCreate(dir);
+    session.state.transcription = transcription;
     session.state.stages.audio = {
       status: 'done',
       audio: 'audio/extracted.m4a',
-      strategy: 'single_file'
+      strategy: 'single_file',
+      duration: 1
     };
     await session.save();
 
@@ -1545,12 +1557,17 @@ describe('session workflow', () => {
     );
 
     expect(calls).toEqual(['extracted.m4a']);
-    expect(
-      await readFile(path.join(dir, 'transcript/raw/checkpoints/input-000.toml'), 'utf8')
-    ).toContain('extracted.m4a');
-    expect(await readFile(path.join(dir, 'transcript/raw/segments.toml'), 'utf8')).not.toContain(
-      'old checkpoint'
-    );
+    expect(parse(await readFile(checkpointPath, 'utf8'))).toMatchObject({
+      status: 'done',
+      ...transcription,
+      response: {
+        words: [
+          { text: 'extracted.m4a', start: 0, end: 0.5, speaker_id: 'speaker_0', type: 'word' }
+        ]
+      }
+    });
+    const raw = await readSegmentsFile(path.join(dir, 'transcript/raw/segments.toml'));
+    expect(raw.segments.map((segment) => segment.ja)).toEqual(['extracted.m4a']);
     const reloaded = await Session.loadOrCreate(dir);
     expect(reloaded.currentStage).toBe('transcript_work');
     expect(reloaded.stage('audio').status).toBe('done');

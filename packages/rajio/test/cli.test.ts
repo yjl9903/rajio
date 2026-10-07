@@ -356,6 +356,8 @@ describe('cli explicit targets', () => {
 
   it('applies a patch with target before patch path', async () => {
     const dir = await preparedTranslationSession();
+    const segmentsPath = path.join(dir, 'translation/work/segments.toml');
+    const original = await readFile(segmentsPath, 'utf8');
     const patchPath = path.join(dir, 'patch.toml');
     await writeFile(
       patchPath,
@@ -386,9 +388,7 @@ describe('cli explicit targets', () => {
         counts: { fatal: 0, error: 0, warning: 0 }
       }
     });
-    expect(await readFile(path.join(dir, 'translation/work/segments.toml'), 'utf8')).not.toContain(
-      '您好'
-    );
+    expect(await readFile(segmentsPath, 'utf8')).toBe(original);
   });
 
   it('applies insert patches and reports insert stats', async () => {
@@ -434,6 +434,8 @@ describe('cli explicit targets', () => {
 
   it('inserts a segment from the CLI without writing on dry-run', async () => {
     const dir = await preparedTranslationSession();
+    const segmentsPath = path.join(dir, 'translation/work/segments.toml');
+    const original = await readFile(segmentsPath, 'utf8');
     const stdout = mockStdout();
 
     await createCommandApp().run([
@@ -460,13 +462,13 @@ describe('cli explicit targets', () => {
     expect(JSON.parse(stdout.text())).toEqual({
       segments: [{ id: '3', start: 3.1, end: 4, speaker: 'C', ja: '追加', zh: '新增' }]
     });
-    expect(await readFile(path.join(dir, 'translation/work/segments.toml'), 'utf8')).not.toContain(
-      '追加'
-    );
+    expect(await readFile(segmentsPath, 'utf8')).toBe(original);
   });
 
   it('rejects translation inserts without zh', async () => {
     const dir = await preparedTranslationSession();
+    const segmentsPath = path.join(dir, 'translation/work/segments.toml');
+    const original = await readFile(segmentsPath, 'utf8');
 
     await expect(
       createCommandApp().run([
@@ -486,9 +488,7 @@ describe('cli explicit targets', () => {
         '追加'
       ])
     ).rejects.toThrow('empty Chinese');
-    expect(await readFile(path.join(dir, 'translation/work/segments.toml'), 'utf8')).not.toContain(
-      '追加'
-    );
+    expect(await readFile(segmentsPath, 'utf8')).toBe(original);
   });
 
   it('prints affected rows with remaining issues for verbose apply', async () => {

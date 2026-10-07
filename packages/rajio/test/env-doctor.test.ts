@@ -311,10 +311,10 @@ describe('doctor', () => {
     });
   });
 
-  it('checks ElevenLabs connectivity with a successful models request', async () => {
+  it('checks ElevenLabs connectivity with a successful unauthenticated health request', async () => {
     const cwd = await tempDir();
     process.env.ELEVENLABS_API_KEY = 'test-key';
-    const fetchMock = vi.fn().mockResolvedValue(Response.json([]));
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ status: 'ok' }));
     vi.stubGlobal('fetch', fetchMock);
 
     const result = await runDoctor(await Session.load(cwd), {
@@ -330,14 +330,16 @@ describe('doctor', () => {
     });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, options] = fetchMock.mock.calls[0]!;
-    expect(url).toBe('https://api.elevenlabs.io/v1/models');
+    expect(url).toBe('https://api.elevenlabs.io/health');
     expect(options.method).toBe('GET');
-    expect(new Headers(options.headers).get('xi-api-key')).toBe('test-key');
+    expect(new Headers(options.headers).has('xi-api-key')).toBe(false);
+    expect(new Headers(options.headers).has('authorization')).toBe(false);
+    expect(options.signal).toBeInstanceOf(AbortSignal);
     expect(options.body).toBeUndefined();
   });
 
-  it.each([400, 401, 404])(
-    'fails when the ElevenLabs models request returns %s',
+  it.each([400, 401, 404, 503])(
+    'fails when the ElevenLabs health request returns %s',
     async (status) => {
       const cwd = await tempDir();
       process.env.ELEVENLABS_API_KEY = 'test-key';
@@ -357,7 +359,27 @@ describe('doctor', () => {
       expect(checkByName(result, 'transcription')).toMatchObject({
         status: 'fail',
         message: 'ElevenLabs API check failed',
-        detail: expect.stringContaining('Request failed')
+        detail: expect.stringContaining(`responded with ${status}`)
+      });
+    }
+  );
+
+  it.each([{ status: 'unhealthy' }, {}, null])(
+    'fails when ElevenLabs health returns an unexpected body: %j',
+    async (body) => {
+      const cwd = await tempDir();
+      process.env.ELEVENLABS_API_KEY = 'test-key';
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(Response.json(body)));
+
+      const result = await runDoctor(await Session.load(cwd), {
+        cwd,
+        deps: doctorDeps({ checkElevenLabs: undefined })
+      });
+
+      expect(result.ok).toBe(false);
+      expect(checkByName(result, 'transcription')).toMatchObject({
+        status: 'fail',
+        detail: 'ElevenLabs health check did not return status ok'
       });
     }
   );

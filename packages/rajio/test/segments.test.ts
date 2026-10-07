@@ -99,9 +99,12 @@ describe('segments validation and subtitle rendering', () => {
       ]
     });
 
-    expect(
-      issues.filter((issue) => issue.segmentId === 'long-word').map((issue) => issue.code)
-    ).not.toEqual(expect.arrayContaining(['ja_line_soft_limit', 'zh_line_soft_limit']));
+    const longWordCodes = issues
+      .filter((issue) => issue.segmentId === 'long-word')
+      .map((issue) => issue.code);
+    for (const code of ['ja_line_soft_limit', 'zh_line_soft_limit']) {
+      expect(longWordCodes).not.toContain(code);
+    }
     expect(issues).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -392,22 +395,26 @@ describe('segments validation and subtitle rendering', () => {
     });
 
     for (const segmentId of ['email', 'url', 'domain']) {
-      expect(
-        issues.filter((issue) => issue.segmentId === segmentId).map((issue) => issue.code)
-      ).not.toEqual(
-        expect.arrayContaining([
-          'ja_common_punctuation',
-          'zh_common_punctuation',
-          'ja_terminal_punctuation',
-          'zh_terminal_punctuation',
-          'ja_punctuation_only_line',
-          'zh_punctuation_only_line'
-        ])
-      );
+      const codes = issues
+        .filter((issue) => issue.segmentId === segmentId)
+        .map((issue) => issue.code);
+      for (const code of [
+        'ja_common_punctuation',
+        'zh_common_punctuation',
+        'ja_terminal_punctuation',
+        'zh_terminal_punctuation',
+        'ja_punctuation_only_line',
+        'zh_punctuation_only_line'
+      ]) {
+        expect(codes).not.toContain(code);
+      }
     }
-    expect(
-      issues.filter((issue) => issue.segmentId === 'terminal-url').map((issue) => issue.code)
-    ).not.toEqual(expect.arrayContaining(['ja_punctuation_only_line', 'zh_punctuation_only_line']));
+    const terminalUrlCodes = issues
+      .filter((issue) => issue.segmentId === 'terminal-url')
+      .map((issue) => issue.code);
+    for (const code of ['ja_punctuation_only_line', 'zh_punctuation_only_line']) {
+      expect(terminalUrlCodes).not.toContain(code);
+    }
     expect(issues).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ segmentId: 'terminal-url', code: 'ja_common_punctuation' }),
@@ -1415,7 +1422,7 @@ describe('segment edit tools', () => {
       formatSegments(segments, 'csv', {
         stats: { total: 2, listed: 1, translated: 1, untranslated: 1 }
       })
-    ).not.toContain('total 2');
+    ).toBe(formatSegments(segments, 'csv'));
   });
 
   it('formats segment patch stats as human table, csv, or json', () => {
