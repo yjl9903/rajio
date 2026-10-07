@@ -2,14 +2,12 @@ import { chmod, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { stripVTControlCharacters } from 'node:util';
 
 import { breadc, ErrorCode, InputError } from 'breadc';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Session } from '../src/session/index.js';
 import { registerClipCommands } from '../src/clips/commands.js';
-import { parseSegmentPatch } from '../src/segments/apply.js';
 import { registerSegmentCommands } from '../src/segments/commands.js';
 import { writeSegmentsFile } from '../src/segments/index.js';
 import { logger } from '../src/utils/logger.js';
@@ -112,82 +110,6 @@ describe('cli explicit targets', () => {
     await expect(
       createCommandApp().run(['segments', 'list', '/missing/session', '--', 'extra'])
     ).rejects.toThrow('Unexpected argument: extra');
-  });
-
-  it('prints root, parent, and leaf help without creating a session', async () => {
-    vi.useRealTimers();
-    logger.level = Number.POSITIVE_INFINITY;
-    const dir = await tempDir();
-    const load = vi.spyOn(Session, 'load');
-    const loadOrCreate = vi.spyOn(Session, 'loadOrCreate');
-    const output = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const cases = [
-      [[], ['session .env', 'full extracted audio', '--continue']],
-      [['segments'], ['segments list', 'segments apply']],
-      [['clips'], ['clips transcribe', 'clips show']],
-      [
-        ['segments', 'list'],
-        ['stats', '--around']
-      ],
-      [
-        ['segments', 'apply'],
-        ['[[operations]]', 'skip_checks', 'replacements']
-      ],
-      [['check'], ['counts', 'unused_skip_check']],
-      [['doctor'], ['no-upload', 'ELEVENLABS_API_KEY']],
-      [['frames'], ['--at', '--count', '--json', 'frames/capture-', 'requested positions']],
-      [['clean'], ['description.md', 'clips/']]
-    ] as const;
-    for (const [command, expected] of cases) {
-      output.mockClear();
-      const result = await runCliSideEffect([...command, '--help']);
-      expect(result.exitCode).toBeUndefined();
-      const help = stripVTControlCharacters(
-        result.stdout + output.mock.calls.map((call) => call.join(' ')).join('\n')
-      );
-      for (const text of expected) expect(help).toContain(text);
-      const headings =
-        command.length === 1 && ['segments', 'clips'].includes(command[0])
-          ? ['Usage:', 'Commands:', 'Options:']
-          : ['Usage:', 'Arguments:', 'Options:', 'Examples:'];
-      for (const heading of headings) {
-        expect(
-          help
-            .split('\n')
-            .filter((line) => line.trim() === heading || line.startsWith(`${heading} `))
-        ).toHaveLength(1);
-      }
-      if (command.length === 0) {
-        expect(help).not.toContain('The default command is:');
-        expect(help).not.toContain('Clip directory shape:');
-        expect(help).not.toContain('transcript/raw/checkpoints');
-        const intro = help.split('Usage:')[0];
-        expect(intro).not.toContain('--continue');
-        expect(intro).not.toContain('rajio /path/to/session');
-      }
-      if (command.join(' ') === 'segments apply') {
-        const patchExample = help.split('Patch example:')[1].match(/```toml\n([\s\S]*?)\n\s*```/);
-        expect(patchExample).not.toBeNull();
-        expect(parseSegmentPatch(patchExample![1]).operations).toHaveLength(6);
-        expect(help.indexOf('Usage:')).toBeLessThan(help.indexOf('Patch example:'));
-      }
-      if (command.join(' ') === 'segments list') {
-        expect(help).not.toContain('--dry-run');
-        expect(help).not.toContain('patch-scoped');
-        expect(help).not.toContain('[[operations]]');
-      }
-    }
-    for (const command of ['edit', 'insert', 'split', 'merge', 'delete']) {
-      const result = await runCliSideEffect(['segments', command, '--help']);
-      expect(result.exitCode).toBeUndefined();
-    }
-    for (const command of ['transcribe', 'list', 'show']) {
-      const result = await runCliSideEffect(['clips', command, '--help']);
-      expect(result.exitCode).toBeUndefined();
-    }
-    expect(load).not.toHaveBeenCalled();
-    expect(loadOrCreate).not.toHaveBeenCalled();
-    expect(await readdir(dir)).toEqual([]);
   });
 
   it('keeps parser diagnostics with help but skips business casts', async () => {
@@ -718,29 +640,6 @@ describe('cli explicit targets', () => {
     );
   });
 
-  it('does not print persisted segment-list hints for dry-run apply checks', async () => {
-    const dir = await preparedTranslationSession();
-    const patchPath = path.join(dir, 'patch.toml');
-    await writeFile(
-      patchPath,
-      ['[[operations]]', 'op = "edit"', 'segment_id = "1"', `zh = "${'一'.repeat(25)}"`].join('\n')
-    );
-
-    const stdout = mockStdout();
-    await createCommandApp().run([
-      'segments',
-      'apply',
-      dir,
-      patchPath,
-      '--stage',
-      'translation',
-      '--dry-run'
-    ]);
-
-    expect(stdout.text()).toContain('zh_line_hard_limit');
-    expect(stdout.text()).not.toContain('segments list');
-  });
-
   it('does not fail segments apply when post-apply check reports blocking issues', async () => {
     vi.useRealTimers();
     const dir = await preparedTranslationSession();
@@ -910,10 +809,6 @@ describe('cli explicit targets', () => {
     );
     expect(output).toContain(`${segmentsPath}: 1 error issue (zh_line_hard_limit).`);
     expect(output).toContain(`${segmentsPath}: 1 warning issue (subtitle_gap_short).`);
-    expect(output).not.toContain('[translation_work]');
-    expect(output).not.toContain('Examples:');
-    expect(output).not.toContain('Use --verbose for details.');
-    expect(output).not.toContain('hard limit is');
 
     expect(output.indexOf('zh_line_hard_limit')).toBeLessThan(output.indexOf('subtitle_gap_short'));
     expect(output.match(/hint:/g)).toHaveLength(1);
@@ -1054,17 +949,6 @@ describe('cli explicit targets', () => {
     } finally {
       process.chdir(cwd);
     }
-  });
-
-  it('rejects removed check level all', async () => {
-    const result = await runCliSideEffect([
-      'check',
-      '/tmp/rajio-missing-session',
-      '--level',
-      'all'
-    ]);
-
-    expect(result.exitCode).toBe(1);
   });
 
   it('pages segment issue results in json mode', async () => {

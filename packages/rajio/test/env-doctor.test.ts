@@ -65,7 +65,7 @@ describe('doctor', () => {
     });
 
     expect(result.ok).toBe(true);
-    expect(result.checks.some((check) => check.message.startsWith('Loaded '))).toBe(false);
+    expect(result.checks.filter((check) => check.name === '.env')).toEqual([]);
     await expect(readFile(path.join(cwd, 'session.toml'), 'utf8')).rejects.toThrow();
   });
 
@@ -173,7 +173,7 @@ describe('doctor', () => {
     });
 
     expect(result.ok).toBe(false);
-    expect(result.checks.some((check) => check.message.startsWith('Loaded '))).toBe(false);
+    expect(result.checks.filter((check) => check.name === '.env')).toEqual([]);
     expect(checkByName(result, 'node')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'ffmpeg')).toMatchObject({ status: 'fail' });
     expect(checkByName(result, 'transcription')).toMatchObject({ status: 'fail' });

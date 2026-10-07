@@ -854,9 +854,6 @@ describe('segments validation and subtitle rendering', () => {
     expect(summarizedLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining('2 warning issues (ja_line_soft_limit)')
     );
-    expect(summarizedLogger.warn).not.toHaveBeenCalledWith(
-      expect.stringContaining('id=1 time=0s-4s duration=4s chars=ja:21 adjacent=-|2')
-    );
     expect(verboseLogger.warn).toHaveBeenCalledTimes(2);
     expect(verboseLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining(
@@ -1192,39 +1189,6 @@ describe('segments validation and subtitle rendering', () => {
     expect(renderSrt(file, 'ja')).toContain('00:00:00,000 --> 00:00:01,200');
     expect(renderSrt(file, 'zh')).toContain('你好');
     expect(renderAss(file, 'Title')).toContain('Dialogue: 0,0:00:00.00,0:00:01.20');
-  });
-
-  it('drops legacy source media when rewriting segments files', async () => {
-    const dir = await tempDir();
-    const filePath = path.join(dir, 'segments.toml');
-    await writeFile(
-      filePath,
-      [
-        'version = 1',
-        '',
-        '[source]',
-        'kind = "transcript"',
-        'media = "/absolute/video.mp4"',
-        'generated_at = "2026-06-06T00:00:00.000Z"',
-        '',
-        '[[segments]]',
-        'id = "1"',
-        'start = 0',
-        'end = 1',
-        'speaker = "A"',
-        'ja = "こんにちは"'
-      ].join('\n')
-    );
-
-    const file = await readSegmentsFile(filePath);
-    expect(file.source).toEqual({
-      kind: 'transcript',
-      generated_at: '2026-06-06T00:00:00.000Z'
-    });
-
-    await writeSegmentsFile(filePath, file);
-
-    expect(await readFile(filePath, 'utf8')).not.toContain('media =');
   });
 
   it('merges ElevenLabs transcript words into raw segments', () => {

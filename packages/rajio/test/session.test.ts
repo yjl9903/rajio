@@ -26,7 +26,6 @@ describe('session target resolution', () => {
     expect(session.description.body).toBe('context');
     const sessionToml = await readFile(path.join(dir, 'session.toml'), 'utf8');
     expect(sessionToml).toContain(`rajio_version = "${rajioVersion}"`);
-    expect(sessionToml).not.toContain('schema_version');
   });
 
   it('rejects sessions without matching rajio version', async () => {

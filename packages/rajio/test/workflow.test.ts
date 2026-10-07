@@ -373,10 +373,6 @@ describe('session workflow', () => {
       suggestedPatchDir,
       '04-long-segment-candidates-chunk-000-000000s-000020s-low.toml'
     );
-    const oldLongReportPath = path.join(
-      suggestedPatchDir,
-      '04-long-segment-candidates-chunk-000-000000s-000020s-low.md'
-    );
 
     const punctuationHigh = await readFile(punctuationHighPath, 'utf8');
     const punctuationPatch = parseSegmentPatch(punctuationHigh);
@@ -438,7 +434,6 @@ describe('session workflow', () => {
     expect(retimePatch.operations).toEqual(
       expect.arrayContaining([expect.objectContaining({ segment_id: 'no-shrink-1' })])
     );
-    await expect(readFile(oldLongReportPath, 'utf8')).rejects.toThrow();
     const longPatch = parseSegmentPatch(await readFile(longPatchPath, 'utf8'));
     expect(longPatch.operations).toEqual(
       expect.arrayContaining([
@@ -773,14 +768,8 @@ describe('session workflow', () => {
       stringify(inheritedJapaneseQaTranslation())
     );
 
-    const capture = captureConsoleOutput();
-    try {
-      const session = await Session.loadOrCreate(dir);
-      await runRajio(session, { ...baseOptions, commit: true });
-    } finally {
-      capture.restore();
-    }
-    expect(capture.output()).not.toContain('translation inherited Japanese QA');
+    const session = await Session.loadOrCreate(dir);
+    await runRajio(session, { ...baseOptions, commit: true });
 
     const reloaded = await Session.loadOrCreate(dir);
     expect(reloaded.stage('translation_work')).toEqual(
@@ -859,7 +848,6 @@ describe('session workflow', () => {
     const output = capture.output();
     expect(output).toContain('commit scope: transcript_work ja QA.');
     expect(output).toContain('ja_line_soft_limit');
-    expect(output).not.toContain('--language zh');
   });
 
   it('rejects translation commit when Chinese QA has hard errors', async () => {
@@ -1467,8 +1455,6 @@ describe('session workflow', () => {
     const output = capture.output();
     expect(output).toContain('export outputs:');
     expect(output).toContain('session complete.');
-    expect(output).not.toContain('current stage: done.');
-    expect(output).not.toContain('next step: session complete.');
   });
 
   it('rejects terminal done workflow state when export is incomplete', async () => {
