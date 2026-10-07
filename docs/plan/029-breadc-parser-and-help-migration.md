@@ -141,7 +141,7 @@ Declare positionals through `.argument('<target>', description)` and equivalent 
 declarations when argument descriptions are needed. Do not append `.argument('<target>')`
 to a command spec already containing `<target>`: that adds another positional argument.
 The root help selects the application description rather than default-command details,
-so place default-workflow explanations at the application level.
+so place configuration explanations and bundled skill discovery at the application level.
 
 Existing flat multiword commands already support `rajio segments --help` and
 `rajio clips --help` discovery. Introduce explicit groups only if parent-level prose is
@@ -181,7 +181,7 @@ casts but must not swallow parser syntax errors. Update old-error unit fixtures 
 beta.21 errors rather than preserving a compatibility shim.
 
 Finally search remaining skill files for stale reference links and duplicated command
-tables, and verify the package's existing prepack copy still includes the retained skill
+tables, and verify the package's build-time copy still includes the retained skill
 files. Do not edit generated `dist` or package-local copied skills.
 
 ## Verification Results
@@ -279,3 +279,19 @@ count the entire work file. These changes affect help wording only.
 
 Validation: root, segments list, and segments apply source CLI help exited successfully;
 rendered wording assertions and git diff --check passed. Runtime behavior is unchanged.
+
+## Bundled Skill Discovery
+
+Root help prints the absolute path to the installed package's
+`skills/rajio/SKILL.md`, resolved relative to the CLI module rather than the current
+working directory. The build step includes that document and its references.
+
+Remove the introductory manual-stage review/commit and dirty-work recovery prose:
+the skill already owns these instructions in Workflow and Failure Handling. Keep
+option semantics, reset consequences, configuration precedence, and invocation examples
+in CLI help, since they remain command contracts. Runtime behavior is unchanged.
+
+Validation: existing root/parent/leaf help test, package typecheck, build, Prettier,
+and git diff checks passed. Packed and extracted the npm archive, then ran its CLI
+from an unrelated working directory: the displayed absolute skill path exists and
+its content matches the source skill.

@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import { breadc } from 'breadc';
 import { z } from 'zod';
 import { numberInput, issueLevelInput } from './utils/cast.js';
@@ -28,14 +30,14 @@ installBrokenPipeHandler();
 const app = breadc('rajio', {
   version: rajioVersion,
   description: {
-    description: `${rajioDescription}\n\nRun or resume a rajio subtitle session. Automatic stages stop at manual work for review and commit.
+    description: `${rajioDescription}\n\nRun or resume a rajio subtitle session.
+
+For agent workflow and review instructions, read the bundled skill:
+${fileURLToPath(new URL('../skills/rajio/SKILL.md', import.meta.url))}
 
 For new sessions, description markdown can set a transcription mapping (provider, model, segmenter) in YAML frontmatter. CLI values override frontmatter; fields absent from both use provider defaults. When switching provider, also specify a matching model. See rajio doctor --help for credentials and tool configuration.
 
-When runtime configuration is needed, rajio loads .env from the command cwd, then from the resolved session directory. Later files override earlier values:
-session .env > cwd .env > process environment
-
-If a committed manual work file changed, rajio marks it dirty and retargets the workflow to that manual stage before continuing. Recommit that manual stage after review; dirty is a workflow state, not a rajio check issue.`,
+When runtime configuration is needed, rajio loads .env from the command cwd, then from the resolved session directory. Later files override earlier values.`,
     examples: [
       {
         comment: 'Run automatic stages until the next manual stage.',
