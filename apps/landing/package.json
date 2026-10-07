@@ -22,7 +22,7 @@
     "tslib": "2.8.1"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.62.5",
+    "@cloudflare/vite-plugin": "1.63.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "wrangler": "4.147.0"
