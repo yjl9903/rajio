@@ -30,6 +30,11 @@ const docsTree: Root = {
           type: 'page',
           name: 'Rajio 会话工作区',
           url: '/docs/session-workspace'
+        },
+        {
+          type: 'page',
+          name: '更新日志',
+          url: '/docs/changelog'
         }
       ]
     },

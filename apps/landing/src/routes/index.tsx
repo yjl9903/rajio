@@ -49,6 +49,9 @@ function HomePage() {
             <Link to="/docs/$slug" params={{ slug: 'environment' }}>
               配置
             </Link>
+            <Link to="/docs/$slug" params={{ slug: 'changelog' }}>
+              更新日志
+            </Link>
           </nav>
           <div className="home-header-tools">
             <FullSearchTrigger hideIfDisabled className="home-search-trigger" />
@@ -167,6 +170,9 @@ function HomePage() {
             看成片示例
           </Link>
         </div>
+        <Link to="/docs/$slug" params={{ slug: 'changelog' }}>
+          更新日志
+        </Link>
       </section>
     </main>
   );

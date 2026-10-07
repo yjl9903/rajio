@@ -96,6 +96,7 @@ function RootLayout() {
           search={{
             links: [
               ['快速开始', '/docs'],
+              ['更新日志', '/docs/changelog'],
               ['Rajio 会话工作区', '/docs/session-workspace'],
               ['环境变量', '/docs/environment'],
               ['音频处理', '/docs/audio'],
