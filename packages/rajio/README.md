@@ -1,6 +1,6 @@
 # Rajio ラジオ
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yjl9903/rajio)
+[![Ask DeepWiki](https://raw.githubusercontent.com/yjl9903/Breadc/main/assets/deepwiki.svg)](https://deepwiki.com/yjl9903/Breadc)
 [![version](https://img.shields.io/npm/v/rajio?label=Rajio)](https://www.npmjs.com/package/rajio)
 [![CI](https://github.com/yjl9903/rajio/actions/workflows/ci.yml/badge.svg)](https://github.com/yjl9903/rajio/actions/workflows/ci.yml)
 
@@ -62,7 +62,7 @@ Translated video: [BV1S6EH6FEZN](https://www.bilibili.com/video/BV1S6EH6FEZN).
 Copy this to your agent:
 
 ```text
-Install the rajio skill from https://github.com/yjl9903/rajio/blob/main/skills/rajio/
+Install the rajio CLI with npm i -g rajio.
 ```
 
 Then give your agent a local media file and any notes you have.
@@ -72,16 +72,6 @@ Requirements:
 - Install the latest Node.js.
 - Make sure `ffmpeg` and `ffprobe` can be found in your environment.
 - Configure the API key or credentials required by your selected ASR provider.
-
-## CLI
-
-The package exposes a local CLI for your agent to call:
-
-```bash
-npm i -g rajio
-
-rajio --help
-```
 
 ## License
 

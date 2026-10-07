@@ -62,7 +62,7 @@ Translated video: [BV1S6EH6FEZN](https://www.bilibili.com/video/BV1S6EH6FEZN).
 Copy this to your agent:
 
 ```text
-Install the rajio skill from https://github.com/yjl9903/rajio/blob/main/skills/rajio/
+Install the rajio CLI with npm i -g rajio.
 ```
 
 Then give your agent a local media file and any notes you have.
@@ -72,16 +72,6 @@ Requirements:
 - Install the latest Node.js.
 - Make sure `ffmpeg` and `ffprobe` can be found in your environment.
 - Configure the API key or credentials required by your selected ASR provider.
-
-## CLI
-
-The package exposes a local CLI for your agent to call:
-
-```bash
-npm i -g rajio
-
-rajio --help
-```
 
 ## License
 

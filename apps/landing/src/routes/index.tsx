@@ -6,8 +6,8 @@ const coverUrl = '/examples/natsusaku-50.jpg';
 
 const features = [
   {
-    title: 'Agent Skill 安装',
-    text: '先把 Rajio 工作流装进 Agent，再把视频任务交给它执行。快速开始页已经准备好可复制的安装和运行 prompt。'
+    title: 'CLI 安装',
+    text: '先安装 Rajio CLI，再把视频任务交给 Agent 执行。快速开始页已经准备好可复制的安装和运行 prompt。'
   },
   {
     title: '可恢复会话',
@@ -103,10 +103,9 @@ function HomePage() {
           <h2>复制 prompt，运行 Rajio 工作流</h2>
           <div className="home-command-list">
             <section>
-              <span>01 安装 Skill</span>
+              <span>01 安装 CLI</span>
               <pre>
-                <code>{`请用 skill-installer 安装 Rajio skill。
-GitHub 仓库：https://github.com/yjl9903/rajio`}</code>
+                <code>{`请安装 Rajio CLI：npm i -g rajio`}</code>
               </pre>
             </section>
             <section>
