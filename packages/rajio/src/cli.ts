@@ -322,7 +322,7 @@ app
     summary: `Check environment, provider, ffmpeg, and Node.js`,
     details: `rajio doctor <target> loads the target session config and checks the selected transcription provider:
 
-- ElevenLabs transcription requires ELEVENLABS_API_KEY. A no-upload GET /v1/models request checks API connectivity only; it does not verify API key validity, transcription permissions, or quota.
+- ElevenLabs transcription requires ELEVENLABS_API_KEY. The check intentionally sends an invalid request to test connectivity with the key.
 - OpenAI-compatible transcription requires OPENAI_API_KEY and checks the configured OpenAI-compatible API.
 - Only the selected transcription provider is checked; ElevenLabs transcription does not require OPENAI_API_KEY.
 

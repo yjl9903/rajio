@@ -1,6 +1,5 @@
 import path from 'node:path';
 
-import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
 import { execa } from 'execa';
 import OpenAI from 'openai';
 
@@ -302,8 +301,27 @@ async function checkOpenAIConnectivity(runtime: RuntimeConfig): Promise<void> {
 }
 
 async function checkElevenLabsConnectivity(runtime: RuntimeConfig): Promise<void> {
-  const client = new ElevenLabsClient({ apiKey: runtime.elevenlabsApiKey });
-  await client.models.list({ timeoutInSeconds: CHECK_TIMEOUT_MS / 1000 });
+  const body = new FormData();
+  body.set('model_id', 'scribe_v2');
+  const response = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
+    method: 'POST',
+    headers: { 'xi-api-key': runtime.elevenlabsApiKey! },
+    body,
+    signal: AbortSignal.timeout(CHECK_TIMEOUT_MS)
+  });
+  const data = (await response.json()) as {
+    detail?: { code?: unknown; message?: unknown };
+  } | null;
+  const detail = data?.detail;
+  if (
+    response.status === 400 &&
+    detail?.code === 'invalid_parameters' &&
+    detail.message === 'Must provide either file or a URL parameter.'
+  ) {
+    return;
+  }
+  const message = typeof detail?.message === 'string' ? `: ${detail.message}` : '';
+  throw new Error(`ElevenLabs transcription probe responded with ${response.status}${message}`);
 }
 
 function compareSemverCore(left: string, right: string): number | undefined {

@@ -311,10 +311,20 @@ describe('doctor', () => {
     });
   });
 
-  it('checks ElevenLabs connectivity with a successful unauthenticated health request', async () => {
+  it('checks ElevenLabs with the key and model but no audio source', async () => {
     const cwd = await tempDir();
     process.env.ELEVENLABS_API_KEY = 'test-key';
-    const fetchMock = vi.fn().mockResolvedValue(Response.json({ status: 'ok' }));
+    const fetchMock = vi.fn().mockResolvedValue(
+      Response.json(
+        {
+          detail: {
+            code: 'invalid_parameters',
+            message: 'Must provide either file or a URL parameter.'
+          }
+        },
+        { status: 400 }
+      )
+    );
     vi.stubGlobal('fetch', fetchMock);
 
     const result = await runDoctor(await Session.load(cwd), {
@@ -330,24 +340,52 @@ describe('doctor', () => {
     });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, options] = fetchMock.mock.calls[0]!;
-    expect(url).toBe('https://api.elevenlabs.io/health');
-    expect(options.method).toBe('GET');
-    expect(new Headers(options.headers).has('xi-api-key')).toBe(false);
-    expect(new Headers(options.headers).has('authorization')).toBe(false);
+    expect(url).toBe('https://api.elevenlabs.io/v1/speech-to-text');
+    expect(options.method).toBe('POST');
+    expect(new Headers(options.headers).get('xi-api-key')).toBe('test-key');
     expect(options.signal).toBeInstanceOf(AbortSignal);
-    expect(options.body).toBeUndefined();
+    expect(options.body).toBeInstanceOf(FormData);
+    expect([...options.body.entries()]).toEqual([['model_id', 'scribe_v2']]);
   });
 
-  it.each([400, 401, 404, 503])(
-    'fails when the ElevenLabs health request returns %s',
-    async (status) => {
+  it.each([
+    [401, 'unauthorized', 'invalid_api_key', 'Invalid API key'],
+    [
+      401,
+      'unauthorized',
+      'needs_authorization',
+      'Neither authorization header nor xi-api-key received'
+    ],
+    [401, 'unauthorized', 'missing_permissions', 'Missing speech_to_text permission'],
+    [403, 'insufficient_permissions', 'missing_permissions', 'Missing speech_to_text permission'],
+    [400, 'invalid_parameters', 'invalid_parameters', 'Invalid model'],
+    [400, 'unauthorized', 'invalid_parameters', 'Must provide either file or a URL parameter.'],
+    [
+      404,
+      'invalid_parameters',
+      'invalid_parameters',
+      'Must provide either file or a URL parameter.'
+    ],
+    [
+      200,
+      'invalid_parameters',
+      'invalid_parameters',
+      'Must provide either file or a URL parameter.'
+    ],
+    [429, 'rate_limit_exceeded', 'rate_limit_exceeded', 'Too many requests'],
+    [503, 'service_unavailable', 'service_unavailable', 'Service unavailable']
+  ])(
+    'fails for an unexpected transcription response: %s %s %s',
+    async (status, code, errorStatus, message) => {
       const cwd = await tempDir();
       process.env.ELEVENLABS_API_KEY = 'test-key';
       vi.stubGlobal(
         'fetch',
         vi
           .fn()
-          .mockResolvedValue(Response.json({ detail: { message: 'Request failed' } }, { status }))
+          .mockResolvedValue(
+            Response.json({ detail: { code, status: errorStatus, message } }, { status })
+          )
       );
 
       const result = await runDoctor(await Session.load(cwd), {
@@ -359,17 +397,34 @@ describe('doctor', () => {
       expect(checkByName(result, 'transcription')).toMatchObject({
         status: 'fail',
         message: 'ElevenLabs API check failed',
-        detail: expect.stringContaining(`responded with ${status}`)
+        detail: `ElevenLabs transcription probe responded with ${status}: ${message}`
       });
     }
   );
 
-  it.each([{ status: 'unhealthy' }, {}, null])(
-    'fails when ElevenLabs health returns an unexpected body: %j',
+  it.each([{}, null, { detail: null }])(
+    'fails for an unexpected transcription body: %j',
     async (body) => {
       const cwd = await tempDir();
       process.env.ELEVENLABS_API_KEY = 'test-key';
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(Response.json(body)));
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(Response.json(body, { status: 400 })));
+
+      const result = await runDoctor(await Session.load(cwd), {
+        cwd,
+        deps: doctorDeps({ checkElevenLabs: undefined })
+      });
+
+      expect(result.ok).toBe(false);
+      expect(checkByName(result, 'transcription')).toMatchObject({ status: 'fail' });
+    }
+  );
+
+  it.each([new TypeError('fetch failed'), new DOMException('Timed out', 'TimeoutError')])(
+    'fails when the transcription probe cannot complete: %s',
+    async (error) => {
+      const cwd = await tempDir();
+      process.env.ELEVENLABS_API_KEY = 'test-key';
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(error));
 
       const result = await runDoctor(await Session.load(cwd), {
         cwd,
@@ -379,7 +434,7 @@ describe('doctor', () => {
       expect(result.ok).toBe(false);
       expect(checkByName(result, 'transcription')).toMatchObject({
         status: 'fail',
-        detail: 'ElevenLabs health check did not return status ok'
+        detail: error.message
       });
     }
   );
