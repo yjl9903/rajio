@@ -243,8 +243,8 @@ importers:
         specifier: 2.71.0
         version: 2.71.0
       breadc:
-        specifier: 1.0.0-beta.22
-        version: 1.0.0-beta.22
+        specifier: 1.0.0-beta.23
+        version: 1.0.0-beta.23
       consola:
         specifier: 3.4.2
         version: 3.4.2
@@ -339,17 +339,17 @@ packages:
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
 
-  '@breadc/color@1.0.0-beta.22':
-    resolution: {integrity: sha512-eDMdU63Avje+Xvv7j/mGUqnA/L6VxKmm5ohFbIWVkO4pCewYoLVRv9M9xZzXLSUXc9zqOpYqLTS2oIxmCOgCLQ==}
+  '@breadc/color@1.0.0-beta.23':
+    resolution: {integrity: sha512-6wimyFSbdQbv3WiGkiOEnv+ZwA/5sr2ecgJK0SP+iYccHlPfTatJOcvqeAriF8fwzeJR1GnNcFFQ1tGs9YDM+w==}
 
-  '@breadc/core@1.0.0-beta.22':
-    resolution: {integrity: sha512-lMLWOzp3duNyIw1yc26vFCBbcmnI2M28DGvVK0HvA1xLlnHli+2sfcXSC4KNMsg17Ivn1X5SMJVRhe7EswuJzg==}
+  '@breadc/core@1.0.0-beta.23':
+    resolution: {integrity: sha512-oXbU503ivyZXdji10iHasd2EcvgZp9UFLjjsMtjOEhwKga6QJAlmNdT53raRoH4in/NKFTR/LXxFuM/hNdo9FQ==}
 
-  '@breadc/death@1.0.0-beta.22':
-    resolution: {integrity: sha512-OvDk0CZeh2fStMAX9AiKlc/Ftl1WxRt3nSmJSw12JVFBBCglzy/AeyqBUhBOpKHZIfo2rPqwnTOQjhnV2wmeog==}
+  '@breadc/death@1.0.0-beta.23':
+    resolution: {integrity: sha512-clXAeTn9XwNuAmSHk/QBt1HKC/N09uyrj7Nqf/008FW03LRUfrQXgMuU8AOoe0pnmampg3y1sjYDdOyVMpmokA==}
 
-  '@breadc/tui@1.0.0-beta.22':
-    resolution: {integrity: sha512-DzyexGZ+kr/066rP8XIV24qUJxOM9F/RV8indcdpsdz+8htWA3ZBYxbYn5udi9VmCzqG+fKvBPnreNWEyiNsxg==}
+  '@breadc/tui@1.0.0-beta.23':
+    resolution: {integrity: sha512-vusx4tRnxv+racZIHye8ALkk0oATwTjjOHtvqvbtLlvJvkV5LadiAwhqWSTU4MIKCer/Fj/nnG4up3kbbXssvQ==}
 
   '@cloudflare/build-output-utils@0.9.0':
     resolution: {integrity: sha512-2FMA4XnVj5u7LYJE9j3uSJ+cU4Zn994WiyEOVhbMV7wh7pcwi1rIYafH6kiWaa+Y3Bjvf0ow7JgoDaO05qYVPg==}
@@ -2086,8 +2086,8 @@ packages:
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
 
-  breadc@1.0.0-beta.22:
-    resolution: {integrity: sha512-YMGIt93ollViTa9bFwPFOVGbyiltXk5QghGANaMJX32gsdt5rzslX1gKAr4urDDQ3/y5SlYmfYVB2gbilNLD1Q==}
+  breadc@1.0.0-beta.23:
+    resolution: {integrity: sha512-JfLvs/cWBEXxBw2w6rUwfewGmv3b0erkSQa79UCFIBT/41f16yTOS/uYd71/BStY617HTJS/XRZ45QTA3dkFxg==}
 
   browserslist@4.29.3:
     resolution: {integrity: sha512-1R4kiYKXGViqEN0CnoDrXc1StD9niAwu+j2dukWzrD4bJgsD4lDmEp0CRbc6E/vYJIfTHwPmwyaKtVSudICdPA==}
@@ -2098,10 +2098,6 @@ packages:
     resolution: {integrity: sha512-YgW09sgbIGQmAD/Jk7FEGP0tm0PeDz+Zgk+IAk+MOHhb/98pj/l3CgkxSjd7C1O99JPxTNwS+bPOTNaHuNh6lQ==}
     engines: {node: ^22.18.0 || ^24.11.0 || >=26.0.0}
     hasBin: true
-
-  cac@7.0.0:
-    resolution: {integrity: sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ==}
-    engines: {node: '>=20.19.0'}
 
   cac@7.1.0:
     resolution: {integrity: sha512-LMDU/U2yA4IPIY8KT0NsNPWEYZvAMkbgyspxJ6btJaYV+WMDOHAZCmB0lsTObiHaRS1V/ztKAl7+TSkTqXyeoA==}
@@ -3740,18 +3736,18 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@breadc/color@1.0.0-beta.22': {}
+  '@breadc/color@1.0.0-beta.23': {}
 
-  '@breadc/core@1.0.0-beta.22':
+  '@breadc/core@1.0.0-beta.23':
     dependencies:
       '@standard-schema/spec': 1.1.0
 
-  '@breadc/death@1.0.0-beta.22': {}
+  '@breadc/death@1.0.0-beta.23': {}
 
-  '@breadc/tui@1.0.0-beta.22':
+  '@breadc/tui@1.0.0-beta.23':
     dependencies:
-      '@breadc/color': 1.0.0-beta.22
-      '@breadc/death': 1.0.0-beta.22
+      '@breadc/color': 1.0.0-beta.23
+      '@breadc/death': 1.0.0-beta.23
       fast-string-width: 3.0.2
 
   '@cloudflare/build-output-utils@0.9.0':
@@ -5172,12 +5168,12 @@ snapshots:
 
   blake3-wasm@2.1.5: {}
 
-  breadc@1.0.0-beta.22:
+  breadc@1.0.0-beta.23:
     dependencies:
-      '@breadc/color': 1.0.0-beta.22
-      '@breadc/core': 1.0.0-beta.22
-      '@breadc/death': 1.0.0-beta.22
-      '@breadc/tui': 1.0.0-beta.22
+      '@breadc/color': 1.0.0-beta.23
+      '@breadc/core': 1.0.0-beta.23
+      '@breadc/death': 1.0.0-beta.23
+      '@breadc/tui': 1.0.0-beta.23
       fast-string-width: 3.0.2
 
   browserslist@4.29.3:
@@ -5191,7 +5187,7 @@ snapshots:
   bumpp@12.3.0:
     dependencies:
       args-tokenizer: 0.3.0
-      cac: 7.0.0
+      cac: 7.1.0
       jsonc-parser: 3.3.1
       package-manager-detector: 1.9.0
       tinyexec: 1.3.1
@@ -5199,8 +5195,6 @@ snapshots:
       unconfig: 7.5.0
       verkit: 0.4.1
       yaml: 2.9.1
-
-  cac@7.0.0: {}
 
   cac@7.1.0: {}
 
