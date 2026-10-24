@@ -255,8 +255,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       openai:
-        specifier: 7.38.0
-        version: 7.38.0(undici@8.11.2)(ws@8.22.0)(zod@4.6.5)
+        specifier: 7.43.0
+        version: 7.43.0(undici@8.11.2)(ws@8.22.0)(zod@4.6.5)
       smol-toml:
         specifier: 1.9.0
         version: 1.9.0
@@ -2915,13 +2915,14 @@ packages:
   oniguruma-to-es@4.3.6:
     resolution: {integrity: sha512-csuQ9x3Yr0cEIs/Zgx/OEt9iBw9vqIunAPQkx19R/fiMq2oGVTgcMqO/V3Ybqefr1TBvosI6jU539ksaBULJyA==}
 
-  openai@7.38.0:
-    resolution: {integrity: sha512-Ef+YyIeoiisZLP/tV4F4/RieJAl4OEJTyJg6gV0AXOb0T9CDkvYJoU224OY5CTmQ4zDJeku4jEHjz2b3/6Ndhw==}
+  openai@7.43.0:
+    resolution: {integrity: sha512-fBjKaDFG8AVfkGYoIo/E+xNRlNk7nx2nQ9GoQtXfePzPjg4QcT6nejkhXayJnEwSpFGfthOrAPI2KXj5yAqg9A==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
       '@smithy/hash-node': '>=4.3.0 <5'
       '@smithy/signature-v4': '>=5.4.0 <6'
+      google-auth-library: '>=9.15.1 <11'
       undici: '>=5 <9'
       ws: ^8.21.0
       zod: ^3.25 || ^4.0
@@ -2931,6 +2932,8 @@ packages:
       '@smithy/hash-node':
         optional: true
       '@smithy/signature-v4':
+        optional: true
+      google-auth-library:
         optional: true
       undici:
         optional: true
@@ -6283,7 +6286,7 @@ snapshots:
       regex: 6.1.0
       regex-recursion: 6.0.2
 
-  openai@7.38.0(undici@8.11.2)(ws@8.22.0)(zod@4.6.5):
+  openai@7.43.0(undici@8.11.2)(ws@8.22.0)(zod@4.6.5):
     optionalDependencies:
       undici: 8.11.2
       ws: 8.22.0
